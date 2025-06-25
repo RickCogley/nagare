@@ -3,8 +3,8 @@
  * Extracted and enhanced from Salty's git functionality
  */
 
-import type { NagareConfig, ConventionalCommit } from '../types.ts';
-import { Logger, LogLevel } from './logger.ts';
+import type { ConventionalCommit, NagareConfig } from "../types.ts";
+import { Logger, LogLevel } from "./logger.ts";
 
 /**
  * Handles all Git-related operations for releases
@@ -23,7 +23,7 @@ export class GitOperations {
    */
   async isGitRepository(): Promise<boolean> {
     try {
-      await this.runCommand(['git', 'status']);
+      await this.runCommand(["git", "status"]);
       return true;
     } catch {
       return false;
@@ -35,7 +35,7 @@ export class GitOperations {
    */
   async hasUncommittedChanges(): Promise<boolean> {
     try {
-      const result = await this.runCommand(['git', 'status', '--porcelain']);
+      const result = await this.runCommand(["git", "status", "--porcelain"]);
       return result.trim().length > 0;
     } catch {
       return true; // Assume uncommitted changes if we can't check
@@ -47,14 +47,14 @@ export class GitOperations {
    */
   async getGitUser(): Promise<{ name: string; email: string }> {
     try {
-      const name = await this.runCommand(['git', 'config', 'user.name']);
-      const email = await this.runCommand(['git', 'config', 'user.email']);
+      const name = await this.runCommand(["git", "config", "user.name"]);
+      const email = await this.runCommand(["git", "config", "user.email"]);
       return {
         name: name.trim(),
-        email: email.trim()
+        email: email.trim(),
       };
     } catch {
-      return { name: '', email: '' };
+      return { name: "", email: "" };
     }
   }
 
@@ -63,10 +63,10 @@ export class GitOperations {
    */
   async getCurrentCommitHash(): Promise<string> {
     try {
-      const result = await this.runCommand(['git', 'rev-parse', 'HEAD']);
+      const result = await this.runCommand(["git", "rev-parse", "HEAD"]);
       return result.trim().substring(0, 7);
     } catch {
-      return 'unknown';
+      return "unknown";
     }
   }
 
@@ -75,14 +75,19 @@ export class GitOperations {
    */
   async getLastReleaseTag(): Promise<string> {
     try {
-      const tagPrefix = this.config.options?.tagPrefix || 'v';
+      const tagPrefix = this.config.options?.tagPrefix || "v";
       const result = await this.runCommand([
-        'git', 'describe', '--tags', '--abbrev=0', '--match', `${tagPrefix}*`
+        "git",
+        "describe",
+        "--tags",
+        "--abbrev=0",
+        "--match",
+        `${tagPrefix}*`,
       ]);
       return result.trim();
     } catch {
-      this.logger.debug('No previous tags found, using all commits');
-      return ''; // Return empty string to indicate no previous tags
+      this.logger.debug("No previous tags found, using all commits");
+      return ""; // Return empty string to indicate no previous tags
     }
   }
 
@@ -91,25 +96,29 @@ export class GitOperations {
    */
   async getCommitsSinceLastRelease(): Promise<ConventionalCommit[]> {
     const lastTag = await this.getLastReleaseTag();
-    const range = lastTag ? `${lastTag}..HEAD` : 'HEAD';
-    
+    const range = lastTag ? `${lastTag}..HEAD` : "HEAD";
+
     try {
       // Use a reliable delimiter and format
       const result = await this.runCommand([
-        'git', 'log', range, '--pretty=format:%H|||%ci|||%s', '--no-merges'
+        "git",
+        "log",
+        range,
+        "--pretty=format:%H|||%ci|||%s",
+        "--no-merges",
       ]);
-      
+
       if (!result.trim()) {
-        this.logger.info('No commits found since last release');
+        this.logger.info("No commits found since last release");
         return [];
       }
 
-      return result.split('\n')
-        .filter(line => line.trim())
-        .map(line => this.parseConventionalCommit(line))
-        .filter(commit => commit !== null) as ConventionalCommit[];
+      return result.split("\n")
+        .filter((line) => line.trim())
+        .map((line) => this.parseConventionalCommit(line))
+        .filter((commit) => commit !== null) as ConventionalCommit[];
     } catch (error) {
-      this.logger.error('Error getting commits:', error as Error);
+      this.logger.error("Error getting commits:", error as Error);
       return [];
     }
   }
@@ -118,53 +127,54 @@ export class GitOperations {
    * Parse a git log line into a conventional commit
    */
   private parseConventionalCommit(gitLogLine: string): ConventionalCommit | null {
-    if (!gitLogLine || typeof gitLogLine !== 'string') {
-      this.logger.warn('Invalid git log line:', gitLogLine);
+    if (!gitLogLine || typeof gitLogLine !== "string") {
+      this.logger.warn("Invalid git log line:", gitLogLine);
       return null;
     }
-    
+
     // Split on triple pipe delimiter
-    const parts = gitLogLine.split('|||');
+    const parts = gitLogLine.split("|||");
     if (parts.length < 3) {
-      this.logger.warn('Incomplete git log line:', gitLogLine.substring(0, 100) + '...');
+      this.logger.warn("Incomplete git log line:", gitLogLine.substring(0, 100) + "...");
       return null;
     }
-    
-    const [hash, date, subject, body = ''] = parts;
-    
+
+    const [hash, date, subject, body = ""] = parts;
+
     if (!hash || !date || !subject) {
-      this.logger.warn('Missing required fields in git log line');
+      this.logger.warn("Missing required fields in git log line");
       return null;
     }
-    
+
     // Clean up the subject line - take only the first line
-    const cleanSubject = subject.trim().split('\n')[0];
+    const cleanSubject = subject.trim().split("\n")[0];
 
     // Skip if this looks like a body line (starts with - or whitespace)
-    if (cleanSubject.startsWith('-') || cleanSubject.startsWith(' ')) {
+    if (cleanSubject.startsWith("-") || cleanSubject.startsWith(" ")) {
       return null; // Skip body lines
     }
-    
+
     // Parse conventional commit format: type(scope): description
-    const conventionalRegex = /^(feat|fix|docs|style|refactor|perf|test|chore|build|ci|revert|security)(\([^)]+\))?\!?:\s*(.+)$/;
+    const conventionalRegex =
+      /^(feat|fix|docs|style|refactor|perf|test|chore|build|ci|revert|security)(\([^)]+\))?\!?:\s*(.+)$/;
     const match = cleanSubject.match(conventionalRegex);
-    
+
     if (!match) {
       // Not a conventional commit, categorize as 'other'
       return {
-        type: 'chore', // Default to chore for non-conventional commits
+        type: "chore", // Default to chore for non-conventional commits
         description: cleanSubject.substring(0, 100),
         body: body.trim() || undefined,
-        breakingChange: cleanSubject.includes('BREAKING CHANGE') || cleanSubject.includes('!:'),
+        breakingChange: cleanSubject.includes("BREAKING CHANGE") || cleanSubject.includes("!:"),
         hash: hash.substring(0, 7),
-        date: date.split(' ')[0],
-        raw: cleanSubject
+        date: date.split(" ")[0],
+        raw: cleanSubject,
       };
     }
 
     const [, type, scopeMatch, description] = match;
     const scope = scopeMatch ? scopeMatch.slice(1, -1) : undefined;
-    const breakingChange = cleanSubject.includes('!:') || body.includes('BREAKING CHANGE');
+    const breakingChange = cleanSubject.includes("!:") || body.includes("BREAKING CHANGE");
 
     return {
       type,
@@ -173,8 +183,8 @@ export class GitOperations {
       body: body.trim() || undefined,
       breakingChange,
       hash: hash.substring(0, 7),
-      date: date.split(' ')[0],
-      raw: cleanSubject
+      date: date.split(" ")[0],
+      raw: cleanSubject,
     };
   }
 
@@ -182,38 +192,38 @@ export class GitOperations {
    * Create commit and tag for release
    */
   async commitAndTag(version: string): Promise<void> {
-    const tagName = `${this.config.options?.tagPrefix || 'v'}${version}`;
-    
+    const tagName = `${this.config.options?.tagPrefix || "v"}${version}`;
+
     try {
       // Add modified files
       const filesToAdd = [
         this.config.versionFile.path,
-        './CHANGELOG.md'
+        "./CHANGELOG.md",
       ];
-      
+
       // Add any additional files that were configured to be updated
       if (this.config.updateFiles) {
-        filesToAdd.push(...this.config.updateFiles.map(f => f.path));
-      }
-      
-      // Add documentation if generated
-      if (this.config.docs?.enabled) {
-        filesToAdd.push(this.config.docs.outputDir || './docs');
+        filesToAdd.push(...this.config.updateFiles.map((f) => f.path));
       }
 
-      await this.runCommand(['git', 'add', ...filesToAdd]);
-      
+      // Add documentation if generated
+      if (this.config.docs?.enabled) {
+        filesToAdd.push(this.config.docs.outputDir || "./docs");
+      }
+
+      await this.runCommand(["git", "add", ...filesToAdd]);
+
       // Create commit
       const commitMessage = `chore(release): bump version to ${version}`;
-      await this.runCommand(['git', 'commit', '-m', commitMessage]);
-      
+      await this.runCommand(["git", "commit", "-m", commitMessage]);
+
       // Create tag
       const tagMessage = `Release ${version}`;
-      await this.runCommand(['git', 'tag', '-a', tagName, '-m', tagMessage]);
-      
+      await this.runCommand(["git", "tag", "-a", tagName, "-m", tagMessage]);
+
       this.logger.info(`✅ Created commit and tag: ${tagName}`);
     } catch (error) {
-      this.logger.error('Error creating commit and tag:', error as Error);
+      this.logger.error("Error creating commit and tag:", error as Error);
       throw error;
     }
   }
@@ -222,18 +232,18 @@ export class GitOperations {
    * Push changes and tags to remote
    */
   async pushToRemote(): Promise<void> {
-    const remote = this.config.options?.gitRemote || 'origin';
-    
+    const remote = this.config.options?.gitRemote || "origin";
+
     try {
       // Push commits
-      await this.runCommand(['git', 'push', remote, 'HEAD']);
-      
+      await this.runCommand(["git", "push", remote, "HEAD"]);
+
       // Push tags
-      await this.runCommand(['git', 'push', remote, '--tags']);
-      
+      await this.runCommand(["git", "push", remote, "--tags"]);
+
       this.logger.info(`✅ Pushed changes to ${remote}`);
     } catch (error) {
-      this.logger.error('Error pushing to remote:', error as Error);
+      this.logger.error("Error pushing to remote:", error as Error);
       throw error;
     }
   }
@@ -243,8 +253,8 @@ export class GitOperations {
    */
   async getLocalTags(): Promise<string[]> {
     try {
-      const result = await this.runCommand(['git', 'tag', '-l']);
-      return result.trim().split('\n').filter(tag => tag.trim());
+      const result = await this.runCommand(["git", "tag", "-l"]);
+      return result.trim().split("\n").filter((tag) => tag.trim());
     } catch {
       return [];
     }
@@ -255,7 +265,7 @@ export class GitOperations {
    */
   async deleteLocalTag(tag: string): Promise<void> {
     try {
-      await this.runCommand(['git', 'tag', '-d', tag]);
+      await this.runCommand(["git", "tag", "-d", tag]);
       this.logger.info(`Deleted local tag: ${tag}`);
     } catch (error) {
       this.logger.error(`Failed to delete local tag ${tag}:`, error as Error);
@@ -267,10 +277,10 @@ export class GitOperations {
    * Delete a remote tag
    */
   async deleteRemoteTag(tag: string): Promise<void> {
-    const remote = this.config.options?.gitRemote || 'origin';
-    
+    const remote = this.config.options?.gitRemote || "origin";
+
     try {
-      await this.runCommand(['git', 'push', remote, '--delete', tag]);
+      await this.runCommand(["git", "push", remote, "--delete", tag]);
       this.logger.info(`Deleted remote tag: ${tag}`);
     } catch (error) {
       this.logger.error(`Failed to delete remote tag ${tag}:`, error as Error);
@@ -283,8 +293,8 @@ export class GitOperations {
    */
   async resetToCommit(commitish: string, hard = false): Promise<void> {
     try {
-      const resetType = hard ? '--hard' : '--soft';
-      await this.runCommand(['git', 'reset', resetType, commitish]);
+      const resetType = hard ? "--hard" : "--soft";
+      await this.runCommand(["git", "reset", resetType, commitish]);
       this.logger.info(`Reset to ${commitish} (${resetType})`);
     } catch (error) {
       this.logger.error(`Failed to reset to ${commitish}:`, error as Error);
@@ -297,10 +307,10 @@ export class GitOperations {
    */
   async getLastCommitMessage(): Promise<string> {
     try {
-      const result = await this.runCommand(['git', 'log', '-1', '--pretty=format:%s']);
+      const result = await this.runCommand(["git", "log", "-1", "--pretty=format:%s"]);
       return result.trim();
     } catch {
-      return '';
+      return "";
     }
   }
 
@@ -308,10 +318,10 @@ export class GitOperations {
    * Check if a remote tag exists
    */
   async remoteTagExists(tag: string): Promise<boolean> {
-    const remote = this.config.options?.gitRemote || 'origin';
-    
+    const remote = this.config.options?.gitRemote || "origin";
+
     try {
-      await this.runCommand(['git', 'ls-remote', '--tags', remote, tag]);
+      await this.runCommand(["git", "ls-remote", "--tags", remote, tag]);
       return true;
     } catch {
       return false;
@@ -322,19 +332,19 @@ export class GitOperations {
    * Run a git command and return the output
    */
   private async runCommand(cmd: string[]): Promise<string> {
-    this.logger.debug(`Running: ${cmd.join(' ')}`);
-    
+    this.logger.debug(`Running: ${cmd.join(" ")}`);
+
     const process = new Deno.Command(cmd[0], {
       args: cmd.slice(1),
-      stdout: 'piped',
-      stderr: 'piped'
+      stdout: "piped",
+      stderr: "piped",
     });
 
     const result = await process.output();
-    
+
     if (!result.success) {
       const error = new TextDecoder().decode(result.stderr);
-      throw new Error(`Command failed: ${cmd.join(' ')}\n${error}`);
+      throw new Error(`Command failed: ${cmd.join(" ")}\n${error}`);
     }
 
     return new TextDecoder().decode(result.stdout);

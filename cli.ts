@@ -5,10 +5,10 @@
  * Provides command-line access to release and rollback functionality
  */
 
-import { ReleaseManager } from './src/release-manager.ts';
-import { RollbackManager } from './src/rollback-manager.ts';
-import type { NagareConfig, BumpType } from './types.ts';
-import { LogLevel } from './config.ts';
+import { ReleaseManager } from "./src/release-manager.ts";
+import { RollbackManager } from "./src/rollback-manager.ts";
+import type { BumpType, NagareConfig } from "./types.ts";
+import { LogLevel } from "./config.ts";
 
 /**
  * CLI configuration options
@@ -25,10 +25,10 @@ interface CLIOptions {
 /**
  * Parse command line arguments
  */
-function parseArgs(args: string[]): { 
-  command?: string; 
-  bumpType?: string; 
-  options: CLIOptions 
+function parseArgs(args: string[]): {
+  command?: string;
+  bumpType?: string;
+  options: CLIOptions;
 } {
   const options: CLIOptions = {};
   let command: string | undefined;
@@ -36,38 +36,38 @@ function parseArgs(args: string[]): {
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    
+
     switch (arg) {
-      case '--help':
-      case '-h':
+      case "--help":
+      case "-h":
         options.help = true;
         break;
-      case '--version':
-      case '-v':
+      case "--version":
+      case "-v":
         options.version = true;
         break;
-      case '--config':
-      case '-c':
+      case "--config":
+      case "-c":
         options.config = args[++i];
         break;
-      case '--dry-run':
+      case "--dry-run":
         options.dryRun = true;
         break;
-      case '--skip-confirmation':
-      case '-y':
+      case "--skip-confirmation":
+      case "-y":
         options.skipConfirmation = true;
         break;
-      case '--log-level':
+      case "--log-level":
         const level = args[++i];
         if (level in LogLevel) {
           options.logLevel = LogLevel[level as keyof typeof LogLevel];
         }
         break;
       default:
-        if (!arg.startsWith('-')) {
+        if (!arg.startsWith("-")) {
           if (!command) {
             command = arg;
-          } else if (!bumpType && ['major', 'minor', 'patch'].includes(arg)) {
+          } else if (!bumpType && ["major", "minor", "patch"].includes(arg)) {
             bumpType = arg;
           }
         }
@@ -83,10 +83,10 @@ function parseArgs(args: string[]): {
  */
 async function loadConfig(configPath?: string): Promise<NagareConfig> {
   const defaultPaths = [
-    './nagare.config.ts',
-    './nagare.config.js',
-    './release.config.ts',
-    './.nagarerc.ts'
+    "./nagare.config.ts",
+    "./nagare.config.js",
+    "./release.config.ts",
+    "./.nagarerc.ts",
   ];
 
   const pathsToTry = configPath ? [configPath] : defaultPaths;
@@ -104,7 +104,7 @@ async function loadConfig(configPath?: string): Promise<NagareConfig> {
     throw new Error(`Configuration file not found: ${configPath}`);
   }
 
-  throw new Error(`No configuration file found. Tried: ${defaultPaths.join(', ')}`);
+  throw new Error(`No configuration file found. Tried: ${defaultPaths.join(", ")}`);
 }
 
 /**
@@ -169,7 +169,7 @@ For more information, visit: https://github.com/RickCogley/nagare
  */
 function showVersion(): void {
   // This will be replaced with actual version from version.ts when available
-  console.log('Nagare v1.0.0-dev');
+  console.log("Nagare v1.0.0-dev");
 }
 
 /**
@@ -191,7 +191,7 @@ export async function cli(args: string[]): Promise<void> {
   try {
     // Load configuration
     const config = await loadConfig(options.config);
-    
+
     // Apply CLI options to config
     if (options.dryRun !== undefined) {
       config.options = { ...config.options, dryRun: options.dryRun };
@@ -206,14 +206,14 @@ export async function cli(args: string[]): Promise<void> {
     // Validate configuration
     const validation = ReleaseManager.validateConfig(config);
     if (!validation.valid) {
-      console.error('❌ Configuration validation failed:');
-      validation.errors.forEach(error => console.error(`   - ${error}`));
+      console.error("❌ Configuration validation failed:");
+      validation.errors.forEach((error) => console.error(`   - ${error}`));
       Deno.exit(1);
     }
 
     // Execute command
     switch (command) {
-      case 'rollback': {
+      case "rollback": {
         const rollbackManager = new RollbackManager(config);
         const result = await rollbackManager.rollback(bumpType); // bumpType is version in this case
         if (!result.success) {
@@ -222,8 +222,8 @@ export async function cli(args: string[]): Promise<void> {
         }
         break;
       }
-      
-      case 'release':
+
+      case "release":
       default: {
         const releaseManager = new ReleaseManager(config);
         const result = await releaseManager.release(bumpType as BumpType);
@@ -234,7 +234,6 @@ export async function cli(args: string[]): Promise<void> {
         break;
       }
     }
-
   } catch (error) {
     console.error(`❌ Error: ${error instanceof Error ? error.message : String(error)}`);
     Deno.exit(1);

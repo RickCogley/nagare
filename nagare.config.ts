@@ -1,53 +1,53 @@
-import type { NagareConfig } from './types.ts';
-import { LogLevel } from './types.ts';
+import type { NagareConfig } from "./types.ts";
+import { LogLevel } from "./types.ts";
 
 export default {
   project: {
-    name: 'Nagare (流れ)',
-    description: 'Deno Release Management Library',
-    repository: 'https://github.com/RickCogley/nagare',
-    homepage: 'https://jsr.io/@rick/nagare',
-    license: 'MIT',
-    author: 'Rick Cogley'
+    name: "Nagare (流れ)",
+    description: "Deno Release Management Library",
+    repository: "https://github.com/RickCogley/nagare",
+    homepage: "https://jsr.io/@rick/nagare",
+    license: "MIT",
+    author: "Rick Cogley",
   },
 
   versionFile: {
-    path: './version.ts',
-    template: 'typescript'
+    path: "./version.ts",
+    template: "typescript",
   },
 
   releaseNotes: {
     includeCommitHashes: true,
-    maxDescriptionLength: 100
+    maxDescriptionLength: 100,
   },
 
   github: {
-    owner: 'RickCogley',
-    repo: 'nagare',
-    createRelease: true
+    owner: "RickCogley",
+    repo: "nagare",
+    createRelease: true,
   },
 
   updateFiles: [
     {
-      path: './deno.json',
+      path: "./deno.json",
       patterns: {
-        version: /"version":\s*"([^"]+)"/
+        version: /"version":\s*"([^"]+)"/,
       },
       updateFn: (content, data) => {
         return content.replace(/"version":\s*"([^"]+)"/, `"version": "${data.version}"`);
-      }
-    }
+      },
+    },
   ],
 
   docs: {
     enabled: true,
-    outputDir: './docs',
-    includePrivate: false
+    outputDir: "./docs",
+    includePrivate: false,
   },
 
   options: {
-    tagPrefix: 'v',
-    gitRemote: 'origin',
-    logLevel: LogLevel.INFO
-  }
+    tagPrefix: "v",
+    gitRemote: "origin",
+    logLevel: LogLevel.INFO,
+  },
 } as NagareConfig;

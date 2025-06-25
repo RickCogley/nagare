@@ -361,13 +361,13 @@ time deno task release:dry
 
 ### Common Issues
 
-| Issue | Symptoms | Solution |
-|-------|----------|----------|
-| **Import errors** | Module not found | Check file paths and imports |
-| **Permission denied** | Deno permission error | Add required --allow-* flags |
-| **Git not configured** | Git user.name/email missing | Run `git config --global user.*` |
-| **Version parsing fails** | Cannot find version | Check version.ts format |
-| **GitHub CLI missing** | gh command not found | Install with `brew install gh` |
+| Issue                     | Symptoms                    | Solution                         |
+| ------------------------- | --------------------------- | -------------------------------- |
+| **Import errors**         | Module not found            | Check file paths and imports     |
+| **Permission denied**     | Deno permission error       | Add required --allow-* flags     |
+| **Git not configured**    | Git user.name/email missing | Run `git config --global user.*` |
+| **Version parsing fails** | Cannot find version         | Check version.ts format          |
+| **GitHub CLI missing**    | gh command not found        | Install with `brew install gh`   |
 
 ### Debug Mode
 
@@ -416,6 +416,7 @@ console.log('✅ JSR config valid:', config.name);
 ## 📋 Testing Completion Checklist
 
 ### Before First Release
+
 - [ ] All static analysis passes
 - [ ] CLI help and version work
 - [ ] Configuration loads correctly
@@ -423,6 +424,7 @@ console.log('✅ JSR config valid:', config.name);
 - [ ] Error scenarios handled gracefully
 
 ### Before Publishing
+
 - [ ] Actual release works end-to-end
 - [ ] Rollback functionality works
 - [ ] GitHub integration works (if configured)
@@ -430,6 +432,7 @@ console.log('✅ JSR config valid:', config.name);
 - [ ] Performance is acceptable
 
 ### Before Production Use
+
 - [ ] Integration testing with real projects
 - [ ] Documentation is complete and accurate
 - [ ] All edge cases considered
@@ -450,6 +453,7 @@ If you find issues during testing:
 ### Pre-commit Testing
 
 Add to your workflow:
+
 ```bash
 #!/bin/bash
 # .git/hooks/pre-commit
@@ -464,4 +468,5 @@ Future: GitHub Actions for automated testing on PRs and releases.
 
 **Happy Testing! 🧪**
 
-Remember: Thorough testing now prevents headaches later. Each phase builds confidence in Nagare's reliability.
+Remember: Thorough testing now prevents headaches later. Each phase builds confidence in Nagare's
+reliability.

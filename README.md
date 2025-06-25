@@ -2,7 +2,8 @@
 
 > Nagare means "flow" in Japanese - reflecting the smooth, automated flow from commits to releases.
 
-Nagare is a comprehensive, Deno-native release management library that automates version bumping, changelog generation, and GitHub releases using conventional commits and semantic versioning.
+Nagare is a comprehensive, Deno-native release management library that automates version bumping,
+changelog generation, and GitHub releases using conventional commits and semantic versioning.
 
 ## ✨ Features
 
@@ -33,17 +34,17 @@ import { ReleaseManager } from "https://deno.land/x/nagare/mod.ts";
 1. **Create a configuration file** (`nagare.config.ts`):
 
 ```typescript
-import type { NagareConfig } from '@rick/nagare';
+import type { NagareConfig } from "@rick/nagare";
 
 export default {
   project: {
-    name: 'My App',
-    repository: 'https://github.com/user/my-app'
+    name: "My App",
+    repository: "https://github.com/user/my-app",
   },
   versionFile: {
-    path: './version.ts',
-    template: 'typescript'
-  }
+    path: "./version.ts",
+    template: "typescript",
+  },
 } as NagareConfig;
 ```
 
@@ -54,7 +55,7 @@ export default {
   "tasks": {
     "release": "deno run --allow-all jsr:@rick/nagare/cli",
     "release:patch": "deno run --allow-all jsr:@rick/nagare/cli patch",
-    "release:minor": "deno run --allow-all jsr:@rick/nagare/cli minor", 
+    "release:minor": "deno run --allow-all jsr:@rick/nagare/cli minor",
     "release:major": "deno run --allow-all jsr:@rick/nagare/cli major",
     "rollback": "deno run --allow-all jsr:@rick/nagare/cli rollback"
   }
@@ -101,17 +102,17 @@ deno task rollback 1.2.0  # Specific version
 ### Programmatic Usage
 
 ```typescript
-import { ReleaseManager } from '@rick/nagare';
+import { ReleaseManager } from "@rick/nagare";
 
 const config = {
   project: {
-    name: 'My App',
-    repository: 'https://github.com/user/my-app'
+    name: "My App",
+    repository: "https://github.com/user/my-app",
   },
   versionFile: {
-    path: './version.ts',
-    template: 'typescript'
-  }
+    path: "./version.ts",
+    template: "typescript",
+  },
 };
 
 const releaseManager = new ReleaseManager(config);
@@ -133,26 +134,26 @@ if (result.success) {
 ### Basic Configuration
 
 ```typescript
-import type { NagareConfig } from '@rick/nagare';
+import type { NagareConfig } from "@rick/nagare";
 
 export default {
   project: {
-    name: 'My App',
-    description: 'A fantastic Deno application',
-    repository: 'https://github.com/user/my-app',
-    license: 'MIT'
+    name: "My App",
+    description: "A fantastic Deno application",
+    repository: "https://github.com/user/my-app",
+    license: "MIT",
   },
-  
+
   versionFile: {
-    path: './version.ts',
-    template: 'typescript'
+    path: "./version.ts",
+    template: "typescript",
   },
-  
+
   github: {
-    owner: 'user',
-    repo: 'my-app',
-    createRelease: true
-  }
+    owner: "user",
+    repo: "my-app",
+    createRelease: true,
+  },
 } as NagareConfig;
 ```
 
@@ -161,13 +162,13 @@ export default {
 ```typescript
 export default {
   project: {
-    name: 'Advanced App',
-    repository: 'https://github.com/user/advanced-app'
+    name: "Advanced App",
+    repository: "https://github.com/user/advanced-app",
   },
-  
+
   versionFile: {
-    path: './src/version.ts',
-    template: 'custom',
+    path: "./src/version.ts",
+    template: "custom",
     customTemplate: `
 export const VERSION = "{{version}}";
 export const BUILD_INFO = {
@@ -175,43 +176,45 @@ export const BUILD_INFO = {
   gitCommit: "{{gitCommit}}"
 };
 export const FEATURES = {{metadata.features}};
-`
+`,
   },
-  
+
   releaseNotes: {
     metadata: {
-      features: ['API', 'Database', 'Auth']
-    }
+      features: ["API", "Database", "Auth"],
+    },
   },
-  
+
   updateFiles: [
     {
-      path: './deno.json',
+      path: "./deno.json",
       patterns: {
-        version: /"version":\s*"([^"]+)"/
-      }
-    }
+        version: /"version":\s*"([^"]+)"/,
+      },
+    },
   ],
-  
+
   docs: {
     enabled: true,
-    outputDir: './documentation'
-  }
+    outputDir: "./documentation",
+  },
 } as NagareConfig;
 ```
 
 ## 🔧 Version File Templates
 
 ### TypeScript Template (default)
+
 ```typescript
 export const VERSION = "1.2.3";
 export const BUILD_INFO = {
   buildDate: "2025-01-01T12:00:00.000Z",
-  gitCommit: "abc1234"
+  gitCommit: "abc1234",
 };
 ```
 
 ### JSON Template
+
 ```json
 {
   "version": "1.2.3",
@@ -223,6 +226,7 @@ export const BUILD_INFO = {
 ```
 
 ### Custom Template
+
 Create your own template with any structure using `{{placeholders}}`:
 
 ```typescript
@@ -241,11 +245,12 @@ export const CHANGELOG = {{releaseNotes}};
 Nagare automatically determines version bumps based on conventional commit messages:
 
 - **`feat:`** → Minor version bump (1.0.0 → 1.1.0)
-- **`fix:`** → Patch version bump (1.0.0 → 1.0.1)  
+- **`fix:`** → Patch version bump (1.0.0 → 1.0.1)
 - **`BREAKING CHANGE:`** → Major version bump (1.0.0 → 2.0.0)
 - **`docs:`, `style:`, `refactor:`** → Patch version bump
 
 Example commits:
+
 ```bash
 git commit -m "feat: add user authentication"     # 1.0.0 → 1.1.0
 git commit -m "fix: resolve login bug"            # 1.0.0 → 1.0.1
@@ -254,7 +259,7 @@ git commit -m "feat!: redesign API"               # 1.0.0 → 2.0.0
 
 ## 📋 Requirements
 
-- **Deno** 1.40+ 
+- **Deno** 1.40+
 - **Git** repository with conventional commits
 - **GitHub CLI** (`gh`) for GitHub releases (optional)
 - **Node.js** environment variables if specified
@@ -274,18 +279,22 @@ export NODE_ENV="production"
 ### Common Issues
 
 **"Could not find version in version.ts"**
+
 - Ensure your version file has `export const VERSION = "x.x.x"`
 - Or configure custom patterns in `versionFile.patterns`
 
-**"Not in a git repository"**  
+**"Not in a git repository"**
+
 - Initialize git: `git init`
 - Make sure you're in the project root
 
 **"GitHub CLI not found"**
+
 - Install: `brew install gh` (macOS) or `scoop install gh` (Windows)
 - Or set `github.createRelease: false` in config
 
 **"Uncommitted changes detected"**
+
 - Commit your changes: `git add . && git commit -m "your message"`
 - Or stash them: `git stash`
 
@@ -309,7 +318,9 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 ## 🙏 Acknowledgments
 
-Nagare was extracted and generalized from the [Salty](https://github.com/esolia/salty.esolia.pro) project's sophisticated release automation system. Special thanks to the Deno team for creating an excellent TypeScript runtime.
+Nagare was extracted and generalized from the [Salty](https://github.com/esolia/salty.esolia.pro)
+project's sophisticated release automation system. Special thanks to the Deno team for creating an
+excellent TypeScript runtime.
 
 ---
 

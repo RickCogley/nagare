@@ -5,21 +5,21 @@
 
 import { parse } from "@std/semver";
 import type {
-  NagareConfig,
+  BumpType,
   ConventionalCommit,
+  NagareConfig,
   ReleaseNotes,
   ReleaseResult,
-  BumpType,
-  TemplateData
-} from '../types.ts';
-import { DEFAULT_CONFIG, DEFAULT_COMMIT_TYPES, LogLevel } from '../config.ts';
-import { GitOperations } from './git-operations.ts';
-import { VersionUtils } from './version-utils.ts';
-import { ChangelogGenerator } from './changelog-generator.ts';
-import { GitHubIntegration } from './github-integration.ts';
-import { TemplateProcessor } from './template-processor.ts';
-import { DocGenerator } from './doc-generator.ts';
-import { Logger } from './logger.ts';
+  TemplateData,
+} from "../types.ts";
+import { DEFAULT_COMMIT_TYPES, DEFAULT_CONFIG, LogLevel } from "../config.ts";
+import { GitOperations } from "./git-operations.ts";
+import { VersionUtils } from "./version-utils.ts";
+import { ChangelogGenerator } from "./changelog-generator.ts";
+import { GitHubIntegration } from "./github-integration.ts";
+import { TemplateProcessor } from "./template-processor.ts";
+import { DocGenerator } from "./doc-generator.ts";
+import { Logger } from "./logger.ts";
 
 /**
  * Main ReleaseManager class - coordinates the entire release process
@@ -54,24 +54,24 @@ export class ReleaseManager {
       ...config,
       versionFile: {
         ...DEFAULT_CONFIG.versionFile,
-        ...config.versionFile
+        ...config.versionFile,
       },
       releaseNotes: {
         ...DEFAULT_CONFIG.releaseNotes,
-        ...config.releaseNotes
+        ...config.releaseNotes,
       },
       github: {
         ...DEFAULT_CONFIG.github,
-        ...config.github
+        ...config.github,
       },
       options: {
         ...DEFAULT_CONFIG.options,
-        ...config.options
+        ...config.options,
       },
       commitTypes: {
         ...DEFAULT_COMMIT_TYPES,
-        ...config.commitTypes
-      }
+        ...config.commitTypes,
+      },
     } as NagareConfig;
   }
 
@@ -80,7 +80,7 @@ export class ReleaseManager {
    */
   async release(bumpType?: BumpType): Promise<ReleaseResult> {
     try {
-      this.logger.info('🚀 Starting release process with Nagare...\n');
+      this.logger.info("🚀 Starting release process with Nagare...\n");
 
       // Validate environment and configuration
       await this.validateEnvironment();
@@ -94,8 +94,10 @@ export class ReleaseManager {
       this.logger.info(`📝 Found ${commits.length} commits since last release`);
 
       if (commits.length === 0 && !bumpType) {
-        this.logger.info('ℹ️  No commits found since last release. Use --patch, --minor, or --major to force a release.');
-        return { success: false, error: 'No commits found' };
+        this.logger.info(
+          "ℹ️  No commits found since last release. Use --patch, --minor, or --major to force a release.",
+        );
+        return { success: false, error: "No commits found" };
       }
 
       // Calculate new version
@@ -110,21 +112,21 @@ export class ReleaseManager {
 
       // Confirm release (unless skipped)
       if (!this.config.options?.skipConfirmation && !this.config.options?.dryRun) {
-        const proceed = confirm('\n❓ Proceed with release?');
+        const proceed = confirm("\n❓ Proceed with release?");
         if (!proceed) {
-          this.logger.info('❌ Release cancelled');
-          return { success: false, error: 'User cancelled' };
+          this.logger.info("❌ Release cancelled");
+          return { success: false, error: "User cancelled" };
         }
       }
 
       if (this.config.options?.dryRun) {
-        this.logger.info('\n🏃 Dry run mode - no changes will be made');
+        this.logger.info("\n🏃 Dry run mode - no changes will be made");
         return {
           success: true,
           version: newVersion,
           previousVersion: currentVersion,
           commitCount: commits.length,
-          releaseNotes
+          releaseNotes,
         };
       }
 
@@ -134,7 +136,7 @@ export class ReleaseManager {
       // Generate documentation if enabled
       if (this.config.docs?.enabled) {
         await this.docGenerator.generateDocs();
-        this.logger.info('📚 Generated documentation');
+        this.logger.info("📚 Generated documentation");
       }
 
       // Git operations
@@ -146,11 +148,11 @@ export class ReleaseManager {
         githubReleaseUrl = await this.github.createRelease(releaseNotes);
       }
 
-      this.logger.info('\n🎉 Release completed successfully!');
+      this.logger.info("\n🎉 Release completed successfully!");
       this.logger.info(`   Version: ${newVersion}`);
-      this.logger.info('   Next steps:');
-      this.logger.info('   1. Push changes: git push origin main --tags');
-      this.logger.info('   2. Deploy to production');
+      this.logger.info("   Next steps:");
+      this.logger.info("   1. Push changes: git push origin main --tags");
+      this.logger.info("   2. Deploy to production");
 
       return {
         success: true,
@@ -159,14 +161,15 @@ export class ReleaseManager {
         commitCount: commits.length,
         releaseNotes,
         updatedFiles,
-        githubReleaseUrl
+        githubReleaseUrl,
       };
-
     } catch (error) {
-      this.logger.error('❌ Release failed:', error as Error);
+      this.logger.error("❌ Release failed:", error as Error);
       return {
         success: false,
-        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
+        error: error instanceof Error
+          ? error instanceof Error ? error.message : String(error)
+          : String(error),
       };
     }
   }
@@ -177,12 +180,14 @@ export class ReleaseManager {
   private async validateEnvironment(): Promise<void> {
     // Check if we're in a git repository
     if (!await this.git.isGitRepository()) {
-      throw new Error('Not in a git repository');
+      throw new Error("Not in a git repository");
     }
 
     // Check for uncommitted changes
     if (await this.git.hasUncommittedChanges()) {
-      throw new Error('Uncommitted changes detected. Please commit or stash changes before releasing.');
+      throw new Error(
+        "Uncommitted changes detected. Please commit or stash changes before releasing.",
+      );
     }
 
     // Validate version file exists
@@ -195,10 +200,10 @@ export class ReleaseManager {
     // Check git configuration
     const gitUser = await this.git.getGitUser();
     if (!gitUser.name || !gitUser.email) {
-      throw new Error('Git user.name and user.email must be configured');
+      throw new Error("Git user.name and user.email must be configured");
     }
 
-    this.logger.debug('Environment validation passed');
+    this.logger.debug("Environment validation passed");
   }
 
   /**
@@ -207,13 +212,13 @@ export class ReleaseManager {
   private generateReleaseNotes(version: string, commits: ConventionalCommit[]): ReleaseNotes {
     const notes: ReleaseNotes = {
       version,
-      date: new Date().toISOString().split('T')[0],
+      date: new Date().toISOString().split("T")[0],
       added: [],
       changed: [],
       deprecated: [],
       removed: [],
       fixed: [],
-      security: []
+      security: [],
     };
 
     const commitTypes = this.config.commitTypes || DEFAULT_COMMIT_TYPES;
@@ -221,12 +226,12 @@ export class ReleaseManager {
     const maxLength = this.config.releaseNotes?.maxDescriptionLength ?? 100;
 
     for (const commit of commits) {
-      const section = commitTypes[commit.type] || 'changed';
+      const section = commitTypes[commit.type] || "changed";
       let entry = commit.description;
 
       // Truncate if needed
       if (entry.length > maxLength) {
-        entry = entry.substring(0, maxLength - 3) + '...';
+        entry = entry.substring(0, maxLength - 3) + "...";
       }
 
       // Add commit hash if enabled
@@ -249,10 +254,10 @@ export class ReleaseManager {
    * Preview the release changes
    */
   private previewRelease(releaseNotes: ReleaseNotes): void {
-    this.logger.info('\n📋 Release Notes Preview:');
+    this.logger.info("\n📋 Release Notes Preview:");
     this.logger.info(`Version: ${releaseNotes.version}`);
     this.logger.info(`Date: ${releaseNotes.date}`);
-    
+
     if (releaseNotes.added.length > 0) {
       this.logger.info(`✨ Added: ${releaseNotes.added.length} items`);
     }
@@ -278,16 +283,16 @@ export class ReleaseManager {
    */
   private async updateFiles(version: string, releaseNotes: ReleaseNotes): Promise<string[]> {
     const updatedFiles: string[] = [];
-    
+
     // Prepare template data
     const templateData: TemplateData = {
       version,
       buildDate: new Date().toISOString(),
       gitCommit: await this.git.getCurrentCommitHash(),
-      environment: Deno.env.get('NODE_ENV') || 'production',
+      environment: Deno.env.get("NODE_ENV") || "production",
       releaseNotes,
       metadata: this.config.releaseNotes?.metadata || {},
-      project: this.config.project
+      project: this.config.project,
     };
 
     // Update version file
@@ -296,7 +301,7 @@ export class ReleaseManager {
 
     // Update CHANGELOG.md
     await this.changelogGenerator.updateChangelog(releaseNotes);
-    updatedFiles.push('./CHANGELOG.md');
+    updatedFiles.push("./CHANGELOG.md");
 
     // Update additional files
     if (this.config.updateFiles) {
@@ -315,12 +320,12 @@ export class ReleaseManager {
    */
   private async updateVersionFile(templateData: TemplateData): Promise<void> {
     const { versionFile } = this.config;
-    
-    if (versionFile.template === 'custom' && versionFile.customTemplate) {
+
+    if (versionFile.template === "custom" && versionFile.customTemplate) {
       // Use custom template
       const content = this.templateProcessor.processTemplate(
         versionFile.customTemplate,
-        templateData
+        templateData,
       );
       await Deno.writeTextFile(versionFile.path, content);
     } else {
@@ -337,11 +342,11 @@ export class ReleaseManager {
    */
   private async updateCustomFile(
     filePattern: FileUpdatePattern,
-    templateData: TemplateData
+    templateData: TemplateData,
   ): Promise<void> {
     try {
       let content = await Deno.readTextFile(filePattern.path);
-      
+
       if (filePattern.updateFn) {
         // Use custom update function
         content = filePattern.updateFn(content, templateData);
@@ -354,7 +359,7 @@ export class ReleaseManager {
           }
         }
       }
-      
+
       await Deno.writeTextFile(filePattern.path, content);
       this.logger.debug(`Updated file: ${filePattern.path}`);
     } catch (error) {
@@ -366,18 +371,18 @@ export class ReleaseManager {
    * Get a value from template data by key path
    */
   private getTemplateValue(data: TemplateData, keyPath: string): string | undefined {
-    const keys = keyPath.split('.');
+    const keys = keyPath.split(".");
     let value: any = data;
-    
+
     for (const key of keys) {
-      if (value && typeof value === 'object' && key in value) {
+      if (value && typeof value === "object" && key in value) {
         value = value[key];
       } else {
         return undefined;
       }
     }
-    
-    return typeof value === 'string' ? value : String(value);
+
+    return typeof value === "string" ? value : String(value);
   }
 
   /**
@@ -395,36 +400,36 @@ export class ReleaseManager {
 
     // Required fields
     if (!config.project?.name) {
-      errors.push('project.name is required');
+      errors.push("project.name is required");
     }
     if (!config.project?.repository) {
-      errors.push('project.repository is required');
+      errors.push("project.repository is required");
     }
     if (!config.versionFile?.path) {
-      errors.push('versionFile.path is required');
+      errors.push("versionFile.path is required");
     }
 
     // GitHub config validation
     if (config.github?.createRelease) {
       if (!config.github.owner) {
-        errors.push('github.owner is required when createRelease is true');
+        errors.push("github.owner is required when createRelease is true");
       }
       if (!config.github.repo) {
-        errors.push('github.repo is required when createRelease is true');
+        errors.push("github.repo is required when createRelease is true");
       }
     }
 
     // Version file validation
-    if (config.versionFile?.template === 'custom' && !config.versionFile.customTemplate) {
+    if (config.versionFile?.template === "custom" && !config.versionFile.customTemplate) {
       errors.push('customTemplate is required when template is "custom"');
     }
 
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     };
   }
 }
 
 // Import statements for the supporting classes
-import type { FileUpdatePattern } from '../types.ts';
+import type { FileUpdatePattern } from "../types.ts";

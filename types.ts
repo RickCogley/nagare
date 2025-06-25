@@ -10,19 +10,19 @@
  * Supported template formats
  */
 export enum TemplateFormat {
-  TYPESCRIPT = 'typescript',
-  JSON = 'json',
-  YAML = 'yaml',
-  CUSTOM = 'custom'
+  TYPESCRIPT = "typescript",
+  JSON = "json",
+  YAML = "yaml",
+  CUSTOM = "custom",
 }
 
 /**
  * Bump types for version increments
  */
 export enum BumpType {
-  MAJOR = 'major',
-  MINOR = 'minor',
-  PATCH = 'patch'
+  MAJOR = "major",
+  MINOR = "minor",
+  PATCH = "patch",
 }
 
 /**
@@ -32,7 +32,7 @@ export enum LogLevel {
   DEBUG = 0,
   INFO = 1,
   WARN = 2,
-  ERROR = 3
+  ERROR = 3,
 }
 
 /**
@@ -244,14 +244,14 @@ export interface TemplateData {
   /** Custom metadata */
   metadata: Record<string, any>;
   /** Project information */
-  project: NagareConfig['project'];
+  project: NagareConfig["project"];
 }
 
 /**
  * Commit type to changelog section mapping
  */
 export interface CommitTypeMapping {
-  [commitType: string]: 'added' | 'changed' | 'deprecated' | 'removed' | 'fixed' | 'security';
+  [commitType: string]: "added" | "changed" | "deprecated" | "removed" | "fixed" | "security";
 }
 
 /**

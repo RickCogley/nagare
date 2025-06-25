@@ -2,7 +2,7 @@
  * @fileoverview GitHub release management integration
  */
 
-import type { NagareConfig, ReleaseNotes } from '../types.ts';
+import type { NagareConfig, ReleaseNotes } from "../types.ts";
 
 /**
  * GitHubIntegration - GitHub release management
@@ -24,29 +24,34 @@ export class GitHubIntegration {
 
     // Check if gh CLI is available
     try {
-      await this.runCommand(['gh', '--version']);
+      await this.runCommand(["gh", "--version"]);
     } catch {
-      console.log('⚠️  GitHub CLI (gh) not found. Skipping GitHub release creation.');
-      console.log('   Install gh CLI to enable automatic GitHub releases.');
+      console.log("⚠️  GitHub CLI (gh) not found. Skipping GitHub release creation.");
+      console.log("   Install gh CLI to enable automatic GitHub releases.");
       return undefined;
     }
 
     try {
-      const tagName = `${this.config.options?.tagPrefix || 'v'}${releaseNotes.version}`;
+      const tagName = `${this.config.options?.tagPrefix || "v"}${releaseNotes.version}`;
       const releaseBody = this.formatReleaseBody(releaseNotes);
-      
+
       // Write release notes to a temporary file to avoid command line issues
-      const tempFile = await Deno.makeTempFile({ suffix: '.md' });
+      const tempFile = await Deno.makeTempFile({ suffix: ".md" });
       await Deno.writeTextFile(tempFile, releaseBody);
-      
+
       try {
         // Create GitHub release using notes from file
         await this.runCommand([
-          'gh', 'release', 'create', tagName,
-          '--title', `Release ${releaseNotes.version}`,
-          '--notes-file', tempFile
+          "gh",
+          "release",
+          "create",
+          tagName,
+          "--title",
+          `Release ${releaseNotes.version}`,
+          "--notes-file",
+          tempFile,
         ]);
-        
+
         const releaseUrl = `${this.config.project.repository}/releases/tag/${tagName}`;
         console.log(`✅ Created GitHub release: ${releaseUrl}`);
         return releaseUrl;
@@ -59,8 +64,11 @@ export class GitHubIntegration {
         }
       }
     } catch (error) {
-      console.error('❌ Error creating GitHub release:', error instanceof Error ? error.message : String(error));
-      console.log('ℹ️  You can create it manually at your repository releases page');
+      console.error(
+        "❌ Error creating GitHub release:",
+        error instanceof Error ? error.message : String(error),
+      );
+      console.log("ℹ️  You can create it manually at your repository releases page");
       return undefined;
     }
   }
@@ -70,24 +78,24 @@ export class GitHubIntegration {
    */
   private formatReleaseBody(notes: ReleaseNotes): string {
     let body = `## What's Changed\n\n`;
-    
+
     if (notes.added.length > 0) {
-      body += `### ✨ Added\n${notes.added.map(item => `- ${item}`).join('\n')}\n\n`;
+      body += `### ✨ Added\n${notes.added.map((item) => `- ${item}`).join("\n")}\n\n`;
     }
     if (notes.changed.length > 0) {
-      body += `### 🔄 Changed\n${notes.changed.map(item => `- ${item}`).join('\n')}\n\n`;
+      body += `### 🔄 Changed\n${notes.changed.map((item) => `- ${item}`).join("\n")}\n\n`;
     }
     if (notes.deprecated.length > 0) {
-      body += `### ⚠️ Deprecated\n${notes.deprecated.map(item => `- ${item}`).join('\n')}\n\n`;
+      body += `### ⚠️ Deprecated\n${notes.deprecated.map((item) => `- ${item}`).join("\n")}\n\n`;
     }
     if (notes.removed.length > 0) {
-      body += `### 🗑️ Removed\n${notes.removed.map(item => `- ${item}`).join('\n')}\n\n`;
+      body += `### 🗑️ Removed\n${notes.removed.map((item) => `- ${item}`).join("\n")}\n\n`;
     }
     if (notes.fixed.length > 0) {
-      body += `### 🐛 Fixed\n${notes.fixed.map(item => `- ${item}`).join('\n')}\n\n`;
+      body += `### 🐛 Fixed\n${notes.fixed.map((item) => `- ${item}`).join("\n")}\n\n`;
     }
     if (notes.security.length > 0) {
-      body += `### 🔒 Security\n${notes.security.map(item => `- ${item}`).join('\n')}\n\n`;
+      body += `### 🔒 Security\n${notes.security.map((item) => `- ${item}`).join("\n")}\n\n`;
     }
 
     return body.trim();
@@ -99,15 +107,15 @@ export class GitHubIntegration {
   private async runCommand(cmd: string[]): Promise<string> {
     const process = new Deno.Command(cmd[0], {
       args: cmd.slice(1),
-      stdout: 'piped',
-      stderr: 'piped'
+      stdout: "piped",
+      stderr: "piped",
     });
 
     const result = await process.output();
-    
+
     if (!result.success) {
       const error = new TextDecoder().decode(result.stderr);
-      throw new Error(`Command failed: ${cmd.join(' ')}\n${error}`);
+      throw new Error(`Command failed: ${cmd.join(" ")}\n${error}`);
     }
 
     return new TextDecoder().decode(result.stdout);

@@ -1,6 +1,7 @@
 # Nagare Architecture & Technical Specification
 
-This document provides a technical overview of Nagare's architecture, design decisions, and implementation details for developers who want to understand, contribute to, or extend the library.
+This document provides a technical overview of Nagare's architecture, design decisions, and
+implementation details for developers who want to understand, contribute to, or extend the library.
 
 ## 🏗️ System Architecture
 
@@ -61,15 +62,15 @@ nagare/
 
 File suffixes indicate **architectural roles**:
 
-| Suffix | Role | Responsibility | Examples |
-|--------|------|----------------|----------|
-| `-manager` | **Orchestrator** | Coordinates complex workflows | `ReleaseManager`, `RollbackManager` |
-| `-operations` | **System Interface** | Direct interaction with external systems | `GitOperations` |
-| `-integration` | **Service Wrapper** | Integration with external APIs/services | `GitHubIntegration` |
-| `-utils` | **Pure Functions** | Stateless calculations & transformations | `VersionUtils` |
-| `-processor` | **Data Transformer** | Process/transform data structures | `TemplateProcessor` |
-| `-generator` | **Content Creator** | Generate files, content, or data | `ChangelogGenerator`, `DocGenerator` |
-| *No suffix* | **Infrastructure** | Core foundation classes | `Logger`, `Config`, `Types` |
+| Suffix         | Role                 | Responsibility                           | Examples                             |
+| -------------- | -------------------- | ---------------------------------------- | ------------------------------------ |
+| `-manager`     | **Orchestrator**     | Coordinates complex workflows            | `ReleaseManager`, `RollbackManager`  |
+| `-operations`  | **System Interface** | Direct interaction with external systems | `GitOperations`                      |
+| `-integration` | **Service Wrapper**  | Integration with external APIs/services  | `GitHubIntegration`                  |
+| `-utils`       | **Pure Functions**   | Stateless calculations & transformations | `VersionUtils`                       |
+| `-processor`   | **Data Transformer** | Process/transform data structures        | `TemplateProcessor`                  |
+| `-generator`   | **Content Creator**  | Generate files, content, or data         | `ChangelogGenerator`, `DocGenerator` |
+| _No suffix_    | **Infrastructure**   | Core foundation classes                  | `Logger`, `Config`, `Types`          |
 
 ## 🔧 Core Components
 
@@ -78,12 +79,14 @@ File suffixes indicate **architectural roles**:
 **Purpose**: Primary orchestrator for the release process
 
 **Key Responsibilities**:
+
 - Validates environment and prerequisites
 - Coordinates all release steps in correct order
 - Handles error recovery and rollback scenarios
 - Provides unified API for release operations
 
 **Flow**:
+
 ```typescript
 async release(bumpType?: BumpType): Promise<ReleaseResult> {
   1. validateEnvironment()      // Check git, files, config
@@ -102,12 +105,14 @@ async release(bumpType?: BumpType): Promise<ReleaseResult> {
 **Purpose**: Abstraction layer for all Git interactions
 
 **Key Methods**:
+
 - `getCommitsSinceLastRelease()` - Parses git log with conventional commit format
 - `parseConventionalCommit()` - Extracts type, scope, description from commits
 - `commitAndTag()` - Creates release commit and tag
 - `pushToRemote()` - Pushes changes to remote repository
 
 **Conventional Commit Parsing**:
+
 ```typescript
 // Regex pattern for conventional commits
 /^(feat|fix|docs|style|refactor|perf|test|chore|build|ci|revert|security)(\([^)]+\))?\!?:\s*(.+)$/
@@ -123,6 +128,7 @@ async release(bumpType?: BumpType): Promise<ReleaseResult> {
 **Purpose**: Semantic versioning calculations and operations
 
 **Semantic Version Logic**:
+
 ```typescript
 calculateNewVersion(currentVersion, commits, bumpType?) {
   if (bumpType) return manualBump(bumpType);
@@ -143,6 +149,7 @@ calculateNewVersion(currentVersion, commits, bumpType?) {
 **Purpose**: Template engine for version file generation
 
 **Template Syntax**:
+
 ```typescript
 // Variable substitution
 "{{version}}" → "1.2.3"
@@ -156,6 +163,7 @@ calculateNewVersion(currentVersion, commits, bumpType?) {
 ```
 
 **Built-in Templates**:
+
 - **TypeScript**: Exports with `as const` for type safety
 - **JSON**: Standard package.json-style format
 - **YAML**: YAML format for configuration files
@@ -166,31 +174,36 @@ calculateNewVersion(currentVersion, commits, bumpType?) {
 **Purpose**: Generates CHANGELOG.md following "Keep a Changelog" format
 
 **Section Mapping**:
+
 ```typescript
 const commitTypeMapping = {
-  feat: 'added',        // New features
-  fix: 'fixed',         // Bug fixes
-  docs: 'changed',      // Documentation
-  style: 'changed',     // Code style changes
-  refactor: 'changed',  // Code refactoring
-  perf: 'changed',      // Performance improvements
-  security: 'security', // Security fixes
+  feat: "added", // New features
+  fix: "fixed", // Bug fixes
+  docs: "changed", // Documentation
+  style: "changed", // Code style changes
+  refactor: "changed", // Code refactoring
+  perf: "changed", // Performance improvements
+  security: "security", // Security fixes
   // ... etc
 };
 ```
 
 **Output Format**:
+
 ```markdown
 ## [1.2.0] - 2025-01-15
 
 ### Added
+
 - feat: add user authentication (abc1234)
 - feat: implement dashboard (def5678)
 
-### Fixed  
+### Fixed
+
 - fix: resolve login bug (ghi9012)
 
 ### Changed
+
 - refactor: improve error handling (jkl3456)
 ```
 
@@ -236,10 +249,10 @@ graph LR
 ```typescript
 // All configuration is strictly typed
 interface NagareConfig {
-  project: ProjectConfig;      // Required
-  versionFile: VersionFile;    // Required  
+  project: ProjectConfig; // Required
+  versionFile: VersionFile; // Required
   releaseNotes?: ReleaseNotesConfig; // Optional with defaults
-  github?: GitHubConfig;       // Optional
+  github?: GitHubConfig; // Optional
   updateFiles?: FileUpdatePattern[]; // Optional
   // ...
 }
@@ -247,7 +260,7 @@ interface NagareConfig {
 // Configuration validation at runtime
 const validation = ReleaseManager.validateConfig(config);
 if (!validation.valid) {
-  console.error('Configuration errors:', validation.errors);
+  console.error("Configuration errors:", validation.errors);
   Deno.exit(1);
 }
 ```
@@ -276,18 +289,18 @@ Flexible file update system:
 ```typescript
 updateFiles: [
   {
-    path: './package.json',
+    path: "./package.json",
     patterns: {
-      version: /"version":\s*"([^"]+)"/
-    }
+      version: /"version":\s*"([^"]+)"/,
+    },
   },
   {
-    path: './README.md',
+    path: "./README.md",
     updateFn: (content, data) => {
       return content.replace(/Version \d+\.\d+\.\d+/, `Version ${data.version}`);
-    }
-  }
-]
+    },
+  },
+];
 ```
 
 ### Custom Commit Type Mappings
@@ -312,11 +325,11 @@ Each class should be unit tested in isolation:
 
 ```typescript
 // Example test structure
-describe('VersionUtils', () => {
-  test('calculateNewVersion - feature commits trigger minor bump', () => {
-    const commits = [{ type: 'feat', description: 'add feature' }];
-    const result = versionUtils.calculateNewVersion('1.0.0', commits);
-    assertEquals(result, '1.1.0');
+describe("VersionUtils", () => {
+  test("calculateNewVersion - feature commits trigger minor bump", () => {
+    const commits = [{ type: "feat", description: "add feature" }];
+    const result = versionUtils.calculateNewVersion("1.0.0", commits);
+    assertEquals(result, "1.1.0");
   });
 });
 ```
@@ -326,8 +339,8 @@ describe('VersionUtils', () => {
 Test complete workflows:
 
 ```typescript
-describe('ReleaseManager Integration', () => {
-  test('full release workflow with mocked git', async () => {
+describe("ReleaseManager Integration", () => {
+  test("full release workflow with mocked git", async () => {
     // Mock git operations
     // Run full release
     // Verify all files updated correctly
@@ -338,7 +351,7 @@ describe('ReleaseManager Integration', () => {
 ### Test Categories
 
 1. **Unit Tests** - Individual class methods
-2. **Integration Tests** - Multi-class workflows  
+2. **Integration Tests** - Multi-class workflows
 3. **CLI Tests** - Command-line interface
 4. **Template Tests** - Template processing
 5. **Git Tests** - Git operation mocking
@@ -399,7 +412,7 @@ describe('ReleaseManager Integration', () => {
 ### Logging Levels
 
 - **DEBUG**: Detailed internal operations
-- **INFO**: General operational messages  
+- **INFO**: General operational messages
 - **WARN**: Recoverable issues
 - **ERROR**: Failure conditions
 
@@ -431,8 +444,10 @@ The current architecture is designed to support these extensions without breakin
 - **Backward compatibility** - Existing configurations continue to work
 
 ## Development Guidelines
+
 For commit message standards and contribution guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
-This architecture provides a solid foundation for reliable, extensible release automation while maintaining simplicity for basic use cases.
+This architecture provides a solid foundation for reliable, extensible release automation while
+maintaining simplicity for basic use cases.

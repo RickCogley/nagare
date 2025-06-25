@@ -2,7 +2,7 @@
  * @fileoverview CHANGELOG.md management following "Keep a Changelog" format
  */
 
-import type { ReleaseNotes } from '../types.ts';
+import type { ReleaseNotes } from "../types.ts";
 
 /**
  * ChangelogGenerator - CHANGELOG.md management
@@ -18,10 +18,10 @@ export class ChangelogGenerator {
    * Update CHANGELOG.md with new release notes
    */
   async updateChangelog(releaseNotes: ReleaseNotes): Promise<void> {
-    const changelogPath = './CHANGELOG.md';
-    
+    const changelogPath = "./CHANGELOG.md";
+
     try {
-      let existingContent = '';
+      let existingContent = "";
       try {
         existingContent = await Deno.readTextFile(changelogPath);
       } catch {
@@ -34,11 +34,14 @@ export class ChangelogGenerator {
 
       // Insert new entry after header
       const newContent = this.insertNewEntry(existingContent, newEntry);
-      
+
       await Deno.writeTextFile(changelogPath, newContent);
-      console.log('✅ Updated CHANGELOG.md');
+      console.log("✅ Updated CHANGELOG.md");
     } catch (error) {
-      console.error('❌ Error updating CHANGELOG.md:', error instanceof Error ? error.message : String(error));
+      console.error(
+        "❌ Error updating CHANGELOG.md:",
+        error instanceof Error ? error.message : String(error),
+      );
       throw error;
     }
   }
@@ -62,24 +65,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    */
   private generateChangelogEntry(releaseNotes: ReleaseNotes): string {
     let entry = `## [${releaseNotes.version}] - ${releaseNotes.date}\n\n`;
-    
+
     if (releaseNotes.added.length > 0) {
-      entry += `### Added\n${releaseNotes.added.map(item => `- ${item}`).join('\n')}\n\n`;
+      entry += `### Added\n${releaseNotes.added.map((item) => `- ${item}`).join("\n")}\n\n`;
     }
     if (releaseNotes.changed.length > 0) {
-      entry += `### Changed\n${releaseNotes.changed.map(item => `- ${item}`).join('\n')}\n\n`;
+      entry += `### Changed\n${releaseNotes.changed.map((item) => `- ${item}`).join("\n")}\n\n`;
     }
     if (releaseNotes.deprecated.length > 0) {
-      entry += `### Deprecated\n${releaseNotes.deprecated.map(item => `- ${item}`).join('\n')}\n\n`;
+      entry += `### Deprecated\n${
+        releaseNotes.deprecated.map((item) => `- ${item}`).join("\n")
+      }\n\n`;
     }
     if (releaseNotes.removed.length > 0) {
-      entry += `### Removed\n${releaseNotes.removed.map(item => `- ${item}`).join('\n')}\n\n`;
+      entry += `### Removed\n${releaseNotes.removed.map((item) => `- ${item}`).join("\n")}\n\n`;
     }
     if (releaseNotes.fixed.length > 0) {
-      entry += `### Fixed\n${releaseNotes.fixed.map(item => `- ${item}`).join('\n')}\n\n`;
+      entry += `### Fixed\n${releaseNotes.fixed.map((item) => `- ${item}`).join("\n")}\n\n`;
     }
     if (releaseNotes.security.length > 0) {
-      entry += `### Security\n${releaseNotes.security.map(item => `- ${item}`).join('\n')}\n\n`;
+      entry += `### Security\n${releaseNotes.security.map((item) => `- ${item}`).join("\n")}\n\n`;
     }
 
     return entry;
@@ -89,14 +94,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    * Insert new entry into existing changelog
    */
   private insertNewEntry(existingContent: string, newEntry: string): string {
-    const headerEnd = existingContent.indexOf('\n## ');
-    
+    const headerEnd = existingContent.indexOf("\n## ");
+
     if (headerEnd === -1) {
       // No existing releases
       return existingContent + newEntry;
     } else {
       // Insert after header
-      return existingContent.slice(0, headerEnd + 1) + newEntry + existingContent.slice(headerEnd + 1);
+      return existingContent.slice(0, headerEnd + 1) + newEntry +
+        existingContent.slice(headerEnd + 1);
     }
   }
 }

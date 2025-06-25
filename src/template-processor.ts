@@ -2,8 +2,8 @@
  * @fileoverview Template processing and file generation for version files
  */
 
-import type { NagareConfig, TemplateData } from '../types.ts';
-import { BUILT_IN_TEMPLATES, TemplateFormat } from '../config.ts';
+import type { NagareConfig, TemplateData } from "../types.ts";
+import { BUILT_IN_TEMPLATES, TemplateFormat } from "../config.ts";
 
 /**
  * TemplateProcessor - Template processing and file generation
@@ -20,7 +20,7 @@ export class TemplateProcessor {
    */
   processTemplate(template: string, data: TemplateData): string {
     let result = template;
-    
+
     // Simple template replacement (basic mustache-like syntax)
     // Replace {{key}} with values from data
     result = result.replace(/\{\{([^}]+)\}\}/g, (match, key) => {
@@ -28,20 +28,23 @@ export class TemplateProcessor {
       if (value === undefined || value === null) {
         return match; // Keep placeholder if no value found
       }
-      
+
       // Handle objects by JSON stringifying them
-      if (typeof value === 'object') {
+      if (typeof value === "object") {
         return JSON.stringify(value, null, 2);
       }
-      
+
       return String(value);
     });
 
     // Handle conditional blocks {{#if key}}...{{/if}}
-    result = result.replace(/\{\{#if\s+([^}]+)\}\}([\s\S]*?)\{\{\/if\}\}/g, (match, key, content) => {
-      const value = this.getNestedValue(data, key.trim());
-      return value ? content : '';
-    });
+    result = result.replace(
+      /\{\{#if\s+([^}]+)\}\}([\s\S]*?)\{\{\/if\}\}/g,
+      (match, key, content) => {
+        const value = this.getNestedValue(data, key.trim());
+        return value ? content : "";
+      },
+    );
 
     return result;
   }
@@ -51,17 +54,17 @@ export class TemplateProcessor {
    */
   generateVersionFile(data: TemplateData): string {
     const templateFormat = this.config.versionFile.template;
-    
+
     if (templateFormat === TemplateFormat.CUSTOM) {
-      throw new Error('Custom template should use processTemplate() method instead');
+      throw new Error("Custom template should use processTemplate() method instead");
     }
-    
+
     const template = BUILT_IN_TEMPLATES[templateFormat];
-    
+
     if (!template) {
       throw new Error(`Unknown template format: ${templateFormat}`);
     }
-    
+
     return this.processTemplate(template, data);
   }
 
@@ -69,8 +72,8 @@ export class TemplateProcessor {
    * Get nested value from object using dot notation
    */
   private getNestedValue(obj: any, path: string): any {
-    return path.split('.').reduce((current, key) => {
-      return current && typeof current === 'object' ? current[key] : undefined;
+    return path.split(".").reduce((current, key) => {
+      return current && typeof current === "object" ? current[key] : undefined;
     }, obj);
   }
 }

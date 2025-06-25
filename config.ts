@@ -2,25 +2,25 @@
  * @fileoverview Configuration schema and defaults for Nagare
  */
 
-import type { NagareConfig, CommitTypeMapping } from './types.ts';
-import { TemplateFormat, BumpType, LogLevel } from './types.ts';
+import type { CommitTypeMapping, NagareConfig } from "./types.ts";
+import { BumpType, LogLevel, TemplateFormat } from "./types.ts";
 
 /**
  * Default commit type mappings following conventional commits
  */
 export const DEFAULT_COMMIT_TYPES: CommitTypeMapping = {
-  feat: 'added',
-  fix: 'fixed',
-  docs: 'changed',
-  style: 'changed',
-  refactor: 'changed',
-  perf: 'changed',
-  test: 'changed',
-  build: 'changed',
-  ci: 'changed',
-  chore: 'changed',
-  revert: 'changed',
-  security: 'security'
+  feat: "added",
+  fix: "fixed",
+  docs: "changed",
+  style: "changed",
+  refactor: "changed",
+  perf: "changed",
+  test: "changed",
+  build: "changed",
+  ci: "changed",
+  chore: "changed",
+  revert: "changed",
+  security: "security",
 };
 
 /**
@@ -28,32 +28,32 @@ export const DEFAULT_COMMIT_TYPES: CommitTypeMapping = {
  */
 export const DEFAULT_CONFIG: Partial<NagareConfig> = {
   versionFile: {
-    path: './version.ts',
-    template: TemplateFormat.TYPESCRIPT
+    path: "./version.ts",
+    template: TemplateFormat.TYPESCRIPT,
   },
   releaseNotes: {
     includeCommitHashes: true,
-    maxDescriptionLength: 100
+    maxDescriptionLength: 100,
   },
   github: {
     createRelease: true,
-    tokenEnvVar: 'GITHUB_TOKEN',
-    owner: '', // Will be overridden by user config
-    repo: ''   // Will be overridden by user config
+    tokenEnvVar: "GITHUB_TOKEN",
+    owner: "", // Will be overridden by user config
+    repo: "", // Will be overridden by user config
   },
   commitTypes: DEFAULT_COMMIT_TYPES,
   options: {
     dryRun: false,
     skipConfirmation: false,
-    gitRemote: 'origin',
-    tagPrefix: 'v',
-    logLevel: LogLevel.INFO
+    gitRemote: "origin",
+    tagPrefix: "v",
+    logLevel: LogLevel.INFO,
   },
   docs: {
     enabled: false,
-    outputDir: './docs',
-    includePrivate: false
-  }
+    outputDir: "./docs",
+    includePrivate: false,
+  },
 };
 
 /**
@@ -128,8 +128,8 @@ releaseNotes: {{releaseNotes}}
 export const BUILT_IN_TEMPLATES = {
   [TemplateFormat.TYPESCRIPT]: TYPESCRIPT_TEMPLATE,
   [TemplateFormat.JSON]: JSON_TEMPLATE,
-  [TemplateFormat.YAML]: YAML_TEMPLATE
+  [TemplateFormat.YAML]: YAML_TEMPLATE,
 };
 
 // Re-export types for convenience
-export { TemplateFormat, BumpType, LogLevel };
+export { BumpType, LogLevel, TemplateFormat };

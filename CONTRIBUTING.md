@@ -1,6 +1,7 @@
 # Contributing to Nagare
 
-Thank you for your interest in contributing to Nagare! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing to Nagare! This document provides guidelines for
+contributing to the project.
 
 ## 🚀 Getting Started
 
@@ -20,7 +21,8 @@ Thank you for your interest in contributing to Nagare! This document provides gu
 
 ## 📝 Commit Message Guidelines
 
-Nagare follows [Conventional Commits](https://www.conventionalcommits.org/) specification. This helps with automated changelog generation and semantic versioning.
+Nagare follows [Conventional Commits](https://www.conventionalcommits.org/) specification. This
+helps with automated changelog generation and semantic versioning.
 
 ### Commit Message Format
 
@@ -34,26 +36,27 @@ Nagare follows [Conventional Commits](https://www.conventionalcommits.org/) spec
 
 ### Commit Types
 
-| Type | Purpose | Example |
-|------|---------|---------|
-| `feat` | New features | `feat: add rollback functionality` |
-| `fix` | Bug fixes | `fix: resolve version parsing error` |
-| `docs` | Documentation changes | `docs: update API reference` |
-| `style` | Code style changes | `style: fix linting issues` |
-| `refactor` | Code refactoring | `refactor: simplify template processing` |
-| `perf` | Performance improvements | `perf: optimize git log parsing` |
-| `test` | Adding/updating tests | `test: add version utils test suite` |
-| `build` | Build system/tooling | `build: add Deno project configuration` |
-| `ci` | CI/CD changes | `ci: add GitHub Actions workflow` |
-| `chore` | Maintenance tasks | `chore: update dependencies` |
-| `revert` | Reverting changes | `revert: undo breaking API change` |
-| `security` | Security fixes | `security: validate file paths` |
+| Type       | Purpose                  | Example                                  |
+| ---------- | ------------------------ | ---------------------------------------- |
+| `feat`     | New features             | `feat: add rollback functionality`       |
+| `fix`      | Bug fixes                | `fix: resolve version parsing error`     |
+| `docs`     | Documentation changes    | `docs: update API reference`             |
+| `style`    | Code style changes       | `style: fix linting issues`              |
+| `refactor` | Code refactoring         | `refactor: simplify template processing` |
+| `perf`     | Performance improvements | `perf: optimize git log parsing`         |
+| `test`     | Adding/updating tests    | `test: add version utils test suite`     |
+| `build`    | Build system/tooling     | `build: add Deno project configuration`  |
+| `ci`       | CI/CD changes            | `ci: add GitHub Actions workflow`        |
+| `chore`    | Maintenance tasks        | `chore: update dependencies`             |
+| `revert`   | Reverting changes        | `revert: undo breaking API change`       |
+| `security` | Security fixes           | `security: validate file paths`          |
 
 ### Configuration Files
 
 Configuration files require special attention to commit types:
 
 #### Build System Configuration
+
 ```bash
 # deno.json, package.json, tsconfig.json
 git commit -m "build: add Deno project configuration and task automation
@@ -65,6 +68,7 @@ git commit -m "build: add Deno project configuration and task automation
 ```
 
 #### Feature Configuration
+
 ```bash
 # nagare.config.ts, .nagarerc, etc.
 git commit -m "feat: configure Nagare release automation
@@ -76,6 +80,7 @@ git commit -m "feat: configure Nagare release automation
 ```
 
 #### CI/CD Configuration
+
 ```bash
 # .github/workflows/, .gitlab-ci.yml, etc.
 git commit -m "ci: add automated testing and release pipeline
@@ -179,17 +184,18 @@ deno test src/version-utils_test.ts
 - **Use descriptive test names**
 
 Example test structure:
+
 ```typescript
 import { assertEquals, assertThrows } from "@std/testing/asserts";
 import { VersionUtils } from "../src/version-utils.ts";
 
 Deno.test("VersionUtils.calculateNewVersion - feature commits trigger minor bump", () => {
   const versionUtils = new VersionUtils(mockConfig);
-  const commits = [{ type: 'feat', description: 'add new feature', breakingChange: false }];
-  
-  const result = versionUtils.calculateNewVersion('1.0.0', commits);
-  
-  assertEquals(result, '1.1.0');
+  const commits = [{ type: "feat", description: "add new feature", breakingChange: false }];
+
+  const result = versionUtils.calculateNewVersion("1.0.0", commits);
+
+  assertEquals(result, "1.1.0");
 });
 ```
 
@@ -217,6 +223,7 @@ Before submitting PRs, follow the testing guide in [TESTING.md](./TESTING.md).
 ### Naming Conventions
 
 #### File Names
+
 ```bash
 # Use kebab-case with meaningful suffixes
 release-manager.ts     # Orchestrator classes
@@ -229,6 +236,7 @@ logger.ts             # Infrastructure (no suffix)
 ```
 
 #### Class Names
+
 ```typescript
 // Use PascalCase with descriptive suffixes
 class ReleaseManager     // Orchestrates complex workflows
@@ -240,6 +248,7 @@ class ChangelogGenerator // Creates content
 ```
 
 #### Method Names
+
 ```typescript
 // Use camelCase with verb-noun patterns
 async getCurrentVersion()
@@ -259,7 +268,7 @@ async createGitHubRelease()
 // Good error handling
 if (!await this.git.isGitRepository()) {
   throw new Error(
-    'Not in a git repository. Run "git init" to initialize a repository.'
+    'Not in a git repository. Run "git init" to initialize a repository.',
   );
 }
 
@@ -267,7 +276,7 @@ if (!await this.git.isGitRepository()) {
 class ConfigurationError extends Error {
   constructor(message: string, public field: string) {
     super(message);
-    this.name = 'ConfigurationError';
+    this.name = "ConfigurationError";
   }
 }
 ```
@@ -289,20 +298,25 @@ Use this template for your PR description:
 
 ```markdown
 ## Description
+
 Brief description of what this PR does.
 
 ## Type of Change
+
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as
+      expected)
 - [ ] Documentation update
 
 ## Testing
+
 - [ ] New tests added for new functionality
 - [ ] All existing tests pass
 - [ ] Manual testing completed
 
 ## Checklist
+
 - [ ] Code follows project style guidelines
 - [ ] Self-review completed
 - [ ] Documentation updated if needed
@@ -342,7 +356,8 @@ If you discover a security vulnerability, please **do not** open a public issue.
 
 ## 📄 License
 
-By contributing to Nagare, you agree that your contributions will be licensed under the [MIT License](LICENSE).
+By contributing to Nagare, you agree that your contributions will be licensed under the
+[MIT License](LICENSE).
 
 ## ❓ Questions
 

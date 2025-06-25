@@ -8,19 +8,17 @@ export const VERSION = "0.2.0";
 export const BUILD_INFO = {
   buildDate: "2025-06-25T07:29:05.862Z",
   gitCommit: "c1b913d",
-  buildEnvironment: "production"
+  buildEnvironment: "production",
 } as const;
 
 export const APP_INFO = {
   name: "Nagare",
   description: "Deno Release Management Library",
   repository: "https://github.com/RickCogley/nagare",
-  license: "MIT"
+  license: "MIT",
 } as const;
 
-
 export const APP_METADATA = {} as const;
-
 
 export const RELEASE_NOTES = {
   "version": "0.2.0",
@@ -41,7 +39,7 @@ export const RELEASE_NOTES = {
     "add Git operations abstraction layer (5ef0d07)",
     "add logging infrastructure with configurable levels (2096db5)",
     "add configuration schema and built-in templates (04a9837)",
-    "add core TypeScript interfaces and type definitions (dd5e811)"
+    "add core TypeScript interfaces and type definitions (dd5e811)",
   ],
   "changed": [
     "allow docs related folders (6a1595f)",
@@ -57,13 +55,13 @@ export const RELEASE_NOTES = {
     "add technical architecture specification (e391ab7)",
     "add comprehensive user documentation (52b361f)",
     "build(deno) create deno.json (c1abe68)",
-    "Initial commit (83406af)"
+    "Initial commit (83406af)",
   ],
   "deprecated": [],
   "removed": [],
   "fixed": [
     "update deno docs syntax (c1b913d)",
-    "simplify git log format (2680590)"
+    "simplify git log format (2680590)",
   ],
-  "security": []
+  "security": [],
 } as const;
