@@ -38,7 +38,7 @@ export class ChangelogGenerator {
       await Deno.writeTextFile(changelogPath, newContent);
       console.log('✅ Updated CHANGELOG.md');
     } catch (error) {
-      console.error('❌ Error updating CHANGELOG.md:', error.message);
+      console.error('❌ Error updating CHANGELOG.md:', error instanceof Error ? error.message : String(error));
       throw error;
     }
   }

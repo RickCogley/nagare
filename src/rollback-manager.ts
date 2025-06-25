@@ -65,7 +65,7 @@ export class RollbackManager {
 
       if (!versionToRollback) {
         this.logger.info('❓ Enter the version to rollback (e.g., 1.1.0):');
-        versionToRollback = prompt('Version:');
+        const userInput = prompt('Version:');
         if (!versionToRollback) {
           return { success: false, error: 'No version specified' };
         }
@@ -113,7 +113,7 @@ export class RollbackManager {
             await this.git.deleteRemoteTag(tagName);
             rollbackActions.push(`Deleted remote tag ${tagName}`);
           } catch (error) {
-            this.logger.warn(`⚠️  Could not delete remote tag: ${error.message}`);
+            this.logger.warn(`⚠️  Could not delete remote tag: ${error instanceof Error ? error.message : String(error)}`);
           }
         }
       }
@@ -136,7 +136,7 @@ export class RollbackManager {
       this.logger.error('\n❌ Error during rollback:', error as Error);
       return { 
         success: false, 
-        error: error instanceof Error ? error.message : String(error) 
+        error: error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error) 
       };
     }
   }

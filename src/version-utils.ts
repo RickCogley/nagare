@@ -45,7 +45,7 @@ export class VersionUtils {
       
       throw new Error(`Could not find version in ${this.config.versionFile.path}`);
     } catch (error) {
-      throw new Error(`Error reading version: ${error.message}`);
+      throw new Error(`Error reading version: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 

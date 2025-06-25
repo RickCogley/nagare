@@ -3,33 +3,11 @@
 // ==================================================================
 
 /**
- * Supported template formats
+ * @fileoverview Configuration schema and defaults for Nagare
  */
-export enum TemplateFormat {
-  TYPESCRIPT = 'typescript',
-  JSON = 'json',
-  YAML = 'yaml',
-  CUSTOM = 'custom'
-}
 
-/**
- * Bump types for version increments
- */
-export enum BumpType {
-  MAJOR = 'major',
-  MINOR = 'minor',
-  PATCH = 'patch'
-}
-
-/**
- * Log levels
- */
-export enum LogLevel {
-  DEBUG = 0,
-  INFO = 1,
-  WARN = 2,
-  ERROR = 3
-}
+import type { NagareConfig, CommitTypeMapping } from './types.ts';
+import { TemplateFormat, BumpType, LogLevel } from './types.ts';
 
 /**
  * Default commit type mappings following conventional commits
@@ -79,10 +57,6 @@ export const DEFAULT_CONFIG: Partial<NagareConfig> = {
     includePrivate: false
   }
 };
-
-// ============================================================================
-// Built-in Templates
-// ============================================================================
 
 /**
  * TypeScript version file template
@@ -158,3 +132,6 @@ export const BUILT_IN_TEMPLATES = {
   [TemplateFormat.JSON]: JSON_TEMPLATE,
   [TemplateFormat.YAML]: YAML_TEMPLATE
 };
+
+// Re-export types for convenience
+export { TemplateFormat, BumpType, LogLevel };

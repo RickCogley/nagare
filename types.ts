@@ -3,6 +3,39 @@
 // ==================================================================
 
 /**
+ * @fileoverview TypeScript interfaces and types for Nagare
+ */
+
+/**
+ * Supported template formats
+ */
+export enum TemplateFormat {
+  TYPESCRIPT = 'typescript',
+  JSON = 'json',
+  YAML = 'yaml',
+  CUSTOM = 'custom'
+}
+
+/**
+ * Bump types for version increments
+ */
+export enum BumpType {
+  MAJOR = 'major',
+  MINOR = 'minor',
+  PATCH = 'patch'
+}
+
+/**
+ * Log levels
+ */
+export enum LogLevel {
+  DEBUG = 0,
+  INFO = 1,
+  WARN = 2,
+  ERROR = 3
+}
+
+/**
  * Main configuration interface for Nagare
  */
 export interface NagareConfig {

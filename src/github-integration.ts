@@ -46,7 +46,7 @@ export class GitHubIntegration {
       console.log(`✅ Created GitHub release: ${releaseUrl}`);
       return releaseUrl;
     } catch (error) {
-      console.error('❌ Error creating GitHub release:', error.message);
+      console.error('❌ Error creating GitHub release:', error instanceof Error ? error.message : String(error));
       console.log('ℹ️  You can create it manually at your repository releases page');
       return undefined;
     }

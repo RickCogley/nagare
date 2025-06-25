@@ -50,7 +50,7 @@ export class DocGenerator {
       await this.runCommand(cmd);
       console.log(`✅ Generated documentation in ${outputDir}`);
     } catch (error) {
-      console.warn(`⚠️  Failed to generate documentation: ${error.message}`);
+      console.warn(`⚠️  Failed to generate documentation: ${error instanceof Error ? error.message : String(error)}`);
       // Don't throw - docs generation is optional
     }
   }
