@@ -70,14 +70,21 @@ function parseArgs(args: string[]): {
         break;
       default:
         if (!arg.startsWith("-")) {
-          if (!command) {
-            command = arg;
-          } else if (!bumpType && ["major", "minor", "patch"].includes(arg)) {
+          // Check if this is a bump type first
+          if (["major", "minor", "patch"].includes(arg)) {
             bumpType = arg;
+          } else if (!command) {
+            // If it's not a bump type and we don't have a command yet, it's the command
+            command = arg;
           }
         }
         break;
     }
+  }
+
+  // If no explicit command was provided, default to "release"
+  if (!command && bumpType) {
+    command = "release";
   }
 
   return { command, bumpType, options };
