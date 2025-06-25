@@ -13,7 +13,7 @@
     "release-management",
     "versioning",
     "semver",
-    "conventional-commits", 
+    "conventional-commits",
     "changelog",
     "git",
     "deno",
@@ -61,9 +61,7 @@
     "strict": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true
+    "noFallthroughCasesInSwitch": true
   },
 
   "lint": {
@@ -91,7 +89,7 @@
     "include": [
       "mod.ts",
       "cli.ts",
-      "types.ts", 
+      "types.ts",
       "config.ts",
       "src/",
       "README.md",

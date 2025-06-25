@@ -1,7 +1,7 @@
 /**
  * @fileoverview Nagare (流れ) - A comprehensive Deno release management library
  * @description Handles version bumping, changelog generation, and GitHub releases
- * @author Rick
+ * @author Rick Cogley
  * @license MIT
  * @see {@link https://jsr.io/@rick/nagare} for current version and documentation
  * @module
@@ -86,34 +86,13 @@ export type {
 /**
  * Configuration constants and default values
  */
-export { 
-  /** Version bump types for semantic versioning */
-  BumpType, 
-  /** Default configuration values */
-  DEFAULT_CONFIG, 
-  /** Logging levels */
-  LogLevel, 
-  /** Template format types */
-  TemplateFormat 
-} from "./config.ts";
-
-// ==================================================================
-// Runtime Compatibility (for multi-runtime support)
-// ==================================================================
-
-/**
- * Cross-runtime compatibility utilities
- * @description Provides unified APIs for Deno, Node.js, and Bun
- */
 export {
-  /** Runtime detection utilities */
-  Runtime,
-  /** Cross-runtime file system operations */
-  FileSystem,
-  /** Cross-runtime process execution */
-  Process,
-  /** Cross-runtime path utilities */
-  Path,
-  /** Cross-runtime console utilities */
-  Console,
-} from "./src/runtime-compat.ts";
+  /** Version bump types for semantic versioning */
+  BumpType,
+  /** Default configuration values */
+  DEFAULT_CONFIG,
+  /** Logging levels */
+  LogLevel,
+  /** Template format types */
+  TemplateFormat,
+} from "./config.ts";

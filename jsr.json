@@ -19,7 +19,7 @@
     "release-management",
     "versioning",
     "semver",
-    "conventional-commits", 
+    "conventional-commits",
     "changelog",
     "git",
     "deno",
@@ -40,7 +40,7 @@
   },
   "runtimeCompatibility": {
     "deno": ">=1.40.0",
-    "node": ">=18.0.0", 
+    "node": ">=18.0.0",
     "bun": ">=1.0.0",
     "browser": false
   },
@@ -59,7 +59,7 @@
   "publish": {
     "include": [
       "mod.ts",
-      "cli.ts", 
+      "cli.ts",
       "types.ts",
       "config.ts",
       "src/",

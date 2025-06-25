@@ -91,13 +91,17 @@ export class VersionUtils {
   /**
    * Parse semantic version into components
    */
-  parseVersion(version: string): { major: number; minor: number; patch: number; prerelease: string | null } {
+  parseVersion(
+    version: string,
+  ): { major: number; minor: number; patch: number; prerelease: string | null } {
     const semver = parse(version);
     return {
       major: semver.major,
       minor: semver.minor,
       patch: semver.patch,
-      prerelease: semver.prerelease && semver.prerelease.length > 0 ? semver.prerelease.join(".") : null,
+      prerelease: semver.prerelease && semver.prerelease.length > 0
+        ? semver.prerelease.join(".")
+        : null,
     };
   }
 }

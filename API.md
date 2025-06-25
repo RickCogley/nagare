@@ -17,17 +17,19 @@ new ReleaseManager(config: NagareConfig)
 ```
 
 **Parameters:**
+
 - `config` - Configuration object implementing the `NagareConfig` interface
 
 **Example:**
+
 ```typescript
 const releaseManager = new ReleaseManager({
   projectName: "My Project",
   repository: "https://github.com/user/repo",
   versionFile: {
     path: "./version.ts",
-    template: "typescript"
-  }
+    template: "typescript",
+  },
 });
 ```
 
@@ -38,11 +40,13 @@ const releaseManager = new ReleaseManager({
 Performs a complete release process.
 
 **Parameters:**
+
 - `bumpType` (optional) - Version bump type: `"major"`, `"minor"`, `"patch"`, or `"prerelease"`
 
 **Returns:** `Promise<ReleaseResult>`
 
 **Example:**
+
 ```typescript
 // Automatic version bump based on conventional commits
 const result = await releaseManager.release();
@@ -56,6 +60,7 @@ const result = await releaseManager.release("minor");
 Generates documentation using Deno's built-in documentation generator.
 
 **Example:**
+
 ```typescript
 await releaseManager.generateDocs();
 ```
@@ -89,6 +94,7 @@ Gets the last release tag.
 Gets commits since a specific tag.
 
 **Parameters:**
+
 - `tag` - Git tag to compare from
 
 **Returns:** `Promise<ConventionalCommit[]>` - Array of parsed commits
@@ -98,6 +104,7 @@ Gets commits since a specific tag.
 Creates a git tag.
 
 **Parameters:**
+
 - `version` - Version string for the tag
 - `message` (optional) - Tag message
 
@@ -106,6 +113,7 @@ Creates a git tag.
 Pushes a tag to remote repository.
 
 **Parameters:**
+
 - `version` - Version string of tag to push
 
 ---
@@ -125,11 +133,13 @@ import { VersionUtils } from "jsr:@rick/nagare";
 Parses a version string into components.
 
 **Parameters:**
+
 - `version` - Version string (e.g., "1.2.3")
 
 **Returns:** `SemanticVersion` object with major, minor, patch properties
 
 **Example:**
+
 ```typescript
 const parsed = VersionUtils.parseVersion("1.2.3");
 // { major: 1, minor: 2, patch: 3 }
@@ -140,12 +150,14 @@ const parsed = VersionUtils.parseVersion("1.2.3");
 Bumps a version according to semantic versioning rules.
 
 **Parameters:**
+
 - `currentVersion` - Current version string
 - `bumpType` - Type of bump to perform
 
 **Returns:** `string` - New version string
 
 **Example:**
+
 ```typescript
 const newVersion = VersionUtils.bumpVersion("1.2.3", "minor");
 // "1.3.0"
@@ -156,6 +168,7 @@ const newVersion = VersionUtils.bumpVersion("1.2.3", "minor");
 Calculates the appropriate version bump based on conventional commits.
 
 **Parameters:**
+
 - `commits` - Array of conventional commits
 
 **Returns:** `BumpType` - Recommended bump type
@@ -183,6 +196,7 @@ new ChangelogGenerator(config: NagareConfig)
 Generates release notes from conventional commits.
 
 **Parameters:**
+
 - `commits` - Array of conventional commits
 - `version` - Version being released
 
@@ -193,6 +207,7 @@ Generates release notes from conventional commits.
 Updates the CHANGELOG.md file.
 
 **Parameters:**
+
 - `releaseNotes` - Release notes to add
 
 ---
@@ -218,6 +233,7 @@ new GitHubIntegration(config: GitHubConfig)
 Creates a GitHub release.
 
 **Parameters:**
+
 - `releaseNotes` - Release notes for the GitHub release
 
 ##### `isGitHubCliAvailable(): Promise<boolean>`
@@ -243,16 +259,18 @@ import { RollbackManager } from "jsr:@rick/nagare";
 Rolls back to a previous version.
 
 **Parameters:**
+
 - `version` - Version to rollback to
 - `options` (optional) - Rollback options
 
 **Example:**
+
 ```typescript
 const rollback = new RollbackManager();
 await rollback.rollback("1.2.0", {
   removeTags: true,
   resetCommits: true,
-  restoreFiles: true
+  restoreFiles: true,
 });
 ```
 
@@ -273,12 +291,14 @@ import { TemplateProcessor } from "jsr:@rick/nagare";
 Processes a template with the given context.
 
 **Parameters:**
+
 - `template` - Template string with placeholders
 - `context` - Context object with replacement values
 
 **Returns:** `string` - Processed template
 
 **Example:**
+
 ```typescript
 const template = "Version: {{version}}, Date: {{buildDate}}";
 const context = { version: "1.2.3", buildDate: "2024-01-15" };
@@ -422,8 +442,8 @@ Supported version file formats.
 const SUPPORTED_VERSION_FILE_FORMATS = [
   "typescript",
   "json",
-  "yaml", 
-  "custom"
+  "yaml",
+  "custom",
 ] as const;
 ```
 
@@ -560,7 +580,7 @@ import type { NagareConfig } from "jsr:@rick/nagare/types";
 export const config: NagareConfig = {
   projectName: "Awesome Library",
   repository: "https://github.com/user/awesome-lib",
-  
+
   versionFile: {
     path: "./src/version.ts",
     template: "custom",
@@ -575,16 +595,16 @@ export const LIBRARY_INFO = {
   buildDate: BUILD_DATE,
   repository: "{{repository}}"
 } as const;
-`
+`,
   },
-  
+
   releaseNotes: {
     includeCommitHashes: true,
     maxItemsPerSection: 15,
     features: ["TypeScript", "Multi-runtime", "CLI"],
-    endpoints: ["/api/v1", "/api/v2"]
+    endpoints: ["/api/v1", "/api/v2"],
   },
-  
+
   github: {
     owner: "user",
     repo: "awesome-lib",
@@ -608,59 +628,54 @@ export const LIBRARY_INFO = {
 {{/if}}
 
 **Install:** \`deno add jsr:@user/awesome-lib@{{version}}\`
-`
+`,
   },
-  
+
   updateFiles: [
     {
       path: "./deno.json",
       patterns: {
-        version: /"version":\s*"([^"]+)"/
-      }
+        version: /"version":\s*"([^"]+)"/,
+      },
     },
     {
       path: "./README.md",
       patterns: {
         version: /@user\/awesome-lib@([^\s\)]+)/g,
-        badge: /awesome--lib-([^-]+)-blue/g
-      }
-    }
+        badge: /awesome--lib-([^-]+)-blue/g,
+      },
+    },
   ],
-  
+
   commitTypes: {
     feat: "added",
     fix: "fixed",
     perf: "changed",
     enhance: "changed",
     security: "security",
-    breaking: "changed"
+    breaking: "changed",
   },
-  
+
   generateDocs: true,
   docsDir: "./docs",
-  
+
   metadata: {
     author: "Your Name",
     license: "MIT",
-    keywords: ["release", "versioning", "automation"]
-  }
+    keywords: ["release", "versioning", "automation"],
+  },
 };
 ```
 
 ### Advanced Usage Example
 
 ```typescript
-import { 
-  ReleaseManager, 
-  GitOperations, 
-  VersionUtils,
-  RollbackManager 
-} from "jsr:@rick/nagare";
+import { GitOperations, ReleaseManager, RollbackManager, VersionUtils } from "jsr:@rick/nagare";
 
 // Custom release workflow
 async function customRelease() {
   const releaseManager = new ReleaseManager(config);
-  
+
   try {
     // Check for unreleased commits
     const commits = await GitOperations.getCommitsSince("HEAD");
@@ -668,24 +683,23 @@ async function customRelease() {
       console.log("No commits to release");
       return;
     }
-    
+
     // Calculate recommended bump
     const recommendedBump = VersionUtils.calculateBump(commits);
     console.log(`Recommended bump: ${recommendedBump}`);
-    
+
     // Confirm with user
     const proceed = await Console.confirm(`Release ${recommendedBump} version?`);
     if (!proceed) return;
-    
+
     // Perform release
     const result = await releaseManager.release(recommendedBump);
-    
+
     console.log(`✅ Released ${result.newVersion}`);
     console.log(`📝 Updated files: ${result.updatedFiles.join(", ")}`);
-    
   } catch (error) {
     console.error("Release failed:", error.message);
-    
+
     // Offer rollback
     const rollback = await Console.confirm("Rollback changes?");
     if (rollback) {
@@ -698,4 +712,5 @@ async function customRelease() {
 
 ---
 
-For more examples and guides, see the [FAQ](./FAQ.md) and [GitHub repository](https://github.com/rick/nagare).
+For more examples and guides, see the [FAQ](./FAQ.md) and
+[GitHub repository](https://github.com/rick/nagare).

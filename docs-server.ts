@@ -21,8 +21,8 @@ const DOCS_CONFIG = {
   /** Custom error pages */
   errorPages: {
     404: "./docs/404.html",
-    500: "./docs/500.html"
-  }
+    500: "./docs/500.html",
+  },
 } as const;
 
 /**
@@ -103,30 +103,33 @@ const DEFAULT_404_PAGE = `
  */
 function createSecurityHeaders(): Headers {
   const headers = new Headers();
-  
+
   // Security headers
   headers.set("X-Content-Type-Options", "nosniff");
   headers.set("X-Frame-Options", "DENY");
   headers.set("X-XSS-Protection", "1; mode=block");
   headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  
+
   // Content Security Policy for documentation
-  headers.set("Content-Security-Policy", [
-    "default-src 'self'",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "font-src 'self' https://fonts.gstatic.com",
-    "img-src 'self' data: https:",
-    "script-src 'self'",
-    "connect-src 'self' https://jsr.io https://api.github.com"
-  ].join("; "));
-  
+  headers.set(
+    "Content-Security-Policy",
+    [
+      "default-src 'self'",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com",
+      "img-src 'self' data: https:",
+      "script-src 'self'",
+      "connect-src 'self' https://jsr.io https://api.github.com",
+    ].join("; "),
+  );
+
   // CORS headers if enabled
   if (DOCS_CONFIG.enableCORS) {
     headers.set("Access-Control-Allow-Origin", "*");
     headers.set("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
     headers.set("Access-Control-Allow-Headers", "Content-Type");
   }
-  
+
   return headers;
 }
 
@@ -136,10 +139,10 @@ function createSecurityHeaders(): Headers {
 function serve404(): Response {
   const headers = createSecurityHeaders();
   headers.set("Content-Type", "text/html; charset=utf-8");
-  
+
   return new Response(DEFAULT_404_PAGE, {
     status: 404,
-    headers
+    headers,
   });
 }
 
@@ -149,67 +152,70 @@ function serve404(): Response {
 async function handleDocsRequest(request: Request): Promise<Response> {
   const url = new URL(request.url);
   const pathname = url.pathname;
-  
+
   // Handle CORS preflight
   if (request.method === "OPTIONS" && DOCS_CONFIG.enableCORS) {
     return new Response(null, {
       status: 204,
-      headers: createSecurityHeaders()
+      headers: createSecurityHeaders(),
     });
   }
-  
+
   // Route special pages
   if (pathname === "/health") {
     const headers = createSecurityHeaders();
     headers.set("Content-Type", "application/json");
-    
-    return new Response(JSON.stringify({
-      status: "healthy",
-      service: "nagare-docs",
-      timestamp: new Date().toISOString(),
-      version: "1.0.0"
-    }), { headers });
+
+    return new Response(
+      JSON.stringify({
+        status: "healthy",
+        service: "nagare-docs",
+        timestamp: new Date().toISOString(),
+        version: "1.0.0",
+      }),
+      { headers },
+    );
   }
-  
+
   try {
     // Serve files from docs directory
     const response = await serveDir(request, {
       fsRoot: DOCS_CONFIG.docsDir,
       showDirListing: DOCS_CONFIG.enableDirListing,
       showIndex: true,
-      enableCors: DOCS_CONFIG.enableCORS
+      enableCors: DOCS_CONFIG.enableCORS,
     });
-    
+
     // Add security headers to successful responses
     if (response.status === 200) {
       const securityHeaders = createSecurityHeaders();
       const newHeaders = new Headers(response.headers);
-      
+
       for (const [key, value] of securityHeaders.entries()) {
         newHeaders.set(key, value);
       }
-      
+
       return new Response(response.body, {
         status: response.status,
         statusText: response.statusText,
-        headers: newHeaders
+        headers: newHeaders,
       });
     }
-    
+
     // Handle 404s with custom page
     if (response.status === 404) {
       return serve404();
     }
-    
+
     return response;
-    
   } catch (error) {
     console.error("Error serving documentation:", error);
-    
+
     const headers = createSecurityHeaders();
     headers.set("Content-Type", "text/html; charset=utf-8");
-    
-    return new Response(`
+
+    return new Response(
+      `
       <!DOCTYPE html>
       <html>
         <head><title>Server Error - Nagare Docs</title></head>
@@ -219,10 +225,12 @@ async function handleDocsRequest(request: Request): Promise<Response> {
           <p><a href="/">Return to Home</a></p>
         </body>
       </html>
-    `, {
-      status: 500,
-      headers
-    });
+    `,
+      {
+        status: 500,
+        headers,
+      },
+    );
   }
 }
 
@@ -231,10 +239,10 @@ async function handleDocsRequest(request: Request): Promise<Response> {
  */
 async function handler(request: Request): Promise<Response> {
   const startTime = performance.now();
-  
+
   try {
     const response = await handleDocsRequest(request);
-    
+
     // Log request for monitoring
     const duration = performance.now() - startTime;
     console.log(JSON.stringify({
@@ -243,9 +251,9 @@ async function handler(request: Request): Promise<Response> {
       url: request.url,
       status: response.status,
       duration: Math.round(duration * 100) / 100,
-      userAgent: request.headers.get("user-agent") || "unknown"
+      userAgent: request.headers.get("user-agent") || "unknown",
     }));
-    
+
     return response;
   } catch (error) {
     console.error("Unhandled error:", error);
@@ -259,6 +267,6 @@ if (import.meta.main) {
   console.log(`📁 Serving docs from: ${DOCS_CONFIG.docsDir}`);
   console.log(`🔒 Security headers enabled`);
   console.log(`🌐 CORS enabled: ${DOCS_CONFIG.enableCORS}`);
-  
+
   Deno.serve({ port: 8000 }, handler);
 }

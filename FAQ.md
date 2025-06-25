@@ -4,7 +4,9 @@
 
 ### What is Nagare?
 
-Nagare (流れ - "flow" in Japanese) is a comprehensive release management library for JavaScript/TypeScript projects. It automates versioning, changelog generation, and GitHub releases using conventional commits and semantic versioning principles.
+Nagare (流れ - "flow" in Japanese) is a comprehensive release management library for
+JavaScript/TypeScript projects. It automates versioning, changelog generation, and GitHub releases
+using conventional commits and semantic versioning principles.
 
 ### Why choose Nagare over other release tools?
 
@@ -25,16 +27,19 @@ Nagare (流れ - "flow" in Japanese) is a comprehensive release management libra
 ### How do I install Nagare?
 
 **For Deno:**
+
 ```typescript
 import { ReleaseManager } from "jsr:@rick/nagare";
 ```
 
 **For Node.js:**
+
 ```bash
 npx jsr add @rick/nagare
 ```
 
 **For Bun:**
+
 ```bash
 bunx jsr add @rick/nagare
 ```
@@ -55,8 +60,8 @@ const config = {
   repository: "https://github.com/user/my-project",
   versionFile: {
     path: "./version.ts",
-    template: "typescript"
-  }
+    template: "typescript",
+  },
 };
 ```
 
@@ -74,7 +79,7 @@ const config = {
 Nagare analyzes conventional commits since the last release:
 
 - **`feat:`** → Minor version bump (1.0.0 → 1.1.0)
-- **`fix:`** → Patch version bump (1.0.0 → 1.0.1) 
+- **`fix:`** → Patch version bump (1.0.0 → 1.0.1)
 - **`feat!:` or `BREAKING CHANGE:`** → Major version bump (1.0.0 → 2.0.0)
 - **Other types** → Patch version bump
 
@@ -105,6 +110,7 @@ await releaseManager.release("1.2.0-beta.1");
 ### What conventional commit types are supported?
 
 Default mappings:
+
 - **`feat:`** → Added section
 - **`fix:`** → Fixed section
 - **`perf:`**, **`refactor:`**, **`style:`** → Changed section
@@ -127,7 +133,8 @@ commitTypes: {
 
 ### What if my commits don't follow conventional format?
 
-Non-conventional commits are included in the "Changed" section. However, for best results, we recommend adopting conventional commits:
+Non-conventional commits are included in the "Changed" section. However, for best results, we
+recommend adopting conventional commits:
 
 ```bash
 # Good
@@ -144,6 +151,7 @@ git commit -m "add authentication and fix api bug"
 
 1. **Install GitHub CLI**: `gh auth login`
 2. **Configure in Nagare**:
+
 ```typescript
 github: {
   owner: "your-username",
@@ -169,13 +177,14 @@ github: {
 {{/if}}
 
 Download: https://github.com/{{owner}}/{{repo}}/archive/v{{version}}.zip
-`
+`;
 }
 ```
 
 ### What if GitHub CLI isn't available?
 
 Nagare will:
+
 1. Create local git tag
 2. Show manual release instructions
 3. Continue with other operations
@@ -190,22 +199,23 @@ updateFiles: [
   {
     path: "./package.json",
     patterns: {
-      version: /"version":\s*"([^"]+)"/
-    }
+      version: /"version":\s*"([^"]+)"/,
+    },
   },
   {
-    path: "./README.md", 
+    path: "./README.md",
     patterns: {
       version: /Version:\s*([^\s]+)/,
-      date: /Last updated:\s*([^\n]+)/
-    }
-  }
-]
+      date: /Last updated:\s*([^\n]+)/,
+    },
+  },
+];
 ```
 
 ### What if a file update pattern fails?
 
 Nagare will:
+
 1. Log a warning about the failed pattern
 2. Continue with other file updates
 3. Still complete the release process
@@ -216,10 +226,12 @@ Nagare will:
 ### "No commits found since last release"
 
 This happens when:
+
 - All commits since last tag are already released
 - No git tags exist (first release)
 
 **Solutions:**
+
 - Force a release: `await releaseManager.release("patch")`
 - Check git log: `git log --oneline`
 - Verify last tag: `git describe --tags --abbrev=0`
@@ -227,6 +239,7 @@ This happens when:
 ### "GitHub CLI not found"
 
 **Install GitHub CLI:**
+
 ```bash
 # macOS
 brew install gh
@@ -243,11 +256,13 @@ Then authenticate: `gh auth login`
 ### "Permission denied" errors
 
 **For Deno:**
+
 ```bash
 deno run --allow-read --allow-write --allow-run --allow-env your-script.ts
 ```
 
 **Or use the `--allow-all` flag:**
+
 ```bash
 deno run -A your-script.ts
 ```
@@ -271,6 +286,7 @@ deno run -A your-script.ts
 ### How should I structure my project for Nagare?
 
 **Recommended structure:**
+
 ```
 my-project/
 ├── version.ts           # Version file
@@ -308,7 +324,9 @@ git merge hotfix/critical-bug
 
 ### Should I commit the generated CHANGELOG.md?
 
-**Yes!** Nagare automatically commits the updated changelog as part of the release process. This ensures:
+**Yes!** Nagare automatically commits the updated changelog as part of the release process. This
+ensures:
+
 - Version history is preserved in git
 - Users can see changes without running Nagare
 - GitHub releases have consistent formatting
@@ -360,8 +378,8 @@ const rollback = new RollbackManager();
 // Rollback to specific version
 await rollback.rollback("1.2.0", {
   removeTags: true,
-  resetCommits: true, 
-  restoreFiles: true
+  resetCommits: true,
+  restoreFiles: true,
 });
 ```
 
@@ -392,4 +410,5 @@ await rollback.rollback("1.2.0", {
 
 ---
 
-**Still have questions?** Open an issue on [GitHub](https://github.com/rick/nagare/issues) or check the [API documentation](./API.md).
+**Still have questions?** Open an issue on [GitHub](https://github.com/rick/nagare/issues) or check
+the [API documentation](./API.md).

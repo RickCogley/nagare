@@ -8,30 +8,36 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.2.5] - 2025-06-25
 
 ### Changed
+
 - fix logic error prerelease version (3468680)
 
 ## [0.2.4] - 2025-06-25
 
 ### Changed
+
 - fix errors when publishing to jsr (7dd6f04)
 
 ## [0.2.3] - 2025-06-25
 
 ### Changed
+
 - prepare for publishing to jsr.io (6313fbe)
 
 ## [0.2.2] - 2025-06-25
 
 ### Fixed
+
 - push tag to github first (7f7d6e4)
 
 ## [0.2.1] - 2025-06-25
 
 ### Changed
+
 - apply Deno formatting standards (4d7f97c)
 - avoid stripping version key (763a2a7)
 
 ### Fixed
+
 - improve GitHub release and documentation generation (a21b9e8)
 
 ## [0.2.0] - 2025-06-25

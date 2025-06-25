@@ -36,6 +36,7 @@ function parseArgs(args: string[]): {
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
+    if (!arg) continue; // Skip undefined args
 
     switch (arg) {
       case "--help":
@@ -48,7 +49,10 @@ function parseArgs(args: string[]): {
         break;
       case "--config":
       case "-c":
-        options.config = args[++i];
+        i++;
+        if (args[i]) {
+          options.config = args[i];
+        }
         break;
       case "--dry-run":
         options.dryRun = true;
@@ -58,8 +62,9 @@ function parseArgs(args: string[]): {
         options.skipConfirmation = true;
         break;
       case "--log-level":
-        const level = args[++i];
-        if (level in LogLevel) {
+        i++;
+        const level = args[i];
+        if (level && level in LogLevel) {
           options.logLevel = LogLevel[level as keyof typeof LogLevel];
         }
         break;
