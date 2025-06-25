@@ -142,7 +142,10 @@ export class ReleaseManager {
       // Git operations
       await this.git.commitAndTag(newVersion);
 
-      // GitHub release
+      // Push to remote (including the new tag)
+      await this.git.pushToRemote();
+
+      // GitHub release (now that tag exists on remote)
       let githubReleaseUrl: string | undefined;
       if (this.config.github?.createRelease) {
         githubReleaseUrl = await this.github.createRelease(releaseNotes);
