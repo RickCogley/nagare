@@ -91,7 +91,7 @@ export class VersionUtils {
   /**
    * Parse semantic version into components
    */
-  parseVersion(version: string) {
+  parseVersion(version: string): { major: number; minor: number; patch: number; prerelease: string | null } {
     const semver = parse(version);
     return {
       major: semver.major,

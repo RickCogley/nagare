@@ -3,7 +3,7 @@
  * Extracted and generalized from Salty's release system
  */
 
-import { parse } from "@std/semver";
+// import { parse } from "jsr:@std/semver@1";
 import type {
   BumpType,
   ConventionalCommit,
