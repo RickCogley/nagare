@@ -50,10 +50,16 @@ export class TemplateProcessor {
    * Generate version file content using built-in templates
    */
   generateVersionFile(data: TemplateData): string {
-    const template = BUILT_IN_TEMPLATES[this.config.versionFile.template as TemplateFormat];
+    const templateFormat = this.config.versionFile.template;
+    
+    if (templateFormat === TemplateFormat.CUSTOM) {
+      throw new Error('Custom template should use processTemplate() method instead');
+    }
+    
+    const template = BUILT_IN_TEMPLATES[templateFormat];
     
     if (!template) {
-      throw new Error(`Unknown template format: ${this.config.versionFile.template}`);
+      throw new Error(`Unknown template format: ${templateFormat}`);
     }
     
     return this.processTemplate(template, data);

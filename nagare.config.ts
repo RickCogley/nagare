@@ -1,4 +1,5 @@
 import type { NagareConfig } from './types.ts';
+import { LogLevel } from './types.ts';
 
 export default {
   project: {
@@ -44,6 +45,6 @@ export default {
   options: {
     tagPrefix: 'v',
     gitRemote: 'origin',
-    logLevel: 'INFO'
+    logLevel: LogLevel.INFO
   }
 } as NagareConfig;

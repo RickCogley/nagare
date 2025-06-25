@@ -4,7 +4,7 @@
  */
 
 import type { NagareConfig, ConventionalCommit } from '../types.ts';
-import { Logger } from './logger.ts';
+import { Logger, LogLevel } from './logger.ts';
 
 /**
  * Handles all Git-related operations for releases
@@ -335,5 +335,3 @@ export class GitOperations {
     return new TextDecoder().decode(result.stdout);
   }
 }
-
-import { Logger, LogLevel } from './logger.ts';

@@ -1,7 +1,3 @@
-// ==================================================================
-// config.ts - Configuration Schema and Defaults
-// ==================================================================
-
 /**
  * @fileoverview Configuration schema and defaults for Nagare
  */
@@ -41,7 +37,9 @@ export const DEFAULT_CONFIG: Partial<NagareConfig> = {
   },
   github: {
     createRelease: true,
-    tokenEnvVar: 'GITHUB_TOKEN'
+    tokenEnvVar: 'GITHUB_TOKEN',
+    owner: '', // Will be overridden by user config
+    repo: ''   // Will be overridden by user config
   },
   commitTypes: DEFAULT_COMMIT_TYPES,
   options: {
