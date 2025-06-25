@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-06-25
+
+### Added
+- add GitHub Actions workflow with JSR provenance support (bd4c460)
+- add documentation server for Deno Deploy (01dac34)
+- enhance deno.json with JSR optimizations (604183d)
+- enhance JSR configuration for better scoring (e3a0eb3)
+- add runtime compatibility layer for Deno, Node.js, and Bun (4d9fe1f)
+
+### Changed
+- add comprehensive FAQ and API reference documentation (b9e30c0)
+- enhance mod.ts with comprehensive JSDoc and runtime exports (7b303b2)
+
+### Fixed
+- resolve TypeScript strict mode errors (463e11d)
+
 ## [0.2.5] - 2025-06-25
 
 ### Changed
