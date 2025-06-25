@@ -96,7 +96,7 @@ export class GitOperations {
     try {
       // Use a reliable delimiter and format
       const result = await this.runCommand([
-        'git', 'log', range, '--pretty=format:%H|||%ci|||%s|||%b', '--no-merges'
+        'git', 'log', range, '--pretty=format:%H|||%ci|||%s', '--no-merges'
       ]);
       
       if (!result.trim()) {
@@ -137,8 +137,13 @@ export class GitOperations {
       return null;
     }
     
-    // Clean up the subject line
-    const cleanSubject = subject.trim().replace(/\n.*$/s, '');
+    // Clean up the subject line - take only the first line
+    const cleanSubject = subject.trim().split('\n')[0];
+
+    // Skip if this looks like a body line (starts with - or whitespace)
+    if (cleanSubject.startsWith('-') || cleanSubject.startsWith(' ')) {
+      return null; // Skip body lines
+    }
     
     // Parse conventional commit format: type(scope): description
     const conventionalRegex = /^(feat|fix|docs|style|refactor|perf|test|chore|build|ci|revert|security)(\([^)]+\))?\!?:\s*(.+)$/;
