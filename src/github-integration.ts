@@ -35,16 +35,29 @@ export class GitHubIntegration {
       const tagName = `${this.config.options?.tagPrefix || 'v'}${releaseNotes.version}`;
       const releaseBody = this.formatReleaseBody(releaseNotes);
       
-      // Create GitHub release
-      await this.runCommand([
-        'gh', 'release', 'create', tagName,
-        '--title', `Release ${releaseNotes.version}`,
-        '--notes', releaseBody
-      ]);
+      // Write release notes to a temporary file to avoid command line issues
+      const tempFile = await Deno.makeTempFile({ suffix: '.md' });
+      await Deno.writeTextFile(tempFile, releaseBody);
       
-      const releaseUrl = `${this.config.project.repository}/releases/tag/${tagName}`;
-      console.log(`✅ Created GitHub release: ${releaseUrl}`);
-      return releaseUrl;
+      try {
+        // Create GitHub release using notes from file
+        await this.runCommand([
+          'gh', 'release', 'create', tagName,
+          '--title', `Release ${releaseNotes.version}`,
+          '--notes-file', tempFile
+        ]);
+        
+        const releaseUrl = `${this.config.project.repository}/releases/tag/${tagName}`;
+        console.log(`✅ Created GitHub release: ${releaseUrl}`);
+        return releaseUrl;
+      } finally {
+        // Clean up temp file
+        try {
+          await Deno.remove(tempFile);
+        } catch {
+          // Ignore cleanup errors
+        }
+      }
     } catch (error) {
       console.error('❌ Error creating GitHub release:', error instanceof Error ? error.message : String(error));
       console.log('ℹ️  You can create it manually at your repository releases page');

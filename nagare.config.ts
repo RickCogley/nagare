@@ -3,7 +3,7 @@ import { LogLevel } from './types.ts';
 
 export default {
   project: {
-    name: 'Nagare',
+    name: 'Nagare (流れ)',
     description: 'Deno Release Management Library',
     repository: 'https://github.com/RickCogley/nagare',
     homepage: 'https://jsr.io/@rick/nagare',

@@ -41,8 +41,12 @@ export class DocGenerator {
         cmd.push(...this.config.docs.denoDocOptions);
       }
       
-      // Add output format and directory
-      cmd.push('--html', `--name=${this.config.project.name}`, '--output', outputDir);
+      // In doc-generator.ts, around line 40:
+      const docTitle = this.config.project.description 
+        ? `${this.config.project.name} - ${this.config.project.description}`
+        : this.config.project.name;
+
+      cmd.push('--html', `--name=${docTitle}`, `--output=${outputDir}`);
       
       // Add all TypeScript files in current directory
       cmd.push('./mod.ts', './src/');
