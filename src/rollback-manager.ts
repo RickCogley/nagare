@@ -65,7 +65,7 @@ export class RollbackManager {
 
       if (!versionToRollback) {
         this.logger.info("❓ Enter the version to rollback (e.g., 1.1.0):");
-        const userInput = prompt("Version:");
+        const _userInput = prompt("Version:");
         if (!versionToRollback) {
           return { success: false, error: "No version specified" };
         }

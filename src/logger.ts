@@ -26,7 +26,7 @@ export class Logger {
   /**
    * Log debug information
    */
-  debug(message: string, ...args: any[]): void {
+  debug(message: string, ...args: unknown[]): void {
     if (this.logLevel <= LogLevel.DEBUG) {
       console.log(`[DEBUG] ${message}`, ...args);
     }
@@ -35,7 +35,7 @@ export class Logger {
   /**
    * Log general information
    */
-  info(message: string, ...args: any[]): void {
+  info(message: string, ...args: unknown[]): void {
     if (this.logLevel <= LogLevel.INFO) {
       console.log(`[INFO] ${message}`, ...args);
     }
@@ -44,7 +44,7 @@ export class Logger {
   /**
    * Log warnings
    */
-  warn(message: string, ...args: any[]): void {
+  warn(message: string, ...args: unknown[]): void {
     if (this.logLevel <= LogLevel.WARN) {
       console.warn(`[WARN] ${message}`, ...args);
     }

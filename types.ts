@@ -106,7 +106,7 @@ export interface ReleaseNotesConfig {
   /** Custom template for release notes section */
   template?: string;
   /** App-specific metadata to include */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   /** Include git commit hashes */
   includeCommitHashes?: boolean;
   /** Maximum description length */
@@ -150,7 +150,7 @@ export interface TemplateConfig {
   /** Custom templates directory */
   templatesDir?: string;
   /** Template data providers */
-  dataProviders?: Record<string, () => Promise<any>>;
+  dataProviders?: Record<string, () => Promise<unknown>>;
 }
 
 /**
@@ -242,7 +242,7 @@ export interface TemplateData {
   /** Release notes */
   releaseNotes: ReleaseNotes;
   /** Custom metadata */
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   /** Project information */
   project: NagareConfig["project"];
 }

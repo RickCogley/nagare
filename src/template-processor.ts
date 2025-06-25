@@ -40,7 +40,7 @@ export class TemplateProcessor {
     // Handle conditional blocks {{#if key}}...{{/if}}
     result = result.replace(
       /\{\{#if\s+([^}]+)\}\}([\s\S]*?)\{\{\/if\}\}/g,
-      (match, key, content) => {
+      (_match, key, content) => {
         const value = this.getNestedValue(data, key.trim());
         return value ? content : "";
       },
@@ -71,9 +71,18 @@ export class TemplateProcessor {
   /**
    * Get nested value from object using dot notation
    */
-  private getNestedValue(obj: any, path: string): any {
-    return path.split(".").reduce((current, key) => {
-      return current && typeof current === "object" ? current[key] : undefined;
-    }, obj);
+  private getNestedValue(obj: unknown, path: string): unknown {
+    const keys = path.split(".");
+    let current: unknown = obj;
+    
+    for (const key of keys) {
+      if (current && typeof current === "object" && current !== null) {
+        current = (current as Record<string, unknown>)[key];
+      } else {
+        return undefined;
+      }
+    }
+    
+    return current;
   }
 }

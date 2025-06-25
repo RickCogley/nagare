@@ -61,13 +61,14 @@ function parseArgs(args: string[]): {
       case "-y":
         options.skipConfirmation = true;
         break;
-      case "--log-level":
+      case "--log-level": {
         i++;
         const level = args[i];
         if (level && level in LogLevel) {
           options.logLevel = LogLevel[level as keyof typeof LogLevel];
         }
         break;
+      } 
       default:
         if (!arg.startsWith("-")) {
           // Check if this is a bump type first

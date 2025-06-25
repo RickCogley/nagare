@@ -375,11 +375,11 @@ export class ReleaseManager {
    */
   private getTemplateValue(data: TemplateData, keyPath: string): string | undefined {
     const keys = keyPath.split(".");
-    let value: any = data;
+    let value: unknown = data;
 
     for (const key of keys) {
-      if (value && typeof value === "object" && key in value) {
-        value = value[key];
+      if (value && typeof value === "object" && value !== null && key in value) {
+        value = (value as Record<string, unknown>)[key];
       } else {
         return undefined;
       }

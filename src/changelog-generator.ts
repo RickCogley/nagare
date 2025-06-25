@@ -2,15 +2,15 @@
  * @fileoverview CHANGELOG.md management following "Keep a Changelog" format
  */
 
-import type { ReleaseNotes } from "../types.ts";
+import type { ReleaseNotes, NagareConfig } from "../types.ts";
 
 /**
  * ChangelogGenerator - CHANGELOG.md management
  */
 export class ChangelogGenerator {
-  private config: any; // Will be properly typed when integrated
+  private config: NagareConfig; 
 
-  constructor(config: any) {
+  constructor(config: NagareConfig) {
     this.config = config;
   }
 

@@ -4,7 +4,7 @@
  */
 
 import type { ConventionalCommit, NagareConfig } from "../types.ts";
-import { Logger, LogLevel } from "./logger.ts";
+import { Logger } from "./logger.ts";
 
 /**
  * Handles all Git-related operations for releases
