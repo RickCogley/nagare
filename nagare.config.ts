@@ -54,7 +54,7 @@ export default {
       path: "./version.ts",
       patterns: {
         // This will match the entire content to trigger formatting
-        content: /[\s\S]*/
+        content: /[\s\S]*/,
       },
       updateFn: (content, data) => {
         // Version.ts is already updated by Nagare's template system,
@@ -67,7 +67,7 @@ export default {
       path: "./CHANGELOG.md",
       patterns: {
         // This will match the entire content to trigger formatting
-        content: /[\s\S]*/
+        content: /[\s\S]*/,
       },
       updateFn: (content, data) => {
         // CHANGELOG.md is already updated by Nagare,

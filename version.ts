@@ -8,19 +8,17 @@ export const VERSION = "0.3.0";
 export const BUILD_INFO = {
   buildDate: "2025-06-25T21:58:34.028Z",
   gitCommit: "463e11d",
-  buildEnvironment: "production"
+  buildEnvironment: "production",
 } as const;
 
 export const APP_INFO = {
   name: "Nagare (流れ)",
   description: "Deno Release Management Library",
   repository: "https://github.com/RickCogley/nagare",
-  license: "MIT"
+  license: "MIT",
 } as const;
 
-
 export const APP_METADATA = {} as const;
-
 
 export const RELEASE_NOTES = {
   "version": "0.3.0",
@@ -30,16 +28,16 @@ export const RELEASE_NOTES = {
     "add documentation server for Deno Deploy (01dac34)",
     "enhance deno.json with JSR optimizations (604183d)",
     "enhance JSR configuration for better scoring (e3a0eb3)",
-    "add runtime compatibility layer for Deno, Node.js, and Bun (4d9fe1f)"
+    "add runtime compatibility layer for Deno, Node.js, and Bun (4d9fe1f)",
   ],
   "changed": [
     "add comprehensive FAQ and API reference documentation (b9e30c0)",
-    "enhance mod.ts with comprehensive JSDoc and runtime exports (7b303b2)"
+    "enhance mod.ts with comprehensive JSDoc and runtime exports (7b303b2)",
   ],
   "deprecated": [],
   "removed": [],
   "fixed": [
-    "resolve TypeScript strict mode errors (463e11d)"
+    "resolve TypeScript strict mode errors (463e11d)",
   ],
-  "security": []
+  "security": [],
 } as const;
