@@ -1,6 +1,48 @@
 {
   "name": "@rick/nagare",
-  "version": "0.1.0",
+  "version": "0.0.0",
+  "description": "Deno Release Management Library",
+  "author": "Rick Cogley",
   "license": "MIT",
-  "exports": "./mod.ts"
+  "exports": ".mod.ts",
+  "tasks": {
+    "dev": "deno run --allow-read --allow-write --allow-run --watch examples/test.ts",
+    "test": "deno test --allow-read --allow-write --allow-run",
+    "test:watch": "deno test --allow-read --allow-write --allow-run --watch",
+    "lint": "deno lint",
+    "fmt": "deno fmt",
+    "check": "deno check **/*.ts",
+    
+    "release": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts",
+    "release:patch": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts patch",
+    "release:minor": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts minor",
+    "release:major": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts major",
+    "release:dry": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts --dry-run",
+    "rollback": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts rollback",
+    
+    "docs": "deno doc --html --name=Nagare --output=./docs ./mod.ts"
+  },
+  
+  "imports": {
+    "@std/semver": "https://deno.land/std@0.208.0/semver/mod.ts"
+  },
+  
+  "compilerOptions": {
+    "lib": ["deno.window"],
+    "strict": true
+  },
+  
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  },
+  
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 100,
+    "indentWidth": 2,
+    "semiColons": true,
+    "singleQuote": false
+  }
 }
