@@ -430,6 +430,9 @@ The current architecture is designed to support these extensions without breakin
 - **Modular structure** - New modules can be added independently
 - **Backward compatibility** - Existing configurations continue to work
 
+## Development Guidelines
+For commit message standards and contribution guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ---
 
 This architecture provides a solid foundation for reliable, extensible release automation while maintaining simplicity for basic use cases.
