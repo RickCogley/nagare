@@ -1,0 +1,26 @@
+{
+  "name": "@rick/nagare",
+  "version": "0.2.2",
+  "description": "Nagare (流れ is a Deno-native release management library with conventional commits support",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RickCogley/nagare.git"
+  },
+  "homepage": "https://github.com/RickCogley/nagare",
+  "keywords": [
+    "deno",
+    "release",
+    "management",
+    "conventional-commits",
+    "semver",
+    "changelog",
+    "git",
+    "github",
+    "automation"
+  ],
+  "exports": {
+    ".": "./mod.ts",
+    "./cli": "./cli.ts"
+  }
+}
