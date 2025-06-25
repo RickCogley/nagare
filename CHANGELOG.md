@@ -8,9 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.4.0] - 2025-06-25
 
 ### Added
+
 - add auto-formatting to generated files (07f418d)
 
 ### Fixed
+
 - format generated files (48d0c8a)
 - pass correct bumpType (4ec2a7b)
 - simplify updateFn to avoid sync/async complexity (a1161c9)

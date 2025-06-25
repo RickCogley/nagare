@@ -8,25 +8,23 @@ export const VERSION = "0.4.0";
 export const BUILD_INFO = {
   buildDate: "2025-06-25T22:26:00.786Z",
   gitCommit: "48d0c8a",
-  buildEnvironment: "production"
+  buildEnvironment: "production",
 } as const;
 
 export const APP_INFO = {
   name: "Nagare (流れ)",
   description: "Deno Release Management Library",
   repository: "https://github.com/RickCogley/nagare",
-  license: "MIT"
+  license: "MIT",
 } as const;
 
-
 export const APP_METADATA = {} as const;
-
 
 export const RELEASE_NOTES = {
   "version": "0.4.0",
   "date": "2025-06-25",
   "added": [
-    "add auto-formatting to generated files (07f418d)"
+    "add auto-formatting to generated files (07f418d)",
   ],
   "changed": [],
   "deprecated": [],
@@ -34,7 +32,7 @@ export const RELEASE_NOTES = {
   "fixed": [
     "format generated files (48d0c8a)",
     "pass correct bumpType (4ec2a7b)",
-    "simplify updateFn to avoid sync/async complexity (a1161c9)"
+    "simplify updateFn to avoid sync/async complexity (a1161c9)",
   ],
-  "security": []
+  "security": [],
 } as const;
