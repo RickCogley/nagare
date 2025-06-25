@@ -1,30 +1,119 @@
 /**
- * Nagare (流れ) - Deno Release Management Library
+ * @fileoverview Nagare (流れ) - A comprehensive Deno release management library
+ * @description Handles version bumping, changelog generation, and GitHub releases
+ * @author Rick
+ * @license MIT
+ * @see {@link https://jsr.io/@rick/nagare} for current version and documentation
+ * @module
  */
 
 // ==================================================================
-// mod.ts - Main Library Exports
+// Core Release Management Classes
 // ==================================================================
 
+/**
+ * Main release management functionality
+ */
 export { ReleaseManager } from "./src/release-manager.ts";
+
+/**
+ * Release rollback functionality
+ */
 export { RollbackManager } from "./src/rollback-manager.ts";
+
+/**
+ * Git operations and parsing
+ */
 export { GitOperations } from "./src/git-operations.ts";
+
+/**
+ * Semantic versioning utilities
+ */
 export { VersionUtils } from "./src/version-utils.ts";
+
+/**
+ * Changelog generation following Keep a Changelog format
+ */
 export { ChangelogGenerator } from "./src/changelog-generator.ts";
+
+/**
+ * GitHub CLI integration for releases
+ */
 export { GitHubIntegration } from "./src/github-integration.ts";
+
+/**
+ * Template processing engine
+ */
 export { TemplateProcessor } from "./src/template-processor.ts";
+
+/**
+ * Documentation generation utilities
+ */
 export { DocGenerator } from "./src/doc-generator.ts";
 
+// ==================================================================
+// Type Definitions
+// ==================================================================
+
+/**
+ * Type definitions for configuration and data structures
+ */
 export type {
+  /** Mapping of conventional commit types to changelog sections */
   CommitTypeMapping,
+  /** Parsed conventional commit structure */
   ConventionalCommit,
+  /** Pattern for updating files during release */
   FileUpdatePattern,
+  /** GitHub integration configuration */
   GitHubConfig,
+  /** Main configuration interface for Nagare */
   NagareConfig,
+  /** Release notes structure following Keep a Changelog format */
   ReleaseNotes,
+  /** Result of a release operation */
   ReleaseResult,
+  /** Template data for processing */
   TemplateData,
+  /** Version file configuration */
   VersionFile,
 } from "./types.ts";
 
-export { BumpType, DEFAULT_CONFIG, LogLevel, TemplateFormat } from "./config.ts";
+// ==================================================================
+// Configuration and Constants
+// ==================================================================
+
+/**
+ * Configuration constants and default values
+ */
+export { 
+  /** Version bump types for semantic versioning */
+  BumpType, 
+  /** Default configuration values */
+  DEFAULT_CONFIG, 
+  /** Logging levels */
+  LogLevel, 
+  /** Template format types */
+  TemplateFormat 
+} from "./config.ts";
+
+// ==================================================================
+// Runtime Compatibility (for multi-runtime support)
+// ==================================================================
+
+/**
+ * Cross-runtime compatibility utilities
+ * @description Provides unified APIs for Deno, Node.js, and Bun
+ */
+export {
+  /** Runtime detection utilities */
+  Runtime,
+  /** Cross-runtime file system operations */
+  FileSystem,
+  /** Cross-runtime process execution */
+  Process,
+  /** Cross-runtime path utilities */
+  Path,
+  /** Cross-runtime console utilities */
+  Console,
+} from "./src/runtime-compat.ts";
