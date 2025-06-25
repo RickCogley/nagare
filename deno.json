@@ -1,6 +1,6 @@
 {
   "name": "@rick/nagare",
-  "version": "0.0.0",
+  "0.2.0",
   "description": "Deno Release Management Library",
   "author": "Rick Cogley",
   "license": "MIT",
