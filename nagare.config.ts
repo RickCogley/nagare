@@ -32,6 +32,9 @@ export default {
       path: './deno.json',
       patterns: {
         version: /"version":\s*"([^"]+)"/
+      },
+      updateFn: (content, data) => {
+        return content.replace(/"version":\s*"([^"]+)"/, `"version": "${data.version}"`);
       }
     }
   ],
