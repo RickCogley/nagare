@@ -19,9 +19,9 @@ coverage.lcov
 test-results/
 
 # Documentation generated files
-docs/
-documentation/
-*.html
+# docs/
+# documentation/
+# *.html
 
 # Logs
 *.log
