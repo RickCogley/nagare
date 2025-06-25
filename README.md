@@ -299,6 +299,10 @@ export NODE_ENV="production"
 
 Contributions are welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
+## ✅ Testing
+
+For comprehensive testing guidelines, see [TESTING.md](TESTING.md).
+
 ## 📄 License
 
 MIT License - see [LICENSE](./LICENSE) for details.

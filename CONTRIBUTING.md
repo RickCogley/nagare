@@ -193,6 +193,10 @@ Deno.test("VersionUtils.calculateNewVersion - feature commits trigger minor bump
 });
 ```
 
+## Testing Requirements
+
+Before submitting PRs, follow the testing guide in [TESTING.md](./TESTING.md).
+
 ## 🏗️ Code Style Guidelines
 
 ### TypeScript Style
@@ -344,6 +348,6 @@ By contributing to Nagare, you agree that your contributions will be licensed un
 
 - **GitHub Discussions** - For general questions and ideas
 - **GitHub Issues** - For bug reports and feature requests
-- **Documentation** - Check README.md and ARCHITECTURE.md first
+- **Documentation** - Check [README.md](./README.md) and [ARCHITECTURE.md](./ARCHITECTURE.md) first
 
 Thank you for contributing to Nagare! 🚀
