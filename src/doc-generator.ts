@@ -42,7 +42,7 @@ export class DocGenerator {
       }
       
       // Add output format and directory
-      cmd.push('--html', '--name', this.config.project.name, '--output', outputDir);
+      cmd.push('--html', `--name=${this.config.project.name}`, '--output', outputDir);
       
       // Add all TypeScript files in current directory
       cmd.push('./mod.ts', './src/');
