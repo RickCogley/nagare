@@ -31,10 +31,25 @@ import { ReleaseManager } from "https://deno.land/x/nagare/mod.ts";
 
 ### Basic Setup
 
-1. **Create a configuration file** (`nagare.config.ts`):
+1. **Add import map and tasks to your `deno.json`** (Lume-style echo pattern):
+
+```json
+{
+  "imports": {
+    "nagare/": "jsr:@rick/nagare@^0.6.3/"
+  },
+  "tasks": {
+    "_comment": "// Define nagare CLI once using echo pattern (enables import map resolution)",
+    "nagare": "echo \"import { cli } from 'nagare/cli.ts'; await cli(Deno.args);\" | deno run -A -",
+    "release": "deno task nagare"
+  }
+}
+```
+
+2. **Create a configuration file** (`nagare.config.ts`):
 
 ```typescript
-import type { NagareConfig } from "@rick/nagare";
+import type { NagareConfig } from "nagare/types";
 
 export default {
   project: {
@@ -48,31 +63,17 @@ export default {
 } as NagareConfig;
 ```
 
-2. **Add tasks to your `deno.json`**:
-
-```json
-{
-  "tasks": {
-    "release": "deno run --allow-all jsr:@rick/nagare/cli",
-    "release:patch": "deno run --allow-all jsr:@rick/nagare/cli patch",
-    "release:minor": "deno run --allow-all jsr:@rick/nagare/cli minor",
-    "release:major": "deno run --allow-all jsr:@rick/nagare/cli major",
-    "rollback": "deno run --allow-all jsr:@rick/nagare/cli rollback"
-  }
-}
-```
-
 3. **Create your first release**:
 
 ```bash
 # Dry run to preview changes
-deno task release --dry-run
+deno task nagare --dry-run
 
 # Automatic release based on conventional commits
 deno task release
 
 # Or force a specific version bump
-deno task release minor
+deno task nagare minor
 ```
 
 ## 📖 Usage Examples
@@ -84,25 +85,54 @@ deno task release minor
 deno task release
 
 # Force specific version bumps
-deno task release patch   # 1.0.0 → 1.0.1
-deno task release minor   # 1.0.0 → 1.1.0  
-deno task release major   # 1.0.0 → 2.0.0
+deno task nagare patch   # 1.0.0 → 1.0.1
+deno task nagare minor   # 1.0.0 → 1.1.0  
+deno task nagare major   # 1.0.0 → 2.0.0
 
 # Preview changes without making them
-deno task release --dry-run
+deno task nagare --dry-run
 
 # Skip confirmation prompts (for CI)
-deno task release --skip-confirmation
+deno task nagare --skip-confirmation
 
 # Rollback a release
-deno task rollback        # Latest release
-deno task rollback 1.2.0  # Specific version
+deno task nagare rollback        # Latest release
+deno task nagare rollback 1.2.0  # Specific version
+
+# Combine flags
+deno task nagare minor --dry-run --skip-confirmation
+```
+
+### Alternative CLI Setup Options
+
+If you prefer other approaches, Nagare supports multiple patterns:
+
+**Option 1: Auto-executing runner (no arguments needed)**
+
+```json
+{
+  "tasks": {
+    "release": "deno run -A -e \"import 'nagare/cli-runner'\"",
+    "release:patch": "deno run -A -e \"import 'nagare/cli-runner'\" patch"
+  }
+}
+```
+
+**Option 2: Direct JSR import (traditional)**
+
+```json
+{
+  "tasks": {
+    "release": "deno run -A jsr:@rick/nagare/cli",
+    "release:patch": "deno run -A jsr:@rick/nagare/cli patch"
+  }
+}
 ```
 
 ### Programmatic Usage
 
 ```typescript
-import { ReleaseManager } from "@rick/nagare";
+import { ReleaseManager } from "nagare/";
 
 const config = {
   project: {
@@ -134,7 +164,7 @@ if (result.success) {
 ### Basic Configuration
 
 ```typescript
-import type { NagareConfig } from "@rick/nagare";
+import type { NagareConfig } from "nagare/types";
 
 export default {
   project: {
@@ -262,7 +292,6 @@ git commit -m "feat!: redesign API"               # 1.0.0 → 2.0.0
 - **Deno** 1.40+
 - **Git** repository with conventional commits
 - **GitHub CLI** (`gh`) for GitHub releases (optional)
-- **Node.js** environment variables if specified
 
 ## 🔒 Environment Variables
 
@@ -315,11 +344,13 @@ For comprehensive testing guidelines, see [TESTING.md](TESTING.md).
 ## 🎯 Runtime Compatibility
 
 ### Deno (Primary Runtime)
+
 - ✅ **Full compatibility** - All features supported
 - ✅ **CLI tools** - Complete release management
 - ✅ **File operations** - Native Deno APIs
 
-### Node.js & Bun (Partial Compatibility)  
+### Node.js & Bun (Partial Compatibility)
+
 - ✅ **Types and interfaces** - Full TypeScript support
 - ✅ **Configuration objects** - All schemas and defaults
 - ✅ **Template processing** - Static template definitions
@@ -327,6 +358,7 @@ For comprehensive testing guidelines, see [TESTING.md](TESTING.md).
 - ❌ **File operations** - Uses `Deno.Command`, `Deno.readTextFile`
 
 **Use cases for Node.js/Bun:**
+
 - Import types for your own release tools
 - Reference configuration schemas
 - Use template definitions

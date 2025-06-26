@@ -35,6 +35,7 @@
   "exports": {
     ".": "./mod.ts",
     "./cli": "./cli.ts",
+    "./cli.ts": "./cli.ts",
     "./types": "./types.ts",
     "./config": "./config.ts"
   },
