@@ -15,6 +15,7 @@ using conventional commits and semantic versioning principles.
 - **Flexible**: Template-based configuration system adapts to any project structure
 - **Modern**: Built for JSR, supports latest JavaScript runtime features
 - **Self-managing**: Can manage its own releases (dogfooding approach)
+- **Safe file updates**: Enhanced pattern validation prevents file corruption
 
 ### Which runtimes does Nagare support?
 
@@ -199,18 +200,55 @@ updateFiles: [
   {
     path: "./package.json",
     patterns: {
-      version: /"version":\s*"([^"]+)"/,
+      // ✅ SAFE: Line-anchored pattern only matches top-level version
+      version: /^(\s*)"version":\s*"([^"]+)"/m,
     },
   },
   {
     path: "./README.md",
     patterns: {
-      version: /Version:\s*([^\s]+)/,
-      date: /Last updated:\s*([^\n]+)/,
+      version: /(\[Version\s+)(\d+\.\d+\.\d+)(\])/g,
     },
   },
 ];
 ```
+
+### What are safe file update patterns?
+
+**✅ Safe Patterns:**
+
+```typescript
+updateFiles: [
+  {
+    path: "./deno.json",
+    patterns: {
+      // ✅ SAFE: Line-anchored pattern prevents matching task definitions
+      version: /^(\s*)"version":\s*"([^"]+)"/m,
+    },
+  },
+];
+```
+
+**❌ Dangerous Patterns:**
+
+```typescript
+updateFiles: [
+  {
+    path: "./deno.json",
+    patterns: {
+      // ❌ DANGEROUS: Can match task definitions like:
+      // "version": "deno run --allow-read version-check.ts"
+      version: /"version":\s*"([^"]+)"/,
+    },
+  },
+];
+```
+
+**Why it matters:**
+- The dangerous pattern can match ANY `"version":` in the file
+- This can corrupt task definitions in `deno.json` or `package.json`
+- The safe pattern only matches when `"version":` is at the start of a line
+- Nagare will warn you if dangerous patterns are detected
 
 ### What if a file update pattern fails?
 
@@ -220,6 +258,19 @@ Nagare will:
 2. Continue with other file updates
 3. Still complete the release process
 4. Show summary of what succeeded/failed
+
+### How do I know if my patterns are safe?
+
+Nagare automatically validates your patterns:
+
+```
+⚠️  Dangerous pattern detected in ./deno.json for key "version"
+   Pattern: "version":\s*"([^"]+)"
+   Issue: This pattern may match unintended content
+   Recommended: ^(\s*)"version":\s*"([^"]+)"
+```
+
+Always use the `--dry-run` flag to preview changes before applying them.
 
 ## Troubleshooting
 
@@ -281,6 +332,19 @@ deno run -A your-script.ts
 3. **Ensure CHANGELOG.md is writable**
 4. **Review commit type mappings**
 
+### "File update pattern warnings"
+
+These warnings help prevent file corruption:
+
+```
+⚠️  Dangerous pattern detected in ./deno.json for key "version"
+   Pattern: "version":\s*"([^"]+)"
+   Issue: This pattern may match unintended content
+   Recommended: ^(\s*)"version":\s*"([^"]+)"
+```
+
+**Solution:** Update your patterns to use the recommended safer versions.
+
 ## Best Practices
 
 ### How should I structure my project for Nagare?
@@ -331,6 +395,23 @@ ensures:
 - Users can see changes without running Nagare
 - GitHub releases have consistent formatting
 
+### How do I prevent file corruption?
+
+1. **Use line-anchored patterns** for JSON files:
+   ```typescript
+   // ✅ SAFE: Only matches top-level version
+   version: /^(\s*)"version":\s*"([^"]+)"/m
+   
+   // ❌ DANGEROUS: Can match any "version": in the file
+   version: /"version":\s*"([^"]+)"/
+   ```
+
+2. **Always run dry-run first**: `deno task nagare --dry-run`
+
+3. **Pay attention to warnings**: Nagare will warn about dangerous patterns
+
+4. **Test patterns carefully**: Use regex tools to verify what your patterns match
+
 ## Advanced Usage
 
 ### Can I run Nagare in CI/CD?
@@ -356,6 +437,15 @@ Configure separate Nagare instances for each package:
 export const config = {
   projectName: "Package A",
   versionFile: { path: "./version.ts", template: "typescript" },
+  updateFiles: [
+    {
+      path: "./deno.json",
+      patterns: {
+        // ✅ SAFE: Line-anchored pattern
+        version: /^(\s*)"version":\s*"([^"]+)"/m,
+      },
+    },
+  ],
   // ... other config
 };
 ```
@@ -383,17 +473,49 @@ await rollback.rollback("1.2.0", {
 });
 ```
 
+## Security & Safety
+
+### How does Nagare prevent file corruption?
+
+1. **Pattern validation**: Automatically detects dangerous regex patterns
+2. **Dry-run mode**: Preview all changes before applying them
+3. **JSON validation**: Ensures JSON files remain valid after updates
+4. **Multiple match detection**: Warns when patterns match more than intended
+5. **Safe defaults**: No dangerous default patterns included
+
+### What should I do if I see pattern warnings?
+
+```
+⚠️  Dangerous pattern detected in ./deno.json for key "version"
+   Pattern: "version":\s*"([^"]+)"
+   Issue: This pattern may match unintended content
+   Recommended: ^(\s*)"version":\s*"([^"]+)"
+```
+
+**Action steps:**
+1. **Update your pattern** to the recommended version
+2. **Test with dry-run** to verify it works correctly  
+3. **Commit the safer pattern** to prevent future issues
+
+### Can I disable pattern validation?
+
+While not recommended, pattern validation cannot be disabled as it's a safety feature. Instead:
+
+1. **Fix the patterns** to be more specific
+2. **Use custom update functions** if regex patterns aren't suitable
+3. **Report issues** if you believe the validation is incorrect
+
 ## Getting Help
 
 ### Where can I find more examples?
 
-- **GitHub Repository**: https://github.com/rick/nagare
+- **GitHub Repository**: https://github.com/RickCogley/nagare
 - **JSR Package**: https://jsr.io/@rick/nagare
 - **API Documentation**: [API.md](./API.md)
 
 ### How do I report bugs or request features?
 
-1. **Check existing issues**: https://github.com/rick/nagare/issues
+1. **Check existing issues**: https://github.com/RickCogley/nagare/issues
 2. **Create new issue** with:
    - Nagare version
    - Runtime (Deno/Node.js/Bun) and version
@@ -410,5 +532,5 @@ await rollback.rollback("1.2.0", {
 
 ---
 
-**Still have questions?** Open an issue on [GitHub](https://github.com/rick/nagare/issues) or check
+**Still have questions?** Open an issue on [GitHub](https://github.com/RickCogley/nagare/issues) or check
 the [API documentation](./API.md).

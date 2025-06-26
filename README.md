@@ -16,6 +16,7 @@ changelog generation, and GitHub releases using conventional commits and semanti
 - **📚 Documentation** - Optional deno doc generation
 - **⚙️ Highly Configurable** - Extensive configuration options
 - **🛡️ Type-Safe** - Full TypeScript support with comprehensive types
+- **🔒 Safe File Updates** - Enhanced pattern validation prevents file corruption
 
 ## 🚀 Quick Start
 
@@ -217,7 +218,8 @@ export const FEATURES = {{metadata.features}};
     {
       path: "./deno.json",
       patterns: {
-        version: /"version":\s*"([^"]+)"/,
+        // ✅ SAFE: Line-anchored pattern prevents matching task definitions
+        version: /^(\s*)"version":\s*"([^"]+)"/m,
       },
     },
   ],
@@ -228,6 +230,51 @@ export const FEATURES = {{metadata.features}};
   },
 } as NagareConfig;
 ```
+
+## 🛡️ Safe File Update Patterns
+
+**⚠️ Important:** Nagare includes enhanced validation to prevent file corruption from overly broad regex patterns.
+
+### ✅ Recommended Safe Patterns
+
+```typescript
+updateFiles: [
+  {
+    path: "./deno.json",
+    patterns: {
+      // ✅ SAFE: Line-anchored pattern only matches top-level version
+      version: /^(\s*)"version":\s*"([^"]+)"/m,
+    },
+  },
+  {
+    path: "./package.json", 
+    patterns: {
+      // ✅ SAFE: Line-anchored pattern only matches top-level version
+      version: /^(\s*)"version":\s*"([^"]+)"/m,
+    },
+  },
+];
+```
+
+### ❌ Dangerous Patterns to Avoid
+
+```typescript
+updateFiles: [
+  {
+    path: "./deno.json",
+    patterns: {
+      // ❌ DANGEROUS: Can match task definitions and other unintended content
+      version: /"version":\s*"([^"]+)"/,
+    },
+  },
+];
+```
+
+**Why the difference matters:**
+- The dangerous pattern `/"version":\s*"([^"]+)"/` matches ANY occurrence of `"version":` in the file
+- This can incorrectly match task definitions like `"version": "deno run version-check.ts"`  
+- The safe pattern `/^(\s*)"version":\s*"([^"]+)"/m` only matches when `"version":` appears at the start of a line
+- Nagare will automatically warn you if dangerous patterns are detected
 
 ## 🔧 Version File Templates
 
@@ -330,6 +377,12 @@ export NODE_ENV="production"
 - Make sure you're using the wrapper file approach (recommended setup)
 - Or use `--skip-confirmation` flag for automated workflows
 - Avoid echo/pipe patterns that interfere with stdin
+
+**"File update pattern warnings"**
+
+- Nagare detected potentially dangerous regex patterns in your configuration
+- Update your patterns to use line-anchored versions (see Safe File Update Patterns above)
+- The warnings help prevent accidental file corruption
 
 ### Getting Help
 

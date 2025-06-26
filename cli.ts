@@ -192,8 +192,26 @@ CONFIGURATION:
     versionFile: {
       path: './version.ts',
       template: 'typescript'
-    }
+    },
+    updateFiles: [
+      {
+        path: './deno.json',
+        patterns: {
+          // ✅ SAFE: Line-anchored pattern prevents matching task definitions
+          version: /^(\\s*)"version":\\s*"([^"]+)"/m
+        }
+      }
+    ]
   } as NagareConfig;
+
+SAFE FILE UPDATE PATTERNS:
+  Always use line-anchored patterns for JSON files to prevent corruption:
+  
+  ✅ SAFE:   /^(\\s*)"version":\\s*"([^"]+)"/m
+  ❌ UNSAFE: /"version":\\s*"([^"]+)"/
+  
+  The unsafe pattern can match task definitions and corrupt your files.
+  Nagare will warn you if dangerous patterns are detected.
 
 For more information, visit: ${APP_INFO.repository}
 `);
@@ -443,7 +461,8 @@ export default {
     {
       path: './deno.json',
       patterns: {
-        version: /"version":\\s*"([^"]+)"/
+        // ✅ SAFE: Line-anchored pattern prevents matching task definitions
+        version: /^(\\s*)"version":\\s*"([^"]+)"/m
       }
     },
     {
@@ -524,7 +543,17 @@ export const RELEASE_NOTES = {{releaseNotes}} as const;
       cryptoFeatures: ['AES-GCM-256', 'PBKDF2-SHA512', 'basE91'],
       securityFeatures: ['Rate limiting', 'API authentication']
     }
-  }
+  },
+
+  updateFiles: [
+    {
+      path: './deno.json',
+      patterns: {
+        // ✅ SAFE: Line-anchored pattern prevents matching task definitions
+        version: /^(\\s*)"version":\\s*"([^"]+)"/m
+      }
+    }
+  ]
 } as NagareConfig;`;
 
 /**

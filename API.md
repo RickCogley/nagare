@@ -570,6 +570,79 @@ if (Runtime.isDeno) {
 }
 ```
 
+## Safe File Update Patterns
+
+### Recommended Patterns
+
+For JSON files (deno.json, package.json):
+
+```typescript
+updateFiles: [
+  {
+    path: "./deno.json",
+    patterns: {
+      // ✅ SAFE: Line-anchored pattern prevents matching task definitions
+      version: /^(\s*)"version":\s*"([^"]+)"/m,
+    },
+  },
+  {
+    path: "./package.json",
+    patterns: {
+      // ✅ SAFE: Line-anchored pattern only matches top-level version
+      version: /^(\s*)"version":\s*"([^"]+)"/m,
+    },
+  },
+];
+```
+
+For other file types:
+
+```typescript
+updateFiles: [
+  {
+    path: "./README.md",
+    patterns: {
+      // ✅ SAFE: Specific version badge pattern
+      version: /(\[Version\s+)(\d+\.\d+\.\d+)(\])/g,
+    },
+  },
+  {
+    path: "./src/constants.yaml",
+    patterns: {
+      // ✅ SAFE: Line-anchored YAML pattern
+      version: /^(\s*version:\s*)(['"]?)([^'"\n]+)(['"]?)$/m,
+    },
+  },
+];
+```
+
+### Dangerous Patterns to Avoid
+
+```typescript
+updateFiles: [
+  {
+    path: "./deno.json",
+    patterns: {
+      // ❌ DANGEROUS: Can match ANY "version": in the file
+      // This can corrupt task definitions like:
+      // "version": "deno run --allow-read version-check.ts"
+      version: /"version":\s*"([^"]+)"/,
+    },
+  },
+];
+```
+
+### Pattern Validation
+
+Nagare automatically validates your file update patterns and will warn you about potentially dangerous configurations:
+
+```
+⚠️  Dangerous pattern detected in ./deno.json for key "version"
+   Pattern: "version":\s*"([^"]+)"
+   Issue: This pattern may match unintended content
+   Recommended: ^(\s*)"version":\s*"([^"]+)"
+```
+
 ## Examples
 
 ### Complete Configuration Example
@@ -635,7 +708,8 @@ export const LIBRARY_INFO = {
     {
       path: "./deno.json",
       patterns: {
-        version: /"version":\s*"([^"]+)"/,
+        // ✅ SAFE: Line-anchored pattern
+        version: /^(\s*)"version":\s*"([^"]+)"/m,
       },
     },
     {
