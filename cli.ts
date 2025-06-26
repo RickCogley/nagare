@@ -256,7 +256,7 @@ export async function cli(args: string[]): Promise<void> {
 /**
  * Example configurations for documentation
  */
-export const EXAMPLE_TS_CONFIG = `import type { NagareConfig } from '@rick/nagare';
+export const EXAMPLE_TS_CONFIG: string = `import type { NagareConfig } from '@rick/nagare';
 
 export default {
   project: {
@@ -316,7 +316,7 @@ export default {
   }
 } as NagareConfig;`;
 
-export const EXAMPLE_MINIMAL_CONFIG = `import type { NagareConfig } from '@rick/nagare';
+export const EXAMPLE_MINIMAL_CONFIG: string = `import type { NagareConfig } from '@rick/nagare';
 
 export default {
   project: {
@@ -330,7 +330,7 @@ export default {
   }
 } as NagareConfig;`;
 
-export const EXAMPLE_CUSTOM_TEMPLATE = `import type { NagareConfig } from '@rick/nagare';
+export const EXAMPLE_CUSTOM_TEMPLATE: string = `import type { NagareConfig } from '@rick/nagare';
 
 export default {
   project: {
