@@ -16,8 +16,7 @@ import {
   DEFAULT_CONFIG, 
   LogLevel,
   isDangerousPattern,
-  migrateDangerousPattern,
-  getRecommendedSafePattern
+  migrateDangerousPattern
 } from "../config.ts";
 import { GitOperations } from "./git-operations.ts";
 import { VersionUtils } from "./version-utils.ts";
@@ -548,7 +547,7 @@ export class ReleaseManager {
     templateData: TemplateData,
   ): Promise<void> {
     try {
-      let content = await Deno.readTextFile(filePattern.path);
+      const content = await Deno.readTextFile(filePattern.path);
       let updatedContent = content;
       const changes: Array<{ key: string; oldValue: string; newValue: string; matches: number }> = [];
 
