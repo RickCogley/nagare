@@ -1,8 +1,10 @@
 #!/usr/bin/env deno run --allow-read --allow-write --allow-run --allow-net
 
 /**
+ * @module CLI
  * @fileoverview CLI interface for Nagare release management
- * Provides command-line access to release and rollback functionality
+ * @description Provides command-line access to release and rollback functionality.
+ * Note: CLI functionality requires Deno runtime due to file system and process APIs.
  */
 
 import { ReleaseManager } from "./src/release-manager.ts";

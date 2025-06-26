@@ -1,5 +1,8 @@
 /**
+ * @module Config
  * @fileoverview Configuration schema and defaults for Nagare
+ * @description Default configurations, template definitions, and commit type mappings.
+ * Runtime-agnostic configuration objects compatible with all JavaScript environments.
  */
 
 import type { CommitTypeMapping, NagareConfig } from "./types.ts";

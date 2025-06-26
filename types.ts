@@ -3,7 +3,10 @@
 // ==================================================================
 
 /**
+ * @module Types
  * @fileoverview TypeScript interfaces and types for Nagare
+ * @description Comprehensive type definitions for configuration, commits, and release management.
+ * Compatible with all JavaScript runtimes for type checking and IntelliSense.
  */
 
 /**
