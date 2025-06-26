@@ -245,6 +245,7 @@ updateFiles: [
 ```
 
 **Why it matters:**
+
 - The dangerous pattern can match ANY `"version":` in the file
 - This can corrupt task definitions in `deno.json` or `package.json`
 - The safe pattern only matches when `"version":` is at the start of a line
@@ -400,10 +401,10 @@ ensures:
 1. **Use line-anchored patterns** for JSON files:
    ```typescript
    // ✅ SAFE: Only matches top-level version
-   version: /^(\s*)"version":\s*"([^"]+)"/m
-   
+   version: /^(\s*)"version":\s*"([^"]+)"/m;
+
    // ❌ DANGEROUS: Can match any "version": in the file
-   version: /"version":\s*"([^"]+)"/
+   version: /"version":\s*"([^"]+)"/;
    ```
 
 2. **Always run dry-run first**: `deno task nagare --dry-run`
@@ -493,8 +494,9 @@ await rollback.rollback("1.2.0", {
 ```
 
 **Action steps:**
+
 1. **Update your pattern** to the recommended version
-2. **Test with dry-run** to verify it works correctly  
+2. **Test with dry-run** to verify it works correctly
 3. **Commit the safer pattern** to prevent future issues
 
 ### Can I disable pattern validation?
@@ -532,5 +534,5 @@ While not recommended, pattern validation cannot be disabled as it's a safety fe
 
 ---
 
-**Still have questions?** Open an issue on [GitHub](https://github.com/RickCogley/nagare/issues) or check
-the [API documentation](./API.md).
+**Still have questions?** Open an issue on [GitHub](https://github.com/RickCogley/nagare/issues) or
+check the [API documentation](./API.md).

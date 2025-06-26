@@ -233,7 +233,8 @@ export const FEATURES = {{metadata.features}};
 
 ## 🛡️ Safe File Update Patterns
 
-**⚠️ Important:** Nagare includes enhanced validation to prevent file corruption from overly broad regex patterns.
+**⚠️ Important:** Nagare includes enhanced validation to prevent file corruption from overly broad
+regex patterns.
 
 ### ✅ Recommended Safe Patterns
 
@@ -247,7 +248,7 @@ updateFiles: [
     },
   },
   {
-    path: "./package.json", 
+    path: "./package.json",
     patterns: {
       // ✅ SAFE: Line-anchored pattern only matches top-level version
       version: /^(\s*)"version":\s*"([^"]+)"/m,
@@ -271,9 +272,12 @@ updateFiles: [
 ```
 
 **Why the difference matters:**
-- The dangerous pattern `/"version":\s*"([^"]+)"/` matches ANY occurrence of `"version":` in the file
-- This can incorrectly match task definitions like `"version": "deno run version-check.ts"`  
-- The safe pattern `/^(\s*)"version":\s*"([^"]+)"/m` only matches when `"version":` appears at the start of a line
+
+- The dangerous pattern `/"version":\s*"([^"]+)"/` matches ANY occurrence of `"version":` in the
+  file
+- This can incorrectly match task definitions like `"version": "deno run version-check.ts"`
+- The safe pattern `/^(\s*)"version":\s*"([^"]+)"/m` only matches when `"version":` appears at the
+  start of a line
 - Nagare will automatically warn you if dangerous patterns are detected
 
 ## 🔧 Version File Templates

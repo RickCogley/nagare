@@ -634,7 +634,8 @@ updateFiles: [
 
 ### Pattern Validation
 
-Nagare automatically validates your file update patterns and will warn you about potentially dangerous configurations:
+Nagare automatically validates your file update patterns and will warn you about potentially
+dangerous configurations:
 
 ```
 ⚠️  Dangerous pattern detected in ./deno.json for key "version"
