@@ -30,7 +30,8 @@
     ".": "./mod.ts",
     "./cli": "./cli.ts",
     "./types": "./types.ts",
-    "./config": "./config.ts"
+    "./config": "./config.ts",
+    "./version": "./version.ts"
   },
   "tasks": {
     "dev": "deno run --allow-read --allow-write --allow-run --watch examples/test.ts",
@@ -90,6 +91,7 @@
     "include": [
       "mod.ts",
       "cli.ts",
+      "version.ts",
       "types.ts",
       "config.ts",
       "src/",

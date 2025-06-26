@@ -37,7 +37,8 @@
     "./cli": "./cli.ts",
     "./cli.ts": "./cli.ts",
     "./types": "./types.ts",
-    "./config": "./config.ts"
+    "./config": "./config.ts",
+    "./version": "./version.ts"
   },
   "runtimeCompatibility": {
     "deno": ">=1.40.0",
@@ -61,6 +62,7 @@
     "include": [
       "mod.ts",
       "cli.ts",
+      "version.ts",
       "types.ts",
       "config.ts",
       "src/",
