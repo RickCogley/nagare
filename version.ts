@@ -8,31 +8,29 @@ export const VERSION = "0.6.3";
 export const BUILD_INFO = {
   buildDate: "2025-06-26T05:01:44.404Z",
   gitCommit: "daf0b56",
-  buildEnvironment: "production"
+  buildEnvironment: "production",
 } as const;
 
 export const APP_INFO = {
   name: "Nagare (流れ)",
   description: "Deno Release Management Library",
   repository: "https://github.com/RickCogley/nagare",
-  license: "MIT"
+  license: "MIT",
 } as const;
 
-
 export const APP_METADATA = {} as const;
-
 
 export const RELEASE_NOTES = {
   "version": "0.6.3",
   "date": "2025-06-26",
   "added": [],
   "changed": [
-    "deno fmt files (daf0b56)"
+    "deno fmt files (daf0b56)",
   ],
   "deprecated": [],
   "removed": [],
   "fixed": [
-    "export cli.ts as cli.ts (c071991)"
+    "export cli.ts as cli.ts (c071991)",
   ],
-  "security": []
+  "security": [],
 } as const;

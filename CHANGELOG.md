@@ -8,9 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.6.3] - 2025-06-26
 
 ### Changed
+
 - deno fmt files (daf0b56)
 
 ### Fixed
+
 - export cli.ts as cli.ts (c071991)
 
 ## [0.6.2] - 2025-06-26
