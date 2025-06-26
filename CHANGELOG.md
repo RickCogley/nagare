@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2025-06-26
+
+### Added
+- add comprehensive file update pattern validation (8106092)
+
+### Changed
+- deno fmt (5345675)
+- update all examples to use safe file update patterns (addd13f)
+- deno fmt (3e08e16)
+- deno fmt (39df1ce)
+- deno fmt (14e7c4c)
+
+### Fixed
+- replace dangerous file update pattern with safe alternative (a2a26a6)
+- remove unused import and use const for content variable (72f836c)
+- remove invalid getLevel() call from Logger (90b8cc8)
+- replace dangerous default file update patterns (4afa222)
+
 ## [0.7.0] - 2025-06-26
 
 ### Changed
