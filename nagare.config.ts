@@ -146,7 +146,10 @@ export default {
       },
       updateFn: (content, _data) => {
         // ✅ FIXED: Use the safer pattern with capture groups in replacement
-        const updated = content.replace(/^(\s*)"version":\s*"([^"]+)"/m, `$1"version": "${_data.version}"`);
+        const updated = content.replace(
+          /^(\s*)"version":\s*"([^"]+)"/m,
+          `$1"version": "${_data.version}"`,
+        );
         return formatContent(updated, "./deno.json");
       },
     },
