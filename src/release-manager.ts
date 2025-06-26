@@ -11,12 +11,12 @@ import type {
   ReleaseResult,
   TemplateData,
 } from "../types.ts";
-import { 
-  DEFAULT_COMMIT_TYPES, 
-  DEFAULT_CONFIG, 
-  LogLevel,
+import {
+  DEFAULT_COMMIT_TYPES,
+  DEFAULT_CONFIG,
   isDangerousPattern,
-  migrateDangerousPattern
+  LogLevel,
+  migrateDangerousPattern,
 } from "../config.ts";
 import { GitOperations } from "./git-operations.ts";
 import { VersionUtils } from "./version-utils.ts";
@@ -101,29 +101,29 @@ export class ReleaseManager {
         // Check for dangerous patterns
         if (isDangerousPattern(pattern, filePattern.path)) {
           const migration = migrateDangerousPattern(pattern, filePattern.path, key);
-          
+
           if (migration.migrated) {
             warnings.push(
               `⚠️  Dangerous pattern detected in ${filePattern.path} for key "${key}"\n` +
-              `   Pattern: ${pattern.source}\n` +
-              `   Issue: This pattern may match unintended content\n` +
-              `   Recommended: ${migration.pattern.source}\n` +
-              `   ${migration.warning || ''}`
+                `   Pattern: ${pattern.source}\n` +
+                `   Issue: This pattern may match unintended content\n` +
+                `   Recommended: ${migration.pattern.source}\n` +
+                `   ${migration.warning || ""}`,
             );
           } else {
             warnings.push(
               `⚠️  Potentially dangerous pattern in ${filePattern.path} for key "${key}"\n` +
-              `   Pattern: ${pattern.source}\n` +
-              `   Consider using more specific patterns with line anchors (^ or $)`
+                `   Pattern: ${pattern.source}\n` +
+                `   Consider using more specific patterns with line anchors (^ or $)`,
             );
           }
         }
 
         // Validate pattern will match something reasonable
-        if (key === 'version' && !pattern.source.includes('version')) {
+        if (key === "version" && !pattern.source.includes("version")) {
           warnings.push(
             `❓ Pattern for "version" key doesn't contain "version" in ${filePattern.path}\n` +
-            `   This might not match what you expect: ${pattern.source}`
+              `   This might not match what you expect: ${pattern.source}`,
           );
         }
       }
@@ -140,33 +140,33 @@ export class ReleaseManager {
    */
   private buildSafeReplacement(pattern: RegExp, newValue: string): string {
     const source = pattern.source;
-    
+
     // Handle line-anchored JSON patterns (the safe ones)
     if (source.includes('^(\\s*)"version"')) {
       return `$1"version": "${newValue}"`;
     }
-    
+
     // Handle other common JSON patterns
-    if (source.includes('"version"') && source.includes('\\s*')) {
+    if (source.includes('"version"') && source.includes("\\s*")) {
       return `"version": "${newValue}"`;
     }
-    
+
     // Handle YAML patterns
-    if (source.includes('version:')) {
+    if (source.includes("version:")) {
       return `version: "${newValue}"`;
     }
-    
+
     // Handle markdown badge patterns
-    if (source.includes('Version\\s+')) {
+    if (source.includes("Version\\s+")) {
       return `$1${newValue}$3`;
     }
-    
+
     // Generic fallback - try to preserve capture groups
     const captureGroups = (source.match(/\(/g) || []).length;
     if (captureGroups >= 2) {
       return `$1"${newValue}"`;
     }
-    
+
     // Last resort
     return `"${newValue}"`;
   }
@@ -182,12 +182,12 @@ export class ReleaseManager {
     }
 
     this.logger.info("\n📄 File Update Preview:");
-    
+
     for (const filePattern of this.config.updateFiles) {
       try {
         const content = await Deno.readTextFile(filePattern.path);
         this.logger.info(`\n  File: ${filePattern.path}`);
-        
+
         if (filePattern.updateFn) {
           this.logger.info("    ✅ Uses custom update function");
           continue;
@@ -195,13 +195,17 @@ export class ReleaseManager {
 
         let hasChanges = false;
         for (const [key, pattern] of Object.entries(filePattern.patterns)) {
-          const matches = [...content.matchAll(new RegExp(pattern, 'g'))];
+          const matches = [...content.matchAll(new RegExp(pattern, "g"))];
           const value = this.getTemplateValue(templateData, key);
-          
+
           if (matches.length === 0) {
             this.logger.warn(`    ❌ ${key}: No matches found`);
           } else if (matches.length === 1) {
-            this.logger.info(`    ✅ ${key}: "${matches[0][0]}" → "${this.buildSafeReplacement(pattern, value || 'undefined')}"`);
+            this.logger.info(
+              `    ✅ ${key}: "${matches[0][0]}" → "${
+                this.buildSafeReplacement(pattern, value || "undefined")
+              }"`,
+            );
             hasChanges = true;
           } else {
             this.logger.warn(`    ⚠️  ${key}: ${matches.length} matches found (may cause issues)`);
@@ -211,11 +215,10 @@ export class ReleaseManager {
             hasChanges = true;
           }
         }
-        
+
         if (!hasChanges) {
           this.logger.info("    No changes");
         }
-        
       } catch (error) {
         this.logger.error(`    ❌ Cannot read file: ${error}`);
       }
@@ -374,7 +377,7 @@ export class ReleaseManager {
 
     // NEW: Add pattern validation
     const patternValidation = this.validateFileUpdatePatterns();
-    
+
     if (patternValidation.warnings.length > 0) {
       this.logger.warn("\n⚠️  File update pattern warnings:");
       for (const warning of patternValidation.warnings) {
@@ -382,7 +385,7 @@ export class ReleaseManager {
       }
       this.logger.warn("\nConsider updating your patterns to avoid potential file corruption.");
     }
-    
+
     if (!patternValidation.valid) {
       this.logger.error("\n❌ File update pattern errors:");
       for (const error of patternValidation.errors) {
@@ -501,12 +504,12 @@ export class ReleaseManager {
     // Update additional files with enhanced validation
     if (this.config.updateFiles && this.config.updateFiles.length > 0) {
       this.logger.info("\n📄 Processing file updates...");
-      
+
       for (const filePattern of this.config.updateFiles) {
         await this.updateCustomFile(filePattern, templateData);
         updatedFiles.push(filePattern.path);
       }
-      
+
       this.logger.info(`✅ Updated ${this.config.updateFiles.length} additional files`);
     }
 
@@ -549,7 +552,8 @@ export class ReleaseManager {
     try {
       const content = await Deno.readTextFile(filePattern.path);
       let updatedContent = content;
-      const changes: Array<{ key: string; oldValue: string; newValue: string; matches: number }> = [];
+      const changes: Array<{ key: string; oldValue: string; newValue: string; matches: number }> =
+        [];
 
       if (filePattern.updateFn) {
         // Use custom update function
@@ -565,8 +569,8 @@ export class ReleaseManager {
           }
 
           // Count matches before replacement
-          const matches = [...content.matchAll(new RegExp(pattern, 'g'))];
-          
+          const matches = [...content.matchAll(new RegExp(pattern, "g"))];
+
           if (matches.length === 0) {
             this.logger.warn(`Pattern "${key}" found no matches in ${filePattern.path}`);
             continue;
@@ -575,9 +579,9 @@ export class ReleaseManager {
           if (matches.length > 1) {
             this.logger.warn(
               `Pattern "${key}" found ${matches.length} matches in ${filePattern.path}. ` +
-              `This may cause unexpected replacements. Consider using more specific patterns.`
+                `This may cause unexpected replacements. Consider using more specific patterns.`,
             );
-            
+
             // In dry-run mode, show all matches
             if (this.config.options?.dryRun) {
               this.logger.info(`  Matches found in ${filePattern.path}:`);
@@ -589,13 +593,13 @@ export class ReleaseManager {
 
           // Build replacement based on pattern structure
           const replacement = this.buildSafeReplacement(pattern, value);
-          
+
           // Track the change
           changes.push({
             key,
             oldValue: matches[0][0],
             newValue: replacement,
-            matches: matches.length
+            matches: matches.length,
           });
 
           // Apply replacement
@@ -606,8 +610,10 @@ export class ReleaseManager {
         if (this.config.options?.dryRun && changes.length > 0) {
           this.logger.info(`\n📄 Changes for ${filePattern.path}:`);
           for (const change of changes) {
-            const status = change.matches === 1 ? '✅' : '⚠️';
-            this.logger.info(`  ${status} ${change.key}: "${change.oldValue}" → "${change.newValue}"`);
+            const status = change.matches === 1 ? "✅" : "⚠️";
+            this.logger.info(
+              `  ${status} ${change.key}: "${change.oldValue}" → "${change.newValue}"`,
+            );
             if (change.matches > 1) {
               this.logger.warn(`    Warning: ${change.matches} matches found`);
             }
@@ -616,13 +622,13 @@ export class ReleaseManager {
       }
 
       // Validate the updated content for JSON files
-      if (filePattern.path.endsWith('.json')) {
+      if (filePattern.path.endsWith(".json")) {
         try {
           JSON.parse(updatedContent);
         } catch (error) {
           throw new Error(
             `Updated ${filePattern.path} contains invalid JSON: ${error}\n` +
-            `This suggests the pattern replacement corrupted the file structure.`
+              `This suggests the pattern replacement corrupted the file structure.`,
           );
         }
       }
@@ -631,9 +637,8 @@ export class ReleaseManager {
       if (!this.config.options?.dryRun) {
         await Deno.writeTextFile(filePattern.path, updatedContent);
       }
-      
+
       this.logger.debug(`Updated file: ${filePattern.path}`);
-      
     } catch (error) {
       this.logger.error(`Failed to update file ${filePattern.path}:`, error as Error);
       throw error;
