@@ -33,16 +33,16 @@ export const DEFAULT_COMMIT_TYPES: CommitTypeMapping = {
 export const SAFE_DEFAULT_UPDATE_PATTERNS = {
   // JSON files - only match top-level version field
   jsonVersion: /^(\s*)"version":\s*"([^"]+)"/m,
-  
-  // YAML files - only match top-level version field  
+
+  // YAML files - only match top-level version field
   yamlVersion: /^(\s*version:\s*)(['"]?)([^'"\n]+)(['"]?)$/m,
-  
+
   // Markdown version badges
   markdownVersionBadge: /(\[Version\s+)(\d+\.\d+\.\d+)(\])/g,
-  
+
   // HTML meta version tags
   htmlMetaVersion: /(<meta\s+name="version"\s+content=")([^"]+)(")/gi,
-  
+
   // TypeScript/JavaScript export const VERSION
   typescriptVersion: /(export\s+const\s+VERSION\s*=\s*")([^"]+)(")/,
 };
@@ -91,7 +91,7 @@ export const DEFAULT_CONFIG: Partial<NagareConfig> = {
 export const DANGEROUS_LEGACY_PATTERNS = {
   // ❌ This pattern caused the Salty deno.json corruption bug
   broadJsonVersion: /"version":\s*"([^"]+)"/,
-  
+
   // ❌ Other overly broad patterns that should be avoided
   broadYamlVersion: /version:\s*"?([^"\n]+)"?/,
   broadMarkdownVersion: /version[:\s]+(\d+\.\d+\.\d+)/gi,
@@ -102,25 +102,25 @@ export const DANGEROUS_LEGACY_PATTERNS = {
  */
 export function isDangerousPattern(pattern: RegExp, filePath: string): boolean {
   const source = pattern.source;
-  
+
   // Check for the specific pattern that caused the Salty bug
   if (source === '"version":\\s*"([^"]+)"') {
     return true;
   }
-  
+
   // Check for other dangerous broad patterns in JSON files
-  if (filePath.endsWith('.json')) {
+  if (filePath.endsWith(".json")) {
     // Patterns without line anchors in JSON files are dangerous
-    if (source.includes('"version"') && !source.includes('^') && !source.includes('$')) {
+    if (source.includes('"version"') && !source.includes("^") && !source.includes("$")) {
       return true;
     }
   }
-  
+
   // Check for overly broad wildcards
-  if (source.includes('.*') || source.includes('.+')) {
+  if (source.includes(".*") || source.includes(".+")) {
     return true;
   }
-  
+
   return false;
 }
 
@@ -128,28 +128,28 @@ export function isDangerousPattern(pattern: RegExp, filePath: string): boolean {
  * Get recommended safe pattern for a file and key
  */
 export function getRecommendedSafePattern(filePath: string, key: string): RegExp | null {
-  if (key !== 'version') return null;
-  
-  if (filePath.endsWith('.json')) {
+  if (key !== "version") return null;
+
+  if (filePath.endsWith(".json")) {
     return SAFE_DEFAULT_UPDATE_PATTERNS.jsonVersion;
   }
-  
-  if (filePath.endsWith('.yaml') || filePath.endsWith('.yml')) {
+
+  if (filePath.endsWith(".yaml") || filePath.endsWith(".yml")) {
     return SAFE_DEFAULT_UPDATE_PATTERNS.yamlVersion;
   }
-  
-  if (filePath.toLowerCase().includes('readme') || filePath.endsWith('.md')) {
+
+  if (filePath.toLowerCase().includes("readme") || filePath.endsWith(".md")) {
     return SAFE_DEFAULT_UPDATE_PATTERNS.markdownVersionBadge;
   }
-  
-  if (filePath.endsWith('.html')) {
+
+  if (filePath.endsWith(".html")) {
     return SAFE_DEFAULT_UPDATE_PATTERNS.htmlMetaVersion;
   }
-  
-  if (filePath.endsWith('.ts') || filePath.endsWith('.js')) {
+
+  if (filePath.endsWith(".ts") || filePath.endsWith(".js")) {
     return SAFE_DEFAULT_UPDATE_PATTERNS.typescriptVersion;
   }
-  
+
   return null;
 }
 
@@ -157,31 +157,31 @@ export function getRecommendedSafePattern(filePath: string, key: string): RegExp
  * Migrate dangerous patterns to safe alternatives
  */
 export function migrateDangerousPattern(
-  pattern: RegExp, 
-  filePath: string, 
-  key: string
+  pattern: RegExp,
+  filePath: string,
+  key: string,
 ): { pattern: RegExp; migrated: boolean; warning?: string } {
   const source = pattern.source;
-  
+
   // Fix the specific Salty bug pattern
-  if (source === '"version":\\s*"([^"]+)"' && filePath.endsWith('.json')) {
+  if (source === '"version":\\s*"([^"]+)"' && filePath.endsWith(".json")) {
     return {
       pattern: SAFE_DEFAULT_UPDATE_PATTERNS.jsonVersion,
       migrated: true,
-      warning: `Migrated dangerous broad pattern to line-anchored pattern for ${filePath}`
+      warning: `Migrated dangerous broad pattern to line-anchored pattern for ${filePath}`,
     };
   }
-  
+
   // Get recommended pattern for this file type
   const recommended = getRecommendedSafePattern(filePath, key);
   if (recommended && isDangerousPattern(pattern, filePath)) {
     return {
       pattern: recommended,
       migrated: true,
-      warning: `Migrated potentially dangerous pattern to recommended safe pattern for ${filePath}`
+      warning: `Migrated potentially dangerous pattern to recommended safe pattern for ${filePath}`,
     };
   }
-  
+
   return { pattern, migrated: false };
 }
 

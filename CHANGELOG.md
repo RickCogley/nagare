@@ -8,24 +8,29 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.7.0] - 2025-06-26
 
 ### Changed
+
 - update to reflect recent fixes (fdc2e8c)
 
 ## [0.6.6] - 2025-06-26
 
 ### Fixed
+
 - add version.ts to publish.include and export list (f793cbf)
 
 ## [0.6.5] - 2025-06-26
 
 ### Fixed
+
 - import version from version.ts instead of hardcoded string (54ad071)
 
 ## [0.6.4] - 2025-06-26
 
 ### Changed
+
 - deno fmt (ede9c01)
 
 ### Fixed
+
 - use deno.cwd for resolving relative config paths (236bdfc)
 
 ## [0.6.3] - 2025-06-26

@@ -11,7 +11,7 @@ import { ReleaseManager } from "./src/release-manager.ts";
 import { RollbackManager } from "./src/rollback-manager.ts";
 import type { BumpType, NagareConfig } from "./types.ts";
 import { LogLevel } from "./config.ts";
-import { VERSION, APP_INFO, BUILD_INFO, RELEASE_NOTES } from "./version.ts";
+import { APP_INFO, BUILD_INFO, RELEASE_NOTES, VERSION } from "./version.ts";
 
 /**
  * CLI configuration options
@@ -219,42 +219,42 @@ function showDetailedVersion(): void {
   console.log(`   📅 Build Date: ${BUILD_INFO.buildDate}`);
   console.log(`   🔗 Git Commit: ${BUILD_INFO.gitCommit}`);
   console.log(`   🏗️  Environment: ${BUILD_INFO.buildEnvironment}`);
-  
+
   if (RELEASE_NOTES && RELEASE_NOTES.version === VERSION) {
     console.log();
     console.log(`📰 Release Notes (v${RELEASE_NOTES.version} - ${RELEASE_NOTES.date}):`);
-    
+
     if (RELEASE_NOTES.added && RELEASE_NOTES.added.length > 0) {
       console.log("   ✨ Added:");
-      RELEASE_NOTES.added.forEach(item => console.log(`      • ${item}`));
+      RELEASE_NOTES.added.forEach((item) => console.log(`      • ${item}`));
     }
-    
+
     if (RELEASE_NOTES.changed && RELEASE_NOTES.changed.length > 0) {
       console.log("   🔄 Changed:");
-      RELEASE_NOTES.changed.forEach(item => console.log(`      • ${item}`));
+      RELEASE_NOTES.changed.forEach((item) => console.log(`      • ${item}`));
     }
-    
+
     if (RELEASE_NOTES.fixed && RELEASE_NOTES.fixed.length > 0) {
       console.log("   🐛 Fixed:");
-      RELEASE_NOTES.fixed.forEach(item => console.log(`      • ${item}`));
+      RELEASE_NOTES.fixed.forEach((item) => console.log(`      • ${item}`));
     }
-    
+
     if (RELEASE_NOTES.deprecated && RELEASE_NOTES.deprecated.length > 0) {
       console.log("   ⚠️  Deprecated:");
-      RELEASE_NOTES.deprecated.forEach(item => console.log(`      • ${item}`));
+      RELEASE_NOTES.deprecated.forEach((item) => console.log(`      • ${item}`));
     }
-    
+
     if (RELEASE_NOTES.removed && RELEASE_NOTES.removed.length > 0) {
       console.log("   🗑️  Removed:");
-      RELEASE_NOTES.removed.forEach(item => console.log(`      • ${item}`));
+      RELEASE_NOTES.removed.forEach((item) => console.log(`      • ${item}`));
     }
-    
+
     if (RELEASE_NOTES.security && RELEASE_NOTES.security.length > 0) {
       console.log("   🔒 Security:");
-      RELEASE_NOTES.security.forEach(item => console.log(`      • ${item}`));
+      RELEASE_NOTES.security.forEach((item) => console.log(`      • ${item}`));
     }
   }
-  
+
   console.log();
   console.log("🚀 Runtime Information:");
   console.log(`   🦕 Deno: ${Deno.version.deno}`);
@@ -272,21 +272,21 @@ function showVersionJson(): void {
       name: APP_INFO.name,
       description: APP_INFO.description,
       repository: APP_INFO.repository,
-      license: APP_INFO.license
+      license: APP_INFO.license,
     },
     build: {
       buildDate: BUILD_INFO.buildDate,
       gitCommit: BUILD_INFO.gitCommit,
-      buildEnvironment: BUILD_INFO.buildEnvironment
+      buildEnvironment: BUILD_INFO.buildEnvironment,
     },
     runtime: {
       deno: Deno.version.deno,
       v8: Deno.version.v8,
-      typescript: Deno.version.typescript
+      typescript: Deno.version.typescript,
     },
-    releaseNotes: RELEASE_NOTES.version === VERSION ? RELEASE_NOTES : null
+    releaseNotes: RELEASE_NOTES.version === VERSION ? RELEASE_NOTES : null,
   };
-  
+
   console.log(JSON.stringify(versionInfo, null, 2));
 }
 
@@ -381,7 +381,9 @@ export async function cli(args: string[]): Promise<void> {
 
       case "release":
       default: {
-        console.log(formatInfo(`Starting release process${bumpType ? ` with ${bumpType} bump` : ""}...`));
+        console.log(
+          formatInfo(`Starting release process${bumpType ? ` with ${bumpType} bump` : ""}...`),
+        );
         const releaseManager = new ReleaseManager(config);
         const result = await releaseManager.release(bumpType as BumpType);
         if (!result.success) {

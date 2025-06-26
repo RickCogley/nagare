@@ -25,7 +25,7 @@ changelog generation, and GitHub releases using conventional commits and semanti
 
 ```typescript
 #!/usr/bin/env deno run -A
-import { cli } from 'jsr:@rick/nagare/cli';
+import { cli } from "jsr:@rick/nagare/cli";
 await cli(Deno.args);
 ```
 
@@ -37,7 +37,7 @@ await cli(Deno.args);
     "nagare": "deno run -A run-nagare.ts",
     "release": "deno task nagare",
     "release:patch": "deno task nagare patch",
-    "release:minor": "deno task nagare minor", 
+    "release:minor": "deno task nagare minor",
     "release:major": "deno task nagare major",
     "release:dry": "deno task nagare --dry-run"
   }
@@ -124,7 +124,8 @@ deno task nagare minor --dry-run --skip-confirmation
 }
 ```
 
-> **⚠️ Note:** Alternative options may not handle interactive prompts correctly. The wrapper file approach (recommended setup) ensures proper handling of user confirmations and error messages.
+> **⚠️ Note:** Alternative options may not handle interactive prompts correctly. The wrapper file
+> approach (recommended setup) ensures proper handling of user confirmations and error messages.
 
 ### Programmatic Usage
 
