@@ -11,6 +11,7 @@ import { ReleaseManager } from "./src/release-manager.ts";
 import { RollbackManager } from "./src/rollback-manager.ts";
 import type { BumpType, NagareConfig } from "./types.ts";
 import { LogLevel } from "./config.ts";
+import { VERSION, APP_INFO, BUILD_INFO, RELEASE_NOTES } from "./version.ts";
 
 /**
  * CLI configuration options
@@ -22,6 +23,8 @@ interface CLIOptions {
   logLevel?: LogLevel;
   help?: boolean;
   version?: boolean;
+  versionDetailed?: boolean;
+  versionJson?: boolean;
 }
 
 /**
@@ -48,6 +51,13 @@ function parseArgs(args: string[]): {
       case "--version":
       case "-v":
         options.version = true;
+        break;
+      case "--version-detailed":
+      case "--version-full":
+        options.versionDetailed = true;
+        break;
+      case "--version-json":
+        options.versionJson = true;
         break;
       case "--config":
       case "-c":
@@ -133,7 +143,7 @@ async function loadConfig(configPath?: string): Promise<NagareConfig> {
  */
 function showHelp(): void {
   console.log(`
-Nagare (流れ) - Deno Release Management Library
+${APP_INFO.name} v${VERSION} - ${APP_INFO.description}
 
 USAGE:
   nagare <command> [options]
@@ -150,20 +160,24 @@ BUMP TYPES:
   patch      Increment patch version (1.0.0 -> 1.0.1)
 
 OPTIONS:
-  --config, -c <path>      Path to configuration file
-  --dry-run               Preview changes without making them
-  --skip-confirmation, -y  Skip confirmation prompts
-  --log-level <level>     Set log level (DEBUG, INFO, WARN, ERROR)
-  --help, -h              Show this help message
-  --version, -v           Show version information
+  --config, -c <path>         Path to configuration file
+  --dry-run                   Preview changes without making them
+  --skip-confirmation, -y     Skip confirmation prompts
+  --log-level <level>         Set log level (DEBUG, INFO, WARN, ERROR)
+  --help, -h                  Show this help message
+  --version, -v               Show version information
+  --version-detailed          Show detailed version information
+  --version-json              Show version information in JSON format
 
 EXAMPLES:
-  nagare release                    # Auto-determine version bump from commits
-  nagare release minor             # Force minor version bump
-  nagare release --dry-run         # Preview release without making changes
-  nagare rollback                  # Rollback latest release
-  nagare rollback 1.2.0           # Rollback specific version
-  nagare --config ./my-config.ts   # Use custom config file
+  nagare release                       # Auto-determine version bump from commits
+  nagare release minor                # Force minor version bump
+  nagare release --dry-run            # Preview release without making changes
+  nagare rollback                     # Rollback latest release
+  nagare rollback 1.2.0               # Rollback specific version
+  nagare --config ./my-config.ts      # Use custom config file
+  nagare --version-detailed           # Show build info and release notes
+  nagare --version-json               # Output version info as JSON
 
 CONFIGURATION:
   Create a nagare.config.ts file in your project root:
@@ -181,16 +195,120 @@ CONFIGURATION:
     }
   } as NagareConfig;
 
-For more information, visit: https://github.com/RickCogley/nagare
+For more information, visit: ${APP_INFO.repository}
 `);
 }
 
 /**
- * Show version information
+ * Show basic version information
  */
 function showVersion(): void {
-  // This will be replaced with actual version from version.ts when available
-  console.log("Nagare v1.0.0-dev");
+  console.log(`Nagare v${VERSION}`);
+}
+
+/**
+ * Show detailed version information
+ */
+function showDetailedVersion(): void {
+  console.log(`🌊 ${APP_INFO.name} v${VERSION}`);
+  console.log(`📝 ${APP_INFO.description}`);
+  console.log(`📦 Repository: ${APP_INFO.repository}`);
+  console.log(`📄 License: ${APP_INFO.license}`);
+  console.log();
+  console.log("📋 Build Information:");
+  console.log(`   📅 Build Date: ${BUILD_INFO.buildDate}`);
+  console.log(`   🔗 Git Commit: ${BUILD_INFO.gitCommit}`);
+  console.log(`   🏗️  Environment: ${BUILD_INFO.buildEnvironment}`);
+  
+  if (RELEASE_NOTES && RELEASE_NOTES.version === VERSION) {
+    console.log();
+    console.log(`📰 Release Notes (v${RELEASE_NOTES.version} - ${RELEASE_NOTES.date}):`);
+    
+    if (RELEASE_NOTES.added && RELEASE_NOTES.added.length > 0) {
+      console.log("   ✨ Added:");
+      RELEASE_NOTES.added.forEach(item => console.log(`      • ${item}`));
+    }
+    
+    if (RELEASE_NOTES.changed && RELEASE_NOTES.changed.length > 0) {
+      console.log("   🔄 Changed:");
+      RELEASE_NOTES.changed.forEach(item => console.log(`      • ${item}`));
+    }
+    
+    if (RELEASE_NOTES.fixed && RELEASE_NOTES.fixed.length > 0) {
+      console.log("   🐛 Fixed:");
+      RELEASE_NOTES.fixed.forEach(item => console.log(`      • ${item}`));
+    }
+    
+    if (RELEASE_NOTES.deprecated && RELEASE_NOTES.deprecated.length > 0) {
+      console.log("   ⚠️  Deprecated:");
+      RELEASE_NOTES.deprecated.forEach(item => console.log(`      • ${item}`));
+    }
+    
+    if (RELEASE_NOTES.removed && RELEASE_NOTES.removed.length > 0) {
+      console.log("   🗑️  Removed:");
+      RELEASE_NOTES.removed.forEach(item => console.log(`      • ${item}`));
+    }
+    
+    if (RELEASE_NOTES.security && RELEASE_NOTES.security.length > 0) {
+      console.log("   🔒 Security:");
+      RELEASE_NOTES.security.forEach(item => console.log(`      • ${item}`));
+    }
+  }
+  
+  console.log();
+  console.log("🚀 Runtime Information:");
+  console.log(`   🦕 Deno: ${Deno.version.deno}`);
+  console.log(`   🔧 V8: ${Deno.version.v8}`);
+  console.log(`   📘 TypeScript: ${Deno.version.typescript}`);
+}
+
+/**
+ * Show version information in JSON format
+ */
+function showVersionJson(): void {
+  const versionInfo = {
+    nagare: {
+      version: VERSION,
+      name: APP_INFO.name,
+      description: APP_INFO.description,
+      repository: APP_INFO.repository,
+      license: APP_INFO.license
+    },
+    build: {
+      buildDate: BUILD_INFO.buildDate,
+      gitCommit: BUILD_INFO.gitCommit,
+      buildEnvironment: BUILD_INFO.buildEnvironment
+    },
+    runtime: {
+      deno: Deno.version.deno,
+      v8: Deno.version.v8,
+      typescript: Deno.version.typescript
+    },
+    releaseNotes: RELEASE_NOTES.version === VERSION ? RELEASE_NOTES : null
+  };
+  
+  console.log(JSON.stringify(versionInfo, null, 2));
+}
+
+/**
+ * Format success message with emoji
+ */
+function formatSuccess(message: string): string {
+  return `✅ ${message}`;
+}
+
+/**
+ * Format error message with emoji
+ */
+function formatError(message: string): string {
+  return `❌ ${message}`;
+}
+
+/**
+ * Format info message with emoji
+ */
+function formatInfo(message: string): string {
+  return `ℹ️  ${message}`;
 }
 
 /**
@@ -199,18 +317,30 @@ function showVersion(): void {
 export async function cli(args: string[]): Promise<void> {
   const { command, bumpType, options } = parseArgs(args);
 
-  if (options.help) {
-    showHelp();
-    return;
-  }
-
+  // Handle version options first
   if (options.version) {
     showVersion();
     return;
   }
 
+  if (options.versionDetailed) {
+    showDetailedVersion();
+    return;
+  }
+
+  if (options.versionJson) {
+    showVersionJson();
+    return;
+  }
+
+  if (options.help) {
+    showHelp();
+    return;
+  }
+
   try {
     // Load configuration
+    console.log(formatInfo("Loading configuration..."));
     const config = await loadConfig(options.config);
 
     // Apply CLI options to config
@@ -225,38 +355,49 @@ export async function cli(args: string[]): Promise<void> {
     }
 
     // Validate configuration
+    console.log(formatInfo("Validating configuration..."));
     const validation = ReleaseManager.validateConfig(config);
     if (!validation.valid) {
-      console.error("❌ Configuration validation failed:");
-      validation.errors.forEach((error) => console.error(`   - ${error}`));
+      console.error(formatError("Configuration validation failed:"));
+      validation.errors.forEach((error) => console.error(`   • ${error}`));
       Deno.exit(1);
     }
+
+    console.log(formatSuccess("Configuration validated successfully"));
 
     // Execute command
     switch (command) {
       case "rollback": {
+        console.log(formatInfo(`Starting rollback process...`));
         const rollbackManager = new RollbackManager(config);
         const result = await rollbackManager.rollback(bumpType); // bumpType is version in this case
         if (!result.success) {
-          console.error(`❌ Rollback failed: ${result.error}`);
+          console.error(formatError(`Rollback failed: ${result.error}`));
           Deno.exit(1);
         }
+        console.log(formatSuccess("Rollback completed successfully"));
         break;
       }
 
       case "release":
       default: {
+        console.log(formatInfo(`Starting release process${bumpType ? ` with ${bumpType} bump` : ""}...`));
         const releaseManager = new ReleaseManager(config);
         const result = await releaseManager.release(bumpType as BumpType);
         if (!result.success) {
-          console.error(`❌ Release failed: ${result.error}`);
+          console.error(formatError(`Release failed: ${result.error}`));
           Deno.exit(1);
         }
+        console.log(formatSuccess("Release completed successfully"));
         break;
       }
     }
   } catch (error) {
-    console.error(`❌ Error: ${error instanceof Error ? error.message : String(error)}`);
+    console.error(formatError(`${error instanceof Error ? error.message : String(error)}`));
+    if (options.logLevel === LogLevel.DEBUG) {
+      console.error("\nDebug information:");
+      console.error(error);
+    }
     Deno.exit(1);
   }
 }

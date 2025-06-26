@@ -41,12 +41,12 @@
     "check": "deno check **/*.ts",
     "build": "deno task check && deno task test && deno task lint && deno task fmt --check",
 
-    "release": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts",
-    "release:patch": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts patch",
-    "release:minor": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts minor",
-    "release:major": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts major",
-    "release:dry": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts --dry-run",
-    "rollback": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts rollback",
+    "nagare": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts",
+    "nagare:patch": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts patch",
+    "nagare:minor": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts minor",
+    "nagare:major": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts major",
+    "nagare:dry": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts --dry-run",
+    "nagare:rollback": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts rollback",
 
     "docs": "deno doc --html --name=Nagare --output=./docs ./mod.ts",
     "docs:serve": "deno run --allow-net --allow-read jsr:@std/http/file-server --host 0.0.0.0 --port 8080 ./docs"
