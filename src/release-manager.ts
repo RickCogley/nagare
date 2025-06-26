@@ -603,8 +603,8 @@ export class ReleaseManager {
           updatedContent = updatedContent.replace(pattern, replacement);
         }
 
-        // Show changes in dry-run or debug mode
-        if ((this.config.options?.dryRun || this.logger.getLevel() <= LogLevel.DEBUG) && changes.length > 0) {
+        // Show changes in dry-run mode
+        if (this.config.options?.dryRun && changes.length > 0) {
           this.logger.info(`\n📄 Changes for ${filePattern.path}:`);
           for (const change of changes) {
             const status = change.matches === 1 ? '✅' : '⚠️';
