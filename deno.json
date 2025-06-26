@@ -66,7 +66,8 @@
 
   "lint": {
     "rules": {
-      "tags": ["recommended"]
+      "tags": ["recommended"],
+      "exclude": ["no-inferrable-types"]
     },
     "exclude": ["docs/", "coverage/"]
   },
