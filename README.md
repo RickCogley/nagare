@@ -19,37 +19,35 @@ changelog generation, and GitHub releases using conventional commits and semanti
 
 ## 🚀 Quick Start
 
-### Installation
+### Installation & Setup
 
-```bash
-# Add to your Deno project
-deno add @rick/nagare
+1. **Create a CLI wrapper file** (`run-nagare.ts`):
 
-# Or use directly via URL
-import { ReleaseManager } from "https://deno.land/x/nagare/mod.ts";
+```typescript
+#!/usr/bin/env deno run -A
+import { cli } from 'jsr:@rick/nagare/cli';
+await cli(Deno.args);
 ```
 
-### Basic Setup
-
-1. **Add import map and tasks to your `deno.json`** (Lume-style echo pattern):
+2. **Add tasks to your `deno.json`**:
 
 ```json
 {
-  "imports": {
-    "nagare/": "jsr:@rick/nagare@^0.6.3/"
-  },
   "tasks": {
-    "_comment": "// Define nagare CLI once using echo pattern (enables import map resolution)",
-    "nagare": "echo \"import { cli } from 'nagare/cli.ts'; await cli(Deno.args);\" | deno run -A -",
-    "release": "deno task nagare"
+    "nagare": "deno run -A run-nagare.ts",
+    "release": "deno task nagare",
+    "release:patch": "deno task nagare patch",
+    "release:minor": "deno task nagare minor", 
+    "release:major": "deno task nagare major",
+    "release:dry": "deno task nagare --dry-run"
   }
 }
 ```
 
-2. **Create a configuration file** (`nagare.config.ts`):
+3. **Create a configuration file** (`nagare.config.ts`):
 
 ```typescript
-import type { NagareConfig } from "nagare/types";
+import type { NagareConfig } from "jsr:@rick/nagare/types";
 
 export default {
   project: {
@@ -63,7 +61,7 @@ export default {
 } as NagareConfig;
 ```
 
-3. **Create your first release**:
+4. **Create your first release**:
 
 ```bash
 # Dry run to preview changes
@@ -105,20 +103,7 @@ deno task nagare minor --dry-run --skip-confirmation
 
 ### Alternative CLI Setup Options
 
-If you prefer other approaches, Nagare supports multiple patterns:
-
-**Option 1: Auto-executing runner (no arguments needed)**
-
-```json
-{
-  "tasks": {
-    "release": "deno run -A -e \"import 'nagare/cli-runner'\"",
-    "release:patch": "deno run -A -e \"import 'nagare/cli-runner'\" patch"
-  }
-}
-```
-
-**Option 2: Direct JSR import (traditional)**
+**Option 1: Direct JSR import (may have interactive prompt issues)**
 
 ```json
 {
@@ -129,10 +114,22 @@ If you prefer other approaches, Nagare supports multiple patterns:
 }
 ```
 
+**Option 2: Echo pattern (may have interactive prompt issues)**
+
+```json
+{
+  "tasks": {
+    "nagare": "echo \"import { cli } from 'jsr:@rick/nagare/cli'; await cli(Deno.args);\" | deno run -A -"
+  }
+}
+```
+
+> **⚠️ Note:** Alternative options may not handle interactive prompts correctly. The wrapper file approach (recommended setup) ensures proper handling of user confirmations and error messages.
+
 ### Programmatic Usage
 
 ```typescript
-import { ReleaseManager } from "nagare/";
+import { ReleaseManager } from "jsr:@rick/nagare";
 
 const config = {
   project: {
@@ -164,7 +161,7 @@ if (result.success) {
 ### Basic Configuration
 
 ```typescript
-import type { NagareConfig } from "nagare/types";
+import type { NagareConfig } from "jsr:@rick/nagare/types";
 
 export default {
   project: {
@@ -326,6 +323,12 @@ export NODE_ENV="production"
 
 - Commit your changes: `git add . && git commit -m "your message"`
 - Or stash them: `git stash`
+
+**"User cancelled" or Interactive prompts not working**
+
+- Make sure you're using the wrapper file approach (recommended setup)
+- Or use `--skip-confirmation` flag for automated workflows
+- Avoid echo/pipe patterns that interfere with stdin
 
 ### Getting Help
 
