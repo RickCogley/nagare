@@ -139,10 +139,14 @@ export default {
     {
       path: "./deno.json",
       patterns: {
-        version: /"version":\s*"([^"]+)"/,
+        // ✅ FIXED: Use line-anchored pattern to avoid matching task definitions
+        // OLD (dangerous): /"version":\s*"([^"]+)"/
+        // NEW (safe): Only matches when "version" is at start of line
+        version: /^(\s*)"version":\s*"([^"]+)"/m,
       },
       updateFn: (content, _data) => {
-        const updated = content.replace(/"version":\s*"([^"]+)"/, `"version": "${_data.version}"`);
+        // ✅ FIXED: Use the safer pattern with capture groups in replacement
+        const updated = content.replace(/^(\s*)"version":\s*"([^"]+)"/m, `$1"version": "${_data.version}"`);
         return formatContent(updated, "./deno.json");
       },
     },
