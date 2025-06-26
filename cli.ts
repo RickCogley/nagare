@@ -108,7 +108,13 @@ async function loadConfig(configPath?: string): Promise<NagareConfig> {
 
   for (const path of pathsToTry) {
     try {
-      const module = await import(new URL(path, import.meta.url).href);
+      // FIX: Use Deno.cwd() for relative paths instead of import.meta.url
+      // This ensures relative paths work when Nagare is imported from JSR
+      const resolvedPath = path.startsWith(".") || !path.includes("://")
+        ? new URL(path, `file://${Deno.cwd()}/`).href
+        : path;
+
+      const module = await import(resolvedPath);
       return module.default || module.config;
     } catch {
       // Continue to next path
