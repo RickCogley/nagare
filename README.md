@@ -312,6 +312,26 @@ Contributions are welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for g
 
 For comprehensive testing guidelines, see [TESTING.md](TESTING.md).
 
+## 🎯 Runtime Compatibility
+
+### Deno (Primary Runtime)
+- ✅ **Full compatibility** - All features supported
+- ✅ **CLI tools** - Complete release management
+- ✅ **File operations** - Native Deno APIs
+
+### Node.js & Bun (Partial Compatibility)  
+- ✅ **Types and interfaces** - Full TypeScript support
+- ✅ **Configuration objects** - All schemas and defaults
+- ✅ **Template processing** - Static template definitions
+- ❌ **CLI functionality** - Requires Deno-specific APIs
+- ❌ **File operations** - Uses `Deno.Command`, `Deno.readTextFile`
+
+**Use cases for Node.js/Bun:**
+- Import types for your own release tools
+- Reference configuration schemas
+- Use template definitions
+- TypeScript IntelliSense and type checking
+
 ## 📄 License
 
 MIT License - see [LICENSE](./LICENSE) for details.
