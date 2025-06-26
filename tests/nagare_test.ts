@@ -10,7 +10,7 @@ import { BumpType, TemplateFormat } from "../types.ts";
 Deno.test("Version should be available and valid", () => {
   assertExists(VERSION);
   assertEquals(typeof VERSION, "string");
-  
+
   // Test semver format
   const versionRegex = /^\d+\.\d+\.\d+$/;
   assertEquals(versionRegex.test(VERSION), true);
@@ -39,7 +39,7 @@ Deno.test("TemplateFormat enum should have expected values", () => {
 Deno.test("Main library exports should be available", async () => {
   // Test that we can import the main library exports
   const { ReleaseManager, GitOperations } = await import("../mod.ts");
-  
+
   assertExists(ReleaseManager);
   assertExists(GitOperations);
   assertEquals(typeof ReleaseManager, "function");
@@ -49,15 +49,15 @@ Deno.test("Main library exports should be available", async () => {
 Deno.test("Configuration defaults should be properly structured", () => {
   assertExists(DEFAULT_COMMIT_TYPES);
   assertEquals(typeof DEFAULT_COMMIT_TYPES, "object");
-  
+
   // Verify some key mappings
   const expectedMappings = {
     feat: "added",
     fix: "fixed",
     docs: "changed",
-    security: "security"
+    security: "security",
   };
-  
+
   for (const [key, value] of Object.entries(expectedMappings)) {
     assertEquals(DEFAULT_COMMIT_TYPES[key], value);
   }

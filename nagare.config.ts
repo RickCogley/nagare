@@ -18,79 +18,79 @@ function formatContent(content: string, filePath: string): string {
 async function postReleaseFormatting(): Promise<void> {
   try {
     console.log("🎨 Formatting generated files...");
-    
+
     // Run deno fmt
     const formatCmd = new Deno.Command("deno", {
       args: ["fmt"],
       stdout: "piped",
-      stderr: "piped"
+      stderr: "piped",
     });
-    
+
     const formatResult = await formatCmd.output();
-    
+
     if (!formatResult.success) {
       const error = new TextDecoder().decode(formatResult.stderr);
       console.warn("⚠️  Formatting failed:", error);
       return;
     }
-    
+
     console.log("✅ Files formatted successfully");
-    
+
     // Check if there are changes to commit
     const statusCmd = new Deno.Command("git", {
       args: ["status", "--porcelain"],
       stdout: "piped",
-      stderr: "piped"
+      stderr: "piped",
     });
-    
+
     const statusResult = await statusCmd.output();
-    
+
     if (!statusResult.success) {
       console.warn("⚠️  Could not check git status");
       return;
     }
-    
+
     const statusOutput = new TextDecoder().decode(statusResult.stdout).trim();
-    
+
     if (statusOutput) {
       console.log("📝 Committing formatting changes...");
       console.log("Files to commit:", statusOutput);
-      
+
       // Add all changes
       const addCmd = new Deno.Command("git", {
         args: ["add", "."],
         stdout: "piped",
-        stderr: "piped"
+        stderr: "piped",
       });
-      
+
       const addResult = await addCmd.output();
-      
+
       if (!addResult.success) {
         console.warn("⚠️  Could not add files to git");
         return;
       }
-      
+
       // Commit formatting changes
       const commitCmd = new Deno.Command("git", {
         args: ["commit", "-m", "fix(fmt): format generated files after release"],
         stdout: "piped",
-        stderr: "piped"
+        stderr: "piped",
       });
-      
+
       const commitResult = await commitCmd.output();
-      
+
       if (commitResult.success) {
         console.log("✅ Formatting changes committed");
-        
+
         // Push the formatting commit
         const pushCmd = new Deno.Command("git", {
           args: ["push", "origin", "main"],
           stdout: "piped",
-          stderr: "piped"
+          stderr: "piped",
         });
-        
+
         const pushResult = await pushCmd.output();
-        
+
         if (pushResult.success) {
           console.log("✅ Formatting changes pushed to remote");
         } else {
@@ -103,7 +103,6 @@ async function postReleaseFormatting(): Promise<void> {
     } else {
       console.log("✅ No formatting changes needed");
     }
-    
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.warn("⚠️  Post-release formatting failed:", errorMessage);
@@ -152,7 +151,7 @@ export default {
       path: "./version.ts",
       patterns: {
         // This will match the entire content to trigger formatting
-        content: /[\s\S]*/
+        content: /[\s\S]*/,
       },
       updateFn: (content, _data) => {
         // Version.ts is already updated by Nagare's template system,
@@ -165,7 +164,7 @@ export default {
       path: "./CHANGELOG.md",
       patterns: {
         // This will match the entire content to trigger formatting
-        content: /[\s\S]*/
+        content: /[\s\S]*/,
       },
       updateFn: (content, _data) => {
         // CHANGELOG.md is already updated by Nagare,
@@ -189,6 +188,6 @@ export default {
 
   // Post-release hooks for automated formatting
   hooks: {
-    postRelease: [postReleaseFormatting]
-  }
+    postRelease: [postReleaseFormatting],
+  },
 } as NagareConfig;

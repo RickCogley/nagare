@@ -8,35 +8,42 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.6.2] - 2025-06-26
 
 ### Changed
+
 - add statement about node and bun compatibility (71f5ff4)
 - add module doc to remaining entry points (e2d85eb)
 
 ## [0.6.1] - 2025-06-26
 
 ### Fixed
+
 - disable no-inferrable-types rule to resolve JSR conflict (c84758f)
 
 ## [0.6.0] - 2025-06-26
 
 ### Added
+
 - add comprehensive library integration tests (82b9896)
 
 ## [0.5.1] - 2025-06-26
 
 ### Fixed
+
 - add explicit type annotations to exported constants (b6a2c0c)
 
 ## [0.5.0] - 2025-06-25
 
 ### Added
+
 - add post-release formatting automation hook (e077784)
 
 ### Fixed
+
 - add type guards for safe object indexing with unknown types (bab3c90)
 
 ## [0.4.1] - 2025-06-25
 
 ### Fixed
+
 - auto-format generated files instead of failing on format check (62263a4)
 - format generated files after v0.3.1 release (d640f23)
 

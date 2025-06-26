@@ -74,7 +74,7 @@ export class TemplateProcessor {
   private getNestedValue(obj: unknown, path: string): unknown {
     const keys = path.split(".");
     let current: unknown = obj;
-    
+
     for (const key of keys) {
       if (current && typeof current === "object" && current !== null) {
         current = (current as Record<string, unknown>)[key];
@@ -82,7 +82,7 @@ export class TemplateProcessor {
         return undefined;
       }
     }
-    
+
     return current;
   }
 }

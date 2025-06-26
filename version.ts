@@ -8,19 +8,17 @@ export const VERSION = "0.6.2";
 export const BUILD_INFO = {
   buildDate: "2025-06-26T01:10:16.852Z",
   gitCommit: "71f5ff4",
-  buildEnvironment: "production"
+  buildEnvironment: "production",
 } as const;
 
 export const APP_INFO = {
   name: "Nagare (流れ)",
   description: "Deno Release Management Library",
   repository: "https://github.com/RickCogley/nagare",
-  license: "MIT"
+  license: "MIT",
 } as const;
 
-
 export const APP_METADATA = {} as const;
-
 
 export const RELEASE_NOTES = {
   "version": "0.6.2",
@@ -28,10 +26,10 @@ export const RELEASE_NOTES = {
   "added": [],
   "changed": [
     "add statement about node and bun compatibility (71f5ff4)",
-    "add module doc to remaining entry points (e2d85eb)"
+    "add module doc to remaining entry points (e2d85eb)",
   ],
   "deprecated": [],
   "removed": [],
   "fixed": [],
-  "security": []
+  "security": [],
 } as const;

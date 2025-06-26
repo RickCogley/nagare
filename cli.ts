@@ -70,7 +70,7 @@ function parseArgs(args: string[]): {
           options.logLevel = LogLevel[level as keyof typeof LogLevel];
         }
         break;
-      } 
+      }
       default:
         if (!arg.startsWith("-")) {
           // Check if this is a bump type first
