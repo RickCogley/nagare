@@ -8,32 +8,30 @@ export const VERSION = "0.8.0";
 export const BUILD_INFO = {
   buildDate: "2025-06-26T12:33:53.424Z",
   gitCommit: "5345675",
-  buildEnvironment: "production"
+  buildEnvironment: "production",
 } as const;
 
 export const APP_INFO = {
   name: "Nagare (流れ)",
   description: "Deno Release Management Library",
   repository: "https://github.com/RickCogley/nagare",
-  license: "MIT"
+  license: "MIT",
 } as const;
 
-
 export const APP_METADATA = {} as const;
-
 
 export const RELEASE_NOTES = {
   "version": "0.8.0",
   "date": "2025-06-26",
   "added": [
-    "add comprehensive file update pattern validation (8106092)"
+    "add comprehensive file update pattern validation (8106092)",
   ],
   "changed": [
     "deno fmt (5345675)",
     "update all examples to use safe file update patterns (addd13f)",
     "deno fmt (3e08e16)",
     "deno fmt (39df1ce)",
-    "deno fmt (14e7c4c)"
+    "deno fmt (14e7c4c)",
   ],
   "deprecated": [],
   "removed": [],
@@ -41,7 +39,7 @@ export const RELEASE_NOTES = {
     "replace dangerous file update pattern with safe alternative (a2a26a6)",
     "remove unused import and use const for content variable (72f836c)",
     "remove invalid getLevel() call from Logger (90b8cc8)",
-    "replace dangerous default file update patterns (4afa222)"
+    "replace dangerous default file update patterns (4afa222)",
   ],
-  "security": []
+  "security": [],
 } as const;

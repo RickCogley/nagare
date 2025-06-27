@@ -2,7 +2,7 @@
  * @fileoverview Configuration schema and defaults for Nagare
  * @description Default configurations, template definitions, and commit type mappings.
  * Runtime-agnostic configuration objects compatible with all JavaScript environments.
- * @author Rick Cogley  
+ * @author Rick Cogley
  * @since 0.1.0
  */
 
@@ -11,10 +11,10 @@ import { BumpType, LogLevel, TemplateFormat } from "./types.ts";
 
 /**
  * Default commit type mappings following conventional commits specification
- * 
+ *
  * Maps conventional commit types to Keep a Changelog sections.
  * Can be overridden in user configuration for custom commit types.
- * 
+ *
  * @see {@link https://conventionalcommits.org/} Conventional Commits
  * @see {@link https://keepachangelog.com/} Keep a Changelog
  */
@@ -35,17 +35,17 @@ export const DEFAULT_COMMIT_TYPES: CommitTypeMapping = {
 
 /**
  * SAFE default file update patterns - replaces dangerous broad patterns
- * 
+ *
  * These patterns are specifically designed to avoid the file corruption bug
  * that occurred when overly broad regex patterns matched unintended content.
  * All patterns use line anchors (^ or $) to ensure precise matching.
- * 
+ *
  * @example
  * ```typescript
  * // ✅ SAFE: Only matches top-level version field
  * const pattern = SAFE_DEFAULT_UPDATE_PATTERNS.jsonVersion;
- * 
- * // ❌ DANGEROUS: Could match task definitions  
+ *
+ * // ❌ DANGEROUS: Could match task definitions
  * const dangerous = /"version":\s*"([^"]+)"/;
  * ```
  */
@@ -68,10 +68,10 @@ export const SAFE_DEFAULT_UPDATE_PATTERNS = {
 
 /**
  * Default configuration - UPDATED with safer patterns
- * 
+ *
  * Provides sensible defaults for all configuration options.
  * Users can override any of these values in their nagare.config.ts file.
- * 
+ *
  * @example
  * ```typescript
  * const config = {
@@ -117,10 +117,10 @@ export const DEFAULT_CONFIG: Partial<NagareConfig> = {
 
 /**
  * WARNING: Legacy dangerous patterns (kept for reference and migration)
- * 
+ *
  * DO NOT USE THESE - they cause file corruption!
  * These patterns are preserved for documentation and migration purposes only.
- * 
+ *
  * @deprecated These patterns caused the Salty deno.json corruption bug
  * @see {@link https://github.com/esolia/salty.esolia.pro/commit/a7eab84} Bug report
  */
@@ -135,14 +135,14 @@ export const DANGEROUS_LEGACY_PATTERNS = {
 
 /**
  * Validate if a pattern is potentially dangerous
- * 
+ *
  * Checks regex patterns for common issues that could cause file corruption.
  * Used during configuration validation to warn users about risky patterns.
- * 
+ *
  * @param pattern - Regular expression pattern to validate
  * @param filePath - File path the pattern will be applied to
  * @returns True if pattern is potentially dangerous
- * 
+ *
  * @example
  * ```typescript
  * const dangerous = isDangerousPattern(/"version":\s*"([^"]+)"/, "deno.json");
@@ -175,14 +175,14 @@ export function isDangerousPattern(pattern: RegExp, filePath: string): boolean {
 
 /**
  * Get recommended safe pattern for a file and key
- * 
+ *
  * Returns a pre-tested safe pattern for common file types and keys.
  * These patterns use line anchors and specific matching to avoid corruption.
- * 
+ *
  * @param filePath - Path to the file being updated
  * @param key - The key being updated (e.g., "version")
  * @returns Safe regex pattern or null if no recommendation available
- * 
+ *
  * @example
  * ```typescript
  * const safePattern = getRecommendedSafePattern("deno.json", "version");
@@ -217,20 +217,20 @@ export function getRecommendedSafePattern(filePath: string, key: string): RegExp
 
 /**
  * Migrate dangerous patterns to safe alternatives
- * 
+ *
  * Automatically converts known dangerous patterns to safe equivalents.
  * Used during configuration loading to help users migrate safely.
- * 
+ *
  * @param pattern - Original regex pattern
- * @param filePath - File path the pattern applies to  
+ * @param filePath - File path the pattern applies to
  * @param key - The key being updated
  * @returns Migration result with safe pattern and migration status
- * 
+ *
  * @example
  * ```typescript
  * const result = migrateDangerousPattern(
  *   /"version":\s*"([^"]+)"/,
- *   "deno.json", 
+ *   "deno.json",
  *   "version"
  * );
  * // Returns: { pattern: safe_pattern, migrated: true, warning: "..." }
@@ -267,15 +267,15 @@ export function migrateDangerousPattern(
 
 /**
  * TypeScript version file template using Vento syntax
- * 
+ *
  * Generates a comprehensive TypeScript version file with:
  * - Version constant and build information
  * - Application metadata from project config
  * - Optional app-specific metadata
  * - Release notes for the current version
- * 
+ *
  * @see {@link https://vento.so/} Vento Template Engine
- * 
+ *
  * @example
  * Template produces output like:
  * ```typescript
@@ -326,10 +326,10 @@ export const RELEASE_NOTES = {{ releaseNotes | jsonStringify }} as const;
 
 /**
  * JSON version file template using Vento syntax
- * 
+ *
  * Generates a JSON file suitable for package.json-style version tracking.
  * Includes all metadata in a structured JSON format.
- * 
+ *
  * @example
  * Template produces output like:
  * ```json
@@ -366,10 +366,10 @@ export const JSON_TEMPLATE: string = `{
 
 /**
  * YAML version file template using Vento syntax
- * 
+ *
  * Generates a YAML file for configuration-style version tracking.
  * Useful for projects that prefer YAML over JSON.
- * 
+ *
  * @example
  * Template produces output like:
  * ```yaml
@@ -409,10 +409,10 @@ releaseNotes: {{ releaseNotes | jsonStringify }}
 
 /**
  * Built-in template definitions mapped by format
- * 
+ *
  * Contains all pre-defined templates that ship with Nagare.
  * Users can reference these by template format in their configuration.
- * 
+ *
  * @example
  * ```typescript
  * const template = BUILT_IN_TEMPLATES[TemplateFormat.TYPESCRIPT];

@@ -8,9 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.8.0] - 2025-06-26
 
 ### Added
+
 - add comprehensive file update pattern validation (8106092)
 
 ### Changed
+
 - deno fmt (5345675)
 - update all examples to use safe file update patterns (addd13f)
 - deno fmt (3e08e16)
@@ -18,6 +20,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - deno fmt (14e7c4c)
 
 ### Fixed
+
 - replace dangerous file update pattern with safe alternative (a2a26a6)
 - remove unused import and use const for content variable (72f836c)
 - remove invalid getLevel() call from Logger (90b8cc8)

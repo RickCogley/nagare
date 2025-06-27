@@ -57,15 +57,15 @@ async function postReleaseFormattingCheck(): Promise<void> {
 
     if (statusOutput) {
       console.log("📝 Committing formatting changes...");
-      
+
       await new Deno.Command("git", { args: ["add", "."] }).output();
-      await new Deno.Command("git", { 
-        args: ["commit", "-m", "style: format generated files after release"] 
+      await new Deno.Command("git", {
+        args: ["commit", "-m", "style: format generated files after release"],
       }).output();
-      await new Deno.Command("git", { 
-        args: ["push", "origin", "main"] 
+      await new Deno.Command("git", {
+        args: ["push", "origin", "main"],
       }).output();
-      
+
       console.log("✅ Formatting changes committed and pushed");
     }
   } catch (error) {
