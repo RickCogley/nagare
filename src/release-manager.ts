@@ -519,13 +519,13 @@ export class ReleaseManager {
 
   /**
    * Update the main version file using template processor
-   * 
+   *
    * @description Generates and writes the version file using either custom templates
    * or built-in templates. Supports TypeScript, JSON, YAML, and custom formats.
-   * 
+   *
    * @param templateData Template data for version file generation
    * @throws Error if template processing fails or file write fails
-   * 
+   *
    * @example
    * ```typescript
    * const templateData = {
@@ -555,13 +555,15 @@ export class ReleaseManager {
         );
       } else {
         // Use built-in template with Vento processing
-        this.logger.debug(`Processing built-in ${versionFile.template} template for ${versionFile.path}`);
+        this.logger.debug(
+          `Processing built-in ${versionFile.template} template for ${versionFile.path}`,
+        );
         content = await this.templateProcessor.generateVersionFile(templateData);
       }
 
       // Write the generated content to the version file
       await Deno.writeTextFile(versionFile.path, content);
-      
+
       this.logger.debug(`✅ Updated version file: ${versionFile.path}`);
     } catch (error) {
       const errorMessage = `Failed to update version file ${versionFile.path}: ${

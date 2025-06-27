@@ -13,10 +13,10 @@ import vento from "vento";
 
 /**
  * TemplateProcessor - Template processing and file generation using Vento
- * 
+ *
  * Handles template compilation and rendering with enhanced data preparation.
  * Supports built-in templates (TypeScript, JSON, YAML) and custom templates.
- * 
+ *
  * @example
  * ```typescript
  * const processor = new TemplateProcessor(config);
@@ -26,13 +26,13 @@ import vento from "vento";
 export class TemplateProcessor {
   /** Nagare configuration */
   private config: NagareConfig;
-  
+
   /** Vento template environment instance */
   private vento: ReturnType<typeof vento>;
 
   /**
    * Initialize template processor with Vento environment
-   * 
+   *
    * @param config - Nagare configuration object
    */
   constructor(config: NagareConfig) {
@@ -43,13 +43,13 @@ export class TemplateProcessor {
 
   /**
    * Setup custom Vento filters for release management
-   * 
+   *
    * Adds specialized filters for common template operations:
    * - jsonStringify: Convert objects to formatted JSON
    * - formatDate: Format dates to ISO date strings
    * - shortHash: Truncate git hashes to specified length
    * - safeString: Escape quotes for JSON embedding
-   * 
+   *
    * @private
    */
   private setupVentoFilters(): void {
@@ -80,15 +80,15 @@ export class TemplateProcessor {
 
   /**
    * Process a template string with data using Vento
-   * 
+   *
    * Compiles and renders a template with enhanced data preparation.
    * Throws descriptive errors for template compilation or rendering failures.
-   * 
+   *
    * @param template - Template string with Vento syntax
    * @param data - Template data object
    * @returns Rendered template string
    * @throws Error if template processing fails
-   * 
+   *
    * @example
    * ```typescript
    * const template = 'Version: {{ version }}, Components: {{ versionComponents |> jsonStringify }}';
@@ -99,44 +99,44 @@ export class TemplateProcessor {
     try {
       // Prepare enhanced template data
       const enhancedData = this.prepareTemplateData(data);
-      
+
       // Render template with Vento - runString returns { content: string }
       const result = await this.vento.runString(template, enhancedData);
       return result.content;
     } catch (error) {
       throw new Error(
         `Template processing failed: ${error instanceof Error ? error.message : String(error)}\n` +
-        `This might be due to invalid template syntax or missing data.`
+          `This might be due to invalid template syntax or missing data.`,
       );
     }
   }
 
   /**
    * Prepare template data with additional computed values
-   * 
+   *
    * Enhances the base template data with:
    * - Parsed version components (major, minor, patch, prerelease)
    * - Merged metadata from config and data
    * - Complete project information
    * - Computed helper values (currentYear, formatted dates, etc.)
-   * 
+   *
    * @param data - Base template data
    * @returns Enhanced template data object with computed properties
    * @private
    */
   private prepareTemplateData(data: TemplateData): Record<string, unknown> {
     // Parse version components from the version string
-    const versionParts = data.version.split('.');
+    const versionParts = data.version.split(".");
     const versionComponents = {
       major: parseInt(versionParts[0]) || 0,
       minor: parseInt(versionParts[1]) || 0,
       patch: parseInt(versionParts[2]) || 0,
-      prerelease: null as string | null
+      prerelease: null as string | null,
     };
 
     // Check for prerelease info (e.g., "1.2.3-beta.1")
-    if (versionParts[2] && versionParts[2].includes('-')) {
-      const [patchPart, prereleasePart] = versionParts[2].split('-');
+    if (versionParts[2] && versionParts[2].includes("-")) {
+      const [patchPart, prereleasePart] = versionParts[2].split("-");
       versionComponents.patch = parseInt(patchPart) || 0;
       versionComponents.prerelease = prereleasePart;
     }
@@ -144,13 +144,13 @@ export class TemplateProcessor {
     // Merge metadata from config and data
     const metadata = {
       ...this.config.releaseNotes?.metadata || {},
-      ...data.metadata || {}
+      ...data.metadata || {},
     };
 
     // Ensure project data is complete
     const project = {
       ...this.config.project,
-      ...data.project || {}
+      ...data.project || {},
     };
 
     return {
@@ -160,32 +160,32 @@ export class TemplateProcessor {
       gitCommit: data.gitCommit,
       environment: data.environment,
       releaseNotes: data.releaseNotes,
-      
+
       // Enhanced computed data
       versionComponents,
       metadata,
       project,
-      
+
       // Individual metadata properties at root level for easier access in templates
       ...metadata,
-      
+
       // Additional computed helpers
       currentYear: new Date().getFullYear(),
-      buildDateFormatted: new Date(data.buildDate).toISOString().split('T')[0],
-      shortCommit: data.gitCommit ? data.gitCommit.substring(0, 7) : "unknown"
+      buildDateFormatted: new Date(data.buildDate).toISOString().split("T")[0],
+      shortCommit: data.gitCommit ? data.gitCommit.substring(0, 7) : "unknown",
     };
   }
 
   /**
    * Generate version file content using built-in templates
-   * 
+   *
    * Uses the configured template format to generate version file content.
    * Delegates to processTemplate for custom templates.
-   * 
+   *
    * @param data - Template data for version file generation
    * @returns Generated version file content
    * @throws Error if template format is unknown or custom template used incorrectly
-   * 
+   *
    * @example
    * ```typescript
    * // For built-in typescript template
@@ -210,13 +210,13 @@ export class TemplateProcessor {
 
   /**
    * Test template compilation (useful for validation)
-   * 
+   *
    * Validates template syntax without rendering data.
    * Useful for configuration validation and debugging.
-   * 
+   *
    * @param template - Template string to validate
    * @returns Validation result with error details if invalid
-   * 
+   *
    * @example
    * ```typescript
    * const result = await processor.validateTemplate('{{ version }}');
@@ -233,7 +233,7 @@ export class TemplateProcessor {
     } catch (error) {
       return {
         valid: false,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       };
     }
   }
