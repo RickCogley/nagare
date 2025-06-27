@@ -13,8 +13,8 @@ export const BUILD_INFO = {
     major: 1,
     minor: 0,
     patch: 0,
-    prerelease: 0
-  }
+    prerelease: 0,
+  },
 } as const;
 
 export const APP_INFO = {

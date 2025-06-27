@@ -8,15 +8,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.0.0] - 2025-06-27
 
 ### Added
+
 - enhance types.ts with Vento template support and release hooks (ed13b5b)
-- ⚠️  BREAKING: integrate Vento template engine for robust template processing (3f8fc72)
+- ⚠️ BREAKING: integrate Vento template engine for robust template processing (3f8fc72)
 
 ### Changed
+
 - deno fmt (3d62b1d)
 - deno fmt (e99a886)
 - deno fmt (59f28de)
 
 ### Fixed
+
 - show actual replacement result in dry-run preview instead of template string (0c8f41b)
 - preserve regex flags in previewFileUpdates for accurate pattern matching (a3c575b)
 - improve pattern detection in buildSafeReplacement for JSON version fields (83ffe68)
