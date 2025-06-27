@@ -55,7 +55,7 @@
 
   "imports": {
     "@std/semver": "jsr:@std/semver@^1.0.0",
-    "vento": "https://deno.land/x/vento@v1.12.10/mod.ts"
+    "vento": "jsr:@vento/vento@^1.14.0"
   },
 
   "compilerOptions": {
