@@ -518,26 +518,58 @@ export class ReleaseManager {
   }
 
   /**
-   * Update the main version file
+   * Update the main version file using template processor
+   * 
+   * @description Generates and writes the version file using either custom templates
+   * or built-in templates. Supports TypeScript, JSON, YAML, and custom formats.
+   * 
    * @param templateData Template data for version file generation
+   * @throws Error if template processing fails or file write fails
+   * 
+   * @example
+   * ```typescript
+   * const templateData = {
+   *   version: "1.2.0",
+   *   buildDate: new Date().toISOString(),
+   *   gitCommit: "abc123",
+   *   environment: "production",
+   *   releaseNotes: generatedNotes,
+   *   metadata: {},
+   *   project: config.project
+   * };
+   * await updateVersionFile(templateData);
+   * ```
    */
   private async updateVersionFile(templateData: TemplateData): Promise<void> {
     const { versionFile } = this.config;
 
-    if (versionFile.template === "custom" && versionFile.customTemplate) {
-      // Use custom template
-      const content = this.templateProcessor.processTemplate(
-        versionFile.customTemplate,
-        templateData,
-      );
-      await Deno.writeTextFile(versionFile.path, content);
-    } else {
-      // Use built-in template
-      const content = this.templateProcessor.generateVersionFile(templateData);
-      await Deno.writeTextFile(versionFile.path, content);
-    }
+    try {
+      let content: string;
 
-    this.logger.debug(`Updated version file: ${versionFile.path}`);
+      if (versionFile.template === "custom" && versionFile.customTemplate) {
+        // Use custom template with Vento processing
+        this.logger.debug(`Processing custom template for ${versionFile.path}`);
+        content = await this.templateProcessor.processTemplate(
+          versionFile.customTemplate,
+          templateData,
+        );
+      } else {
+        // Use built-in template with Vento processing
+        this.logger.debug(`Processing built-in ${versionFile.template} template for ${versionFile.path}`);
+        content = await this.templateProcessor.generateVersionFile(templateData);
+      }
+
+      // Write the generated content to the version file
+      await Deno.writeTextFile(versionFile.path, content);
+      
+      this.logger.debug(`✅ Updated version file: ${versionFile.path}`);
+    } catch (error) {
+      const errorMessage = `Failed to update version file ${versionFile.path}: ${
+        error instanceof Error ? error.message : String(error)
+      }`;
+      this.logger.error(errorMessage);
+      throw new Error(errorMessage);
+    }
   }
 
   /**
