@@ -202,10 +202,10 @@ export class ReleaseManager {
           if (matches.length === 0) {
             this.logger.warn(`    ❌ ${key}: No matches found`);
           } else if (matches.length === 1) {
+            const replacement = this.buildSafeReplacement(pattern, value || "undefined");
+            const actualReplacement = matches[0][0].replace(pattern, replacement);
             this.logger.info(
-              `    ✅ ${key}: "${matches[0][0]}" → "${
-                this.buildSafeReplacement(pattern, value || "undefined")
-              }"`,
+              `    ✅ ${key}: "${matches[0][0]}" → "${actualReplacement}"`,
             );
             hasChanges = true;
           } else {
