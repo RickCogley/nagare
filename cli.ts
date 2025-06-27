@@ -5,30 +5,100 @@
  * @fileoverview CLI interface for Nagare release management
  * @description Provides command-line access to release and rollback functionality.
  * Note: CLI functionality requires Deno runtime due to file system and process APIs.
+ *
+ * @example Basic usage:
+ * ```bash
+ * # Auto-determine version bump from commits
+ * deno run --allow-all cli.ts release
+ *
+ * # Force specific version bump
+ * deno run --allow-all cli.ts release minor
+ *
+ * # Preview changes without making them
+ * deno run --allow-all cli.ts --dry-run
+ *
+ * # Rollback a release
+ * deno run --allow-all cli.ts rollback 1.2.0
+ * ```
+ *
+ * @since 0.1.0
+ * @author Rick Cogley
  */
 
 import { ReleaseManager } from "./src/release-manager.ts";
 import { RollbackManager } from "./src/rollback-manager.ts";
-import type { BumpType, NagareConfig } from "./types.ts";
+import type { BumpType, NagareConfig, ReleaseNotes } from "./types.ts";
 import { LogLevel } from "./config.ts";
 import { APP_INFO, BUILD_INFO, RELEASE_NOTES, VERSION } from "./version.ts";
 
 /**
- * CLI configuration options
+ * CLI configuration options interface
+ *
+ * @description Configuration options that can be passed via command line arguments
+ * to override default behavior and configuration file settings.
+ *
+ * @interface CLIOptions
  */
 interface CLIOptions {
+  /** Path to custom configuration file */
   config?: string;
+  /** Enable dry run mode (preview changes without making them) */
   dryRun?: boolean;
+  /** Skip confirmation prompts */
   skipConfirmation?: boolean;
+  /** Override log level */
   logLevel?: LogLevel;
+  /** Show help information */
   help?: boolean;
+  /** Show basic version information */
   version?: boolean;
+  /** Show detailed version information with build info and release notes */
   versionDetailed?: boolean;
+  /** Show version information in JSON format */
   versionJson?: boolean;
 }
 
 /**
- * Parse command line arguments
+ * Type guard for RELEASE_NOTES to ensure safe property access
+ *
+ * @description Validates that RELEASE_NOTES has the expected structure
+ * with version information and changelog sections.
+ *
+ * @param releaseNotes - The release notes object to validate
+ * @returns Type predicate indicating if object is valid ReleaseNotes
+ *
+ * @example
+ * ```typescript
+ * if (isValidReleaseNotes(RELEASE_NOTES)) {
+ *   console.log(RELEASE_NOTES.version); // Safe to access
+ * }
+ * ```
+ */
+function isValidReleaseNotes(releaseNotes: unknown): releaseNotes is ReleaseNotes {
+  return (
+    releaseNotes !== null &&
+    typeof releaseNotes === "object" &&
+    "version" in releaseNotes &&
+    "date" in releaseNotes &&
+    typeof (releaseNotes as any).version === "string" &&
+    typeof (releaseNotes as any).date === "string"
+  );
+}
+
+/**
+ * Parse command line arguments into structured options
+ *
+ * @description Parses Deno.args into command, bump type, and options.
+ * Handles both short and long form flags, and validates argument combinations.
+ *
+ * @param args - Command line arguments array (typically Deno.args)
+ * @returns Parsed command structure with command, bump type, and options
+ *
+ * @example
+ * ```typescript
+ * const { command, bumpType, options } = parseArgs(['release', 'minor', '--dry-run']);
+ * // Returns: { command: 'release', bumpType: 'minor', options: { dryRun: true } }
+ * ```
  */
 function parseArgs(args: string[]): {
   command?: string;
@@ -104,7 +174,23 @@ function parseArgs(args: string[]): {
 }
 
 /**
- * Load configuration from file
+ * Load configuration from file with fallback paths
+ *
+ * @description Attempts to load Nagare configuration from various standard locations.
+ * Supports both TypeScript and JavaScript configuration files with ES modules.
+ *
+ * @param configPath - Optional explicit path to configuration file
+ * @returns Promise resolving to loaded configuration object
+ * @throws Error if no configuration file found or configuration is invalid
+ *
+ * @example
+ * ```typescript
+ * // Load from default locations
+ * const config = await loadConfig();
+ *
+ * // Load from specific path
+ * const config = await loadConfig('./custom-config.ts');
+ * ```
  */
 async function loadConfig(configPath?: string): Promise<NagareConfig> {
   const defaultPaths = [
@@ -139,7 +225,16 @@ async function loadConfig(configPath?: string): Promise<NagareConfig> {
 }
 
 /**
- * Display help information
+ * Display comprehensive help information
+ *
+ * @description Shows detailed usage instructions, command examples,
+ * configuration guidance, and safety information about file update patterns.
+ *
+ * @example
+ * ```typescript
+ * showHelp();
+ * // Outputs comprehensive help text to console
+ * ```
  */
 function showHelp(): void {
   console.log(`
@@ -219,13 +314,34 @@ For more information, visit: ${APP_INFO.repository}
 
 /**
  * Show basic version information
+ *
+ * @description Displays the current Nagare version in a simple format.
+ * Useful for quick version checks and scripting.
+ *
+ * @example
+ * ```typescript
+ * showVersion();
+ * // Output: Nagare v1.0.0
+ * ```
  */
 function showVersion(): void {
   console.log(`Nagare v${VERSION}`);
 }
 
 /**
- * Show detailed version information
+ * Show detailed version information with build details and release notes
+ *
+ * @description Displays comprehensive version information including:
+ * - Application metadata (name, description, repository)
+ * - Build information (date, commit, environment)
+ * - Release notes for current version (if available)
+ * - Runtime information (Deno, V8, TypeScript versions)
+ *
+ * @example
+ * ```typescript
+ * showDetailedVersion();
+ * // Outputs detailed version info with release notes
+ * ```
  */
 function showDetailedVersion(): void {
   console.log(`🌊 ${APP_INFO.name} v${VERSION}`);
@@ -238,38 +354,39 @@ function showDetailedVersion(): void {
   console.log(`   🔗 Git Commit: ${BUILD_INFO.gitCommit}`);
   console.log(`   🏗️  Environment: ${BUILD_INFO.buildEnvironment}`);
 
-  if (RELEASE_NOTES && RELEASE_NOTES.version === VERSION) {
+  // Type guard to ensure RELEASE_NOTES has the expected structure
+  if (isValidReleaseNotes(RELEASE_NOTES) && RELEASE_NOTES.version === VERSION) {
     console.log();
     console.log(`📰 Release Notes (v${RELEASE_NOTES.version} - ${RELEASE_NOTES.date}):`);
 
     if (RELEASE_NOTES.added && RELEASE_NOTES.added.length > 0) {
       console.log("   ✨ Added:");
-      RELEASE_NOTES.added.forEach((item) => console.log(`      • ${item}`));
+      RELEASE_NOTES.added.forEach((item: string) => console.log(`      • ${item}`));
     }
 
     if (RELEASE_NOTES.changed && RELEASE_NOTES.changed.length > 0) {
       console.log("   🔄 Changed:");
-      RELEASE_NOTES.changed.forEach((item) => console.log(`      • ${item}`));
+      RELEASE_NOTES.changed.forEach((item: string) => console.log(`      • ${item}`));
     }
 
     if (RELEASE_NOTES.fixed && RELEASE_NOTES.fixed.length > 0) {
       console.log("   🐛 Fixed:");
-      RELEASE_NOTES.fixed.forEach((item) => console.log(`      • ${item}`));
+      RELEASE_NOTES.fixed.forEach((item: string) => console.log(`      • ${item}`));
     }
 
     if (RELEASE_NOTES.deprecated && RELEASE_NOTES.deprecated.length > 0) {
       console.log("   ⚠️  Deprecated:");
-      RELEASE_NOTES.deprecated.forEach((item) => console.log(`      • ${item}`));
+      RELEASE_NOTES.deprecated.forEach((item: string) => console.log(`      • ${item}`));
     }
 
     if (RELEASE_NOTES.removed && RELEASE_NOTES.removed.length > 0) {
       console.log("   🗑️  Removed:");
-      RELEASE_NOTES.removed.forEach((item) => console.log(`      • ${item}`));
+      RELEASE_NOTES.removed.forEach((item: string) => console.log(`      • ${item}`));
     }
 
     if (RELEASE_NOTES.security && RELEASE_NOTES.security.length > 0) {
       console.log("   🔒 Security:");
-      RELEASE_NOTES.security.forEach((item) => console.log(`      • ${item}`));
+      RELEASE_NOTES.security.forEach((item: string) => console.log(`      • ${item}`));
     }
   }
 
@@ -282,8 +399,22 @@ function showDetailedVersion(): void {
 
 /**
  * Show version information in JSON format
+ *
+ * @description Outputs comprehensive version information as structured JSON.
+ * Useful for programmatic access and integration with other tools.
+ *
+ * @example
+ * ```typescript
+ * showVersionJson();
+ * // Outputs structured JSON with version, build, and runtime info
+ * ```
  */
 function showVersionJson(): void {
+  // Type guard for RELEASE_NOTES to ensure safe access
+  const releaseNotes = isValidReleaseNotes(RELEASE_NOTES) && RELEASE_NOTES.version === VERSION
+    ? RELEASE_NOTES
+    : null;
+
   const versionInfo = {
     nagare: {
       version: VERSION,
@@ -302,7 +433,7 @@ function showVersionJson(): void {
       v8: Deno.version.v8,
       typescript: Deno.version.typescript,
     },
-    releaseNotes: RELEASE_NOTES.version === VERSION ? RELEASE_NOTES : null,
+    releaseNotes,
   };
 
   console.log(JSON.stringify(versionInfo, null, 2));
@@ -310,6 +441,9 @@ function showVersionJson(): void {
 
 /**
  * Format success message with emoji
+ *
+ * @param message - Message to format
+ * @returns Formatted success message with checkmark emoji
  */
 function formatSuccess(message: string): string {
   return `✅ ${message}`;
@@ -317,6 +451,9 @@ function formatSuccess(message: string): string {
 
 /**
  * Format error message with emoji
+ *
+ * @param message - Message to format
+ * @returns Formatted error message with X emoji
  */
 function formatError(message: string): string {
   return `❌ ${message}`;
@@ -324,6 +461,9 @@ function formatError(message: string): string {
 
 /**
  * Format info message with emoji
+ *
+ * @param message - Message to format
+ * @returns Formatted info message with info emoji
  */
 function formatInfo(message: string): string {
   return `ℹ️  ${message}`;
@@ -331,6 +471,24 @@ function formatInfo(message: string): string {
 
 /**
  * Main CLI entry point
+ *
+ * @description Coordinates the entire CLI workflow including:
+ * - Argument parsing and validation
+ * - Configuration loading and merging
+ * - Command execution (release/rollback)
+ * - Error handling and user feedback
+ *
+ * @param args - Command line arguments array
+ * @throws Process exit with error code on failure
+ *
+ * @example
+ * ```typescript
+ * // Called automatically when run as script
+ * await cli(Deno.args);
+ *
+ * // Or call programmatically
+ * await cli(['release', 'minor', '--dry-run']);
+ * ```
  */
 export async function cli(args: string[]): Promise<void> {
   const { command, bumpType, options } = parseArgs(args);
@@ -423,7 +581,10 @@ export async function cli(args: string[]): Promise<void> {
 }
 
 /**
- * Example configurations for documentation
+ * Example TypeScript configuration for comprehensive setup
+ *
+ * @description Complete configuration example showing all available options
+ * with detailed comments and safe patterns.
  */
 export const EXAMPLE_TS_CONFIG: string = `import type { NagareConfig } from '@rick/nagare';
 
@@ -486,6 +647,11 @@ export default {
   }
 } as NagareConfig;`;
 
+/**
+ * Example minimal configuration for simple projects
+ *
+ * @description Minimal configuration example showing only required fields.
+ */
 export const EXAMPLE_MINIMAL_CONFIG: string = `import type { NagareConfig } from '@rick/nagare';
 
 export default {
@@ -500,6 +666,12 @@ export default {
   }
 } as NagareConfig;`;
 
+/**
+ * Example custom template configuration for advanced use cases
+ *
+ * @description Configuration example showing custom Vento template usage
+ * with app-specific metadata.
+ */
 export const EXAMPLE_CUSTOM_TEMPLATE: string = `import type { NagareConfig } from '@rick/nagare';
 
 export default {
@@ -512,29 +684,29 @@ export default {
     path: './version.ts',
     template: 'custom',
     customTemplate: \`
-export const VERSION = "{{version}}";
+export const VERSION = "{{ version }}";
 
 export const BUILD_INFO = {
-  buildDate: "{{buildDate}}",
-  gitCommit: "{{gitCommit}}",
-  buildEnvironment: "{{environment}}"
+  buildDate: "{{ buildDate }}",
+  gitCommit: "{{ gitCommit }}",
+  buildEnvironment: "{{ environment }}"
 } as const;
 
 export const APP_INFO = {
-  name: "{{project.name}}",
-  description: "{{project.description}}",
-  author: "{{project.author}}"
+  name: "{{ project.name }}",
+  description: "{{ project.description }}",
+  author: "{{ project.author }}"
 } as const;
 
-{{#if metadata.cryptoFeatures}}
-export const CRYPTO_FEATURES = {{metadata.cryptoFeatures}} as const;
-{{/if}}
+{{- if metadata.cryptoFeatures }}
+export const CRYPTO_FEATURES = {{ metadata.cryptoFeatures | jsonStringify }} as const;
+{{- /if }}
 
-{{#if metadata.securityFeatures}}
-export const SECURITY_FEATURES = {{metadata.securityFeatures}} as const;
-{{/if}}
+{{- if metadata.securityFeatures }}
+export const SECURITY_FEATURES = {{ metadata.securityFeatures | jsonStringify }} as const;
+{{- /if }}
 
-export const RELEASE_NOTES = {{releaseNotes}} as const;
+export const RELEASE_NOTES = {{ releaseNotes | jsonStringify }} as const;
 \`
   },
 
@@ -558,6 +730,9 @@ export const RELEASE_NOTES = {{releaseNotes}} as const;
 
 /**
  * Run CLI if this file is executed directly
+ *
+ * @description Automatically invokes the CLI when this file is run as a script.
+ * Uses Deno.args for command line arguments.
  */
 if (import.meta.main) {
   await cli(Deno.args);
