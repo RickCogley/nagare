@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-06-27
+
+### Changed
+- exclude scratch folder for quick tests (b56569b)
+- deno fmt (220ff0e)
+
+### Fixed
+- make patterns optional in FileUpdatePattern to support updateFn-only usage (2ed0218)
+- sync deno.json version that was missed in 1.0.0 release (a6c91e4)
+- remove 'any' types from RELEASE_NOTES type guard to satisfy linting (a6bc312)
+- add type guards for RELEASE_NOTES to resolve CI TypeScript errors (f999da0)
+
 ## [1.0.0] - 2025-06-27
 
 ### Added
