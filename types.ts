@@ -233,16 +233,47 @@ export interface GitHubConfig {
 }
 
 /**
- * File update pattern
+ * File update pattern for additional files to update during release
+ *
+ * @description Defines how additional files are updated during the release process.
+ * Can use either regex patterns for find/replace or a custom update function.
+ *
+ * @example Using patterns:
+ * ```typescript
+ * {
+ *   path: "./package.json",
+ *   patterns: {
+ *     version: /^(\s*)"version":\s*"([^"]+)"/m
+ *   }
+ * }
+ * ```
+ *
+ * @example Using custom update function:
+ * ```typescript
+ * {
+ *   path: "./README.md",
+ *   updateFn: (content, data) => {
+ *     return content.replace(/Version: \d+\.\d+\.\d+/, `Version: ${data.version}`);
+ *   }
+ * }
+ * ```
  */
 export interface FileUpdatePattern {
-  /** File path */
+  /** File path relative to project root */
   path: string;
-  /** Patterns to find and replace */
-  patterns: {
+
+  /**
+   * Patterns to find and replace
+   * Required if updateFn is not provided
+   */
+  patterns?: {
     [key: string]: RegExp;
   };
-  /** Optional custom update function */
+
+  /**
+   * Optional custom update function
+   * If provided, overrides patterns
+   */
   updateFn?: (content: string, data: TemplateData) => string;
 }
 

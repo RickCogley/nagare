@@ -195,7 +195,7 @@ export class ReleaseManager {
         }
 
         let hasChanges = false;
-        for (const [key, pattern] of Object.entries(filePattern.patterns)) {
+        for (const [key, pattern] of Object.entries(filePattern.patterns || {})) {
           const matches = [...content.matchAll(new RegExp(pattern.source, pattern.flags + "g"))];
           const value = this.getTemplateValue(templateData, key);
 
@@ -594,7 +594,7 @@ export class ReleaseManager {
         // Use custom update function
         updatedContent = filePattern.updateFn(content, templateData);
         this.logger.debug(`Updated ${filePattern.path} using custom function`);
-      } else {
+      } else if (filePattern.patterns) {
         // Use pattern replacement with enhanced validation
         for (const [key, pattern] of Object.entries(filePattern.patterns)) {
           const value = this.getTemplateValue(templateData, key);
@@ -654,6 +654,8 @@ export class ReleaseManager {
             }
           }
         }
+      } else {
+        this.logger.warn(`No updateFn or patterns defined for ${filePattern.path}`);
       }
 
       // Validate the updated content for JSON files

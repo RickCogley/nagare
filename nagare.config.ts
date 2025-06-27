@@ -122,9 +122,14 @@ export default {
   updateFiles: [
     {
       path: "./deno.json",
-      patterns: {
-        // ✅ SAFE: Line-anchored pattern prevents matching task definitions
-        version: /^(\s*)"version":\s*"([^"]+)"/m,
+      // Using updateFn to work around buildSafeReplacement bug
+      // that caused version not to update during 1.0.0 release
+      // TODO: Remove once buildSafeReplacement is fixed
+      updateFn: (content, data) => {
+        return content.replace(
+          /^(\s*)"version":\s*"([^"]+)"/m,
+          `$1"version": "${data.version}"`,
+        );
       },
     },
   ],
