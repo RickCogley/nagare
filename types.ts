@@ -7,15 +7,31 @@
  * @fileoverview TypeScript interfaces and types for Nagare
  * @description Comprehensive type definitions for configuration, commits, and release management.
  * Compatible with all JavaScript runtimes for type checking and IntelliSense.
+ * Enhanced with Vento template engine integration support.
  */
 
 /**
- * Supported template formats
+ * Supported template formats for version file generation
+ * 
+ * @description Template formats supported by Nagare's built-in templates.
+ * All built-in templates now use Vento syntax for robust processing.
+ * 
+ * @example
+ * ```typescript
+ * const config: VersionFile = {
+ *   path: "./version.ts",
+ *   template: TemplateFormat.TYPESCRIPT
+ * };
+ * ```
  */
 export enum TemplateFormat {
+  /** TypeScript version file with const exports and type definitions */
   TYPESCRIPT = "typescript",
-  JSON = "json",
+  /** JSON format suitable for package.json-style version tracking */
+  JSON = "json", 
+  /** YAML format for configuration-style version tracking */
   YAML = "yaml",
+  /** Custom template string using Vento syntax */
   CUSTOM = "custom",
 }
 
@@ -84,16 +100,57 @@ export interface NagareConfig {
 }
 
 /**
- * Version file configuration
+ * Version file configuration for template-based version file generation
+ * 
+ * @description Defines how version files are generated using either built-in
+ * templates (TypeScript, JSON, YAML) or custom Vento templates.
+ * 
+ * @example Built-in template:
+ * ```typescript
+ * const versionFile: VersionFile = {
+ *   path: "./version.ts",
+ *   template: TemplateFormat.TYPESCRIPT
+ * };
+ * ```
+ * 
+ * @example Custom Vento template:
+ * ```typescript
+ * const versionFile: VersionFile = {
+ *   path: "./version.js",
+ *   template: TemplateFormat.CUSTOM,
+ *   customTemplate: `export const VERSION = "{{ version }}";`
+ * };
+ * ```
  */
 export interface VersionFile {
-  /** Path to the version file */
+  /** Path to the version file relative to project root */
   path: string;
+  
   /** Template format (typescript, json, yaml, custom) */
   template: TemplateFormat;
-  /** Custom template string (if template is 'custom') */
+  
+  /** 
+   * Custom template string using Vento syntax (required if template is 'custom')
+   * 
+   * @description When using TemplateFormat.CUSTOM, provide a Vento template string.
+   * Template has access to all TemplateData properties and custom filters.
+   * 
+   * @example
+   * ```typescript
+   * customTemplate: `
+   *   export const VERSION = "{{ version }}";
+   *   export const BUILD_INFO = {{ buildInfo | jsonStringify }};
+   * `
+   * ```
+   */
   customTemplate?: string;
-  /** Patterns for extracting/updating version info */
+  
+  /** 
+   * Legacy patterns for extracting/updating version info 
+   * 
+   * @deprecated Use template-based generation instead of pattern-based updates.
+   * Patterns are only used for backwards compatibility with non-template workflows.
+   */
   patterns?: {
     version?: RegExp;
     buildDate?: RegExp;
@@ -103,16 +160,59 @@ export interface VersionFile {
 }
 
 /**
- * Release notes configuration
+ * Release notes configuration for template data and formatting
+ * 
+ * @description Controls how release notes are generated and included in templates.
+ * Release notes follow Keep a Changelog format with conventional commit categorization.
+ * 
+ * @example
+ * ```typescript
+ * const releaseNotes: ReleaseNotesConfig = {
+ *   template: `{
+ *     version: "{{ version }}",
+ *     changes: {{ releaseNotes | jsonStringify }}
+ *   }`,
+ *   metadata: { 
+ *     cryptoFeatures: ["AES-GCM", "PBKDF2"],
+ *     endpoints: ["/api/encrypt", "/api/decrypt"]
+ *   },
+ *   includeCommitHashes: true,
+ *   maxDescriptionLength: 100
+ * };
+ * ```
  */
 export interface ReleaseNotesConfig {
-  /** Custom template for release notes section */
+  /** 
+   * Custom Vento template for release notes section in version files
+   * 
+   * @description Template for embedding release notes in generated version files.
+   * Has access to all TemplateData properties and Vento filters.
+   * If not provided, uses default release notes formatting.
+   */
   template?: string;
-  /** App-specific metadata to include */
+  
+  /** 
+   * App-specific metadata to include in template data
+   * 
+   * @description Static metadata that gets included in template processing.
+   * Useful for including app-specific information like API endpoints,
+   * feature lists, or configuration details.
+   * 
+   * @example
+   * ```typescript
+   * metadata: {
+   *   endpoints: ["/api/users", "/api/data"],
+   *   features: ["authentication", "encryption"],
+   *   supportedFormats: ["json", "xml"]
+   * }
+   * ```
+   */
   metadata?: Record<string, unknown>;
-  /** Include git commit hashes */
+  
+  /** Include git commit hashes in changelog entries (default: true) */
   includeCommitHashes?: boolean;
-  /** Maximum description length */
+  
+  /** Maximum description length for commit messages (default: 100) */
   maxDescriptionLength?: number;
 }
 
@@ -147,12 +247,54 @@ export interface FileUpdatePattern {
 }
 
 /**
- * Template configuration
+ * Template configuration for custom template processing
+ * 
+ * @description Configuration for advanced template features including
+ * custom template directories and dynamic data providers.
+ * 
+ * @example
+ * ```typescript
+ * const templates: TemplateConfig = {
+ *   templatesDir: "./templates",
+ *   dataProviders: {
+ *     buildMetrics: async () => ({ 
+ *       size: await getBundleSize(),
+ *       tests: await getTestCount() 
+ *     }),
+ *     gitStats: async () => ({
+ *       contributors: await getContributorCount(),
+ *       commits: await getTotalCommits()
+ *     })
+ *   }
+ * };
+ * ```
  */
 export interface TemplateConfig {
-  /** Custom templates directory */
+  /** 
+   * Custom templates directory for external template files
+   * 
+   * @description Directory containing external Vento template files.
+   * Templates can be referenced by filename without extension.
+   */
   templatesDir?: string;
-  /** Template data providers */
+  
+  /** 
+   * Template data providers for dynamic data injection
+   * 
+   * @description Functions that provide additional data for template processing.
+   * Called during template data preparation and merged into template context.
+   * Useful for including build metrics, git statistics, or other computed data.
+   * 
+   * @example
+   * ```typescript
+   * dataProviders: {
+   *   buildInfo: async () => ({
+   *     bundleSize: await calculateBundleSize(),
+   *     testCoverage: await getTestCoverage()
+   *   })
+   * }
+   * ```
+   */
   dataProviders?: Record<string, () => Promise<unknown>>;
 }
 
@@ -231,23 +373,86 @@ export interface ReleaseNotes {
 }
 
 /**
- * Template data for processing
+ * Template data for Vento template processing
+ * 
+ * @description Comprehensive data object passed to Vento templates during processing.
+ * Contains version information, build metadata, release notes, and custom data.
+ * Enhanced with computed properties for easier template access.
+ * 
+ * @example Template usage:
+ * ```vento
+ * export const VERSION = "{{ version }}";
+ * export const BUILD_INFO = {
+ *   buildDate: "{{ buildDate }}",
+ *   gitCommit: "{{ gitCommit }}",
+ *   versionComponents: {{ versionComponents | jsonStringify }}
+ * } as const;
+ * 
+ * {{- if metadata.endpoints }}
+ * export const ENDPOINTS = {{ metadata.endpoints | jsonStringify }};
+ * {{- /if }}
+ * ```
  */
 export interface TemplateData {
-  /** Version information */
+  /** Version information (e.g., "1.2.3") */
   version: string;
-  /** Build date */
+  
+  /** Build date in ISO format */
   buildDate: string;
-  /** Git commit hash */
+  
+  /** Git commit hash (full or short) */
   gitCommit: string;
-  /** Build environment */
+  
+  /** Build environment (e.g., "production", "development") */
   environment: string;
-  /** Release notes */
+  
+  /** Release notes following Keep a Changelog format */
   releaseNotes: ReleaseNotes;
-  /** Custom metadata */
+  
+  /** 
+   * Custom metadata from configuration and data providers
+   * 
+   * @description Merged metadata from releaseNotes.metadata and template dataProviders.
+   * Available as individual properties in templates for easier access.
+   */
   metadata: Record<string, unknown>;
-  /** Project information */
+  
+  /** Project information from configuration */
   project: NagareConfig["project"];
+  
+  /**
+   * Computed version components (added by TemplateProcessor)
+   * 
+   * @description Automatically parsed from version string during template processing.
+   * Includes major, minor, patch numbers and prerelease identifier.
+   * 
+   * @example
+   * ```typescript
+   * // For version "1.2.3-beta.1"
+   * versionComponents: {
+   *   major: 1,
+   *   minor: 2, 
+   *   patch: 3,
+   *   prerelease: "beta.1"
+   * }
+   * ```
+   */
+  versionComponents?: {
+    major: number;
+    minor: number;
+    patch: number;
+    prerelease: string | null;
+  };
+  
+  /**
+   * Additional computed helpers (added by TemplateProcessor)
+   * 
+   * @description Helper properties automatically computed during template processing.
+   * Provides convenient access to formatted dates, short hashes, etc.
+   */
+  currentYear?: number;
+  buildDateFormatted?: string;
+  shortCommit?: string;
 }
 
 /**
@@ -258,23 +463,71 @@ export interface CommitTypeMapping {
 }
 
 /**
- * Result of a release operation
+ * Result of a release operation with comprehensive feedback
+ * 
+ * @description Detailed result information from release operations including
+ * success status, version changes, generated artifacts, and error details.
+ * 
+ * @example Successful release:
+ * ```typescript
+ * const result: ReleaseResult = {
+ *   success: true,
+ *   version: "1.2.0",
+ *   previousVersion: "1.1.5",
+ *   commitCount: 12,
+ *   releaseNotes: { version: "1.2.0", ... },
+ *   updatedFiles: ["./version.ts", "./deno.json", "./CHANGELOG.md"],
+ *   githubReleaseUrl: "https://github.com/user/repo/releases/tag/v1.2.0"
+ * };
+ * ```
+ * 
+ * @example Failed release:
+ * ```typescript
+ * const result: ReleaseResult = {
+ *   success: false,
+ *   error: "Template compilation failed: Invalid Vento syntax on line 5"
+ * };
+ * ```
  */
 export interface ReleaseResult {
   /** Whether the release was successful */
   success: boolean;
-  /** New version number */
+  
+  /** New version number (if successful) */
   version?: string;
-  /** Previous version number */
+  
+  /** Previous version number (if successful) */
   previousVersion?: string;
-  /** Number of commits included */
+  
+  /** Number of commits included in release (if successful) */
   commitCount?: number;
-  /** Release notes generated */
+  
+  /** Release notes generated for this version (if successful) */
   releaseNotes?: ReleaseNotes;
-  /** Files that were updated */
+  
+  /** Files that were updated during release (if successful) */
   updatedFiles?: string[];
+  
   /** Error message if failed */
   error?: string;
+  
   /** GitHub release URL if created */
   githubReleaseUrl?: string;
+  
+  /**
+   * Template processing details (if applicable)
+   * 
+   * @description Information about template compilation and processing.
+   * Useful for debugging template issues.
+   */
+  templateInfo?: {
+    /** Whether template compilation succeeded */
+    compiled: boolean;
+    /** Template compilation error (if any) */
+    compileError?: string;
+    /** Template format used */
+    format: TemplateFormat;
+    /** Custom template used (if applicable) */
+    customTemplate?: boolean;
+  };
 }
