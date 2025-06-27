@@ -75,13 +75,17 @@ interface CLIOptions {
  * ```
  */
 function isValidReleaseNotes(releaseNotes: unknown): releaseNotes is ReleaseNotes {
+  if (releaseNotes === null || typeof releaseNotes !== "object") {
+    return false;
+  }
+
+  const obj = releaseNotes as Record<string, unknown>;
+
   return (
-    releaseNotes !== null &&
-    typeof releaseNotes === "object" &&
-    "version" in releaseNotes &&
-    "date" in releaseNotes &&
-    typeof (releaseNotes as any).version === "string" &&
-    typeof (releaseNotes as any).date === "string"
+    "version" in obj &&
+    "date" in obj &&
+    typeof obj.version === "string" &&
+    typeof obj.date === "string"
   );
 }
 
