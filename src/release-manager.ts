@@ -196,7 +196,7 @@ export class ReleaseManager {
 
         let hasChanges = false;
         for (const [key, pattern] of Object.entries(filePattern.patterns)) {
-          const matches = [...content.matchAll(new RegExp(pattern, "g"))];
+          const matches = [...content.matchAll(new RegExp(pattern.source, pattern.flags + "g"))];
           const value = this.getTemplateValue(templateData, key);
 
           if (matches.length === 0) {
