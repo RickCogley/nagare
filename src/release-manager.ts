@@ -143,7 +143,7 @@ export class ReleaseManager {
 
     // Handle line-anchored JSON patterns (the safe ones)
     // This matches patterns like: ^(\s*)"version":\s*"([^"]+)"
-    if (source.includes('^(\\s*)"version"') && source.includes(':')) {
+    if (source.includes('^(\\s*)"version"') && source.includes(":")) {
       return `$1"version": "${newValue}"`;
     }
 
