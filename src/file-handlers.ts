@@ -209,6 +209,41 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
     },
   },
 
+  "jsr.json": {
+    id: "jsr.json",
+    name: "JSR Configuration",
+    detector: (path: string): boolean => path.endsWith("jsr.json"),
+    patterns: {
+      // Safe pattern that only matches top-level version field
+      version: /^(\s*)"version":\s*"([^"]+)"/m,
+    },
+    replacer: (content: string, key: string, _oldValue: string, newValue: string): string => {
+      if (key === "version") {
+        // Use targeted replacement to preserve formatting
+        const versionRegex = /^(\s*"version":\s*)"[^"]+"/m;
+        return content.replace(versionRegex, `$1"${newValue}"`);
+      }
+      return content;
+    },
+    validate: (content: string): { valid: boolean; error?: string } => {
+      try {
+        const config = JSON.parse(content);
+        if (!config.version) {
+          return { valid: false, error: "Missing version field" };
+        }
+        if (!config.name) {
+          return { valid: false, error: "Missing name field (required for JSR)" };
+        }
+        return { valid: true };
+      } catch (e) {
+        return {
+          valid: false,
+          error: `Invalid jsr.json: ${e instanceof Error ? e.message : String(e)}`,
+        };
+      }
+    },
+  },
+
   // ============================================
   // TypeScript/JavaScript Files
   // ============================================
