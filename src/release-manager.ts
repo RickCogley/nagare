@@ -263,15 +263,15 @@ export class ReleaseManager {
 
   /**
    * Preview file updates in dry-run mode
-   *
+   * 
    * @private
    * @param {TemplateData} templateData - Template data for file updates
    * @returns {Promise<void>}
-   *
+   * 
    * @description
    * Shows what changes would be made to each file without actually modifying them.
    * Useful for verifying patterns work correctly before committing to changes.
-   *
+   * 
    * @since 1.1.0 - Enhanced with file handler information
    */
   private async previewFileUpdates(templateData: TemplateData): Promise<void> {
@@ -291,23 +291,54 @@ export class ReleaseManager {
         const handler = this.fileHandlerManager.getHandler(filePattern.path);
         if (handler && !filePattern.patterns && !filePattern.updateFn) {
           this.logger.info(`    📦 Using built-in ${handler.name} handler`);
-
-          // Preview changes using the handler
+          
+          // For built-in handlers, we need to determine which pattern key to use
+          // Default to "version" for most handlers
+          let keyToPreview = "version";
+          
+          // Special handling for different file types
+          if (filePattern.path.endsWith(".md") || filePattern.path.endsWith(".markdown")) {
+            // For markdown files, try multiple possible patterns
+            const markdownKeys = ["shieldsBadge", "versionHeader", "npmInstall"];
+            let foundMatch = false;
+            
+            for (const key of markdownKeys) {
+              if (handler.patterns[key]) {
+                const preview = await this.fileHandlerManager.previewChanges(
+                  filePattern.path,
+                  key,
+                  templateData.version
+                );
+                
+                if (!preview.error && preview.matches.length > 0) {
+                  for (const match of preview.matches) {
+                    this.logger.info(`    ✅ Line ${match.line}: "${match.original}" → "${match.updated}"`);
+                  }
+                  foundMatch = true;
+                }
+              }
+            }
+            
+            if (!foundMatch) {
+              this.logger.warn(`    ❌ No version references found to update`);
+            }
+            continue;
+          }
+          
+          // Preview changes using the handler for non-markdown files
           const preview = await this.fileHandlerManager.previewChanges(
             filePattern.path,
-            "version",
-            templateData.version,
+            keyToPreview,
+            templateData.version
           );
-
+          
           if (preview.error) {
             this.logger.error(`    ❌ Preview error: ${preview.error}`);
           } else if (preview.matches.length === 0) {
             this.logger.warn(`    ❌ No version found to update`);
           } else {
             for (const match of preview.matches) {
-              this.logger.info(
-                `    ✅ Line ${match.line}: "${match.original}" → "${match.updated}"`,
-              );
+              this.logger.info(`    ✅ Line ${match.line}: "${match.original}" → "${match.updated}"`);
             }
           }
           continue;
