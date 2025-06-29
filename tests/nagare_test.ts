@@ -88,7 +88,7 @@ Deno.test("Built-in handlers should detect appropriate files", async () => {
     { path: "./jsr.json", expectedHandler: "JSR Configuration" },
     { path: "./README.md", expectedHandler: "Markdown Documentation" },
     { path: "./CHANGELOG.md", expectedHandler: "Markdown Documentation" },
-    { path: "./Cargo.toml", expectedHandler: "Rust Cargo Configuration" },
+    { path: "./cargo.toml", expectedHandler: "Rust Cargo Configuration" },
     { path: "./pyproject.toml", expectedHandler: "Python Project Configuration" },
     { path: "./config.yaml", expectedHandler: "YAML Configuration" },
     { path: "./settings.yml", expectedHandler: "YAML Configuration" },
@@ -133,14 +133,15 @@ Deno.test("FileHandlerManager preview should work", async () => {
   const { FileHandlerManager } = await import("../mod.ts");
   const manager = new FileHandlerManager();
 
-  // Create a temporary test file
+  // Create a temporary test file with exact name "package.json"
   const testContent = `{
   "name": "@rick/nagare",
   "version": "1.0.0",
   "exports": "./mod.ts"
 }`;
 
-  const tempFile = await Deno.makeTempFile({ suffix: ".json" });
+  const tempDir = await Deno.makeTempDir();
+  const tempFile = `${tempDir}/package.json`;
   await Deno.writeTextFile(tempFile, testContent);
 
   try {
@@ -148,12 +149,13 @@ Deno.test("FileHandlerManager preview should work", async () => {
     const preview = await manager.previewChanges(tempFile, "version", "2.0.0");
 
     assertExists(preview);
+    assertEquals(preview.error, undefined);
     assertEquals(preview.matches.length, 1);
     assertEquals(preview.matches[0].line, 3);
     assertEquals(preview.matches[0].original.includes('"1.0.0"'), true);
     assertEquals(preview.matches[0].updated.includes('"2.0.0"'), true);
   } finally {
-    await Deno.remove(tempFile);
+    await Deno.remove(tempDir, { recursive: true });
   }
 });
 
@@ -167,7 +169,8 @@ Deno.test("FileHandlerManager updateFile should validate JSON", async () => {
   "version": "1.0.0"
 }`;
 
-  const tempFile = await Deno.makeTempFile({ suffix: ".json" });
+  const tempDir = await Deno.makeTempDir();
+  const tempFile = `${tempDir}/package.json`;
   await Deno.writeTextFile(tempFile, validJson);
 
   try {
@@ -175,13 +178,14 @@ Deno.test("FileHandlerManager updateFile should validate JSON", async () => {
 
     assertEquals(result.success, true);
     assertExists(result.content);
+    assertEquals(result.error, undefined);
 
     // Verify the content is valid JSON
     const parsed = JSON.parse(result.content!);
     assertEquals(parsed.version, "2.0.0");
     assertEquals(parsed.name, "test");
   } finally {
-    await Deno.remove(tempFile);
+    await Deno.remove(tempDir, { recursive: true });
   }
 });
 
@@ -219,7 +223,6 @@ Deno.test("ReleaseManager should validate configuration", async () => {
 
 Deno.test("ReleaseManager should suggest file handlers", async () => {
   const { ReleaseManager } = await import("../mod.ts");
-  // const { Logger } = await import("../src/logger.ts");
 
   // Create a test configuration with files that have handlers
   const config: NagareConfig = {
@@ -317,18 +320,31 @@ Deno.test("FileHandlerManager should handle missing files gracefully", async () 
   const { FileHandlerManager } = await import("../mod.ts");
   const manager = new FileHandlerManager();
 
-  const result = await manager.updateFile("./non-existent-file.json", "version", "1.0.0");
+  // Use a file path without a handler first
+  const noHandlerResult = await manager.updateFile("./unknown.xyz", "version", "1.0.0");
 
-  assertEquals(result.success, false);
-  assertExists(result.error);
-  assertEquals(result.error!.includes("Failed to update file"), true);
+  assertEquals(noHandlerResult.success, false);
+  assertExists(noHandlerResult.error);
+  assertEquals(noHandlerResult.error.includes("No handler found"), true);
+
+  // Now test with a real missing file that has a handler
+  const missingFileResult = await manager.updateFile(
+    "./non-existent-package.json",
+    "version",
+    "1.0.0",
+  );
+
+  assertEquals(missingFileResult.success, false);
+  assertExists(missingFileResult.error);
+  assertEquals(missingFileResult.error.includes("Failed to update file"), true);
 });
 
 Deno.test("FileHandlerManager should handle invalid patterns gracefully", async () => {
   const { FileHandlerManager } = await import("../mod.ts");
   const manager = new FileHandlerManager();
 
-  const tempFile = await Deno.makeTempFile({ suffix: ".json" });
+  const tempDir = await Deno.makeTempDir();
+  const tempFile = `${tempDir}/package.json`;
   await Deno.writeTextFile(tempFile, '{"name": "test"}');
 
   try {
@@ -337,6 +353,6 @@ Deno.test("FileHandlerManager should handle invalid patterns gracefully", async 
     assertEquals(result.success, false);
     assertExists(result.error);
   } finally {
-    await Deno.remove(tempFile);
+    await Deno.remove(tempDir, { recursive: true });
   }
 });
