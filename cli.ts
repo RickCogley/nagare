@@ -208,15 +208,39 @@ async function loadConfig(configPath?: string): Promise<NagareConfig> {
 
   for (const path of pathsToTry) {
     try {
-      // FIX: Use Deno.cwd() for relative paths instead of import.meta.url
-      // This ensures relative paths work when Nagare is imported from JSR
-      const resolvedPath = path.startsWith(".") || !path.includes("://")
-        ? new URL(path, `file://${Deno.cwd()}/`).href
-        : path;
+      let resolvedPath: string;
 
+      // Handle different path formats
+      if (path.startsWith("file://") || path.startsWith("http://") || path.startsWith("https://")) {
+        // Already a URL, use as-is
+        resolvedPath = path;
+      } else if (path.startsWith("/")) {
+        // Absolute path - convert to file:// URL
+        resolvedPath = `file://${path}`;
+      } else {
+        // Relative path - resolve from current working directory
+        const absolutePath = path.startsWith("./")
+          ? `${Deno.cwd()}/${path.slice(2)}`
+          : `${Deno.cwd()}/${path}`;
+        resolvedPath = `file://${absolutePath}`;
+      }
+
+      // Try to import the module
       const module = await import(resolvedPath);
-      return module.default || module.config;
-    } catch {
+
+      // Check if the module has a default export or a config export
+      const config = module.default || module.config;
+
+      if (!config) {
+        throw new Error(`No default export or config export found in ${path}`);
+      }
+
+      return config;
+    } catch (error) {
+      // Log error in debug mode
+      if (Deno.env.get("NAGARE_DEBUG") === "true") {
+        console.error(`Failed to load ${path}:`, error);
+      }
       // Continue to next path
     }
   }
