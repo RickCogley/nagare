@@ -8,9 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.1] - 2025-06-29
 
 ### Changed
+
 - format generated files after release (72c8cf1)
 
 ### Fixed
+
 - critical - fix config file resolution when imported from JSR (6f2d2a4)
 
 ## [1.1.0] - 2025-06-29
