@@ -167,11 +167,13 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
     },
     validate: (content: string): { valid: boolean; error?: string } => {
       try {
-        // Remove comments for JSONC files (basic comment removal)
-        const jsonContent = content.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, "");
-        JSON.parse(jsonContent);
+        // For now, just try to parse as-is
+        // TODO: Implement proper comment removal that doesn't break URLs
+        JSON.parse(content);
         return { valid: true };
       } catch (e) {
+        // If it fails, it might be JSONC with comments
+        // For now, just return the error
         return {
           valid: false,
           error: `Invalid JSON: ${e instanceof Error ? e.message : String(e)}`,
