@@ -8,9 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.0] - 2025-06-29
 
 ### Added
+
 - add intelligent file handler system for automatic version updates (b86ec5c)
 
 ### Changed
+
 - temporary debug section (0865b8a)
 - add JSR badges to readme (05a40de)
 - fix file handler tests for proper temp file detection and error handling (3b80a3e)
@@ -19,6 +21,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - add template based file generation proposal (79c3d24)
 
 ### Fixed
+
 - avoid clobbering urls (c22787c)
 - temporary debug (7090a35)
 - simplify deno.json handler (581d3d8)
