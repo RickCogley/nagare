@@ -1,11 +1,14 @@
 /**
- * @fileoverview Core ReleaseManager implementation
+ * @fileoverview Core ReleaseManager implementation with intelligent file handlers
  * @description Extracted and generalized from Salty's release system with enhanced file update validation
+ * @module release-manager
+ * @since 1.0.0
  */
 
 import type {
   BumpType,
   ConventionalCommit,
+  FileUpdatePattern,
   NagareConfig,
   ReleaseNotes,
   ReleaseResult,
@@ -25,9 +28,48 @@ import { GitHubIntegration } from "./github-integration.ts";
 import { TemplateProcessor } from "./template-processor.ts";
 import { DocGenerator } from "./doc-generator.ts";
 import { Logger } from "./logger.ts";
+import { FileHandlerManager } from "./file-handlers.ts";
 
 /**
  * Main ReleaseManager class - coordinates the entire release process
+ *
+ * @class ReleaseManager
+ * @since 1.0.0
+ *
+ * @description
+ * The ReleaseManager orchestrates all aspects of the release process including:
+ * - Version calculation based on conventional commits
+ * - File updates using intelligent handlers or custom patterns
+ * - Changelog generation following Keep a Changelog format
+ * - Git operations (tagging, pushing)
+ * - GitHub release creation
+ * - Documentation generation
+ *
+ * @example Basic usage
+ * ```typescript
+ * const config: NagareConfig = {
+ *   project: { name: "My App", repository: "https://github.com/user/app" },
+ *   versionFile: { path: "./version.ts", template: TemplateFormat.TYPESCRIPT }
+ * };
+ *
+ * const manager = new ReleaseManager(config);
+ * const result = await manager.release("minor");
+ * if (result.success) {
+ *   console.log(`Released version ${result.version}`);
+ * }
+ * ```
+ *
+ * @example With file handlers (1.1.0+)
+ * ```typescript
+ * const config: NagareConfig = {
+ *   // ... project config ...
+ *   updateFiles: [
+ *     { path: "./deno.json" },     // Auto-detected and handled
+ *     { path: "./package.json" },  // Auto-detected and handled
+ *     { path: "./README.md" }      // Auto-detected and handled
+ *   ]
+ * };
+ * ```
  */
 export class ReleaseManager {
   private config: NagareConfig;
@@ -38,7 +80,22 @@ export class ReleaseManager {
   private templateProcessor: TemplateProcessor;
   private docGenerator: DocGenerator;
   private logger: Logger;
+  private fileHandlerManager: FileHandlerManager;
 
+  /**
+   * Create a new ReleaseManager instance
+   *
+   * @constructor
+   * @param {NagareConfig} config - Release configuration
+   *
+   * @example
+   * ```typescript
+   * const manager = new ReleaseManager({
+   *   project: { name: "My App", repository: "https://github.com/user/app" },
+   *   versionFile: { path: "./version.ts", template: TemplateFormat.TYPESCRIPT }
+   * });
+   * ```
+   */
   constructor(config: NagareConfig) {
     this.config = this.mergeWithDefaults(config);
     this.git = new GitOperations(this.config);
@@ -48,12 +105,15 @@ export class ReleaseManager {
     this.templateProcessor = new TemplateProcessor(this.config);
     this.docGenerator = new DocGenerator(this.config);
     this.logger = new Logger(this.config.options?.logLevel || LogLevel.INFO);
+    this.fileHandlerManager = new FileHandlerManager();
   }
 
   /**
    * Merge user config with defaults
-   * @param config User configuration
-   * @returns Merged configuration with defaults
+   *
+   * @private
+   * @param {NagareConfig} config - User configuration
+   * @returns {NagareConfig} Merged configuration with defaults
    */
   private mergeWithDefaults(config: NagareConfig): NagareConfig {
     return {
@@ -84,17 +144,40 @@ export class ReleaseManager {
 
   /**
    * Validate file update patterns to detect dangerous configurations
-   * @returns Validation result with warnings and errors
+   *
+   * @private
+   * @returns {Object} Validation result with warnings, errors, and suggestions
+   * @returns {boolean} returns.valid - Whether all patterns are safe to use
+   * @returns {string[]} returns.warnings - Warning messages about potentially dangerous patterns
+   * @returns {string[]} returns.errors - Error messages about invalid patterns
+   * @returns {string[]} returns.suggestions - Suggestions for using built-in handlers
+   *
+   * @since 1.1.0 - Added suggestions for built-in handlers
    */
-  private validateFileUpdatePatterns(): { valid: boolean; warnings: string[]; errors: string[] } {
+  private validateFileUpdatePatterns(): {
+    valid: boolean;
+    warnings: string[];
+    errors: string[];
+    suggestions: string[];
+  } {
     const warnings: string[] = [];
     const errors: string[] = [];
+    const suggestions: string[] = [];
 
     if (!this.config.updateFiles || this.config.updateFiles.length === 0) {
-      return { valid: true, warnings, errors };
+      return { valid: true, warnings, errors, suggestions };
     }
 
     for (const filePattern of this.config.updateFiles) {
+      // Check if this file has a built-in handler
+      const hasHandler = this.fileHandlerManager.hasHandler(filePattern.path);
+
+      if (hasHandler && !filePattern.patterns && !filePattern.updateFn) {
+        suggestions.push(
+          `✅ ${filePattern.path} will use built-in handler automatically`,
+        );
+      }
+
       if (!filePattern.patterns) continue;
 
       for (const [key, pattern] of Object.entries(filePattern.patterns)) {
@@ -129,14 +212,20 @@ export class ReleaseManager {
       }
     }
 
-    return { valid: errors.length === 0, warnings, errors };
+    return { valid: errors.length === 0, warnings, errors, suggestions };
   }
 
   /**
    * Build safe replacement string for regex patterns
-   * @param pattern The regex pattern being used
-   * @param newValue The new value to insert
-   * @returns Safe replacement string
+   *
+   * @private
+   * @param {RegExp} pattern - The regex pattern being used
+   * @param {string} newValue - The new value to insert
+   * @returns {string} Safe replacement string
+   *
+   * @description
+   * Analyzes the regex pattern to determine the appropriate replacement format.
+   * Handles common patterns for JSON, YAML, Markdown, and other formats.
    */
   private buildSafeReplacement(pattern: RegExp, newValue: string): string {
     const source = pattern.source;
@@ -174,7 +263,16 @@ export class ReleaseManager {
 
   /**
    * Preview file updates in dry-run mode
-   * @param templateData Template data for file updates
+   *
+   * @private
+   * @param {TemplateData} templateData - Template data for file updates
+   * @returns {Promise<void>}
+   *
+   * @description
+   * Shows what changes would be made to each file without actually modifying them.
+   * Useful for verifying patterns work correctly before committing to changes.
+   *
+   * @since 1.1.0 - Enhanced with file handler information
    */
   private async previewFileUpdates(templateData: TemplateData): Promise<void> {
     if (!this.config.updateFiles || this.config.updateFiles.length === 0) {
@@ -188,6 +286,12 @@ export class ReleaseManager {
       try {
         const content = await Deno.readTextFile(filePattern.path);
         this.logger.info(`\n  File: ${filePattern.path}`);
+
+        // Check if using built-in handler
+        const handler = this.fileHandlerManager.getHandler(filePattern.path);
+        if (handler && !filePattern.patterns && !filePattern.updateFn) {
+          this.logger.info(`    📦 Using built-in ${handler.name} handler`);
+        }
 
         if (filePattern.updateFn) {
           this.logger.info("    ✅ Uses custom update function");
@@ -228,12 +332,48 @@ export class ReleaseManager {
 
   /**
    * Main release method - orchestrates the entire release process
-   * @param bumpType Optional version bump type (patch, minor, major)
-   * @returns Release result with success status and details
+   *
+   * @public
+   * @param {BumpType} [bumpType] - Optional version bump type (patch, minor, major)
+   * @returns {Promise<ReleaseResult>} Release result with success status and details
+   *
+   * @description
+   * Coordinates the entire release workflow:
+   * 1. Validates environment and configuration
+   * 2. Analyzes commits to determine version bump
+   * 3. Generates release notes
+   * 4. Updates configured files (with preview in dry-run mode)
+   * 5. Creates git commit and tag
+   * 6. Pushes to remote repository
+   * 7. Creates GitHub release (if configured)
+   * 8. Generates documentation (if enabled)
+   *
+   * @example Basic release
+   * ```typescript
+   * const result = await manager.release();
+   * if (result.success) {
+   *   console.log(`Released version ${result.version}`);
+   * }
+   * ```
+   *
+   * @example Force specific version bump
+   * ```typescript
+   * const result = await manager.release(BumpType.MAJOR);
+   * // Forces a major version bump regardless of commits
+   * ```
+   *
+   * @throws {Error} If environment validation fails or git operations fail
    */
   async release(bumpType?: BumpType): Promise<ReleaseResult> {
     try {
       this.logger.info("🚀 Starting release process with Nagare...\n");
+
+      // Run pre-release hooks
+      if (this.config.hooks?.preRelease) {
+        for (const hook of this.config.hooks.preRelease) {
+          await hook();
+        }
+      }
 
       // Validate environment and configuration
       await this.validateEnvironment();
@@ -321,6 +461,13 @@ export class ReleaseManager {
         githubReleaseUrl = await this.github.createRelease(releaseNotes);
       }
 
+      // Run post-release hooks
+      if (this.config.hooks?.postRelease) {
+        for (const hook of this.config.hooks.postRelease) {
+          await hook();
+        }
+      }
+
       this.logger.info("\n🎉 Release completed successfully!");
       this.logger.info(`   Version: ${newVersion}`);
       this.logger.info("   Next steps:");
@@ -340,15 +487,28 @@ export class ReleaseManager {
       this.logger.error("❌ Release failed:", error as Error);
       return {
         success: false,
-        error: error instanceof Error
-          ? error instanceof Error ? error.message : String(error)
-          : String(error),
+        error: error instanceof Error ? error.message : String(error),
       };
     }
   }
 
   /**
    * Validate environment and prerequisites
+   *
+   * @private
+   * @returns {Promise<void>}
+   *
+   * @description
+   * Performs comprehensive validation including:
+   * - Git repository existence
+   * - Uncommitted changes check
+   * - Version file existence
+   * - Git user configuration
+   * - File update pattern safety (with enhanced handler awareness)
+   *
+   * @throws {Error} If any validation fails
+   *
+   * @since 1.1.0 - Added file handler awareness and suggestions
    */
   private async validateEnvironment(): Promise<void> {
     // Check if we're in a git repository
@@ -376,15 +536,22 @@ export class ReleaseManager {
       throw new Error("Git user.name and user.email must be configured");
     }
 
-    // NEW: Add pattern validation
-    const patternValidation = this.validateFileUpdatePatterns();
+    // Enhanced pattern validation with handler awareness
+    const patternValidation = this.validateFileUpdatePatternsEnhanced();
+
+    // Show suggestions
+    if (patternValidation.suggestions.length > 0) {
+      this.logger.info("\n💡 Configuration suggestions:");
+      for (const suggestion of patternValidation.suggestions) {
+        this.logger.info(suggestion);
+      }
+    }
 
     if (patternValidation.warnings.length > 0) {
       this.logger.warn("\n⚠️  File update pattern warnings:");
       for (const warning of patternValidation.warnings) {
         this.logger.warn(warning);
       }
-      this.logger.warn("\nConsider updating your patterns to avoid potential file corruption.");
     }
 
     if (!patternValidation.valid) {
@@ -400,9 +567,16 @@ export class ReleaseManager {
 
   /**
    * Generate release notes from commits
-   * @param version Version string for the release
-   * @param commits Array of conventional commits
-   * @returns Generated release notes
+   *
+   * @private
+   * @param {string} version - Version string for the release
+   * @param {ConventionalCommit[]} commits - Array of conventional commits
+   * @returns {ReleaseNotes} Generated release notes
+   *
+   * @description
+   * Categorizes commits according to conventional commit types and
+   * generates release notes following Keep a Changelog format.
+   * Handles breaking changes, commit hash inclusion, and description truncation.
    */
   private generateReleaseNotes(version: string, commits: ConventionalCommit[]): ReleaseNotes {
     const notes: ReleaseNotes = {
@@ -447,7 +621,14 @@ export class ReleaseManager {
 
   /**
    * Preview the release changes
-   * @param releaseNotes Generated release notes to preview
+   *
+   * @private
+   * @param {ReleaseNotes} releaseNotes - Generated release notes to preview
+   * @returns {void}
+   *
+   * @description
+   * Displays a summary of the release notes showing counts for each category.
+   * Helps users understand what changes are included before confirming release.
    */
   private previewRelease(releaseNotes: ReleaseNotes): void {
     this.logger.info("\n📋 Release Notes Preview:");
@@ -476,9 +657,19 @@ export class ReleaseManager {
 
   /**
    * Update all configured files
-   * @param version New version string
-   * @param releaseNotes Generated release notes
-   * @returns Array of updated file paths
+   *
+   * @private
+   * @param {string} version - New version string
+   * @param {ReleaseNotes} releaseNotes - Generated release notes
+   * @returns {Promise<string[]>} Array of updated file paths
+   *
+   * @description
+   * Updates all files configured in the release configuration:
+   * 1. Version file (using template processor)
+   * 2. CHANGELOG.md (using changelog generator)
+   * 3. Additional files (using file handlers or custom patterns)
+   *
+   * @since 1.1.0 - Enhanced with intelligent file handler support
    */
   private async updateFiles(version: string, releaseNotes: ReleaseNotes): Promise<string[]> {
     const updatedFiles: string[] = [];
@@ -521,11 +712,15 @@ export class ReleaseManager {
   /**
    * Update the main version file using template processor
    *
-   * @description Generates and writes the version file using either custom templates
+   * @private
+   * @param {TemplateData} templateData - Template data for version file generation
+   * @returns {Promise<void>}
+   *
+   * @description
+   * Generates and writes the version file using either custom templates
    * or built-in templates. Supports TypeScript, JSON, YAML, and custom formats.
    *
-   * @param templateData Template data for version file generation
-   * @throws Error if template processing fails or file write fails
+   * @throws {Error} If template processing fails or file write fails
    *
    * @example
    * ```typescript
@@ -576,96 +771,155 @@ export class ReleaseManager {
   }
 
   /**
-   * Update a custom file based on patterns with enhanced validation
-   * @param filePattern File update pattern configuration
-   * @param templateData Template data for replacements
+   * Update a custom file based on patterns with enhanced file handler support
+   *
+   * @private
+   * @param {FileUpdatePattern} filePattern - File update pattern configuration
+   * @param {TemplateData} templateData - Template data for replacements
+   * @returns {Promise<void>}
+   *
+   * @description
+   * Updates files using the following priority:
+   * 1. Custom updateFn if provided
+   * 2. Built-in file handler if available
+   * 3. Pattern-based updates as fallback
+   *
+   * Validates JSON files after update to prevent corruption.
+   *
+   * @since 1.1.0 - Added intelligent file handler support
+   *
+   * @example
+   * ```typescript
+   * // With built-in handler (no patterns needed)
+   * await updateCustomFile({ path: "./deno.json" }, templateData);
+   *
+   * // With custom patterns
+   * await updateCustomFile({
+   *   path: "./custom.json",
+   *   patterns: { version: /^(\s*)"version":\s*"([^"]+)"/m }
+   * }, templateData);
+   * ```
    */
   private async updateCustomFile(
     filePattern: FileUpdatePattern,
     templateData: TemplateData,
   ): Promise<void> {
     try {
-      const content = await Deno.readTextFile(filePattern.path);
-      let updatedContent = content;
-      const changes: Array<{ key: string; oldValue: string; newValue: string; matches: number }> =
-        [];
+      let updatedContent: string;
+      const changes: Array<{ key: string; status: string; message: string }> = [];
 
+      // If custom updateFn provided, use it (highest priority)
       if (filePattern.updateFn) {
-        // Use custom update function
+        const content = await Deno.readTextFile(filePattern.path);
         updatedContent = filePattern.updateFn(content, templateData);
         this.logger.debug(`Updated ${filePattern.path} using custom function`);
-      } else if (filePattern.patterns) {
-        // Use pattern replacement with enhanced validation
+        changes.push({
+          key: "custom",
+          status: "✅",
+          message: "Used custom update function",
+        });
+      } // Check if we have a built-in handler for this file
+      else if (this.fileHandlerManager.hasHandler(filePattern.path)) {
+        const handler = this.fileHandlerManager.getHandler(filePattern.path)!;
+        this.logger.info(`Using built-in ${handler.name} handler for ${filePattern.path}`);
+
+        // Determine which patterns to use
+        const patterns = filePattern.patterns || { version: "version" };
+
+        let fileContent = await Deno.readTextFile(filePattern.path);
+
+        for (const [key, patternOrKey] of Object.entries(patterns)) {
+          // If it's just a string, treat it as a key name
+          const actualKey = typeof patternOrKey === "string" ? patternOrKey : key;
+          const value = this.getTemplateValue(templateData, actualKey);
+
+          if (!value) {
+            this.logger.warn(`No template value found for key: ${actualKey}`);
+            continue;
+          }
+
+          const result = await this.fileHandlerManager.updateFile(
+            filePattern.path,
+            actualKey,
+            value,
+          );
+
+          if (result.success && result.content) {
+            fileContent = result.content;
+            changes.push({
+              key: actualKey,
+              status: "✅",
+              message: `Updated using ${handler.name} handler`,
+            });
+          } else {
+            changes.push({
+              key: actualKey,
+              status: "⚠️",
+              message: result.error || "Update failed",
+            });
+          }
+        }
+
+        updatedContent = fileContent;
+      } // Fall back to pattern-based updates
+      else if (filePattern.patterns) {
+        const content = await Deno.readTextFile(filePattern.path);
+        updatedContent = content;
+
+        this.logger.debug(`No built-in handler for ${filePattern.path}, using patterns`);
+
         for (const [key, pattern] of Object.entries(filePattern.patterns)) {
           const value = this.getTemplateValue(templateData, key);
-          if (value === undefined) {
-            this.logger.warn(`No template value found for key: ${key} in ${filePattern.path}`);
+          if (!value) {
+            this.logger.warn(`No template value found for key: ${key}`);
             continue;
           }
 
           // Count matches before replacement
-          const matches = [...content.matchAll(new RegExp(pattern, "g"))];
+          const matches = [...updatedContent.matchAll(new RegExp(pattern, "g"))];
 
           if (matches.length === 0) {
-            this.logger.warn(`Pattern "${key}" found no matches in ${filePattern.path}`);
+            changes.push({
+              key,
+              status: "❌",
+              message: "No matches found",
+            });
             continue;
           }
 
-          if (matches.length > 1) {
-            this.logger.warn(
-              `Pattern "${key}" found ${matches.length} matches in ${filePattern.path}. ` +
-                `This may cause unexpected replacements. Consider using more specific patterns.`,
-            );
-
-            // In dry-run mode, show all matches
-            if (this.config.options?.dryRun) {
-              this.logger.info(`  Matches found in ${filePattern.path}:`);
-              matches.forEach((match, index) => {
-                this.logger.info(`    ${index + 1}. "${match[0]}"`);
-              });
-            }
-          }
-
-          // Build replacement based on pattern structure
+          // Use the improved buildSafeReplacement
           const replacement = this.buildSafeReplacement(pattern, value);
+          updatedContent = updatedContent.replace(pattern, replacement);
 
-          // Track the change
           changes.push({
             key,
-            oldValue: matches[0][0],
-            newValue: replacement,
-            matches: matches.length,
+            status: matches.length === 1 ? "✅" : "⚠️",
+            message: `${matches.length} match${matches.length === 1 ? "" : "es"} found`,
           });
-
-          // Apply replacement
-          updatedContent = updatedContent.replace(pattern, replacement);
-        }
-
-        // Show changes in dry-run mode
-        if (this.config.options?.dryRun && changes.length > 0) {
-          this.logger.info(`\n📄 Changes for ${filePattern.path}:`);
-          for (const change of changes) {
-            const status = change.matches === 1 ? "✅" : "⚠️";
-            this.logger.info(
-              `  ${status} ${change.key}: "${change.oldValue}" → "${change.newValue}"`,
-            );
-            if (change.matches > 1) {
-              this.logger.warn(`    Warning: ${change.matches} matches found`);
-            }
-          }
         }
       } else {
-        this.logger.warn(`No updateFn or patterns defined for ${filePattern.path}`);
+        throw new Error(`No updateFn, patterns, or built-in handler for ${filePattern.path}`);
       }
 
-      // Validate the updated content for JSON files
-      if (filePattern.path.endsWith(".json")) {
+      // Show update summary
+      if (changes.length > 0 && this.config.options?.logLevel === LogLevel.DEBUG) {
+        this.logger.debug(`\nUpdate summary for ${filePattern.path}:`);
+        for (const change of changes) {
+          this.logger.debug(`  ${change.status} ${change.key}: ${change.message}`);
+        }
+      }
+
+      // Validate JSON files
+      if (filePattern.path.endsWith(".json") || filePattern.path.endsWith(".jsonc")) {
         try {
-          JSON.parse(updatedContent);
+          // Remove comments for JSONC
+          const jsonContent = updatedContent.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, "");
+          JSON.parse(jsonContent);
+          this.logger.debug(`✅ JSON validation passed for ${filePattern.path}`);
         } catch (error) {
           throw new Error(
             `Updated ${filePattern.path} contains invalid JSON: ${error}\n` +
-              `This suggests the pattern replacement corrupted the file structure.`,
+              `This suggests the update corrupted the file structure.`,
           );
         }
       }
@@ -675,7 +929,7 @@ export class ReleaseManager {
         await Deno.writeTextFile(filePattern.path, updatedContent);
       }
 
-      this.logger.debug(`Updated file: ${filePattern.path}`);
+      this.logger.debug(`✅ Successfully updated: ${filePattern.path}`);
     } catch (error) {
       this.logger.error(`Failed to update file ${filePattern.path}:`, error as Error);
       throw error;
@@ -684,9 +938,23 @@ export class ReleaseManager {
 
   /**
    * Get a value from template data by key path
-   * @param data Template data object
-   * @param keyPath Dot-separated key path (e.g., "project.name")
-   * @returns Value as string or undefined if not found
+   *
+   * @private
+   * @param {TemplateData} data - Template data object
+   * @param {string} keyPath - Dot-separated key path (e.g., "project.name")
+   * @returns {string | undefined} Value as string or undefined if not found
+   *
+   * @description
+   * Navigates nested objects using dot notation to retrieve values.
+   * Converts non-string values to strings for replacement.
+   *
+   * @example
+   * ```typescript
+   * const data = { project: { name: "My App" }, version: "1.2.3" };
+   * getTemplateValue(data, "project.name"); // "My App"
+   * getTemplateValue(data, "version"); // "1.2.3"
+   * getTemplateValue(data, "missing.key"); // undefined
+   * ```
    */
   private getTemplateValue(data: TemplateData, keyPath: string): string | undefined {
     const keys = keyPath.split(".");
@@ -704,8 +972,95 @@ export class ReleaseManager {
   }
 
   /**
+   * Validate file update patterns with handler awareness
+   *
+   * @private
+   * @returns {Object} Validation result with warnings, errors, and suggestions
+   * @returns {boolean} returns.valid - Whether configuration is valid
+   * @returns {string[]} returns.warnings - Warning messages
+   * @returns {string[]} returns.errors - Error messages
+   * @returns {string[]} returns.suggestions - Helpful suggestions
+   *
+   * @description
+   * Enhanced validation that checks for:
+   * - Files that can use built-in handlers
+   * - Dangerous regex patterns
+   * - Missing handlers or patterns
+   * - Opportunities to simplify configuration
+   *
+   * @since 1.1.0 - Added file handler awareness
+   */
+  private validateFileUpdatePatternsEnhanced(): {
+    valid: boolean;
+    warnings: string[];
+    errors: string[];
+    suggestions: string[];
+  } {
+    const warnings: string[] = [];
+    const errors: string[] = [];
+    const suggestions: string[] = [];
+
+    if (!this.config.updateFiles || this.config.updateFiles.length === 0) {
+      return { valid: true, warnings, errors, suggestions };
+    }
+
+    for (const filePattern of this.config.updateFiles) {
+      const hasHandler = this.fileHandlerManager.hasHandler(filePattern.path);
+
+      if (hasHandler && !filePattern.patterns && !filePattern.updateFn) {
+        // Good - using built-in handler
+        const handler = this.fileHandlerManager.getHandler(filePattern.path)!;
+        suggestions.push(
+          `✅ ${filePattern.path} will use built-in ${handler.name} handler automatically`,
+        );
+      } else if (hasHandler && filePattern.patterns) {
+        // Has handler but also custom patterns - might be unnecessary
+        suggestions.push(
+          `💡 ${filePattern.path} has a built-in handler available. ` +
+            `You might be able to remove the custom patterns.`,
+        );
+      } else if (!hasHandler && !filePattern.patterns && !filePattern.updateFn) {
+        // No handler and no patterns - this is an error
+        errors.push(
+          `❌ ${filePattern.path} has no built-in handler and no patterns or updateFn specified`,
+        );
+      }
+
+      // Check for dangerous patterns (existing logic)
+      if (filePattern.patterns) {
+        for (const [key, pattern] of Object.entries(filePattern.patterns)) {
+          if (isDangerousPattern(pattern, filePattern.path)) {
+            warnings.push(
+              `⚠️  Dangerous pattern detected in ${filePattern.path} for key "${key}"\n` +
+                `   Pattern: ${pattern.source}\n` +
+                `   Consider using built-in handlers or safer patterns.`,
+            );
+          }
+        }
+      }
+    }
+
+    // Add general suggestion if no built-in handlers are being used
+    const usingHandlers = this.config.updateFiles.some((f) =>
+      this.fileHandlerManager.hasHandler(f.path) && !f.patterns && !f.updateFn
+    );
+
+    if (!usingHandlers && this.config.updateFiles.length > 0) {
+      suggestions.push(
+        `💡 Tip: Nagare now includes built-in handlers for common files like deno.json, ` +
+          `package.json, and README.md. You can simplify your config by removing patterns ` +
+          `for these files.`,
+      );
+    }
+
+    return { valid: errors.length === 0, warnings, errors, suggestions };
+  }
+
+  /**
    * Get the current configuration
-   * @returns Current Nagare configuration
+   *
+   * @public
+   * @returns {NagareConfig} Current Nagare configuration
    */
   getConfig(): NagareConfig {
     return this.config;
@@ -713,8 +1068,25 @@ export class ReleaseManager {
 
   /**
    * Validate configuration
-   * @param config Configuration to validate
-   * @returns Validation result with errors
+   *
+   * @static
+   * @public
+   * @param {NagareConfig} config - Configuration to validate
+   * @returns {Object} Validation result
+   * @returns {boolean} returns.valid - Whether configuration is valid
+   * @returns {string[]} returns.errors - List of validation errors
+   *
+   * @description
+   * Validates required fields and configuration consistency.
+   * Useful for checking configuration before creating a ReleaseManager.
+   *
+   * @example
+   * ```typescript
+   * const validation = ReleaseManager.validateConfig(config);
+   * if (!validation.valid) {
+   *   console.error("Configuration errors:", validation.errors);
+   * }
+   * ```
    */
   static validateConfig(config: NagareConfig): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
@@ -751,6 +1123,3 @@ export class ReleaseManager {
     };
   }
 }
-
-// Import statements for the supporting classes
-import type { FileUpdatePattern } from "../types.ts";

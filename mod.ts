@@ -52,6 +52,22 @@ export { TemplateProcessor } from "./src/template-processor.ts";
 export { DocGenerator } from "./src/doc-generator.ts";
 
 // ==================================================================
+// File Handlers for Intelligent Updates (New in 1.1.0)
+// ==================================================================
+
+/**
+ * File handler system for automatic version updates
+ * @since 1.1.0
+ */
+export { FileHandlerManager, PatternBuilder } from "./src/file-handlers.ts";
+
+/**
+ * Built-in file handlers for common project files
+ * @since 1.1.0
+ */
+export { BUILT_IN_HANDLERS } from "./src/file-handlers.ts";
+
+// ==================================================================
 // Type Definitions
 // ==================================================================
 
@@ -78,6 +94,19 @@ export type {
   /** Version file configuration */
   VersionFile,
 } from "./types.ts";
+
+/**
+ * File handler types
+ * @since 1.1.0
+ */
+export type {
+  /** File change preview */
+  FileChangePreview,
+  /** File handler definition */
+  FileHandler,
+  /** File update result */
+  FileUpdateResult,
+} from "./src/file-handlers.ts";
 
 // ==================================================================
 // Configuration and Constants

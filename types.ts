@@ -97,6 +97,43 @@ export interface NagareConfig {
 
   /** Advanced options */
   options?: ReleaseOptions;
+
+  /**
+   * Lifecycle hooks for custom operations
+   *
+   * @description
+   * Hooks allow running custom functions at specific points in the release process.
+   * Useful for tasks like formatting, validation, or custom notifications.
+   *
+   * @example
+   * ```typescript
+   * hooks: {
+   *   preRelease: [
+   *     async () => {
+   *       // Run tests before release
+   *       const result = await runTests();
+   *       if (!result.success) throw new Error("Tests failed");
+   *     }
+   *   ],
+   *   postRelease: [
+   *     async () => {
+   *       // Format generated files
+   *       await formatGeneratedFiles();
+   *       // Send notification
+   *       await notifyTeam();
+   *     }
+   *   ]
+   * }
+   * ```
+   *
+   * @since 1.1.0
+   */
+  hooks?: {
+    /** Functions to run before release */
+    preRelease?: Array<() => Promise<void>>;
+    /** Functions to run after release */
+    postRelease?: Array<() => Promise<void>>;
+  };
 }
 
 /**

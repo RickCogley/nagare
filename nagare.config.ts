@@ -1,14 +1,20 @@
 /**
- * @fileoverview Nagare self-hosting configuration
- * @description Configuration for Nagare to manage its own releases
+ * @fileoverview Nagare self-hosting configuration using built-in file handlers
+ * @description Configuration for Nagare to manage its own releases with intelligent file detection
+ * @since 1.1.0
  */
 
 import type { NagareConfig } from "./types.ts";
-import { LogLevel } from "./types.ts";
+import { LogLevel, TemplateFormat } from "./types.ts";
 
 /**
- * Simplified post-release formatting hook (safety net)
- * Only runs if formatting issues are detected after Vento processing
+ * Post-release formatting check (simplified)
+ *
+ * @description
+ * Ensures generated files are properly formatted after Vento processing.
+ * This is a safety net - ideally Vento should generate clean code.
+ *
+ * @returns {Promise<void>}
  */
 async function postReleaseFormattingCheck(): Promise<void> {
   try {
@@ -75,9 +81,15 @@ async function postReleaseFormattingCheck(): Promise<void> {
 
 /**
  * Nagare configuration for self-hosting releases
- * Uses built-in TypeScript template with Vento processing
+ *
+ * @description
+ * Uses built-in file handlers for automatic version updates.
+ * No custom updateFn required for standard files like deno.json!
+ *
+ * @type {NagareConfig}
+ * @since 1.1.0
  */
-export default {
+const config: NagareConfig = {
   /**
    * Project metadata for Nagare
    */
@@ -96,7 +108,7 @@ export default {
    */
   versionFile: {
     path: "./version.ts",
-    template: "typescript", // Uses built-in Vento template
+    template: TemplateFormat.TYPESCRIPT, // Fix: Use enum instead of string
   },
 
   /**
@@ -118,20 +130,21 @@ export default {
 
   /**
    * Additional files to update during release
+   *
+   * @description
+   * With the new file handler system, we just list the files.
+   * No patterns or updateFn needed - Nagare detects the file type
+   * and applies the appropriate handler automatically!
    */
   updateFiles: [
-    {
-      path: "./deno.json",
-      // Using updateFn to work around buildSafeReplacement bug
-      // that caused version not to update during 1.0.0 release
-      // TODO: Remove once buildSafeReplacement is fixed
-      updateFn: (content, data) => {
-        return content.replace(
-          /^(\s*)"version":\s*"([^"]+)"/m,
-          `$1"version": "${data.version}"`,
-        );
-      },
-    },
+    // ✅ Just specify the file - built-in handler takes care of the rest!
+    { path: "./deno.json" },
+
+    // ✅ README updates also handled automatically
+    { path: "./README.md" },
+
+    // ✅ Even handles JSR configuration
+    { path: "./jsr.json" },
   ],
 
   /**
@@ -153,10 +166,16 @@ export default {
   },
 
   /**
-   * Post-release hooks (simplified safety net)
-   * Only runs if Vento didn't generate properly formatted code
+   * Post-release hooks
+   *
+   * @description
+   * Only runs if Vento didn't generate properly formatted code.
+   * This is a safety net that shouldn't normally be needed.
    */
   hooks: {
     postRelease: [postReleaseFormattingCheck],
   },
-} as NagareConfig;
+};
+
+// Export as default
+export default config;
