@@ -159,43 +159,17 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
     },
     replacer: (content: string, key: string, _oldValue: string, newValue: string): string => {
       if (key === "version") {
-        // Ensure newValue doesn't contain any control characters
-        // deno-lint-ignore no-control-regex
-        const safeNewValue = newValue.replace(/[\x00-\x1F\x7F]/g, "");
-
-        // Find the exact line with version
-        const lines = content.split("\n");
-        const versionLineIndex = lines.findIndex((line) => /^\s*"version":\s*"[^"]+"/.test(line));
-
-        if (versionLineIndex !== -1) {
-          // Replace just that line to preserve exact formatting
-          lines[versionLineIndex] = lines[versionLineIndex].replace(
-            /^(\s*"version":\s*)"[^"]+"/,
-            `$1"${safeNewValue}"`,
-          );
-          return lines.join("\n");
-        }
+        // Simple, direct replacement without splitting lines to preserve exact formatting
+        // This avoids any line ending issues
+        return content.replace(
+          /^(\s*"version":\s*)"[^"]+"/m,
+          `$1"${newValue}"`,
+        );
       }
       return content;
     },
     validate: (content: string): { valid: boolean; error?: string } => {
       try {
-        // Check for control characters in the content first
-        // deno-lint-ignore no-control-regex
-        const controlCharMatch = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/.exec(content);
-        if (controlCharMatch) {
-          const position = controlCharMatch.index;
-          const lines = content.substring(0, position).split("\n");
-          const line = lines.length;
-          const column = lines[lines.length - 1].length + 1;
-
-          return {
-            valid: false,
-            error:
-              `Found control character at position ${position} (line ${line}, column ${column}). This might be a line ending issue.`,
-          };
-        }
-
         // Try to parse as regular JSON
         JSON.parse(content);
         return { valid: true };
@@ -203,17 +177,29 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
         // Provide more context about the error
         const errorMsg = e instanceof Error ? e.message : String(e);
 
-        // Try to extract position info from the error
+        // Try to identify what character is causing the issue
         const posMatch = errorMsg.match(/position (\d+)/);
         if (posMatch) {
           const position = parseInt(posMatch[1]);
-          const snippet = content.substring(
-            Math.max(0, position - 20),
-            Math.min(content.length, position + 20),
-          );
+          const before = content.substring(Math.max(0, position - 30), position);
+          const after = content.substring(position, Math.min(content.length, position + 30));
+          const problemChar = content[position];
+          const charCode = problemChar ? problemChar.charCodeAt(0) : -1;
+
+          // Build a detailed error message
+          let detailMsg = `${errorMsg}\n`;
+          detailMsg += `Context: ...${before}[HERE]${after}...\n`;
+          detailMsg += `Problem character: "${problemChar}" (char code: ${charCode})`;
+
+          // Check if it's a line ending issue
+          if (charCode === 13) {
+            detailMsg +=
+              "\nThis appears to be a carriage return (\\r) character. The file may have Windows line endings.";
+          }
+
           return {
             valid: false,
-            error: `${errorMsg}\nNear: ...${snippet}...`,
+            error: detailMsg,
           };
         }
 
