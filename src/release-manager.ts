@@ -291,6 +291,26 @@ export class ReleaseManager {
         const handler = this.fileHandlerManager.getHandler(filePattern.path);
         if (handler && !filePattern.patterns && !filePattern.updateFn) {
           this.logger.info(`    📦 Using built-in ${handler.name} handler`);
+
+          // Preview changes using the handler
+          const preview = await this.fileHandlerManager.previewChanges(
+            filePattern.path,
+            "version",
+            templateData.version,
+          );
+
+          if (preview.error) {
+            this.logger.error(`    ❌ Preview error: ${preview.error}`);
+          } else if (preview.matches.length === 0) {
+            this.logger.warn(`    ❌ No version found to update`);
+          } else {
+            for (const match of preview.matches) {
+              this.logger.info(
+                `    ✅ Line ${match.line}: "${match.original}" → "${match.updated}"`,
+              );
+            }
+          }
+          continue;
         }
 
         if (filePattern.updateFn) {
@@ -298,6 +318,7 @@ export class ReleaseManager {
           continue;
         }
 
+        // Handle pattern-based updates
         let hasChanges = false;
         for (const [key, pattern] of Object.entries(filePattern.patterns || {})) {
           const matches = [...content.matchAll(new RegExp(pattern.source, pattern.flags + "g"))];
@@ -321,7 +342,7 @@ export class ReleaseManager {
           }
         }
 
-        if (!hasChanges) {
+        if (!hasChanges && !handler) {
           this.logger.info("    No changes");
         }
       } catch (error) {
