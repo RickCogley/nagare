@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-06-29
+
+### Added
+- add intelligent file handler system for automatic version updates (b86ec5c)
+
+### Changed
+- temporary debug section (0865b8a)
+- add JSR badges to readme (05a40de)
+- fix file handler tests for proper temp file detection and error handling (3b80a3e)
+- add comprehensive test coverage for file handler system (9d7a9ce)
+- update plans (7100c6b)
+- add template based file generation proposal (79c3d24)
+
+### Fixed
+- avoid clobbering urls (c22787c)
+- temporary debug (7090a35)
+- simplify deno.json handler (581d3d8)
+- suppress lint errors about control characters (0a6f445)
+- change let to const (ebd6e13)
+- remove comment removal regex in file-handlers.ts (ed391b8)
+- handle default case where no specific key is provided (5b51e58)
+- add version string (0422f24)
+- add logic to preview changes for built-in handlers (df909ca)
+- add file handler for jsr.json (6f89946)
+
 ## [1.0.1] - 2025-06-27
 
 ### Changed
