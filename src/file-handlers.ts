@@ -159,24 +159,67 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
     },
     replacer: (content: string, key: string, _oldValue: string, newValue: string): string => {
       if (key === "version") {
-        // Use targeted replacement to preserve formatting
-        const versionRegex = /^(\s*"version":\s*)"[^"]+"/m;
-        return content.replace(versionRegex, `$1"${newValue}"`);
+        // Ensure newValue doesn't contain any control characters
+        // deno-lint-ignore no-control-regex
+        const safeNewValue = newValue.replace(/[\x00-\x1F\x7F]/g, "");
+
+        // Find the exact line with version
+        const lines = content.split("\n");
+        const versionLineIndex = lines.findIndex((line) => /^\s*"version":\s*"[^"]+"/.test(line));
+
+        if (versionLineIndex !== -1) {
+          // Replace just that line to preserve exact formatting
+          lines[versionLineIndex] = lines[versionLineIndex].replace(
+            /^(\s*"version":\s*)"[^"]+"/,
+            `$1"${safeNewValue}"`,
+          );
+          return lines.join("\n");
+        }
       }
       return content;
     },
     validate: (content: string): { valid: boolean; error?: string } => {
       try {
-        // For now, just try to parse as-is
-        // TODO: Implement proper comment removal that doesn't break URLs
+        // Check for control characters in the content first
+        // deno-lint-ignore no-control-regex
+        const controlCharMatch = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/.exec(content);
+        if (controlCharMatch) {
+          const position = controlCharMatch.index;
+          const lines = content.substring(0, position).split("\n");
+          const line = lines.length;
+          const column = lines[lines.length - 1].length + 1;
+
+          return {
+            valid: false,
+            error:
+              `Found control character at position ${position} (line ${line}, column ${column}). This might be a line ending issue.`,
+          };
+        }
+
+        // Try to parse as regular JSON
         JSON.parse(content);
         return { valid: true };
       } catch (e) {
-        // If it fails, it might be JSONC with comments
-        // For now, just return the error
+        // Provide more context about the error
+        const errorMsg = e instanceof Error ? e.message : String(e);
+
+        // Try to extract position info from the error
+        const posMatch = errorMsg.match(/position (\d+)/);
+        if (posMatch) {
+          const position = parseInt(posMatch[1]);
+          const snippet = content.substring(
+            Math.max(0, position - 20),
+            Math.min(content.length, position + 20),
+          );
+          return {
+            valid: false,
+            error: `${errorMsg}\nNear: ...${snippet}...`,
+          };
+        }
+
         return {
           valid: false,
-          error: `Invalid JSON: ${e instanceof Error ? e.message : String(e)}`,
+          error: errorMsg,
         };
       }
     },
