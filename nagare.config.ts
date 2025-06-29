@@ -1,65 +1,181 @@
-import type { NagareConfig } from "./mod.ts";
+/**
+ * @fileoverview Nagare self-hosting configuration using built-in file handlers
+ * @description Configuration for Nagare to manage its own releases with intelligent file detection
+ * @since 1.1.0
+ */
 
+import type { NagareConfig } from "./types.ts";
+import { LogLevel, TemplateFormat } from "./types.ts";
+
+/**
+ * Post-release formatting check (simplified)
+ *
+ * @description
+ * Ensures generated files are properly formatted after Vento processing.
+ * This is a safety net - ideally Vento should generate clean code.
+ *
+ * @returns {Promise<void>}
+ */
+async function postReleaseFormattingCheck(): Promise<void> {
+  try {
+    // Check if deno fmt would make changes
+    const checkCmd = new Deno.Command("deno", {
+      args: ["fmt", "--check"],
+      stdout: "piped",
+      stderr: "piped",
+    });
+
+    const checkResult = await checkCmd.output();
+
+    if (checkResult.success) {
+      console.log("✅ No formatting issues detected - Vento generated clean code");
+      return;
+    }
+
+    console.log("🎨 Formatting issues detected, running deno fmt...");
+
+    // Run formatting
+    const formatCmd = new Deno.Command("deno", {
+      args: ["fmt"],
+      stdout: "piped",
+      stderr: "piped",
+    });
+
+    const formatResult = await formatCmd.output();
+
+    if (!formatResult.success) {
+      const error = new TextDecoder().decode(formatResult.stderr);
+      console.warn("⚠️  Formatting failed:", error);
+      return;
+    }
+
+    console.log("✅ Formatting completed");
+
+    // Check if there are changes to commit
+    const statusCmd = new Deno.Command("git", {
+      args: ["status", "--porcelain"],
+      stdout: "piped",
+      stderr: "piped",
+    });
+
+    const statusResult = await statusCmd.output();
+    const statusOutput = new TextDecoder().decode(statusResult.stdout).trim();
+
+    if (statusOutput) {
+      console.log("📝 Committing formatting changes...");
+
+      await new Deno.Command("git", { args: ["add", "."] }).output();
+      await new Deno.Command("git", {
+        args: ["commit", "-m", "style: format generated files after release"],
+      }).output();
+      await new Deno.Command("git", {
+        args: ["push", "origin", "main"],
+      }).output();
+
+      console.log("✅ Formatting changes committed and pushed");
+    }
+  } catch (error) {
+    console.warn("⚠️  Post-release formatting check failed:", error);
+  }
+}
+
+/**
+ * Nagare configuration for self-hosting releases
+ *
+ * @description
+ * Uses built-in file handlers for automatic version updates.
+ * No custom updateFn required for standard files like deno.json!
+ *
+ * @type {NagareConfig}
+ * @since 1.1.0
+ */
 const config: NagareConfig = {
+  /**
+   * Project metadata for Nagare
+   */
   project: {
-    name: "@rick/nagare",
-    description: "Nagare (流れ) is a comprehensive release management library for Deno with conventional commits and semantic versioning support",
+    name: "Nagare (流れ)",
+    description: "Deno Release Management Library",
     repository: "https://github.com/RickCogley/nagare",
-    author: "Rick Cogley",
+    homepage: "https://jsr.io/@rick/nagare",
     license: "MIT",
+    author: "Rick Cogley",
   },
 
+  /**
+   * Version file configuration
+   * Uses built-in TypeScript template with Vento processing
+   */
   versionFile: {
     path: "./version.ts",
-    template: "typescript",
+    template: TemplateFormat.TYPESCRIPT, // Fix: Use enum instead of string
   },
 
-  updateFiles: [
-    {
-      path: "./deno.json",
-      // Use custom function to debug the issue
-      updateFn: (content, data) => {
-        console.log("=== DEBUG: Original deno.json length:", content.length);
-        console.log("=== DEBUG: Checking for special characters...");
-        
-        // Check for carriage returns
-        const crCount = (content.match(/\r/g) || []).length;
-        console.log("=== DEBUG: Carriage returns found:", crCount);
-        
-        // Show character at position 290
-        console.log("=== DEBUG: Character at position 290:", content.charCodeAt(290), `"${content[290]}"`);
-        console.log("=== DEBUG: Context around 290:", content.substring(280, 300));
-        
-        // Simple replacement that preserves exact formatting
-        const updated = content.replace(
-          /"version":\s*"[^"]+"/,
-          `"version": "${data.version}"`
-        );
-        
-        console.log("=== DEBUG: Updated deno.json length:", updated.length);
-        console.log("=== DEBUG: Length difference:", updated.length - content.length);
-        
-        // Try to parse to see if it's valid
-        try {
-          JSON.parse(updated);
-          console.log("=== DEBUG: JSON is valid after update");
-        } catch (e) {
-          console.log("=== DEBUG: JSON parse error:", e);
-          console.log("=== DEBUG: First 500 chars of updated:", updated.substring(0, 500));
-        }
-        
-        return updated;
-      }
-    },
-    { path: "./README.md" },
-    { path: "./jsr.json" }
-  ],
+  /**
+   * Release notes configuration
+   */
+  releaseNotes: {
+    includeCommitHashes: true,
+    maxDescriptionLength: 100,
+  },
 
+  /**
+   * GitHub integration configuration
+   */
   github: {
-    createRelease: true,
     owner: "RickCogley",
     repo: "nagare",
-  }
+    createRelease: true,
+  },
+
+  /**
+   * Additional files to update during release
+   *
+   * @description
+   * With the new file handler system, we just list the files.
+   * No patterns or updateFn needed - Nagare detects the file type
+   * and applies the appropriate handler automatically!
+   */
+  updateFiles: [
+    // ✅ Just specify the file - built-in handler takes care of the rest!
+    { path: "./deno.json" },
+
+    // ✅ README updates also handled automatically
+    { path: "./README.md" },
+
+    // ✅ Even handles JSR configuration
+    { path: "./jsr.json" },
+  ],
+
+  /**
+   * Documentation generation configuration
+   */
+  docs: {
+    enabled: true,
+    outputDir: "./docs",
+    includePrivate: false,
+  },
+
+  /**
+   * Release options and preferences
+   */
+  options: {
+    tagPrefix: "v",
+    gitRemote: "origin",
+    logLevel: LogLevel.INFO,
+  },
+
+  /**
+   * Post-release hooks
+   *
+   * @description
+   * Only runs if Vento didn't generate properly formatted code.
+   * This is a safety net that shouldn't normally be needed.
+   */
+  hooks: {
+    postRelease: [postReleaseFormattingCheck],
+  },
 };
 
+// Export as default
 export default config;

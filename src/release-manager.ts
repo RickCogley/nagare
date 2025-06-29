@@ -968,8 +968,17 @@ export class ReleaseManager {
       // Validate JSON files
       if (filePattern.path.endsWith(".json") || filePattern.path.endsWith(".jsonc")) {
         try {
-          // Remove comments for JSONC
-          const jsonContent = updatedContent.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, "");
+          // For JSONC files, remove comments more carefully to avoid breaking URLs
+          let jsonContent = updatedContent;
+
+          if (filePattern.path.endsWith(".jsonc")) {
+            // Remove multi-line comments
+            jsonContent = jsonContent.replace(/\/\*[\s\S]*?\*\//g, "");
+            // Remove single-line comments (but not // in URLs)
+            // This regex looks for // that's not preceded by : (as in https://)
+            jsonContent = jsonContent.replace(/(?<!:)\/\/.*$/gm, "");
+          }
+
           JSON.parse(jsonContent);
           this.logger.debug(`✅ JSON validation passed for ${filePattern.path}`);
         } catch (error) {
