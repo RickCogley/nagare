@@ -961,6 +961,31 @@ export class ReleaseManager {
         }
       }
 
+
+// TEST TEST
+// Validate JSON files
+if (filePattern.path.endsWith(".json") || filePattern.path.endsWith(".jsonc")) {
+  try {
+    // DEBUG: Log the content before validation
+    console.log("DEBUG: Validating JSON for", filePattern.path);
+    console.log("DEBUG: Content length:", updatedContent.length);
+    console.log("DEBUG: First 100 chars:", JSON.stringify(updatedContent.substring(0, 100)));
+    console.log("DEBUG: Char at position 290:", JSON.stringify(updatedContent[290]));
+    console.log("DEBUG: Chars around 290:", JSON.stringify(updatedContent.substring(280, 300)));
+    
+    // Remove comments for JSONC
+    const jsonContent = updatedContent.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, "");
+    JSON.parse(jsonContent);
+    this.logger.debug(`✅ JSON validation passed for ${filePattern.path}`);
+  } catch (error) {
+    throw new Error(
+      `Updated ${filePattern.path} contains invalid JSON: ${error}\n` +
+        `This suggests the update corrupted the file structure.`,
+    );
+  }
+}
+
+
       // Validate JSON files
       if (filePattern.path.endsWith(".json") || filePattern.path.endsWith(".jsonc")) {
         try {
