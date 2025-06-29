@@ -1,3 +1,6 @@
+[![JSR](https://jsr.io/badges/@rick/nagare)](https://jsr.io/@rick/nagare)
+[![JSR Score](https://jsr.io/badges/@rick/nagare/score)](https://jsr.io/@rick/nagare)
+
 # Nagare (流れ) - Deno Release Management Library
 
 > Nagare means "flow" in Japanese - reflecting the smooth, automated flow from commits to releases.
