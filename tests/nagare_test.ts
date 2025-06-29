@@ -1,11 +1,25 @@
 /**
- * @fileoverview Basic integration tests for Nagare library
+ * @fileoverview Comprehensive integration tests for Nagare library
+ * @module tests
+ *
+ * @description
+ * Tests core functionality including the new file handler system (v1.1.0)
  */
 
-import { assertEquals, assertExists } from "https://deno.land/std@0.208.0/assert/mod.ts";
+import {
+  assertEquals,
+  assertExists,
+  assertInstanceOf,
+  assertThrows,
+} from "https://deno.land/std@0.208.0/assert/mod.ts";
 import { VERSION } from "../version.ts";
 import { DEFAULT_COMMIT_TYPES } from "../config.ts";
-import { BumpType, TemplateFormat } from "../types.ts";
+import { BumpType, LogLevel, TemplateFormat } from "../types.ts";
+import type { NagareConfig } from "../types.ts";
+
+// ============================================
+// Basic Library Tests (Existing)
+// ============================================
 
 Deno.test("Version should be available and valid", () => {
   assertExists(VERSION);
@@ -46,6 +60,202 @@ Deno.test("Main library exports should be available", async () => {
   assertEquals(typeof GitOperations, "function");
 });
 
+// ============================================
+// File Handler Tests (New in v1.1.0)
+// ============================================
+
+Deno.test("FileHandlerManager should be exported and functional", async () => {
+  const { FileHandlerManager, BUILT_IN_HANDLERS } = await import("../mod.ts");
+
+  assertExists(FileHandlerManager);
+  assertExists(BUILT_IN_HANDLERS);
+  assertEquals(typeof FileHandlerManager, "function");
+
+  // Test instantiation
+  const manager = new FileHandlerManager();
+  assertInstanceOf(manager, FileHandlerManager);
+});
+
+Deno.test("Built-in handlers should detect appropriate files", async () => {
+  const { FileHandlerManager } = await import("../mod.ts");
+  const manager = new FileHandlerManager();
+
+  // Test file detection
+  const testCases = [
+    { path: "./deno.json", expectedHandler: "Deno Configuration" },
+    { path: "./deno.jsonc", expectedHandler: "Deno Configuration" },
+    { path: "./package.json", expectedHandler: "NPM Package Configuration" },
+    { path: "./jsr.json", expectedHandler: "JSR Configuration" },
+    { path: "./README.md", expectedHandler: "Markdown Documentation" },
+    { path: "./CHANGELOG.md", expectedHandler: "Markdown Documentation" },
+    { path: "./Cargo.toml", expectedHandler: "Rust Cargo Configuration" },
+    { path: "./pyproject.toml", expectedHandler: "Python Project Configuration" },
+    { path: "./config.yaml", expectedHandler: "YAML Configuration" },
+    { path: "./settings.yml", expectedHandler: "YAML Configuration" },
+  ];
+
+  for (const { path, expectedHandler } of testCases) {
+    const handler = manager.getHandler(path);
+    assertExists(handler, `No handler found for ${path}`);
+    assertEquals(handler.name, expectedHandler);
+  }
+
+  // Test non-matching file
+  const noHandler = manager.getHandler("./unknown.xyz");
+  assertEquals(noHandler, undefined);
+});
+
+Deno.test("PatternBuilder should create safe patterns", async () => {
+  const { PatternBuilder } = await import("../mod.ts");
+
+  // Test JSON pattern
+  const jsonPattern = PatternBuilder.jsonVersion(true);
+  assertEquals(jsonPattern.source, '^(\\s*)"version":\\s*"([^"]+)"');
+  assertEquals(jsonPattern.flags, "m");
+
+  // Test YAML patterns
+  const yamlBoth = PatternBuilder.yamlVersion("both");
+  assertEquals(yamlBoth.test('version: "1.2.3"'), true);
+  assertEquals(yamlBoth.test("version: '1.2.3'"), true);
+  assertEquals(yamlBoth.test("version: 1.2.3"), true);
+
+  // Test TypeScript const pattern
+  const tsPattern = PatternBuilder.tsConst("VERSION", true);
+  assertEquals(tsPattern.test('export const VERSION = "1.2.3"'), true);
+  assertEquals(tsPattern.test('const VERSION = "1.2.3"'), false); // Should not match without export
+
+  // Test version badge patterns
+  const badgePattern = PatternBuilder.versionBadge("shields.io");
+  assertEquals(badgePattern.test("shields.io/badge/version-1.2.3-blue"), true);
+});
+
+Deno.test("FileHandlerManager preview should work", async () => {
+  const { FileHandlerManager } = await import("../mod.ts");
+  const manager = new FileHandlerManager();
+
+  // Create a temporary test file
+  const testContent = `{
+  "name": "@rick/nagare",
+  "version": "1.0.0",
+  "exports": "./mod.ts"
+}`;
+
+  const tempFile = await Deno.makeTempFile({ suffix: ".json" });
+  await Deno.writeTextFile(tempFile, testContent);
+
+  try {
+    // Preview changes
+    const preview = await manager.previewChanges(tempFile, "version", "2.0.0");
+
+    assertExists(preview);
+    assertEquals(preview.matches.length, 1);
+    assertEquals(preview.matches[0].line, 3);
+    assertEquals(preview.matches[0].original.includes('"1.0.0"'), true);
+    assertEquals(preview.matches[0].updated.includes('"2.0.0"'), true);
+  } finally {
+    await Deno.remove(tempFile);
+  }
+});
+
+Deno.test("FileHandlerManager updateFile should validate JSON", async () => {
+  const { FileHandlerManager } = await import("../mod.ts");
+  const manager = new FileHandlerManager();
+
+  // Test with valid JSON
+  const validJson = `{
+  "name": "test",
+  "version": "1.0.0"
+}`;
+
+  const tempFile = await Deno.makeTempFile({ suffix: ".json" });
+  await Deno.writeTextFile(tempFile, validJson);
+
+  try {
+    const result = await manager.updateFile(tempFile, "version", "2.0.0");
+
+    assertEquals(result.success, true);
+    assertExists(result.content);
+
+    // Verify the content is valid JSON
+    const parsed = JSON.parse(result.content!);
+    assertEquals(parsed.version, "2.0.0");
+    assertEquals(parsed.name, "test");
+  } finally {
+    await Deno.remove(tempFile);
+  }
+});
+
+// ============================================
+// ReleaseManager Integration Tests
+// ============================================
+
+Deno.test("ReleaseManager should validate configuration", async () => {
+  const { ReleaseManager } = await import("../mod.ts");
+
+  // Test invalid config
+  const invalidConfig = {} as NagareConfig;
+  const validation = ReleaseManager.validateConfig(invalidConfig);
+
+  assertEquals(validation.valid, false);
+  assertEquals(validation.errors.length > 0, true);
+  assertEquals(validation.errors.includes("project.name is required"), true);
+
+  // Test valid config
+  const validConfig: NagareConfig = {
+    project: {
+      name: "Test Project",
+      repository: "https://github.com/test/project",
+    },
+    versionFile: {
+      path: "./version.ts",
+      template: TemplateFormat.TYPESCRIPT,
+    },
+  };
+
+  const validValidation = ReleaseManager.validateConfig(validConfig);
+  assertEquals(validValidation.valid, true);
+  assertEquals(validValidation.errors.length, 0);
+});
+
+Deno.test("ReleaseManager should suggest file handlers", async () => {
+  const { ReleaseManager } = await import("../mod.ts");
+  // const { Logger } = await import("../src/logger.ts");
+
+  // Create a test configuration with files that have handlers
+  const config: NagareConfig = {
+    project: {
+      name: "Test Project",
+      repository: "https://github.com/test/project",
+    },
+    versionFile: {
+      path: "./version.ts",
+      template: TemplateFormat.TYPESCRIPT,
+    },
+    updateFiles: [
+      { path: "./deno.json" },
+      { path: "./package.json" },
+      { path: "./README.md" },
+    ],
+    options: {
+      logLevel: LogLevel.DEBUG,
+    },
+  };
+
+  // This test would need to capture logger output to verify suggestions
+  // For now, just verify the manager can be created with this config
+  const manager = new ReleaseManager(config);
+  assertExists(manager);
+
+  // Verify configuration was merged with defaults
+  const mergedConfig = manager.getConfig();
+  assertExists(mergedConfig.commitTypes);
+  assertEquals(mergedConfig.commitTypes!.feat, "added");
+});
+
+// ============================================
+// Configuration Tests
+// ============================================
+
 Deno.test("Configuration defaults should be properly structured", () => {
   assertExists(DEFAULT_COMMIT_TYPES);
   assertEquals(typeof DEFAULT_COMMIT_TYPES, "object");
@@ -60,5 +270,73 @@ Deno.test("Configuration defaults should be properly structured", () => {
 
   for (const [key, value] of Object.entries(expectedMappings)) {
     assertEquals(DEFAULT_COMMIT_TYPES[key], value);
+  }
+});
+
+// ============================================
+// Custom Handler Registration Tests
+// ============================================
+
+Deno.test("FileHandlerManager should support custom handlers", async () => {
+  const { FileHandlerManager } = await import("../mod.ts");
+  const manager = new FileHandlerManager();
+
+  // Define a custom handler
+  const customHandler = {
+    id: "custom-config",
+    name: "Custom Configuration",
+    detector: (path: string) => path.endsWith(".custom"),
+    patterns: {
+      version: /^version=(.+)$/m,
+    },
+  };
+
+  // Register the handler
+  manager.registerHandler(customHandler);
+
+  // Test detection
+  const handler = manager.getHandler("./config.custom");
+  assertExists(handler);
+  assertEquals(handler.name, "Custom Configuration");
+
+  // Test duplicate registration throws
+  assertThrows(
+    () => {
+      manager.registerHandler(customHandler);
+    },
+    Error,
+    'Handler with ID "custom-config" already exists',
+  );
+});
+
+// ============================================
+// Error Handling Tests
+// ============================================
+
+Deno.test("FileHandlerManager should handle missing files gracefully", async () => {
+  const { FileHandlerManager } = await import("../mod.ts");
+  const manager = new FileHandlerManager();
+
+  const result = await manager.updateFile("./non-existent-file.json", "version", "1.0.0");
+
+  assertEquals(result.success, false);
+  assertExists(result.error);
+  assertEquals(result.error!.includes("Failed to update file"), true);
+});
+
+Deno.test("FileHandlerManager should handle invalid patterns gracefully", async () => {
+  const { FileHandlerManager } = await import("../mod.ts");
+  const manager = new FileHandlerManager();
+
+  const tempFile = await Deno.makeTempFile({ suffix: ".json" });
+  await Deno.writeTextFile(tempFile, '{"name": "test"}');
+
+  try {
+    const result = await manager.updateFile(tempFile, "nonexistent", "1.0.0");
+
+    assertEquals(result.success, false);
+    assertExists(result.error);
+  } finally {
+    await Deno.remove(tempFile);
   }
 });
