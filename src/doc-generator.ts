@@ -53,6 +53,24 @@ export class DocGenerator {
 
       await this.runCommand(cmd);
       console.log(`✅ Generated documentation in ${outputDir}`);
+      
+      // Run enhancement script if it exists
+      try {
+        const enhanceScriptPath = "./enhance-docs.ts";
+        const fileInfo = await Deno.stat(enhanceScriptPath);
+        
+        if (fileInfo.isFile) {
+          console.log("🎨 Enhancing documentation with custom styles...");
+          const enhanceCmd = ["deno", "run", "--allow-read", "--allow-write", enhanceScriptPath];
+          await this.runCommand(enhanceCmd);
+          console.log("✅ Documentation enhanced successfully");
+        }
+      } catch (enhanceError) {
+        // Enhancement script doesn't exist or failed - not critical
+        if (!(enhanceError instanceof Deno.errors.NotFound)) {
+          console.warn(`⚠️  Documentation enhancement failed: ${enhanceError}`);
+        }
+      }
     } catch (error) {
       console.warn(
         `⚠️  Failed to generate documentation: ${
