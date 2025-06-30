@@ -8,9 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.5.4] - 2025-06-30
 
 ### Changed
+
 - format generated files after release (1360095)
 
 ### Fixed
+
 - handle null prerelease in TypeScript template (ea39e22)
 - correct updateFn signature and template issues (24953d0)
 
