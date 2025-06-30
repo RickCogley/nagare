@@ -8,9 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.5.0] - 2025-06-30
 
 ### Added
+
 - add JSR badges to README (fe8aa28)
 
 ### Changed
+
 - clean up post-release changes (0cf5ae1)
 - restore public API documentation (27 symbols) (122564a)
 - use full project name in documentation title (7bcdd5f)
