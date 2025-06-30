@@ -1,5 +1,5 @@
 /**
- * @fileoverview Simple logging system for Nagare
+ * @fileoverview Simple logging system for Nagare with security audit support
  * Simplified version adapted from Salty's logger
  */
 
@@ -64,5 +64,21 @@ export class Logger {
    */
   generateRequestId(): string {
     return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  /**
+   * Log security audit event
+   */
+  audit(action: string, details: Record<string, unknown>): void {
+    const timestamp = new Date().toISOString();
+    const auditEntry = {
+      timestamp,
+      action,
+      details,
+      requestId: this.generateRequestId(),
+    };
+
+    // Always log security events regardless of log level
+    console.log(`[SECURITY AUDIT] ${JSON.stringify(auditEntry)}`);
   }
 }

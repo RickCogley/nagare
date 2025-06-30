@@ -7,6 +7,8 @@
 
 import type { NagareConfig, TemplateData } from "../types.ts";
 import { BUILT_IN_TEMPLATES, TemplateFormat } from "../config.ts";
+import { createSecurityLog, sanitizeErrorMessage } from "./security-utils.ts";
+import { Logger } from "./logger.ts";
 
 // Import Vento template engine using the alias from deno.json imports
 import vento from "vento";
@@ -30,6 +32,9 @@ export class TemplateProcessor {
   /** Vento template environment instance */
   private vento: ReturnType<typeof vento>;
 
+  /** Logger instance */
+  private logger: Logger;
+
   /**
    * Initialize template processor with Vento environment
    *
@@ -37,7 +42,15 @@ export class TemplateProcessor {
    */
   constructor(config: NagareConfig) {
     this.config = config;
-    this.vento = vento();
+    this.logger = new Logger(config.options?.logLevel);
+
+    // Initialize Vento with security-conscious settings
+    this.vento = vento({
+      // Disable features that could be security risks
+      dataVarname: "data",
+      autoescape: true, // Auto-escape HTML entities
+    });
+
     this.setupVentoFilters();
   }
 
@@ -96,16 +109,30 @@ export class TemplateProcessor {
    * ```
    */
   async processTemplate(template: string, data: TemplateData): Promise<string> {
+    // Validate template for dangerous patterns
+    const validation = await this.validateTemplateSecure(template);
+    if (!validation.valid) {
+      throw new Error(`Template validation failed: ${validation.error}`);
+    }
+
     try {
       // Prepare enhanced template data
       const enhancedData = this.prepareTemplateData(data);
 
       // Render template with Vento - runString returns { content: string }
       const result = await this.vento.runString(template, enhancedData);
+
+      // Log security event for audit
+      const securityLog = createSecurityLog("template_processed", {
+        templateLength: template.length,
+        dataKeys: Object.keys(enhancedData).length,
+      });
+      this.logger.debug(securityLog);
+
       return result.content;
     } catch (error) {
       throw new Error(
-        `Template processing failed: ${error instanceof Error ? error.message : String(error)}\n` +
+        `Template processing failed: ${sanitizeErrorMessage(error, false)}\n` +
           `This might be due to invalid template syntax or missing data.`,
       );
     }
@@ -196,7 +223,11 @@ export class TemplateProcessor {
     const templateFormat = this.config.versionFile.template;
 
     if (templateFormat === TemplateFormat.CUSTOM) {
-      throw new Error("Custom template should use processTemplate() method instead");
+      // For custom templates, validate and use the custom template
+      if (!this.config.versionFile.customTemplate) {
+        throw new Error("Custom template specified but no customTemplate provided");
+      }
+      return await this.processTemplate(this.config.versionFile.customTemplate, data);
     }
 
     const template = BUILT_IN_TEMPLATES[templateFormat];
@@ -233,8 +264,72 @@ export class TemplateProcessor {
     } catch (error) {
       return {
         valid: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: sanitizeErrorMessage(error, false),
       };
     }
+  }
+
+  /**
+   * Validate template for security issues
+   *
+   * Checks for dangerous patterns that could lead to:
+   * - Code injection
+   * - Information disclosure
+   * - Template injection attacks
+   *
+   * @param template - Template string to validate
+   * @returns Validation result with security analysis
+   * @private
+   */
+  private async validateTemplateSecure(
+    template: string,
+  ): Promise<{ valid: boolean; error?: string }> {
+    if (!template || typeof template !== "string") {
+      return { valid: false, error: "Template must be a non-empty string" };
+    }
+
+    // Check for dangerous patterns
+    const dangerousPatterns = [
+      // JavaScript execution attempts
+      /<script[\s>]/i,
+      /javascript:/i,
+      /eval\s*\(/,
+      /new\s+Function\s*\(/,
+
+      // File system access attempts
+      /Deno\.readTextFile/,
+      /Deno\.readFile/,
+      /import\s*\(/,
+      /require\s*\(/,
+
+      // Process execution
+      /Deno\.Command/,
+      /Deno\.run/,
+      /child_process/,
+
+      // Network access
+      /fetch\s*\(/,
+      /XMLHttpRequest/,
+
+      // Environment variable access (outside of expected patterns)
+      /Deno\.env(?!\.get\s*\(\s*["']NODE_ENV["']\s*\))/,
+    ];
+
+    for (const pattern of dangerousPatterns) {
+      if (pattern.test(template)) {
+        return {
+          valid: false,
+          error: `Template contains potentially dangerous pattern: ${pattern.toString()}`,
+        };
+      }
+    }
+
+    // Validate template syntax
+    const syntaxValidation = await this.validateTemplate(template);
+    if (!syntaxValidation.valid) {
+      return syntaxValidation;
+    }
+
+    return { valid: true };
   }
 }

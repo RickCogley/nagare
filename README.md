@@ -476,20 +476,21 @@ When using Nagare in production:
 
 Nagare addresses the OWASP Top 10 security risks:
 
-| Risk Category | Status | Implementation |
-|---------------|--------|----------------|
-| Broken Access Control | ✅ | Deno permission model |
-| Cryptographic Failures | N/A | No crypto operations |
-| Injection | ⚠️ | Input validation for file operations |
-| Insecure Design | ✅ | Secure-by-default architecture |
-| Security Misconfiguration | ✅ | Safe defaults, clear documentation |
-| Vulnerable Components | ✅ | Minimal, vetted dependencies |
-| Authentication | ✅ | Delegated to GitHub CLI |
-| Data Integrity | ✅ | Git-based version control |
-| Logging & Monitoring | ⚠️ | Basic logging included |
-| SSRF | N/A | No direct HTTP requests |
+| Risk Category             | Status | Implementation                       |
+| ------------------------- | ------ | ------------------------------------ |
+| Broken Access Control     | ✅     | Deno permission model                |
+| Cryptographic Failures    | N/A    | No crypto operations                 |
+| Injection                 | ⚠️     | Input validation for file operations |
+| Insecure Design           | ✅     | Secure-by-default architecture       |
+| Security Misconfiguration | ✅     | Safe defaults, clear documentation   |
+| Vulnerable Components     | ✅     | Minimal, vetted dependencies         |
+| Authentication            | ✅     | Delegated to GitHub CLI              |
+| Data Integrity            | ✅     | Git-based version control            |
+| Logging & Monitoring      | ⚠️     | Basic logging included               |
+| SSRF                      | N/A    | No direct HTTP requests              |
 
-**Note**: While Nagare implements security best practices, always perform your own security assessment based on your specific use case and threat model.
+**Note**: While Nagare implements security best practices, always perform your own security
+assessment based on your specific use case and threat model.
 
 ## 📄 License
 

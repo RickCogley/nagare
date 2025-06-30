@@ -22,6 +22,7 @@ To report a security vulnerability:
    - Suggested fix (if any)
 
 Response time:
+
 - Acknowledgment: Within 48 hours
 - Initial assessment: Within 7 days
 - Fix timeline: Based on severity
@@ -31,6 +32,7 @@ Response time:
 ### Input Validation
 
 Nagare validates inputs in several areas:
+
 - File paths are checked for valid patterns
 - Version strings are validated against semver
 - Git commands use Deno's Command API (not shell execution)
@@ -52,21 +54,26 @@ Nagare validates inputs in several areas:
 ### Dependencies
 
 Nagare minimizes dependencies:
+
 - `@std/semver`: Deno standard library for version handling
 - `vento`: Template engine with no known vulnerabilities
 
 All dependencies are:
+
 - Fetched from JSR (Deno's secure registry)
 - Version-pinned with integrity checking
 - Regularly updated for security patches
 
 ### Known Security Considerations
 
-1. **Custom Templates**: Custom Vento templates can execute code. Review all custom templates before use.
+1. **Custom Templates**: Custom Vento templates can execute code. Review all custom templates before
+   use.
 
-2. **Command Execution**: While we use Deno's secure Command API, always validate configuration inputs.
+2. **Command Execution**: While we use Deno's secure Command API, always validate configuration
+   inputs.
 
-3. **File Patterns**: Custom file update patterns should be carefully reviewed to prevent unintended matches.
+3. **File Patterns**: Custom file update patterns should be carefully reviewed to prevent unintended
+   matches.
 
 ## Security Best Practices
 
@@ -108,17 +115,20 @@ All dependencies are:
 ## Security Hardening Roadmap
 
 ### Completed
+
 - [x] Safe default configurations
 - [x] Type-safe interfaces
 - [x] Minimal dependency footprint
 - [x] Deno permission model integration
 
 ### In Progress
+
 - [ ] Enhanced input validation layer
 - [ ] Security-focused logging
 - [ ] Template sandboxing options
 
 ### Planned
+
 - [ ] Security audit
 - [ ] Automated security testing
 - [ ] SAST/DAST integration
@@ -127,6 +137,7 @@ All dependencies are:
 ## Compliance
 
 Nagare aims to comply with:
+
 - OWASP Top 10 guidelines
 - Security best practices for CLI tools
 - Deno security model
@@ -136,6 +147,7 @@ For detailed OWASP compliance status, see the Security section in README.md.
 ## Security Updates
 
 Security updates are released as:
+
 - **Critical**: Immediate patch release
 - **High**: Within 7 days
 - **Medium**: Within 30 days

@@ -5,6 +5,13 @@
 
 import type { ConventionalCommit, NagareConfig } from "../types.ts";
 import { Logger } from "./logger.ts";
+import {
+  createSecurityLog,
+  sanitizeCommitMessage,
+  sanitizeErrorMessage,
+  validateGitRef,
+  validateVersion,
+} from "./security-utils.ts";
 
 /**
  * Handles all Git-related operations for releases
@@ -245,7 +252,13 @@ export class GitOperations {
    * Create commit and tag for release
    */
   async commitAndTag(version: string): Promise<void> {
-    const tagName = `${this.config.options?.tagPrefix || "v"}${version}`;
+    // Validate version input
+    const validatedVersion = validateVersion(version);
+    const tagPrefix = this.config.options?.tagPrefix || "v";
+    const tagName = `${tagPrefix}${validatedVersion}`;
+
+    // Validate the constructed tag
+    validateGitRef(tagName, "tag");
 
     try {
       // Add modified files
@@ -266,18 +279,28 @@ export class GitOperations {
 
       await this.runCommand(["git", "add", ...filesToAdd]);
 
-      // Create commit
-      const commitMessage = `chore(release): bump version to ${version}`;
+      // Create commit with sanitized message
+      const commitMessage = sanitizeCommitMessage(
+        `chore(release): bump version to ${validatedVersion}`,
+      );
       await this.runCommand(["git", "commit", "-m", commitMessage]);
 
-      // Create tag
-      const tagMessage = `Release ${version}`;
+      // Create tag with sanitized message
+      const tagMessage = sanitizeCommitMessage(`Release ${validatedVersion}`);
       await this.runCommand(["git", "tag", "-a", tagName, "-m", tagMessage]);
 
       this.logger.info(`✅ Created commit and tag: ${tagName}`);
+
+      // Log security event
+      const securityLog = createSecurityLog("release_created", {
+        version: validatedVersion,
+        tag: tagName,
+        files: filesToAdd.length,
+      });
+      this.logger.debug(securityLog);
     } catch (error) {
       this.logger.error("Error creating commit and tag:", error as Error);
-      throw error;
+      throw new Error(sanitizeErrorMessage(error, false));
     }
   }
 
@@ -287,6 +310,9 @@ export class GitOperations {
   async pushToRemote(): Promise<void> {
     const remote = this.config.options?.gitRemote || "origin";
 
+    // Validate remote name
+    validateGitRef(remote, "branch");
+
     try {
       // Push commits
       await this.runCommand(["git", "push", remote, "HEAD"]);
@@ -295,9 +321,16 @@ export class GitOperations {
       await this.runCommand(["git", "push", remote, "--tags"]);
 
       this.logger.info(`✅ Pushed changes to ${remote}`);
+
+      // Log security event
+      const securityLog = createSecurityLog("push_to_remote", {
+        remote: remote,
+        includesTags: true,
+      });
+      this.logger.debug(securityLog);
     } catch (error) {
       this.logger.error("Error pushing to remote:", error as Error);
-      throw error;
+      throw new Error(sanitizeErrorMessage(error, false));
     }
   }
 
@@ -317,12 +350,15 @@ export class GitOperations {
    * Delete a local tag
    */
   async deleteLocalTag(tag: string): Promise<void> {
+    // Validate tag input
+    const validatedTag = validateGitRef(tag, "tag");
+
     try {
-      await this.runCommand(["git", "tag", "-d", tag]);
-      this.logger.info(`Deleted local tag: ${tag}`);
+      await this.runCommand(["git", "tag", "-d", validatedTag]);
+      this.logger.info(`Deleted local tag: ${validatedTag}`);
     } catch (error) {
-      this.logger.error(`Failed to delete local tag ${tag}:`, error as Error);
-      throw error;
+      this.logger.error(`Failed to delete local tag ${validatedTag}:`, error as Error);
+      throw new Error(sanitizeErrorMessage(error, false));
     }
   }
 
@@ -330,14 +366,17 @@ export class GitOperations {
    * Delete a remote tag
    */
   async deleteRemoteTag(tag: string): Promise<void> {
+    // Validate inputs
+    const validatedTag = validateGitRef(tag, "tag");
     const remote = this.config.options?.gitRemote || "origin";
+    validateGitRef(remote, "branch");
 
     try {
-      await this.runCommand(["git", "push", remote, "--delete", tag]);
-      this.logger.info(`Deleted remote tag: ${tag}`);
+      await this.runCommand(["git", "push", remote, "--delete", validatedTag]);
+      this.logger.info(`Deleted remote tag: ${validatedTag}`);
     } catch (error) {
-      this.logger.error(`Failed to delete remote tag ${tag}:`, error as Error);
-      throw error;
+      this.logger.error(`Failed to delete remote tag ${validatedTag}:`, error as Error);
+      throw new Error(sanitizeErrorMessage(error, false));
     }
   }
 
@@ -345,13 +384,30 @@ export class GitOperations {
    * Reset to a previous commit (for rollback)
    */
   async resetToCommit(commitish: string, hard = false): Promise<void> {
+    // Validate commit reference
+    let validatedCommit: string;
+    try {
+      // Try as commit hash first
+      validatedCommit = validateGitRef(commitish, "commit");
+    } catch {
+      // If not a commit hash, validate as tag/branch
+      validatedCommit = validateGitRef(commitish, "tag");
+    }
+
     try {
       const resetType = hard ? "--hard" : "--soft";
-      await this.runCommand(["git", "reset", resetType, commitish]);
-      this.logger.info(`Reset to ${commitish} (${resetType})`);
+      await this.runCommand(["git", "reset", resetType, validatedCommit]);
+      this.logger.info(`Reset to ${validatedCommit} (${resetType})`);
+
+      // Log security event
+      const securityLog = createSecurityLog("git_reset", {
+        target: validatedCommit,
+        type: resetType,
+      });
+      this.logger.debug(securityLog);
     } catch (error) {
-      this.logger.error(`Failed to reset to ${commitish}:`, error as Error);
-      throw error;
+      this.logger.error(`Failed to reset to ${validatedCommit}:`, error as Error);
+      throw new Error(sanitizeErrorMessage(error, false));
     }
   }
 
@@ -371,10 +427,13 @@ export class GitOperations {
    * Check if a remote tag exists
    */
   async remoteTagExists(tag: string): Promise<boolean> {
+    // Validate inputs
+    const validatedTag = validateGitRef(tag, "tag");
     const remote = this.config.options?.gitRemote || "origin";
+    validateGitRef(remote, "branch");
 
     try {
-      await this.runCommand(["git", "ls-remote", "--tags", remote, tag]);
+      await this.runCommand(["git", "ls-remote", "--tags", remote, validatedTag]);
       return true;
     } catch {
       return false;

@@ -33,6 +33,7 @@ import { RollbackManager } from "./src/rollback-manager.ts";
 import type { BumpType, NagareConfig, ReleaseNotes } from "./types.ts";
 import { LogLevel } from "./config.ts";
 import { APP_INFO, BUILD_INFO, RELEASE_NOTES, VERSION } from "./version.ts";
+import { sanitizeErrorMessage, validateCliArgs, validateFilePath } from "./src/security-utils.ts";
 
 /**
  * CLI configuration options interface
@@ -97,9 +98,11 @@ function isValidReleaseNotes(releaseNotes: unknown): releaseNotes is ReleaseNote
  *
  * @description Parses Deno.args into command, bump type, and options.
  * Handles both short and long form flags, and validates argument combinations.
+ * Includes security validation to prevent injection attacks.
  *
  * @param args - Command line arguments array (typically Deno.args)
  * @returns Parsed command structure with command, bump type, and options
+ * @throws Error if arguments contain dangerous characters
  *
  * @example
  * ```typescript
@@ -112,12 +115,14 @@ function parseArgs(args: string[]): {
   bumpType?: string;
   options: CLIOptions;
 } {
+  // Validate all arguments first for security
+  const validatedArgs = validateCliArgs(args);
   const options: CLIOptions = {};
   let command: string | undefined;
   let bumpType: string | undefined;
 
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
+  for (let i = 0; i < validatedArgs.length; i++) {
+    const arg = validatedArgs[i];
     if (!arg) continue; // Skip undefined args
 
     switch (arg) {
@@ -139,8 +144,13 @@ function parseArgs(args: string[]): {
       case "--config":
       case "-c":
         i++;
-        if (args[i]) {
-          options.config = args[i];
+        if (validatedArgs[i]) {
+          // Validate config path to prevent directory traversal
+          try {
+            options.config = validateFilePath(validatedArgs[i], Deno.cwd());
+          } catch (error) {
+            throw new Error(`Invalid config path: ${sanitizeErrorMessage(error, false)}`);
+          }
         }
         break;
       case "--dry-run":
@@ -152,7 +162,7 @@ function parseArgs(args: string[]): {
         break;
       case "--log-level": {
         i++;
-        const level = args[i];
+        const level = validatedArgs[i];
         if (level && level in LogLevel) {
           options.logLevel = LogLevel[level as keyof typeof LogLevel];
         }
@@ -526,7 +536,19 @@ function formatInfo(message: string): string {
  * ```
  */
 export async function cli(args: string[]): Promise<void> {
-  const { command, bumpType, options } = parseArgs(args);
+  let command: string | undefined;
+  let bumpType: string | undefined;
+  let options: CLIOptions;
+
+  try {
+    const parsed = parseArgs(args);
+    command = parsed.command;
+    bumpType = parsed.bumpType;
+    options = parsed.options;
+  } catch (error) {
+    console.error(formatError(`Invalid arguments: ${sanitizeErrorMessage(error, false)}`));
+    Deno.exit(1);
+  }
 
   // Handle version options first
   if (options.version) {
@@ -742,10 +764,10 @@ await cli(Deno.args);
       }
     }
   } catch (error) {
-    console.error(formatError(`${error instanceof Error ? error.message : String(error)}`));
+    console.error(formatError(sanitizeErrorMessage(error, false)));
     if (options.logLevel === LogLevel.DEBUG) {
       console.error("\nDebug information:");
-      console.error(error);
+      console.error(sanitizeErrorMessage(error, true));
     }
     Deno.exit(1);
   }

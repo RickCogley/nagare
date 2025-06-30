@@ -6,6 +6,7 @@
 import type { NagareConfig } from "../types.ts";
 import { GitOperations } from "./git-operations.ts";
 import { Logger, LogLevel } from "./logger.ts";
+import { sanitizeErrorMessage, validateVersion } from "./security-utils.ts";
 
 /**
  * Result of a rollback operation
@@ -40,6 +41,12 @@ export class RollbackManager {
     try {
       this.logger.info("🔄 Starting release rollback...\n");
 
+      // Log security audit event
+      this.logger.audit("rollback_started", {
+        targetVersion: targetVersion || "auto-detect",
+        timestamp: new Date().toISOString(),
+      });
+
       // Validate git repository
       if (!await this.git.isGitRepository()) {
         throw new Error("Not in a git repository");
@@ -65,10 +72,21 @@ export class RollbackManager {
 
       if (!versionToRollback) {
         this.logger.info("❓ Enter the version to rollback (e.g., 1.1.0):");
-        const _userInput = prompt("Version:");
-        if (!versionToRollback) {
+        const userInput = prompt("Version:");
+        if (!userInput) {
           return { success: false, error: "No version specified" };
         }
+        versionToRollback = userInput;
+      }
+
+      // Validate version for security
+      try {
+        versionToRollback = validateVersion(versionToRollback);
+      } catch (error) {
+        return {
+          success: false,
+          error: `Invalid version: ${sanitizeErrorMessage(error, false)}`,
+        };
       }
 
       this.logger.info(`\n🎯 Rolling back version: ${versionToRollback}`);
@@ -114,9 +132,7 @@ export class RollbackManager {
             rollbackActions.push(`Deleted remote tag ${tagName}`);
           } catch (error) {
             this.logger.warn(
-              `⚠️  Could not delete remote tag: ${
-                error instanceof Error ? error.message : String(error)
-              }`,
+              `⚠️  Could not delete remote tag: ${sanitizeErrorMessage(error, false)}`,
             );
           }
         }
@@ -131,17 +147,28 @@ export class RollbackManager {
       this.logger.info("   2. Fix any issues that caused the release to fail");
       this.logger.info("   3. Try the release again when ready");
 
+      // Log security audit event for successful rollback
+      this.logger.audit("rollback_completed", {
+        version: versionToRollback,
+        actionsCount: rollbackActions.length,
+        actions: rollbackActions,
+      });
+
       return {
         success: true,
         actions: rollbackActions,
       };
     } catch (error) {
       this.logger.error("\n❌ Error during rollback:", error as Error);
+
+      // Log security audit event for failed rollback
+      this.logger.audit("rollback_failed", {
+        error: sanitizeErrorMessage(error, false),
+      });
+
       return {
         success: false,
-        error: error instanceof Error
-          ? error instanceof Error ? error.message : String(error)
-          : String(error),
+        error: sanitizeErrorMessage(error, false),
       };
     }
   }

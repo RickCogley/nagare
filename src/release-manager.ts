@@ -29,6 +29,7 @@ import { TemplateProcessor } from "./template-processor.ts";
 import { DocGenerator } from "./doc-generator.ts";
 import { Logger } from "./logger.ts";
 import { FileHandlerManager } from "./file-handlers.ts";
+import { sanitizeErrorMessage } from "./security-utils.ts";
 
 /**
  * Main ReleaseManager class - coordinates the entire release process
@@ -481,8 +482,17 @@ export class ReleaseManager {
    * @throws {Error} If environment validation fails or git operations fail
    */
   async release(bumpType?: BumpType): Promise<ReleaseResult> {
+    const startTime = Date.now();
+
     try {
       this.logger.info("🚀 Starting release process with Nagare...\n");
+
+      // Log security audit event for release start
+      this.logger.audit("release_started", {
+        bumpType: bumpType || "auto",
+        user: await this.git.getGitUser(),
+        timestamp: new Date().toISOString(),
+      });
 
       // Run pre-release hooks
       if (this.config.hooks?.preRelease) {
@@ -559,6 +569,13 @@ export class ReleaseManager {
       // Update files
       const updatedFiles = await this.updateFiles(newVersion, releaseNotes);
 
+      // Log security audit event for file updates
+      this.logger.audit("files_updated", {
+        version: newVersion,
+        filesCount: updatedFiles.length,
+        files: updatedFiles,
+      });
+
       // Generate documentation if enabled
       if (this.config.docs?.enabled) {
         await this.docGenerator.generateDocs();
@@ -570,6 +587,13 @@ export class ReleaseManager {
 
       // Push to remote (including the new tag)
       await this.git.pushToRemote();
+
+      // Log security audit event for git operations
+      this.logger.audit("git_operations_completed", {
+        version: newVersion,
+        tag: `${this.config.options?.tagPrefix || "v"}${newVersion}`,
+        remote: this.config.options?.gitRemote || "origin",
+      });
 
       // GitHub release (now that tag exists on remote)
       let githubReleaseUrl: string | undefined;
@@ -590,6 +614,15 @@ export class ReleaseManager {
       this.logger.info("   1. Push changes: git push origin main --tags");
       this.logger.info("   2. Deploy to production");
 
+      // Log security audit event for successful release
+      this.logger.audit("release_completed", {
+        version: newVersion,
+        previousVersion: currentVersion,
+        commitCount: commits.length,
+        githubRelease: !!githubReleaseUrl,
+        duration: Date.now() - startTime,
+      });
+
       return {
         success: true,
         version: newVersion,
@@ -601,9 +634,16 @@ export class ReleaseManager {
       };
     } catch (error) {
       this.logger.error("❌ Release failed:", error as Error);
+
+      // Log security audit event for failed release
+      this.logger.audit("release_failed", {
+        error: sanitizeErrorMessage(error, false),
+        stage: "unknown",
+      });
+
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: sanitizeErrorMessage(error, false),
       };
     }
   }

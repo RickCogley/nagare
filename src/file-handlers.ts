@@ -34,6 +34,8 @@
  */
 
 import type { TemplateData } from "../types.ts";
+import { sanitizeErrorMessage, validateFilePath } from "./security-utils.ts";
+import { Logger } from "./logger.ts";
 
 /**
  * File handler definition for intelligent file updates
@@ -516,6 +518,8 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
 export class FileHandlerManager {
   /** Map of registered handlers by ID */
   private handlers: Map<string, FileHandler>;
+  /** Logger instance */
+  private logger: Logger;
 
   /**
    * Create a new FileHandlerManager instance
@@ -525,6 +529,7 @@ export class FileHandlerManager {
    */
   constructor() {
     this.handlers = new Map(Object.entries(BUILT_IN_HANDLERS));
+    this.logger = new Logger();
   }
 
   /**
@@ -542,9 +547,13 @@ export class FileHandlerManager {
    * ```
    */
   getHandler(filePath: string): FileHandler | undefined {
+    // For handler detection, we just need the filename, not full validation
+    // The actual file operations will validate the path
+    const fileName = filePath.split("/").pop() || filePath;
+
     // Check for exact path match first (e.g., "deno.json")
     for (const handler of this.handlers.values()) {
-      if (handler.detector(filePath)) {
+      if (handler.detector(fileName) || handler.detector(filePath)) {
         return handler;
       }
     }
@@ -604,24 +613,40 @@ export class FileHandlerManager {
     newValue: string,
     customUpdateFn?: (content: string, data: TemplateData) => string,
   ): Promise<FileUpdateResult> {
+    // Validate file path for security
+    let validatedPath: string;
+    try {
+      validatedPath = validateFilePath(filePath, Deno.cwd());
+    } catch (error) {
+      return {
+        success: false,
+        error: `Invalid file path: ${sanitizeErrorMessage(error, false)}`,
+      };
+    }
     // If custom update function provided, use it
     if (customUpdateFn) {
       try {
-        const content = await Deno.readTextFile(filePath);
+        const content = await Deno.readTextFile(validatedPath);
         const updated = customUpdateFn(content, { version: newValue } as TemplateData);
+
+        // Log security audit event
+        this.logger.audit("file_updated_custom", {
+          file: validatedPath,
+          key: key,
+          method: "custom_function",
+        });
+
         return { success: true, content: updated };
       } catch (error) {
         return {
           success: false,
-          error: `Custom update function failed: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
+          error: `Custom update function failed: ${sanitizeErrorMessage(error, false)}`,
         };
       }
     }
 
     // Find appropriate handler
-    const handler = this.getHandler(filePath);
+    const handler = this.getHandler(filePath); // Use original path for handler detection
     if (!handler) {
       return {
         success: false,
@@ -630,7 +655,7 @@ export class FileHandlerManager {
     }
 
     try {
-      const content = await Deno.readTextFile(filePath);
+      const content = await Deno.readTextFile(validatedPath);
 
       // Check if pattern exists
       const pattern = handler.patterns[key];
@@ -646,7 +671,7 @@ export class FileHandlerManager {
       if (!match) {
         return {
           success: false,
-          error: `Pattern for "${key}" found no matches in ${filePath}`,
+          error: `Pattern for "${key}" found no matches in ${validatedPath}`,
         };
       }
 
@@ -674,11 +699,19 @@ export class FileHandlerManager {
         }
       }
 
+      // Log security audit event for successful update
+      this.logger.audit("file_updated", {
+        file: validatedPath,
+        key: key,
+        handler: handler.id,
+        matchCount: 1,
+      });
+
       return { success: true, content: updated };
     } catch (error) {
       return {
         success: false,
-        error: `Failed to update file: ${error instanceof Error ? error.message : String(error)}`,
+        error: `Failed to update file: ${sanitizeErrorMessage(error, false)}`,
       };
     }
   }
@@ -709,13 +742,21 @@ export class FileHandlerManager {
     key: string,
     newValue: string,
   ): Promise<FileChangePreview> {
-    const handler = this.getHandler(filePath);
+    // Validate file path for security
+    let validatedPath: string;
+    try {
+      validatedPath = validateFilePath(filePath, Deno.cwd());
+    } catch (error) {
+      return { matches: [], error: `Invalid file path: ${sanitizeErrorMessage(error, false)}` };
+    }
+
+    const handler = this.getHandler(filePath); // Use original path for handler detection
     if (!handler) {
       return { matches: [], error: `No handler found for ${filePath}` };
     }
 
     try {
-      const content = await Deno.readTextFile(filePath);
+      const content = await Deno.readTextFile(validatedPath);
       const lines = content.split("\n");
       const pattern = handler.patterns[key];
 
@@ -749,7 +790,7 @@ export class FileHandlerManager {
     } catch (error) {
       return {
         matches: [],
-        error: error instanceof Error ? error.message : String(error),
+        error: sanitizeErrorMessage(error, false),
       };
     }
   }

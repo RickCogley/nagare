@@ -145,13 +145,13 @@ const config: NagareConfig = {
 
     // ✅ Even handles JSR configuration
     { path: "./jsr.json" },
-    
+
     // ✅ Update version in module documentation
-    { 
+    {
       path: "./mod.ts",
       patterns: {
-        version: /\| \*\*Version\*\* \| ([^\s]+) \|/
-      }
+        version: /\| \*\*Version\*\* \| ([^\s]+) \|/,
+      },
     },
   ],
 

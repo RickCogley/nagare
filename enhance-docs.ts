@@ -207,7 +207,7 @@ async function enhanceDocs() {
   // 4. Add CSS to all HTML files
   console.log("🔗 Adding custom CSS to all HTML files...");
   let cssAddedCount = 0;
-  
+
   for await (const entry of Deno.readDir(DOCS_DIR)) {
     if (entry.isDirectory) {
       // Handle subdirectory (like ~/)
@@ -221,7 +221,7 @@ async function enhanceDocs() {
               // Add CSS link with proper relative path
               content = content.replace(
                 '<link href="../prism.css" rel="stylesheet" />',
-                '<link href="../prism.css" rel="stylesheet" /><link href="../nagare-custom.css" rel="stylesheet" />'
+                '<link href="../prism.css" rel="stylesheet" /><link href="../nagare-custom.css" rel="stylesheet" />',
               );
               await Deno.writeTextFile(filePath, content);
               cssAddedCount++;
@@ -241,12 +241,12 @@ async function enhanceDocs() {
           if (content.includes('<link href="./prism.css" rel="stylesheet" />')) {
             content = content.replace(
               '<link href="./prism.css" rel="stylesheet" />',
-              '<link href="./prism.css" rel="stylesheet" /><link href="./nagare-custom.css" rel="stylesheet" />'
+              '<link href="./prism.css" rel="stylesheet" /><link href="./nagare-custom.css" rel="stylesheet" />',
             );
           } else if (content.includes('<link href="prism.css" rel="stylesheet" />')) {
             content = content.replace(
               '<link href="prism.css" rel="stylesheet" />',
-              '<link href="prism.css" rel="stylesheet" /><link href="nagare-custom.css" rel="stylesheet" />'
+              '<link href="prism.css" rel="stylesheet" /><link href="nagare-custom.css" rel="stylesheet" />',
             );
           }
           await Deno.writeTextFile(filePath, content);
@@ -257,7 +257,7 @@ async function enhanceDocs() {
       }
     }
   }
-  
+
   console.log(`✅ Added custom CSS to ${cssAddedCount} HTML files`);
 
   console.log("\n✨ Documentation enhancement complete!");
