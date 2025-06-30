@@ -26,6 +26,21 @@ changelog generation, and GitHub releases using conventional commits and semanti
 
 ### Installation & Setup
 
+#### Quick Setup (Recommended)
+
+```bash
+# Run the init command to set up Nagare in your project
+deno run -A jsr:@rick/nagare/cli init
+```
+
+This command will:
+
+- Create a `nagare-launcher.ts` file that handles local configuration loading
+- Create a minimal `nagare.config.ts` if one doesn't exist
+- Show you which tasks to add to your `deno.json`
+
+#### Manual Setup
+
 1. **Create a CLI wrapper file** (`run-nagare.ts`):
 
 ```typescript
@@ -84,6 +99,9 @@ deno task nagare minor
 ### CLI Usage
 
 ```bash
+# Initialize Nagare in a new project
+deno run -A jsr:@rick/nagare/cli init
+
 # Automatic version bump based on conventional commits
 deno task release
 
