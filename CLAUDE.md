@@ -105,3 +105,8 @@ deno test --allow-all path/to/file_test.ts
 3. **Error Handling**: Provide actionable error messages with suggestions
 4. **Git State**: Many operations require clean git state - validate early
 5. **Self-Hosting**: This project manages its own releases - be careful with version.ts changes
+6. **Pre-flight**: Always run `deno fmt`, `deno check **/*.ts`, `deno lint`, `deno test` before staging a commit  
+7. **Attribution**: Don't add "Generated with Claude Code" or "Co-Authored-By: Claude" to commit messages or PRs. The fact that CLAUDE.md is present, makes it obvious that Claude is being used 
+8. **Git Commits**: Use "conventional commits" style to make commit messages, including sufficient detail so that a person reading in the future, will be able to understand what the commit was 
+9. **Documentation Updates**: After functionality is added, update the markdown documentation accordingly 
+10. **Git Merging**: When merging master changes to an active branch, make sure both branches are pulled and up to date first
