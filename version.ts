@@ -12,8 +12,8 @@ export const BUILD_INFO = {
   versionComponents: {
     major: 1,
     minor: 3,
-    patch: ,
-    prerelease: 
+    patch: 0,
+    prerelease: null
   }
 } as const;
 
@@ -25,6 +25,26 @@ export const APP_INFO = {
   homepage: "https://jsr.io/@rick/nagare",
   license: "MIT",
 } as const;
-export const APP_METADATA =  as const;
 
-export const RELEASE_NOTES =  as const;
+export const RELEASE_NOTES = {
+  version: "1.3.0",
+  date: "2025-06-30",
+  added: ["feat(security): implement comprehensive OWASP security improvements (816c614)"],
+  changed: [
+    "chore(release): bump version to 1.2.2 (f458670)",
+    "chore(release): bump version to 1.2.1 (0f5b0ac)",
+    "chore(release): bump version to 1.1.0 (37ec388)"
+  ],
+  fixed: [
+    "fix(template): relax template validation for built-in templates (816c614)",
+    "fix(tasks): add --allow-env flag to nagare tasks for NODE_ENV access (d912a70)",
+    "fix(docs): add CSS support for all_symbols.html (705b602)",
+    "fix(docs): complete documentation styling fixes (f9be516)",
+    "fix(docs): comprehensive documentation improvements (5ce3885)",
+    "fix(cli): critical - fix config file resolution when imported from JSR (6f2d2a4)",
+    "fix(tasks): move local code execution tasks to bottom (3e39097)"
+  ],
+  deprecated: [],
+  removed: [],
+  security: []
+} as const;
