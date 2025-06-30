@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1] - 2025-06-30
+
+### Changed
+- format CHANGELOG.md and version.ts (2704e26)
+- add programming paradigm documentation and guidance (40e94a2)
+
 ## [1.5.0] - 2025-06-30
 
 ### Added
