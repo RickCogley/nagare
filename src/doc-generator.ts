@@ -46,19 +46,19 @@ export class DocGenerator {
         ? `${this.config.project.name} - ${this.config.project.description}`
         : this.config.project.name;
 
-      cmd.push("--html", `--name=${docTitle}`, `--output=${outputDir}`);
+      cmd.push("--html", "--name=" + docTitle, "--output=" + outputDir);
 
       // Add all TypeScript files in current directory
       cmd.push("./mod.ts", "./src/");
 
       await this.runCommand(cmd);
       console.log(`✅ Generated documentation in ${outputDir}`);
-      
+
       // Run enhancement script if it exists
       try {
         const enhanceScriptPath = "./enhance-docs.ts";
         const fileInfo = await Deno.stat(enhanceScriptPath);
-        
+
         if (fileInfo.isFile) {
           console.log("🎨 Enhancing documentation with custom styles...");
           const enhanceCmd = ["deno", "run", "--allow-read", "--allow-write", enhanceScriptPath];
