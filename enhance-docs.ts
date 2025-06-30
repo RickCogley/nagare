@@ -237,10 +237,18 @@ async function enhanceDocs() {
       try {
         let content = await Deno.readTextFile(filePath);
         if (!content.includes("nagare-custom.css")) {
-          content = content.replace(
-            '<link href="prism.css" rel="stylesheet" />',
-            '<link href="prism.css" rel="stylesheet" /><link href="nagare-custom.css" rel="stylesheet" />'
-          );
+          // Handle different patterns for root level files
+          if (content.includes('<link href="./prism.css" rel="stylesheet" />')) {
+            content = content.replace(
+              '<link href="./prism.css" rel="stylesheet" />',
+              '<link href="./prism.css" rel="stylesheet" /><link href="./nagare-custom.css" rel="stylesheet" />'
+            );
+          } else if (content.includes('<link href="prism.css" rel="stylesheet" />')) {
+            content = content.replace(
+              '<link href="prism.css" rel="stylesheet" />',
+              '<link href="prism.css" rel="stylesheet" /><link href="nagare-custom.css" rel="stylesheet" />'
+            );
+          }
           await Deno.writeTextFile(filePath, content);
           cssAddedCount++;
         }
