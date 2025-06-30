@@ -295,10 +295,10 @@ export const BUILD_INFO = {
   gitCommit: "{{ gitCommit }}",
   buildEnvironment: "{{ environment }}",
   versionComponents: {
-    major: {{ versionComponents?.major || 0 }},
-    minor: {{ versionComponents?.minor || 0 }},
-    patch: {{ versionComponents?.patch || 0 }},
-    prerelease: {{ versionComponents?.prerelease | jsonStringify }}
+    major: {{ versionComponents.major }},
+    minor: {{ versionComponents.minor }},
+    patch: {{ versionComponents.patch }},
+    prerelease: {{ versionComponents.prerelease | jsonStringify }}
   }
 } as const;
 
