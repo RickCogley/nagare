@@ -187,6 +187,30 @@ deno test --allow-all path/to/file_test.ts
    - Removes tags and optionally GitHub releases
    - Maintains git history integrity
 
+### Programming Paradigm & Architecture
+
+Nagare follows a **pragmatic hybrid approach** combining object-oriented and functional programming:
+
+1. **Object-Oriented Core**:
+   - Use classes for major components (managers, operations, processors)
+   - Encapsulate state and behavior within classes
+   - Apply dependency injection through constructors
+   - Follow the established pattern: components receive `NagareConfig` and create their dependencies
+
+2. **Functional Elements**:
+   - Write pure utility functions for validation and transformation
+   - Use immutable data structures (`as const` assertions)
+   - Leverage functional array methods (map, filter, reduce, some, every)
+   - Avoid side effects in utility functions
+
+3. **Consistency Guidelines**:
+   - New features should follow the existing class-based architecture
+   - Utility functions go in relevant modules or a dedicated utils file
+   - Keep business logic in classes, data transformations in pure functions
+   - Use TypeScript's type system extensively for compile-time safety
+
+For detailed analysis, see [PROGRAMMING-PARADIGM.md](./PROGRAMMING-PARADIGM.md)
+
 ### Code Style Requirements
 
 - **Formatting**: 2 spaces, double quotes, semicolons required, 100 char line width
