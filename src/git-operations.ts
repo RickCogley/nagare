@@ -8,6 +8,59 @@ import { Logger } from "./logger.ts";
 
 /**
  * Handles all Git-related operations for releases
+ *
+ * @class GitOperations
+ * @since 1.0.0
+ *
+ * @description
+ * Provides a comprehensive interface for git operations needed during the release process.
+ * Handles commit parsing, tag management, and repository state validation.
+ *
+ * ## Common Git Issues and Solutions
+ *
+ * ### "No commits found since last release"
+ * - Ensure you have commits: `git log --oneline -n 10`
+ * - Check last tag: `git describe --tags --abbrev=0`
+ * - Verify tag format matches your config (default: "v" prefix)
+ *
+ * ### "Uncommitted changes detected"
+ * - Check status: `git status`
+ * - Stash changes: `git stash`
+ * - Or commit: `git add . && git commit -m "chore: prepare for release"`
+ *
+ * ### "Not a git repository"
+ * - Initialize: `git init`
+ * - Add remote: `git remote add origin <url>`
+ *
+ * @example <caption>Direct usage for custom workflows</caption>
+ * ```typescript
+ * const git = new GitOperations(config);
+ *
+ * // Check repository state
+ * if (!await git.isGitRepository()) {
+ *   throw new Error("Not in a git repository");
+ * }
+ *
+ * // Get commits for analysis
+ * const commits = await git.getCommitsSinceLastRelease();
+ * console.log(`Found ${commits.length} commits`);
+ *
+ * // Parse a specific commit
+ * const parsed = git.parseConventionalCommit("feat(api): add user auth");
+ * console.log(`Type: ${parsed.type}, Scope: ${parsed.scope}`);
+ * ```
+ *
+ * @example <caption>Tag management</caption>
+ * ```typescript
+ * const git = new GitOperations(config);
+ *
+ * // Create and push a new tag
+ * await git.commitAndTag("1.2.0", ["CHANGELOG.md", "version.ts"]);
+ * await git.pushToRemote("v1.2.0");
+ *
+ * // Check if tag exists on remote
+ * const exists = await git.remoteTagExists("v1.2.0");
+ * ```
  */
 export class GitOperations {
   private config: NagareConfig;

@@ -45,29 +45,89 @@ import { FileHandlerManager } from "./file-handlers.ts";
  * - GitHub release creation
  * - Documentation generation
  *
- * @example Basic usage
+ * ## Release Flow
+ *
+ * 1. **Environment Validation** - Checks git repository, uncommitted changes
+ * 2. **Version Calculation** - Analyzes commits to determine version bump
+ * 3. **File Updates** - Updates version in configured files
+ * 4. **Changelog Generation** - Creates/updates CHANGELOG.md
+ * 5. **Git Operations** - Commits changes and creates tag
+ * 6. **GitHub Release** - Creates release on GitHub (if configured)
+ * 7. **Documentation** - Generates docs (if configured)
+ *
+ * @example <caption>Basic usage with automatic version detection</caption>
  * ```typescript
  * const config: NagareConfig = {
  *   project: { name: "My App", repository: "https://github.com/user/app" },
- *   versionFile: { path: "./version.ts", template: TemplateFormat.TYPESCRIPT }
+ *   versionFile: { path: "./version.ts", template: "typescript" }
  * };
  *
  * const manager = new ReleaseManager(config);
- * const result = await manager.release("minor");
+ * const result = await manager.release(); // Auto-detects version bump
  * if (result.success) {
  *   console.log(`Released version ${result.version}`);
  * }
  * ```
  *
- * @example With file handlers (1.1.0+)
+ * @example <caption>CI/CD integration with skip confirmation</caption>
  * ```typescript
  * const config: NagareConfig = {
- *   // ... project config ...
+ *   project: { name: "My App", repository: "https://github.com/user/app" },
+ *   versionFile: { path: "./version.ts", template: "typescript" },
+ *   options: {
+ *     skipConfirmation: true,  // No interactive prompts
+ *     logLevel: LogLevel.DEBUG // Verbose output for CI logs
+ *   }
+ * };
+ *
+ * const manager = new ReleaseManager(config);
+ * const result = await manager.release("patch");
+ * ```
+ *
+ * @example <caption>With intelligent file handlers (v1.1.0+)</caption>
+ * ```typescript
+ * const config: NagareConfig = {
+ *   project: { name: "My App", repository: "https://github.com/user/app" },
+ *   versionFile: { path: "./version.ts", template: "typescript" },
  *   updateFiles: [
- *     { path: "./deno.json" },     // Auto-detected and handled
- *     { path: "./package.json" },  // Auto-detected and handled
- *     { path: "./README.md" }      // Auto-detected and handled
+ *     { path: "./deno.json" },     // Auto-detected JSON handler
+ *     { path: "./package.json" },  // Auto-detected JSON handler
+ *     { path: "./README.md" },     // Auto-detected Markdown handler
+ *     {
+ *       path: "./custom.yaml",     // Custom pattern for edge cases
+ *       patterns: {
+ *         version: /^version:\s*['"]?([^'"]+)['"]?$/m
+ *       }
+ *     }
  *   ]
+ * };
+ * ```
+ *
+ * @example <caption>Dry run mode for testing</caption>
+ * ```typescript
+ * const config: NagareConfig = {
+ *   project: { name: "My App", repository: "https://github.com/user/app" },
+ *   versionFile: { path: "./version.ts", template: "typescript" },
+ *   options: { dryRun: true }  // Preview without making changes
+ * };
+ *
+ * const manager = new ReleaseManager(config);
+ * const result = await manager.release();
+ * // Shows what would happen without actually doing it
+ * ```
+ *
+ * @example <caption>Custom commit type mappings</caption>
+ * ```typescript
+ * const config: NagareConfig = {
+ *   project: { name: "My App", repository: "https://github.com/user/app" },
+ *   versionFile: { path: "./version.ts", template: "typescript" },
+ *   commitTypes: {
+ *     feat: "added",      // New features
+ *     fix: "fixed",       // Bug fixes
+ *     perf: "improved",   // Performance improvements
+ *     docs: "documented", // Documentation changes
+ *     enhance: "enhanced" // Custom type
+ *   }
  * };
  * ```
  */

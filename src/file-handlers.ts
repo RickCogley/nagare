@@ -448,7 +448,21 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
  * Manages built-in and custom file handlers, providing automatic detection
  * and updating of version strings in project files.
  *
- * @example Basic usage
+ * ## Built-in Handlers
+ *
+ * - **JSON**: deno.json, package.json, jsr.json
+ * - **TypeScript**: version.ts, constants.ts
+ * - **Markdown**: README.md and other .md files
+ * - **YAML**: .yaml and .yml configuration files
+ * - **Language-specific**: Cargo.toml, pyproject.toml, setup.py
+ *
+ * ## Handler Resolution
+ *
+ * 1. Exact filename match (e.g., "deno.json")
+ * 2. Extension match (e.g., ".json", ".yaml")
+ * 3. Pattern match (e.g., "version.ts", "constants.ts")
+ *
+ * @example <caption>Basic usage with automatic handler detection</caption>
  * ```typescript
  * const manager = new FileHandlerManager();
  *
@@ -465,16 +479,38 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
  * }
  * ```
  *
- * @example Register custom handler
+ * @example <caption>Register custom handler for proprietary format</caption>
  * ```typescript
  * const customHandler: FileHandler = {
  *   id: "custom-config",
  *   name: "Custom Config",
  *   detector: (path) => path.endsWith(".custom"),
- *   patterns: { version: /version=(.+)/ }
+ *   patterns: { version: /version=(.+)/ },
+ *   validate: (content) => {
+ *     // Ensure file has required structure
+ *     if (!content.includes("version=")) {
+ *       return { valid: false, error: "Missing version field" };
+ *     }
+ *     return { valid: true };
+ *   }
  * };
  *
  * manager.registerHandler(customHandler);
+ * ```
+ *
+ * @example <caption>Preview changes before applying</caption>
+ * ```typescript
+ * const manager = new FileHandlerManager();
+ * const content = await Deno.readTextFile("./package.json");
+ *
+ * const preview = manager.previewChanges("./package.json", content, {
+ *   version: "2.0.0"
+ * });
+ *
+ * console.log("Changes to be made:");
+ * preview.forEach(change => {
+ *   console.log(`- Line ${change.line}: ${change.before} → ${change.after}`);
+ * });
  * ```
  */
 export class FileHandlerManager {
