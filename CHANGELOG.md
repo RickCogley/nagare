@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2025-06-30
+
+### Added
+- implement comprehensive OWASP security improvements (90d984f)
+
+### Changed
+- add comprehensive security documentation (aca639d)
+- add OWASP directives (e26e6a2)
+- format generated files after release (5dbcd79)
+
+### Fixed
+- relax template validation for built-in templates (816c614)
+- add --allow-env flag to nagare tasks for NODE_ENV access (d912a70)
+- add CSS support for all_symbols.html (705b602)
+- complete documentation styling fixes (f9be516)
+- comprehensive documentation improvements (5ce3885)
+- additional documentation rendering fixes (dce7d0e)
+- remove unsupported caption tags from JSDoc examples (7caab51)
+
 ## [1.2.2] - 2025-06-30
 
 ### Changed
