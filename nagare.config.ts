@@ -150,7 +150,7 @@ const config: NagareConfig = {
     {
       path: "./mod.ts",
       patterns: {
-        version: /\| \*\*Version\*\* \| ([^\s]+) \|/,
+        version: /\| Version \| ([^\s]+) \|/,
       },
     },
   ],
