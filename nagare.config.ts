@@ -150,7 +150,13 @@ const config: NagareConfig = {
     {
       path: "./mod.ts",
       patterns: {
-        version: /\| Version \| ([^\s]+) \|/,
+        version: /(\| Version \| )([^\s]+)( \|)/,
+      },
+      updateFn: (content: string, version: string) => {
+        return content.replace(
+          /(\| Version \| )([^\s]+)( \|)/,
+          `$1${version}$3`
+        );
       },
     },
   ],

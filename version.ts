@@ -13,7 +13,7 @@ export const BUILD_INFO = {
     major: 1,
     minor: 5,
     patch: 2,
-    prerelease: 
+    prerelease: null
   }
 } as const;
 
@@ -25,5 +25,5 @@ export const APP_INFO = {
   homepage: "https://jsr.io/@rick/nagare",
   license: "MIT",
 } as const;
-export const APP_METADATA =  as const;
-export const RELEASE_NOTES =  as const;
+export const APP_METADATA = {} as const;
+export const RELEASE_NOTES = {} as const;
