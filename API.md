@@ -306,6 +306,100 @@ const result = TemplateProcessor.processTemplate(template, context);
 // "Version: 1.2.3, Date: 2024-01-15"
 ```
 
+---
+
+### FileHandlerManager (v1.1.0+)
+
+Manages intelligent file handlers for automatic version updates.
+
+```typescript
+import { FileHandlerManager } from "jsr:@rick/nagare";
+```
+
+#### Constructor
+
+```typescript
+new FileHandlerManager()
+```
+
+#### Methods
+
+##### `getHandler(filepath: string): FileHandler | undefined`
+
+Finds a handler for the given file path.
+
+**Parameters:**
+
+- `filepath` - Path to the file
+
+**Returns:** `FileHandler | undefined` - Matching handler or undefined
+
+##### `hasHandler(filepath: string): boolean`
+
+Checks if a handler exists for the file.
+
+**Parameters:**
+
+- `filepath` - Path to the file
+
+**Returns:** `boolean` - True if a handler exists
+
+##### `updateFile(filepath: string, data: TemplateData): Promise<UpdateResult>`
+
+Updates a file using its handler.
+
+**Parameters:**
+
+- `filepath` - Path to the file to update
+- `data` - Template data containing version and other values
+
+**Returns:** `Promise<UpdateResult>` - Update result with changes
+
+##### `previewChanges(filepath: string, content: string, data: TemplateData): PreviewChange[]`
+
+Preview changes without modifying the file.
+
+**Parameters:**
+
+- `filepath` - Path to the file
+- `content` - Current file content
+- `data` - Template data
+
+**Returns:** `PreviewChange[]` - Array of preview changes
+
+#### Built-in Handlers
+
+The FileHandlerManager includes handlers for:
+
+- **JSON Files**: `deno.json`, `package.json`, `jsr.json`
+- **TypeScript**: `version.ts`, `constants.ts`
+- **Markdown**: `README.md` (updates badges and version references)
+- **YAML**: `.yaml`, `.yml` files
+- **Language-specific**: `Cargo.toml`, `pyproject.toml`
+
+**Example:**
+
+```typescript
+const fileHandler = new FileHandlerManager();
+
+// Check if file has a handler
+if (fileHandler.hasHandler("./deno.json")) {
+  // Update the file
+  const result = await fileHandler.updateFile("./deno.json", {
+    version: "1.2.3",
+    previousVersion: "1.2.2",
+    buildDate: new Date().toISOString(),
+  });
+}
+
+// Preview changes without applying
+const preview = fileHandler.previewChanges(
+  "./README.md",
+  readmeContent,
+  { version: "1.2.3" }
+);
+```
+
 ## Type Definitions
 
 ### NagareConfig
@@ -409,6 +503,42 @@ interface ReleaseResult {
   error?: string;
 }
 ```
+
+### FileHandler (v1.1.0+)
+
+Interface for file handlers.
+
+```typescript
+interface FileHandler {
+  id: string;                              // Unique identifier
+  name: string;                            // Human-readable name
+  detector: (filepath: string) => boolean; // Matches files by path
+  patterns: Record<string, RegExp>;        // Named regex patterns
+  validators?: {                           // Optional validators
+    json?: (obj: any) => void;
+    yaml?: (obj: any) => void;
+  };
+  replacer?: (match: RegExpExecArray, data: TemplateData) => string;
+  validate?: (content: string) => void;    // Post-update validation
+}
+```
+
+### FileUpdatePattern
+
+Configuration for file updates.
+
+```typescript
+interface FileUpdatePattern {
+  path: string;                            // File path to update
+  patterns?: {                             // Named patterns (optional with v1.1.0+)
+    version?: RegExp;
+    [key: string]: RegExp | undefined;
+  };
+  updateFn?: (content: string, data: TemplateData) => string; // Custom update function
+}
+```
+
+**Note:** As of v1.1.0, if a file has a built-in handler, you can omit both `patterns` and `updateFn`.
 
 ## Constants
 

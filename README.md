@@ -14,6 +14,7 @@ changelog generation, and GitHub releases using conventional commits and semanti
 - **📝 Changelog Generation** - Automatic CHANGELOG.md following "Keep a Changelog"
 - **🏷️ Git Integration** - Smart tagging and commit management
 - **🐙 GitHub Releases** - Automatic GitHub release creation
+- **🤖 Intelligent File Handlers** - Automatic version updates for common file types (v1.1.0+)
 - **📄 Template System** - Flexible version file templates (TypeScript, JSON, YAML, custom)
 - **🔄 Rollback Support** - Safe rollback of failed releases
 - **📚 Documentation** - Optional deno doc generation
@@ -218,10 +219,15 @@ export const FEATURES = {{metadata.features}};
   },
 
   updateFiles: [
+    // ✅ NEW in v1.1.0: Just specify the file - built-in handler does the rest!
+    { path: "./deno.json" },
+    { path: "./README.md" },
+    { path: "./jsr.json" },
+    
+    // Or use custom patterns for specific needs
     {
-      path: "./deno.json",
+      path: "./custom-config.json",
       patterns: {
-        // ✅ SAFE: Line-anchored pattern prevents matching task definitions
         version: /^(\s*)"version":\s*"([^"]+)"/m,
       },
     },
@@ -234,54 +240,53 @@ export const FEATURES = {{metadata.features}};
 } as NagareConfig;
 ```
 
-## 🛡️ Safe File Update Patterns
+## 🤖 Intelligent File Handlers (v1.1.0+)
 
-**⚠️ Important:** Nagare includes enhanced validation to prevent file corruption from overly broad
-regex patterns.
+Nagare now includes built-in handlers for common file types, eliminating the need for custom patterns in most cases:
 
-### ✅ Recommended Safe Patterns
+### Supported File Types
+
+- **JSON Files**: `deno.json`, `package.json`, `jsr.json`
+- **TypeScript/JavaScript**: `version.ts`, `constants.ts`, and similar files
+- **Markdown**: `README.md` and other `.md` files (updates version badges and references)
+- **YAML**: `.yaml` and `.yml` configuration files
+- **Language-Specific**: `Cargo.toml` (Rust), `pyproject.toml` (Python)
+
+### Simple Configuration
+
+```typescript
+// ✅ NEW: Just specify the file - Nagare handles the rest!
+updateFiles: [
+  { path: "./deno.json" },
+  { path: "./package.json" },
+  { path: "./README.md" },
+  { path: "./jsr.json" },
+]
+```
+
+### Custom Patterns (when needed)
+
+For files not covered by built-in handlers or special requirements:
 
 ```typescript
 updateFiles: [
   {
-    path: "./deno.json",
+    path: "./custom-config.json",
     patterns: {
       // ✅ SAFE: Line-anchored pattern only matches top-level version
       version: /^(\s*)"version":\s*"([^"]+)"/m,
     },
   },
   {
-    path: "./package.json",
-    patterns: {
-      // ✅ SAFE: Line-anchored pattern only matches top-level version
-      version: /^(\s*)"version":\s*"([^"]+)"/m,
+    path: "./special.txt",
+    updateFn: (content, data) => {
+      return content.replace(/VERSION=(\S+)/, `VERSION=${data.version}`);
     },
   },
 ];
 ```
 
-### ❌ Dangerous Patterns to Avoid
-
-```typescript
-updateFiles: [
-  {
-    path: "./deno.json",
-    patterns: {
-      // ❌ DANGEROUS: Can match task definitions and other unintended content
-      version: /"version":\s*"([^"]+)"/,
-    },
-  },
-];
-```
-
-**Why the difference matters:**
-
-- The dangerous pattern `/"version":\s*"([^"]+)"/` matches ANY occurrence of `"version":` in the
-  file
-- This can incorrectly match task definitions like `"version": "deno run version-check.ts"`
-- The safe pattern `/^(\s*)"version":\s*"([^"]+)"/m` only matches when `"version":` appears at the
-  start of a line
-- Nagare will automatically warn you if dangerous patterns are detected
+**Note:** Built-in handlers use safe, tested patterns that prevent common issues like matching unintended content in task definitions or comments.
 
 ## 🔧 Version File Templates
 
@@ -388,7 +393,8 @@ export NODE_ENV="production"
 **"File update pattern warnings"**
 
 - Nagare detected potentially dangerous regex patterns in your configuration
-- Update your patterns to use line-anchored versions (see Safe File Update Patterns above)
+- Consider using built-in file handlers instead (v1.1.0+): just specify `{ path: "./file.json" }`
+- For custom patterns, use line-anchored versions (see Intelligent File Handlers section above)
 - The warnings help prevent accidental file corruption
 
 ### Getting Help

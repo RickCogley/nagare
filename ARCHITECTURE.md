@@ -54,6 +54,7 @@ nagare/
     ├── version-utils.ts      # Semantic versioning utilities
     ├── changelog-generator.ts# CHANGELOG.md generation
     ├── template-processor.ts # Template engine
+    ├── file-handlers.ts      # Intelligent file handlers (v1.1.0+)
     ├── doc-generator.ts      # Documentation generation
     └── logger.ts             # Logging infrastructure
 ```
@@ -97,6 +98,29 @@ async release(bumpType?: BumpType): Promise<ReleaseResult> {
   6. updateFiles()              // Update version files
   7. commitAndTag()             // Git operations
   8. createGitHubRelease()      // Publish to GitHub
+}
+```
+
+### FileHandlerManager (v1.1.0+)
+
+**Purpose**: Intelligent file update system with built-in handlers
+
+**Key Responsibilities**:
+
+- Automatically detects file types based on name/extension
+- Applies safe, pre-tested update patterns
+- Validates file integrity after updates
+- Provides extensible handler registry
+
+**Handler Selection Flow**:
+
+```typescript
+async updateFile(path: string, data: TemplateData): Promise<string> {
+  1. getHandler(path)           // Find matching handler
+  2. readFile(path)             // Read current content
+  3. applyPatterns()            // Update using handler patterns
+  4. validate(newContent)       // Ensure file remains valid
+  5. writeFile(path, content)   // Save updated file
 }
 ```
 
@@ -282,25 +306,85 @@ export const FEATURES = {{metadata.features}};
 }
 ```
 
-### File Update Patterns
+### File Update System
 
-Flexible file update system:
+#### Intelligent File Handlers (v1.1.0+)
+
+Nagare now includes built-in handlers that automatically detect and update common file types:
+
+```typescript
+// Simple configuration - handlers automatically applied
+updateFiles: [
+  { path: "./deno.json" },     // Uses built-in JSON handler
+  { path: "./package.json" },  // Uses built-in JSON handler
+  { path: "./README.md" },     // Uses built-in Markdown handler
+  { path: "./version.ts" },    // Uses built-in TypeScript handler
+];
+```
+
+#### File Handler Architecture
+
+The `FileHandlerManager` class manages a registry of handlers:
+
+```typescript
+interface FileHandler {
+  id: string;                              // Unique identifier
+  name: string;                            // Human-readable name
+  detector: (filepath: string) => boolean; // Matches files
+  patterns: Record<string, RegExp>;        // Named patterns
+  replacer?: (match, data) => string;      // Custom replacement
+  validate?: (content: string) => void;    // Post-update validation
+}
+```
+
+#### Built-in Handlers
+
+1. **JSON Handler**: `deno.json`, `package.json`, `jsr.json`
+2. **TypeScript Handler**: `version.ts`, `constants.ts`
+3. **Markdown Handler**: Updates version badges and references
+4. **YAML Handler**: `.yaml`, `.yml` files
+5. **Language-specific**: `Cargo.toml`, `pyproject.toml`
+
+#### Custom Patterns (when needed)
+
+For files not covered by handlers or special requirements:
 
 ```typescript
 updateFiles: [
   {
-    path: "./package.json",
+    path: "./custom.json",
     patterns: {
-      version: /"version":\s*"([^"]+)"/,
+      // Safe line-anchored pattern
+      version: /^(\s*)"version":\s*"([^"]+)"/m,
     },
   },
   {
-    path: "./README.md",
+    path: "./special.txt",
     updateFn: (content, data) => {
-      return content.replace(/Version \d+\.\d+\.\d+/, `Version ${data.version}`);
+      return content.replace(/VERSION=(\S+)/, `VERSION=${data.version}`);
     },
   },
 ];
+```
+
+#### Pattern Safety & Validation
+
+Nagare includes comprehensive pattern validation to prevent file corruption:
+
+1. **Line-Anchored Patterns**: Recommended for JSON/YAML to avoid matching unintended content
+2. **Automatic Warnings**: Dangerous patterns trigger warnings during configuration
+3. **Built-in Safety**: All built-in handlers use pre-tested, safe patterns
+4. **Validation Functions**: Handlers can validate file integrity after updates
+
+```typescript
+// PatternBuilder utility provides safe pattern creation
+const safePattern = PatternBuilder.jsonVersion();
+// Returns: /^(\s*)"version":\s*"([^"]+)"/m
+
+// Pattern validation during config load
+if (isDangerousPattern(pattern)) {
+  logger.warn("Pattern may match unintended content");
+}
 ```
 
 ### Custom Commit Type Mappings

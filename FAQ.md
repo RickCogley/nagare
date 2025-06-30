@@ -195,19 +195,35 @@ Nagare will:
 
 ### How do I update multiple files during release?
 
+**New in v1.1.0: Intelligent File Handlers**
+
+Nagare now automatically detects and updates common file types:
+
+```typescript
+// Simple configuration - no patterns needed!
+updateFiles: [
+  { path: "./deno.json" },     // Automatically handled
+  { path: "./package.json" },  // Automatically handled
+  { path: "./README.md" },     // Updates badges and version references
+  { path: "./jsr.json" },      // Automatically handled
+];
+```
+
+**For custom files or specific patterns:**
+
 ```typescript
 updateFiles: [
   {
-    path: "./package.json",
+    path: "./custom-config.json",
     patterns: {
       // ✅ SAFE: Line-anchored pattern only matches top-level version
       version: /^(\s*)"version":\s*"([^"]+)"/m,
     },
   },
   {
-    path: "./README.md",
-    patterns: {
-      version: /(\[Version\s+)(\d+\.\d+\.\d+)(\])/g,
+    path: "./special.txt",
+    updateFn: (content, data) => {
+      return content.replace(/VERSION=(\S+)/, `VERSION=${data.version}`);
     },
   },
 ];
@@ -215,14 +231,28 @@ updateFiles: [
 
 ### What are safe file update patterns?
 
+**As of v1.1.0, Nagare includes built-in handlers with safe patterns!**
+
+For common files, you don't need to worry about patterns anymore:
+
+```typescript
+// Just specify the file - Nagare uses safe patterns automatically
+updateFiles: [
+  { path: "./deno.json" },
+  { path: "./package.json" },
+];
+```
+
+**When using custom patterns, follow these guidelines:**
+
 **✅ Safe Patterns:**
 
 ```typescript
 updateFiles: [
   {
-    path: "./deno.json",
+    path: "./custom.json",
     patterns: {
-      // ✅ SAFE: Line-anchored pattern prevents matching task definitions
+      // ✅ SAFE: Line-anchored pattern prevents matching unintended content
       version: /^(\s*)"version":\s*"([^"]+)"/m,
     },
   },
@@ -234,10 +264,9 @@ updateFiles: [
 ```typescript
 updateFiles: [
   {
-    path: "./deno.json",
+    path: "./custom.json",
     patterns: {
-      // ❌ DANGEROUS: Can match task definitions like:
-      // "version": "deno run --allow-read version-check.ts"
+      // ❌ DANGEROUS: Can match ANY "version:" in the file
       version: /"version":\s*"([^"]+)"/,
     },
   },
@@ -246,10 +275,10 @@ updateFiles: [
 
 **Why it matters:**
 
-- The dangerous pattern can match ANY `"version":` in the file
-- This can corrupt task definitions in `deno.json` or `package.json`
-- The safe pattern only matches when `"version":` is at the start of a line
-- Nagare will warn you if dangerous patterns are detected
+- Dangerous patterns can match unintended content (e.g., task definitions)
+- This can corrupt files like `deno.json` or `package.json`
+- Line-anchored patterns (^) ensure only the intended lines are matched
+- Built-in handlers (v1.1.0+) use pre-tested safe patterns
 
 ### What if a file update pattern fails?
 
@@ -262,16 +291,30 @@ Nagare will:
 
 ### How do I know if my patterns are safe?
 
-Nagare automatically validates your patterns:
+**For v1.1.0+ users:** If you're using built-in handlers (just specifying the file path), your patterns are automatically safe!
+
+**For custom patterns:** Nagare validates them automatically:
 
 ```
-⚠️  Dangerous pattern detected in ./deno.json for key "version"
+⚠️  Dangerous pattern detected in ./custom.json for key "version"
    Pattern: "version":\s*"([^"]+)"
    Issue: This pattern may match unintended content
    Recommended: ^(\s*)"version":\s*"([^"]+)"
 ```
 
 Always use the `--dry-run` flag to preview changes before applying them.
+
+### Which files have built-in handlers? (v1.1.0+)
+
+Nagare automatically handles these file types:
+
+- **JSON**: `deno.json`, `deno.jsonc`, `package.json`, `jsr.json`
+- **TypeScript**: `version.ts`, `constants.ts`, and similar version files
+- **Markdown**: `README.md` and other `.md` files (updates badges and version references)
+- **YAML**: `.yaml` and `.yml` configuration files
+- **Language-specific**: `Cargo.toml` (Rust), `pyproject.toml` (Python)
+
+For these files, just specify the path - no patterns needed!
 
 ## Troubleshooting
 
@@ -506,6 +549,28 @@ While not recommended, pattern validation cannot be disabled as it's a safety fe
 1. **Fix the patterns** to be more specific
 2. **Use custom update functions** if regex patterns aren't suitable
 3. **Report issues** if you believe the validation is incorrect
+
+## Recent Updates & Known Issues
+
+### What's new in v1.1.0?
+
+**Intelligent File Handlers**: Nagare now automatically detects and updates common file types without requiring custom patterns:
+
+- Just specify `{ path: "./deno.json" }` - no patterns needed!
+- Built-in support for JSON, TypeScript, Markdown, YAML, and more
+- Safer defaults with pre-tested patterns
+- Backward compatible with existing configurations
+
+### What was fixed in v1.1.1?
+
+Fixed a critical issue where the config file couldn't be resolved when Nagare was imported from JSR. This affected users who installed Nagare via JSR and tried to use a `nagare.config.ts` file.
+
+### Are there any known limitations?
+
+1. **Runtime compatibility**: Full CLI functionality requires Deno
+2. **GitHub releases**: Requires GitHub CLI (`gh`) to be installed
+3. **Pre-release versions**: Limited support for complex pre-release workflows
+4. **Monorepo support**: Each package needs its own configuration
 
 ## Getting Help
 
