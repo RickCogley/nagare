@@ -8,9 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.5.2] - 2025-06-30
 
 ### Changed
+
 - format CHANGELOG.md after release (826c256)
 
 ### Fixed
+
 - correct mod.ts version pattern in nagare.config.ts (047df1e)
 - correct version.ts template output and update mod.ts version (0deff1d)
 
