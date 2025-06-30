@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.2] - 2025-06-30
 
 ### Changed
+
 - enhance documentation with scenarios and custom styling (29a4c1c)
 - enhance mod.ts with comprehensive JSDoc documentation (9c732bf)
 - format generated files after release (fbe0ca9)
