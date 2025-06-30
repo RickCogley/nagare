@@ -295,9 +295,9 @@ export const BUILD_INFO = {
   gitCommit: "{{ gitCommit }}",
   buildEnvironment: "{{ environment }}",
   versionComponents: {
-    major: {{ versionComponents.major }},
-    minor: {{ versionComponents.minor }},
-    patch: {{ versionComponents.patch }},
+    major: {{> versionComponents.major || 0 }},
+    minor: {{> versionComponents.minor || 0 }},
+    patch: {{> versionComponents.patch || 0 }},
     prerelease: {{ versionComponents.prerelease | jsonStringify }}
   }
 } as const;
@@ -352,9 +352,9 @@ export const JSON_TEMPLATE: string = `{
     "gitCommit": "{{ gitCommit }}",
     "buildEnvironment": "{{ environment }}",
     "versionComponents": {
-      "major": {{ versionComponents.major }},
-      "minor": {{ versionComponents.minor }},
-      "patch": {{ versionComponents.patch }},
+      "major": {{> versionComponents.major || 0 }},
+      "minor": {{> versionComponents.minor || 0 }},
+      "patch": {{> versionComponents.patch || 0 }},
       "prerelease": {{ versionComponents.prerelease | jsonStringify }}
     }
   },
@@ -390,9 +390,9 @@ buildInfo:
   gitCommit: "{{ gitCommit }}"
   buildEnvironment: "{{ environment }}"
   versionComponents:
-    major: {{ versionComponents.major }}
-    minor: {{ versionComponents.minor }}
-    patch: {{ versionComponents.patch }}
+    major: {{> versionComponents.major || 0 }}
+    minor: {{> versionComponents.minor || 0 }}
+    patch: {{> versionComponents.patch || 0 }}
     prerelease: {{ versionComponents.prerelease | jsonStringify }}
 appInfo:
   name: "{{ project.name }}"
