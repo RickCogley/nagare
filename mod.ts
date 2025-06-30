@@ -5,7 +5,7 @@
  *
  * | **Nagare** | **Specifications** |
  * | :------- | :------- |
- * | Version | [object Object] |
+ * | Version | 1.5.3 |
  * | Repository | {@link https://github.com/RickCogley/nagare} |
  * | JSR Package | {@link https://jsr.io/@rick/nagare} |
  * | Documentation | {@link https://nagare.esolia.deno.net} |
@@ -142,11 +142,11 @@
  *   patterns: {
  *     version: /(\| Version \| )([^\s]+)( \|)/,
  *   },
- *   updateFn: (content: string, version: string) => {
+ *   updateFn: (content: string, data: TemplateData) => {
  *     // Preserve table structure while updating only the version
  *     return content.replace(
  *       /(\| Version \| )([^\s]+)( \|)/,
- *       `$1${version}$3`
+ *       `$1${data.version}$3`
  *     );
  *   },
  * }]

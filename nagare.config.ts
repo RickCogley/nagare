@@ -152,10 +152,10 @@ const config: NagareConfig = {
       patterns: {
         version: /(\| Version \| )([^\s]+)( \|)/,
       },
-      updateFn: (content: string, version: string) => {
+      updateFn: (content: string, data: any) => {
         return content.replace(
           /(\| Version \| )([^\s]+)( \|)/,
-          `$1${version}$3`
+          `$1${data.version}$3`,
         );
       },
     },
