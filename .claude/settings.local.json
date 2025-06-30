@@ -8,7 +8,9 @@
       "Bash(deno check:*)",
       "Bash(deno lint:*)",
       "Bash(deno test:*)",
-      "Bash(deno task:*)"
+      "Bash(deno task:*)",
+      "Bash(find:*)",
+      "Bash(deno run:*)"
     ],
     "deny": []
   }

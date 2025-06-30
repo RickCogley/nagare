@@ -7,10 +7,11 @@
   <meta name="doc-current-file" content="">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="page.css">
-  <link id="ddocResetStylesheet" rel="stylesheet" href="reset.css"><link href="comrak.css" rel="stylesheet" /><link href="prism.css" rel="stylesheet" /><link href="nagare-custom.css" rel="stylesheet" /><script src="prism.js"></script><script src="script.js" defer></script>
+  <link id="ddocResetStylesheet" rel="stylesheet" href="reset.css"><link href="comrak.css" rel="stylesheet" /><link href="prism.css" rel="stylesheet" /><script src="prism.js"></script><script src="script.js" defer></script>
   <script src="darkmode_toggle.js"></script><script src="search_index.js" defer></script>
     <script src="fuse.js" defer></script>
-    <script src="search.js" defer></script></head>
+    <script src="search.js" defer></script>  <link rel="stylesheet" href="nagare-custom.css">
+</head>
 <body>
 <div class="ddoc">
 <div><nav id="topnav">
@@ -48,6 +49,18 @@
 </nav>
 <div id="searchResults"></div><div id="content">
     <main><section>
+<div class="quick-links">
+  <h3>Quick Navigation</h3>
+  <ul>
+    <li><a href="#quick-start">🚀 Quick Start</a></li>
+    <li><a href="#architecture-overview">🏗️ Architecture</a></li>
+    <li><a href="#intelligent-file-handlers">🤖 File Handlers</a></li>
+    <li><a href="#conventional-commits">📝 Commit Conventions</a></li>
+    <li><a href="#troubleshooting-guide">🔧 Troubleshooting</a></li>
+    <li><a href="#common-configuration-patterns">⚙️ Configuration Patterns</a></li>
+  </ul>
+</div>
+
   <div class="space-y-2 flex-1"><div class="space-y-7" id="module_doc"><div class="markdown"><p>Nagare (流れ) is a comprehensive release management library for JavaScript/TypeScript projects
 that automates version bumping, changelog generation, and GitHub releases using conventional
 commits and semantic versioning.</p>
@@ -61,7 +74,7 @@ commits and semantic versioning.</p>
 <tbody>
 <tr>
 <td><strong>Version</strong></td>
-<td>1.2.0</td>
+<td>1.2.2</td>
 </tr>
 <tr>
 <td><strong>Repository</strong></td>
@@ -337,11 +350,7 @@ Conventional Commits</h2>
 <li><code>feat!:</code> or <code>BREAKING CHANGE:</code> → Major version bump (1.0.0 → 2.0.0)</li>
 <li>Other types → Patch version bump</li>
 </ul>
-<h2 id="advanced-usage">
-Advanced Usage</h2>
-</div></div>
-</div>
-<div class="border-b border-gray-300 dark:border-gray-700"></div><div class="anchorable"><a href="#example_3" class="anchor" aria-label="Anchor" tabIndex="-1"><svg
+<h2 id="advanced-usage">Advanced Usage</h2></div></div></div><div class="anchorable"><a href="#example_3" class="anchor" aria-label="Anchor" tabIndex="-1"><svg
   width="16"
   height="16"
   viewBox="0 0 14 14"

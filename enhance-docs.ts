@@ -13,145 +13,6 @@ import { ensureDir } from "https://deno.land/std@0.208.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.208.0/path/mod.ts";
 
 const DOCS_DIR = "./docs";
-const CUSTOM_CSS = `
-/* Custom Nagare Documentation Styles */
-
-/* Enhanced header styling */
-#topnav {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 1rem 2rem;
-}
-
-#topnav .breadcrumbs {
-  color: white;
-  font-weight: 600;
-}
-
-/* Better typography */
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  line-height: 1.6;
-}
-
-/* Enhanced code blocks */
-pre[class*="language-"] {
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin: 1.5rem 0;
-}
-
-/* Better example styling */
-.example-caption {
-  font-weight: 600;
-  color: #667eea;
-  margin-bottom: 0.5rem;
-}
-
-/* Architecture diagram styling */
-pre:has(.architecture-diagram) {
-  background: #f7f7f7;
-  border: 2px solid #e1e1e1;
-  font-size: 0.9rem;
-}
-
-/* Quick links section */
-.quick-links {
-  background: #f9fafb;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin: 2rem 0;
-}
-
-.quick-links h3 {
-  color: #667eea;
-  margin-top: 0;
-}
-
-.quick-links ul {
-  list-style: none;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.5rem;
-}
-
-.quick-links a {
-  color: #4a5568;
-  text-decoration: none;
-  padding: 0.5rem;
-  border-radius: 4px;
-  display: block;
-  transition: all 0.2s;
-}
-
-.quick-links a:hover {
-  background: #667eea;
-  color: white;
-}
-
-/* Feature cards */
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin: 2rem 0;
-}
-
-.feature-card {
-  background: white;
-  border: 1px solid #e1e1e1;
-  border-radius: 8px;
-  padding: 1.5rem;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.feature-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Improved table styling */
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 1.5rem 0;
-}
-
-table th {
-  background: #667eea;
-  color: white;
-  padding: 0.75rem;
-  text-align: left;
-}
-
-table td {
-  padding: 0.75rem;
-  border-bottom: 1px solid #e1e1e1;
-}
-
-/* Better symbol navigation */
-.topSymbols {
-  background: #f9fafb;
-  border-radius: 8px;
-  padding: 1rem;
-}
-
-.topSymbols h3 {
-  color: #667eea;
-  margin-top: 0;
-}
-
-/* Responsive improvements */
-@media (max-width: 768px) {
-  .quick-links ul {
-    grid-template-columns: 1fr;
-  }
-  
-  .feature-grid {
-    grid-template-columns: 1fr;
-  }
-}
-`;
 
 const CUSTOM_HEADER = `
 <div class="quick-links">
@@ -167,6 +28,52 @@ const CUSTOM_HEADER = `
 </div>
 `;
 
+const NAGARE_CUSTOM_CSS = `/* Nagare Documentation Custom Styles */
+
+/* Fix transparent navbar */
+#topnav {
+  background-color: rgb(249 250 251);
+  border-bottom: 1px solid rgb(229 231 235);
+}
+
+/* Dark mode navbar */
+.dark #topnav {
+  background-color: rgb(31 41 55);
+  border-bottom: 1px solid rgb(55 65 81);
+}
+
+/* Ensure navbar stays on top when scrolling */
+#topnav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/* Remove extra border after "Advanced Usage" heading */
+#advanced-usage + div + div.border-b {
+  display: none;
+}
+
+/* Better spacing for document navigation */
+.documentNavigation ul {
+  margin-left: 1rem;
+}
+
+.documentNavigation > ul > li {
+  margin-top: 0.5rem;
+}
+
+/* Make example headers more prominent */
+.example-header {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.dark .example-header {
+  color: #e2e8f0;
+}`;
+
 async function enhanceDocs() {
   console.log("🎨 Enhancing Nagare documentation...");
 
@@ -175,7 +82,7 @@ async function enhanceDocs() {
 
   // 1. Add custom CSS
   const cssPath = join(DOCS_DIR, "nagare-custom.css");
-  await Deno.writeTextFile(cssPath, CUSTOM_CSS);
+  await Deno.writeTextFile(cssPath, NAGARE_CUSTOM_CSS);
   console.log("✅ Created custom CSS");
 
   // 2. Enhance index.html
