@@ -1,0 +1,43 @@
+/* Fix transparent navbar */
+#topnav {
+  background-color: rgb(249 250 251);
+  border-bottom: 1px solid rgb(229 231 235);
+}
+
+/* Dark mode navbar */
+.dark #topnav {
+  background-color: rgb(31 41 55);
+  border-bottom: 1px solid rgb(55 65 81);
+}
+
+/* Ensure navbar stays on top when scrolling */
+#topnav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/* Remove extra border after "Advanced Usage" heading */
+#advanced-usage + div + div.border-b {
+  display: none;
+}
+
+/* Better spacing for document navigation */
+.documentNavigation ul {
+  margin-left: 1rem;
+}
+
+.documentNavigation > ul > li {
+  margin-top: 0.5rem;
+}
+
+/* Make example headers more prominent */
+.example-header {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.dark .example-header {
+  color: #e2e8f0;
+}

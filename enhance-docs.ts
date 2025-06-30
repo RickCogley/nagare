@@ -199,10 +199,10 @@ async function enhanceDocs() {
       );
     }
 
-    // Add example captions styling
+    // Remove extra borders after certain headings
     indexContent = indexContent.replace(
-      /<caption>([^<]+)<\/caption>/g,
-      '<div class="example-caption">$1</div>',
+      /<h2 id="advanced-usage">\s*Advanced Usage<\/h2>\s*<\/div><\/div>\s*<\/div>\s*<div class="border-b[^"]*"><\/div>/g,
+      '<h2 id="advanced-usage">Advanced Usage</h2></div></div></div>',
     );
 
     await Deno.writeTextFile(indexPath, indexContent);

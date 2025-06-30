@@ -103,7 +103,7 @@ import { FileHandlerManager } from "./file-handlers.ts";
  * };
  * ```
  *
- * @example <caption>Dry run mode for testing</caption>
+ * @example Dry run mode for testing
  * ```typescript
  * const config: NagareConfig = {
  *   project: { name: "My App", repository: "https://github.com/user/app" },
@@ -116,7 +116,7 @@ import { FileHandlerManager } from "./file-handlers.ts";
  * // Shows what would happen without actually doing it
  * ```
  *
- * @example <caption>Custom commit type mappings</caption>
+ * @example Custom commit type mappings
  * ```typescript
  * const config: NagareConfig = {
  *   project: { name: "My App", repository: "https://github.com/user/app" },

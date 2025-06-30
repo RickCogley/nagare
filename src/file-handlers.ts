@@ -462,7 +462,7 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
  * 2. Extension match (e.g., ".json", ".yaml")
  * 3. Pattern match (e.g., "version.ts", "constants.ts")
  *
- * @example <caption>Basic usage with automatic handler detection</caption>
+ * @example Basic usage with automatic handler detection
  * ```typescript
  * const manager = new FileHandlerManager();
  *
@@ -479,7 +479,7 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
  * }
  * ```
  *
- * @example <caption>Register custom handler for proprietary format</caption>
+ * @example Register custom handler for proprietary format
  * ```typescript
  * const customHandler: FileHandler = {
  *   id: "custom-config",
@@ -498,7 +498,7 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
  * manager.registerHandler(customHandler);
  * ```
  *
- * @example <caption>Preview changes before applying</caption>
+ * @example Preview changes before applying
  * ```typescript
  * const manager = new FileHandlerManager();
  * const content = await Deno.readTextFile("./package.json");
