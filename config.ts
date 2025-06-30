@@ -295,9 +295,9 @@ export const BUILD_INFO = {
   gitCommit: "{{ gitCommit }}",
   buildEnvironment: "{{ environment }}",
   versionComponents: {
-    major: {{ versionComponents.major }},
-    minor: {{ versionComponents.minor }},
-    patch: {{ versionComponents.patch }},
+    major: {{ versionComponents.major || 0 }},
+    minor: {{ versionComponents.minor || 0 }},
+    patch: {{ versionComponents.patch || 0 }},
     prerelease: {{ versionComponents.prerelease | jsonStringify }}
   }
 } as const;
@@ -319,6 +319,8 @@ export const APP_INFO = {
 
 {{- if metadata }}
 export const APP_METADATA = {{ metadata | jsonStringify }} as const;
+{{- else }}
+// No app metadata defined
 {{- /if }}
 
 export const RELEASE_NOTES = {{ releaseNotes | jsonStringify }} as const;
