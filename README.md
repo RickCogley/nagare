@@ -124,9 +124,9 @@ deno task nagare rollback 1.2.0  # Specific version
 deno task nagare minor --dry-run --skip-confirmation
 ```
 
-### Alternative CLI Setup Options
+### Alternative CLI Setup
 
-**Option 1: Direct JSR import (may have interactive prompt issues)**
+**Direct JSR import (may have interactive prompt issues)**
 
 ```json
 {
@@ -137,18 +137,9 @@ deno task nagare minor --dry-run --skip-confirmation
 }
 ```
 
-**Option 2: Echo pattern (may have interactive prompt issues)**
-
-```json
-{
-  "tasks": {
-    "nagare": "echo \"import { cli } from 'jsr:@rick/nagare/cli'; await cli(Deno.args);\" | deno run -A -"
-  }
-}
-```
-
-> **⚠️ Note:** Alternative options may not handle interactive prompts correctly. The wrapper file
-> approach (recommended setup) ensures proper handling of user confirmations and error messages.
+> **⚠️ Note:** The direct JSR import option may not handle interactive prompts correctly. The
+> wrapper file approach (recommended setup) or using `nagare init` ensures proper handling of user
+> confirmations and error messages.
 
 ### Programmatic Usage
 
