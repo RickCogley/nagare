@@ -445,6 +445,52 @@ For comprehensive testing guidelines, see [TESTING.md](TESTING.md).
 - Use template definitions
 - TypeScript IntelliSense and type checking
 
+## 🔒 Security
+
+Nagare follows security best practices and is designed with the OWASP Top 10 guidelines in mind:
+
+### Security Features
+
+- **🛡️ Deno Security Model**: Leverages Deno's permission-based security system
+- **📝 Minimal Dependencies**: Only 2 trusted dependencies from JSR registry
+- **🔐 Secure Defaults**: Safe configuration defaults to prevent common vulnerabilities
+- **✅ Input Validation**: Validates file patterns and configurations
+- **🚫 No Secrets Storage**: Delegates authentication to GitHub CLI (`gh`)
+
+### Security Considerations
+
+When using Nagare in production:
+
+1. **Use Minimal Permissions**: Run with only required Deno permissions
+   ```bash
+   deno run --allow-read --allow-write --allow-run nagare-launcher.ts
+   ```
+
+2. **Validate Custom Templates**: Review custom templates before use to prevent template injection
+
+3. **Secure CI/CD**: Use GitHub secrets for tokens, never commit credentials
+
+4. **Configuration Review**: Audit `nagare.config.ts` for security implications
+
+### OWASP Compliance
+
+Nagare addresses the OWASP Top 10 security risks:
+
+| Risk Category | Status | Implementation |
+|---------------|--------|----------------|
+| Broken Access Control | ✅ | Deno permission model |
+| Cryptographic Failures | N/A | No crypto operations |
+| Injection | ⚠️ | Input validation for file operations |
+| Insecure Design | ✅ | Secure-by-default architecture |
+| Security Misconfiguration | ✅ | Safe defaults, clear documentation |
+| Vulnerable Components | ✅ | Minimal, vetted dependencies |
+| Authentication | ✅ | Delegated to GitHub CLI |
+| Data Integrity | ✅ | Git-based version control |
+| Logging & Monitoring | ⚠️ | Basic logging included |
+| SSRF | N/A | No direct HTTP requests |
+
+**Note**: While Nagare implements security best practices, always perform your own security assessment based on your specific use case and threat model.
+
 ## 📄 License
 
 MIT License - see [LICENSE](./LICENSE) for details.
