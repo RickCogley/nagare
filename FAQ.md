@@ -202,10 +202,10 @@ Nagare now automatically detects and updates common file types:
 ```typescript
 // Simple configuration - no patterns needed!
 updateFiles: [
-  { path: "./deno.json" },     // Automatically handled
-  { path: "./package.json" },  // Automatically handled
-  { path: "./README.md" },     // Updates badges and version references
-  { path: "./jsr.json" },      // Automatically handled
+  { path: "./deno.json" }, // Automatically handled
+  { path: "./package.json" }, // Automatically handled
+  { path: "./README.md" }, // Updates badges and version references
+  { path: "./jsr.json" }, // Automatically handled
 ];
 ```
 
@@ -291,7 +291,8 @@ Nagare will:
 
 ### How do I know if my patterns are safe?
 
-**For v1.1.0+ users:** If you're using built-in handlers (just specifying the file path), your patterns are automatically safe!
+**For v1.1.0+ users:** If you're using built-in handlers (just specifying the file path), your
+patterns are automatically safe!
 
 **For custom patterns:** Nagare validates them automatically:
 
@@ -554,7 +555,8 @@ While not recommended, pattern validation cannot be disabled as it's a safety fe
 
 ### What's new in v1.1.0?
 
-**Intelligent File Handlers**: Nagare now automatically detects and updates common file types without requiring custom patterns:
+**Intelligent File Handlers**: Nagare now automatically detects and updates common file types
+without requiring custom patterns:
 
 - Just specify `{ path: "./deno.json" }` - no patterns needed!
 - Built-in support for JSON, TypeScript, Markdown, YAML, and more
@@ -563,7 +565,8 @@ While not recommended, pattern validation cannot be disabled as it's a safety fe
 
 ### What was fixed in v1.1.1?
 
-Fixed a critical issue where the config file couldn't be resolved when Nagare was imported from JSR. This affected users who installed Nagare via JSR and tried to use a `nagare.config.ts` file.
+Fixed a critical issue where the config file couldn't be resolved when Nagare was imported from JSR.
+This affected users who installed Nagare via JSR and tried to use a `nagare.config.ts` file.
 
 ### Are there any known limitations?
 

@@ -223,7 +223,7 @@ export const FEATURES = {{metadata.features}};
     { path: "./deno.json" },
     { path: "./README.md" },
     { path: "./jsr.json" },
-    
+
     // Or use custom patterns for specific needs
     {
       path: "./custom-config.json",
@@ -242,7 +242,8 @@ export const FEATURES = {{metadata.features}};
 
 ## 🤖 Intelligent File Handlers (v1.1.0+)
 
-Nagare now includes built-in handlers for common file types, eliminating the need for custom patterns in most cases:
+Nagare now includes built-in handlers for common file types, eliminating the need for custom
+patterns in most cases:
 
 ### Supported File Types
 
@@ -261,7 +262,7 @@ updateFiles: [
   { path: "./package.json" },
   { path: "./README.md" },
   { path: "./jsr.json" },
-]
+];
 ```
 
 ### Custom Patterns (when needed)
@@ -286,7 +287,8 @@ updateFiles: [
 ];
 ```
 
-**Note:** Built-in handlers use safe, tested patterns that prevent common issues like matching unintended content in task definitions or comments.
+**Note:** Built-in handlers use safe, tested patterns that prevent common issues like matching
+unintended content in task definitions or comments.
 
 ## 🔧 Version File Templates
 

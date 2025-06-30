@@ -315,10 +315,10 @@ Nagare now includes built-in handlers that automatically detect and update commo
 ```typescript
 // Simple configuration - handlers automatically applied
 updateFiles: [
-  { path: "./deno.json" },     // Uses built-in JSON handler
-  { path: "./package.json" },  // Uses built-in JSON handler
-  { path: "./README.md" },     // Uses built-in Markdown handler
-  { path: "./version.ts" },    // Uses built-in TypeScript handler
+  { path: "./deno.json" }, // Uses built-in JSON handler
+  { path: "./package.json" }, // Uses built-in JSON handler
+  { path: "./README.md" }, // Uses built-in Markdown handler
+  { path: "./version.ts" }, // Uses built-in TypeScript handler
 ];
 ```
 
@@ -328,12 +328,12 @@ The `FileHandlerManager` class manages a registry of handlers:
 
 ```typescript
 interface FileHandler {
-  id: string;                              // Unique identifier
-  name: string;                            // Human-readable name
+  id: string; // Unique identifier
+  name: string; // Human-readable name
   detector: (filepath: string) => boolean; // Matches files
-  patterns: Record<string, RegExp>;        // Named patterns
-  replacer?: (match, data) => string;      // Custom replacement
-  validate?: (content: string) => void;    // Post-update validation
+  patterns: Record<string, RegExp>; // Named patterns
+  replacer?: (match, data) => string; // Custom replacement
+  validate?: (content: string) => void; // Post-update validation
 }
 ```
 

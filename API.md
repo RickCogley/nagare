@@ -319,7 +319,7 @@ import { FileHandlerManager } from "jsr:@rick/nagare";
 #### Constructor
 
 ```typescript
-new FileHandlerManager()
+new FileHandlerManager();
 ```
 
 #### Methods
@@ -396,7 +396,7 @@ if (fileHandler.hasHandler("./deno.json")) {
 const preview = fileHandler.previewChanges(
   "./README.md",
   readmeContent,
-  { version: "1.2.3" }
+  { version: "1.2.3" },
 );
 ```
 
@@ -510,16 +510,16 @@ Interface for file handlers.
 
 ```typescript
 interface FileHandler {
-  id: string;                              // Unique identifier
-  name: string;                            // Human-readable name
+  id: string; // Unique identifier
+  name: string; // Human-readable name
   detector: (filepath: string) => boolean; // Matches files by path
-  patterns: Record<string, RegExp>;        // Named regex patterns
-  validators?: {                           // Optional validators
+  patterns: Record<string, RegExp>; // Named regex patterns
+  validators?: { // Optional validators
     json?: (obj: any) => void;
     yaml?: (obj: any) => void;
   };
   replacer?: (match: RegExpExecArray, data: TemplateData) => string;
-  validate?: (content: string) => void;    // Post-update validation
+  validate?: (content: string) => void; // Post-update validation
 }
 ```
 
@@ -529,8 +529,8 @@ Configuration for file updates.
 
 ```typescript
 interface FileUpdatePattern {
-  path: string;                            // File path to update
-  patterns?: {                             // Named patterns (optional with v1.1.0+)
+  path: string; // File path to update
+  patterns?: { // Named patterns (optional with v1.1.0+)
     version?: RegExp;
     [key: string]: RegExp | undefined;
   };
@@ -538,7 +538,8 @@ interface FileUpdatePattern {
 }
 ```
 
-**Note:** As of v1.1.0, if a file has a built-in handler, you can omit both `patterns` and `updateFn`.
+**Note:** As of v1.1.0, if a file has a built-in handler, you can omit both `patterns` and
+`updateFn`.
 
 ## Constants
 

@@ -3,7 +3,11 @@
     "allow": [
       "Bash(grep:*)",
       "Bash(ls:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(deno fmt:*)",
+      "Bash(deno check:*)",
+      "Bash(deno lint:*)",
+      "Bash(deno test:*)"
     ],
     "deny": []
   }
