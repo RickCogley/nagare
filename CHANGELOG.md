@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.4] - 2025-06-30
+
+### Changed
+- format generated files after release (1360095)
+
+### Fixed
+- handle null prerelease in TypeScript template (ea39e22)
+- correct updateFn signature and template issues (24953d0)
+
 ## [1.5.3] - 2025-06-30
 
 ### Changed

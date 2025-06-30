@@ -74,7 +74,7 @@ commits and semantic versioning.</p>
 <tbody>
 <tr>
 <td align="left">Version</td>
-<td align="left">[object Object]</td>
+<td align="left">1.5.4</td>
 </tr>
 <tr>
 <td align="left">Repository</td>
@@ -492,11 +492,11 @@ updateFiles: [{
   patterns: {
     version: /(\| Version \| )([^\s]+)( \|)/,
   },
-  updateFn: (content: string, version: string) =&gt; {
+  updateFn: (content: string, data: TemplateData) =&gt; {
     // Preserve table structure while updating only the version
     return content.replace(
       /(\| Version \| )([^\s]+)( \|)/,
-      `$1${version}$3`
+      `$1${data.version}$3`
     );
   },
 }]
@@ -506,11 +506,11 @@ updateFiles: [{
   patterns: {
     version: /(\| Version \| )([^\s]+)( \|)/,
   },
-  updateFn: (content: string, version: string) =&gt; {
+  updateFn: (content: string, data: TemplateData) =&gt; {
     // Preserve table structure while updating only the version
     return content.replace(
       /(\| Version \| )([^\s]+)( \|)/,
-      `$1${version}$3`
+      `$1${data.version}$3`
     );
   },
 }]
