@@ -32,7 +32,7 @@ import { Logger } from "./logger.ts";
  * - Initialize: `git init`
  * - Add remote: `git remote add origin <url>`
  *
- * @example <caption>Direct usage for custom workflows</caption>
+ * @example Direct usage for custom workflows
  * ```typescript
  * const git = new GitOperations(config);
  *
@@ -50,7 +50,7 @@ import { Logger } from "./logger.ts";
  * console.log(`Type: ${parsed.type}, Scope: ${parsed.scope}`);
  * ```
  *
- * @example <caption>Tag management</caption>
+ * @example Tag management
  * ```typescript
  * const git = new GitOperations(config);
  *

@@ -55,7 +55,7 @@ import { FileHandlerManager } from "./file-handlers.ts";
  * 6. **GitHub Release** - Creates release on GitHub (if configured)
  * 7. **Documentation** - Generates docs (if configured)
  *
- * @example <caption>Basic usage with automatic version detection</caption>
+ * @example Basic usage with automatic version detection
  * ```typescript
  * const config: NagareConfig = {
  *   project: { name: "My App", repository: "https://github.com/user/app" },
@@ -69,7 +69,7 @@ import { FileHandlerManager } from "./file-handlers.ts";
  * }
  * ```
  *
- * @example <caption>CI/CD integration with skip confirmation</caption>
+ * @example CI/CD integration with skip confirmation
  * ```typescript
  * const config: NagareConfig = {
  *   project: { name: "My App", repository: "https://github.com/user/app" },
@@ -84,7 +84,7 @@ import { FileHandlerManager } from "./file-handlers.ts";
  * const result = await manager.release("patch");
  * ```
  *
- * @example <caption>With intelligent file handlers (v1.1.0+)</caption>
+ * @example With intelligent file handlers (v1.1.0+)
  * ```typescript
  * const config: NagareConfig = {
  *   project: { name: "My App", repository: "https://github.com/user/app" },

@@ -6,65 +6,78 @@ repository.
 ## Security & Compliance Standards
 
 ### OWASP Top 10 Verification Required
+
 Before suggesting or implementing any code changes, verify against current OWASP Top 10:
 
 #### A01 - Broken Access Control
+
 - Validate all authorization checks in CLI commands and file operations
 - Implement principle of least privilege for file system access
 - Check for direct object references in configuration handling
 
 #### A02 - Cryptographic Failures
+
 - Use strong, up-to-date encryption algorithms for any sensitive data
 - Properly manage secrets and API keys (GitHub tokens, etc.)
 - Validate SSL/TLS implementations in GitHub API calls
 
 #### A03 - Injection
+
 - Use parameterized operations for all git commands and file system operations
 - Validate and sanitize all user inputs from CLI arguments and config files
 - Implement proper output encoding for template processing
 
 #### A04 - Insecure Design
+
 - Review architecture for security flaws in release management workflow
 - Implement secure design patterns for file handling and git operations
 - Consider threat modeling implications for CI/CD integration
 
 #### A05 - Security Misconfiguration
+
 - Check default configurations in `nagare.config.ts`
 - Ensure proper error handling (no sensitive data exposure in logs)
 - Validate security headers and settings for documentation server
 
 #### A06 - Vulnerable Components
+
 - Audit all Deno dependencies for known vulnerabilities
 - Keep libraries and frameworks updated (especially git and GitHub CLI)
 - Document component security status in dependency updates
 
 #### A07 - Authentication Failures
+
 - Implement proper GitHub authentication handling
 - Use strong authentication mechanisms for GitHub API
 - Protect against unauthorized release operations
 
 #### A08 - Software/Data Integrity Failures
+
 - Validate data integrity in version updates and changelog generation
 - Use secure update mechanisms for file modifications
 - Implement proper CI/CD security for release pipeline
 
 #### A09 - Logging/Monitoring Failures
+
 - Log security-relevant events in release operations
 - Implement proper monitoring for unauthorized changes
 - Ensure logs don't contain sensitive data (tokens, credentials)
 
 #### A10 - Server-Side Request Forgery (SSRF)
+
 - Validate all external requests to GitHub API
 - Implement proper URL validation for template processing
 - Use allowlists for external resources in documentation
 
 ### ISO 27001 Compliance Notes
+
 - Document all security decisions in commit messages
 - Maintain audit trail for all release operations
 - Ensure security reviews for all file handler modifications
 - Flag any potential compliance issues immediately
 
 ### Security Review Process
+
 When reviewing or suggesting code changes:
 
 1. **Security First**: Always perform OWASP Top 10 assessment before any other suggestions
@@ -74,7 +87,9 @@ When reviewing or suggesting code changes:
 5. **Compliance Check**: Note any ISO 27001 implications
 
 ### Required Security Checks
+
 For every code change, verify:
+
 - Input validation and sanitization (especially CLI args and config files)
 - Authentication and authorization (GitHub API access)
 - Secure data handling (version info, changelog data)
@@ -182,9 +197,12 @@ deno test --allow-all path/to/file_test.ts
 
 ### Critical Development Notes
 
-1. **Security Testing**: When adding features, create corresponding security tests alongside functional tests
-2. **File Updates**: Always use line-anchored regex patterns to prevent corruption and validate inputs
-3. **Error Handling**: Provide actionable error messages with suggestions (no sensitive data exposure)
+1. **Security Testing**: When adding features, create corresponding security tests alongside
+   functional tests
+2. **File Updates**: Always use line-anchored regex patterns to prevent corruption and validate
+   inputs
+3. **Error Handling**: Provide actionable error messages with suggestions (no sensitive data
+   exposure)
 4. **Git State**: Many operations require clean git state - validate early and log security events
 5. **Self-Hosting**: This project manages its own releases - be careful with version.ts changes
 6. **Pre-flight**: Always run `deno fmt`, `deno check **/*.ts`, `deno lint`, `deno test` before
@@ -193,9 +211,9 @@ deno test --allow-all path/to/file_test.ts
    messages or PRs. The fact that CLAUDE.md is present, makes it obvious that Claude is being used
 8. **Git Commits**: Use "conventional commits" style to make commit messages, including sufficient
    detail so that a person reading in the future, will be able to understand what the commit was.
-   **InfoSec Impact**: Include an InfoSec comment in commit messages when changes have security 
+   **InfoSec Impact**: Include an InfoSec comment in commit messages when changes have security
    implications. Format: "InfoSec: [brief description of security impact/consideration]"
-   
+
    Examples:
    - `feat: add input validation to CLI args\n\nInfoSec: Prevents injection attacks through command line parameters`
    - `fix: update GitHub API token handling\n\nInfoSec: Improves credential security and reduces token exposure risk`
@@ -205,4 +223,5 @@ deno test --allow-all path/to/file_test.ts
    accordingly
 10. **Git Merging**: When merging master changes to an active branch, make sure both branches are
     pulled and up to date first
-11. **Security Documentation**: Document all security-related decisions and their rationale for ISO 27001 compliance
+11. **Security Documentation**: Document all security-related decisions and their rationale for ISO
+    27001 compliance

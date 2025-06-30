@@ -25,7 +25,7 @@
  *
  * ## Quick Start
  *
- * @example <caption>Initialize Nagare in your project</caption>
+ * @example Initialize Nagare in your project
  * ```bash
  * # Quick setup with init command
  * deno run -A jsr:@rick/nagare/cli init
@@ -36,7 +36,7 @@
  * # - Instructions for deno.json tasks
  * ```
  *
- * @example <caption>Basic programmatic usage</caption>
+ * @example Basic programmatic usage
  * ```typescript
  * import { ReleaseManager } from "jsr:@rick/nagare";
  *
@@ -85,7 +85,7 @@
  *
  * Nagare includes built-in handlers that automatically detect and update common file types:
  *
- * @example <caption>Simple file updates with built-in handlers</caption>
+ * @example Simple file updates with built-in handlers
  * ```typescript
  * updateFiles: [
  *   { path: "./deno.json" },     // Automatically handled
@@ -106,7 +106,7 @@
  *
  * ## Advanced Usage
  *
- * @example <caption>Custom file handler</caption>
+ * @example Custom file handler
  * ```typescript
  * import { FileHandlerManager } from "jsr:@rick/nagare";
  *
@@ -121,7 +121,7 @@
  * });
  * ```
  *
- * @example <caption>Custom version template</caption>
+ * @example Custom version template
  * ```typescript
  * versionFile: {
  *   path: "./version.ts",

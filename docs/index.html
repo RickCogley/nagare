@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Nagare (流れ) - Deno Release Management Library documentation</title>
+  <title>Nagare documentation</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="doc-current-file" content="">
@@ -15,7 +15,7 @@
 <div class="ddoc">
 <div><nav id="topnav">
   <div class="h-full">
-    <div class="flex items-center"><ul class="breadcrumbs"><li>Nagare (流れ) - Deno Release Management Library</li></ul>
+    <div class="flex items-center"><ul class="breadcrumbs"><li>Nagare</li></ul>
 </div>
 
     <div class="flex items-center gap-2">
@@ -144,7 +144,7 @@ Examples</h2></div><div class="space-y-8"><div class="anchorable"><a href="#exam
   </defs>
 </svg>
 </a>
-<h3 class="example-header"><div class="markdown">&lt;caption&gt;Initialize Nagare in your project&lt;/caption&gt;
+<h3 class="example-header"><div class="markdown"><p>Initialize Nagare in your project</p>
 </div></h3>
   <div><div class="markdown"><pre class="highlight"><code class="language-bash">deno run -A jsr:@rick/nagare/cli init
 
@@ -184,7 +184,7 @@ Examples</h2></div><div class="space-y-8"><div class="anchorable"><a href="#exam
   </defs>
 </svg>
 </a>
-<h3 class="example-header"><div class="markdown">&lt;caption&gt;Basic programmatic usage&lt;/caption&gt;
+<h3 class="example-header"><div class="markdown"><p>Basic programmatic usage</p>
 </div></h3>
   <div><div class="markdown"><pre class="highlight"><code class="language-typescript">import { ReleaseManager } from &quot;jsr:@rick/nagare&quot;;
 
@@ -304,7 +304,7 @@ Intelligent File Handlers (v1.1.0+)</h2>
   </defs>
 </svg>
 </a>
-<h3 class="example-header"><div class="markdown">&lt;caption&gt;Simple file updates with built-in handlers&lt;/caption&gt;
+<h3 class="example-header"><div class="markdown"><p>Simple file updates with built-in handlers</p>
 </div></h3>
   <div><div class="markdown"><pre class="highlight"><code class="language-typescript">updateFiles: [
   { path: &quot;./deno.json&quot; },     // Automatically handled
@@ -363,7 +363,7 @@ Advanced Usage</h2>
   </defs>
 </svg>
 </a>
-<h3 class="example-header"><div class="markdown">&lt;caption&gt;Custom file handler&lt;/caption&gt;
+<h3 class="example-header"><div class="markdown"><p>Custom file handler</p>
 </div></h3>
   <div><div class="markdown"><pre class="highlight"><code class="language-typescript">import { FileHandlerManager } from &quot;jsr:@rick/nagare&quot;;
 
@@ -421,7 +421,7 @@ fileHandler.registerHandler({
   </defs>
 </svg>
 </a>
-<h3 class="example-header"><div class="markdown">&lt;caption&gt;Custom version template&lt;/caption&gt;
+<h3 class="example-header"><div class="markdown"><p>Custom version template</p>
 </div></h3>
   <div><div class="markdown"><pre class="highlight"><code class="language-typescript">versionFile: {
   path: &quot;./version.ts&quot;,
@@ -477,7 +477,7 @@ From standard-version</h3>
     <div><nav class="topSymbols">
           <h3>Symbols</h3>
           <ul><li>
-                <a href=".&#x2F;src&#x2F;file-handlers.ts&#x2F;~&#x2F;BUILT_IN_HANDLERS.html" title="BUILT_IN_HANDLERS"><div class="docNodeKindIcon"><div class="text-Variable bg-Variable/15 dark:text-VariableDark dark:bg-VariableDark/15" title="Variable">v</div></div>
+                <a href=".&#x2F;.&#x2F;~&#x2F;BUILT_IN_HANDLERS.html" title="BUILT_IN_HANDLERS"><div class="docNodeKindIcon"><div class="text-Variable bg-Variable/15 dark:text-VariableDark dark:bg-VariableDark/15" title="Variable">v</div></div>
 <span class="hover:bg-Variable/15 hover:bg-VariableDark/15">
                     BUILT_IN_HANDLERS
                   </span>
@@ -489,7 +489,7 @@ From standard-version</h3>
                   </span>
                 </a>
               </li><li>
-                <a href=".&#x2F;src&#x2F;changelog-generator.ts&#x2F;~&#x2F;ChangelogGenerator.html" title="ChangelogGenerator"><div class="docNodeKindIcon"><div class="text-Class bg-Class/15 dark:text-ClassDark dark:bg-ClassDark/15" title="Class">c</div></div>
+                <a href=".&#x2F;.&#x2F;~&#x2F;ChangelogGenerator.html" title="ChangelogGenerator"><div class="docNodeKindIcon"><div class="text-Class bg-Class/15 dark:text-ClassDark dark:bg-ClassDark/15" title="Class">c</div></div>
 <span class="hover:bg-Class/15 hover:bg-ClassDark/15">
                     ChangelogGenerator
                   </span>
@@ -507,7 +507,7 @@ From standard-version</h3>
                   </span>
                 </a>
               </li></ul><a class="flex items-center gap-0.5" href=".&#x2F;all_symbols.html">
-              <span class="leading-none">view all 44 symbols</span><svg
+              <span class="leading-none">view all 27 symbols</span><svg
 	width="16"
 	height="16"
 	viewBox="0 0 16 16"
@@ -516,7 +516,7 @@ From standard-version</h3>
 	<path fill-rule="evenodd" clip-rule="evenodd" d="M5.76748 11.8159C5.5378 11.577 5.54525 11.1972 5.78411 10.9675L8.93431 8L5.78411 5.0325C5.54525 4.80282 5.5378 4.423 5.76748 4.18413C5.99715 3.94527 6.37698 3.93782 6.61584 4.1675L10.2158 7.5675C10.3335 7.68062 10.4 7.83679 10.4 8C10.4 8.16321 10.3335 8.31938 10.2158 8.4325L6.61584 11.8325C6.37698 12.0622 5.99715 12.0547 5.76748 11.8159Z" fill="currentColor" />
 </svg>
 </a></nav><nav class="documentNavigation">
-          <h3>Document Navigation</h3><ul><li><a href="#examples" title="Examples">Examples</a></li><li><ul><li><a href="#example_0" title=""></a></li><li><ul><li><a href="#core-features" title="Core Features">Core Features</a></li><li><a href="#quick-start" title="Quick Start">Quick Start</a></li></ul></li></ul></li></ul></nav></div>
+          <h3>Document Navigation</h3><ul><li><a href="#examples" title="Examples">Examples</a></li><li><ul><li><a href="#example_0" title="Initialize Nagare in your project">Initialize Nagare in your project</a></li><li><a href="#example_1" title="Basic programmatic usage">Basic programmatic usage</a></li><li><a href="#example_2" title="Simple file updates with built-in handlers">Simple file updates with built-in handlers</a></li><li><a href="#example_3" title="Custom file handler">Custom file handler</a></li><li><a href="#example_4" title="Custom version template">Custom version template</a></li><li><ul><li><a href="#core-features" title="Core Features">Core Features</a></li><li><a href="#quick-start" title="Quick Start">Quick Start</a></li></ul></li></ul></li></ul></nav></div>
   </div></div>
 </div>
 </div>
