@@ -134,6 +134,24 @@
  * }
  * ```
  *
+ * @example Custom updateFn for complex replacements
+ * ```typescript
+ * // For files with special formatting like markdown tables
+ * updateFiles: [{
+ *   path: "./mod.ts",
+ *   patterns: {
+ *     version: /(\| Version \| )([^\s]+)( \|)/,
+ *   },
+ *   updateFn: (content: string, version: string) => {
+ *     // Preserve table structure while updating only the version
+ *     return content.replace(
+ *       /(\| Version \| )([^\s]+)( \|)/,
+ *       `$1${version}$3`
+ *     );
+ *   },
+ * }]
+ * ```
+ *
  * ## Migration from Other Tools
  *
  * ### From semantic-release

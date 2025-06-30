@@ -298,8 +298,8 @@ export const BUILD_INFO = {
     major: {{ versionComponents.major }},
     minor: {{ versionComponents.minor }},
     patch: {{ versionComponents.patch }},
-    prerelease: {{ versionComponents.prerelease | jsonStringify }}
-  }
+    prerelease: {{ versionComponents.prerelease | jsonStringify }},
+  },
 } as const;
 
 export const APP_INFO = {
