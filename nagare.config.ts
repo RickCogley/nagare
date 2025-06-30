@@ -7,7 +7,6 @@
 import type { NagareConfig } from "./types.ts";
 import { LogLevel, TemplateFormat } from "./types.ts";
 
-
 /**
  * Post-release formatting check (simplified)
  *

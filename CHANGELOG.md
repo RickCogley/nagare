@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.1] - 2025-06-30
 
 ### Fixed
+
 - use proper Vento JavaScript expression syntax (915191d)
 - use proper Vento syntax in TypeScript template (33f9d4b)
 - repair version.ts syntax errors and improve template robustness (a0c1fd3)
@@ -15,9 +16,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.4.0] - 2025-06-30
 
 ### Added
+
 - integrate documentation enhancement into release process (b62eb55)
 
 ### Fixed
+
 - fix documentation styling and table rendering (e879566)
 - handle undefined values in TypeScript template (ca7d2c1)
 
