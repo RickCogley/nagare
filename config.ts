@@ -298,7 +298,7 @@ export const BUILD_INFO = {
     major: {{ versionComponents.major }},
     minor: {{ versionComponents.minor }},
     patch: {{ versionComponents.patch }},
-    prerelease: {{ versionComponents.prerelease | jsonStringify }},
+    prerelease: {{- if versionComponents.prerelease }}{{ versionComponents.prerelease | jsonStringify }}{{- else }}null{{- /if }},
   },
 } as const;
 
