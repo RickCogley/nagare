@@ -10,10 +10,10 @@ export const BUILD_INFO = {
   gitCommit: "915191d",
   buildEnvironment: "production",
   versionComponents: {
-    major: ,
-    minor: ,
-    patch: ,
-    prerelease: 
+    major: 1,
+    minor: 4,
+    patch: 1,
+    prerelease: null
   }
 } as const;
 
@@ -25,5 +25,5 @@ export const APP_INFO = {
   homepage: "https://jsr.io/@rick/nagare",
   license: "MIT",
 } as const;
-export const APP_METADATA =  as const;
-export const RELEASE_NOTES =  as const;
+export const APP_METADATA = {} as const;
+export const RELEASE_NOTES = {} as const;
