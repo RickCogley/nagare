@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.2.1] - 2025-06-30
 
 ### Changed
+
 - remove non-functional echo pattern from CLI setup options (29274c5)
 - format generated files after release (a2415fb)
 
