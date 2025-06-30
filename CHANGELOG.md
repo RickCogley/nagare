@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2025-06-30
+
+### Added
+- add JSR badges to README (fe8aa28)
+
+### Changed
+- clean up post-release changes (0cf5ae1)
+- restore public API documentation (27 symbols) (122564a)
+- use full project name in documentation title (7bcdd5f)
+- regenerate documentation for v1.4.1 (e9967e5)
+
 ## [1.4.1] - 2025-06-30
 
 ### Fixed
