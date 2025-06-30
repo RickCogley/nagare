@@ -42,12 +42,12 @@
     "check": "deno check **/*.ts",
     "build": "deno task check && deno task test && deno task lint && deno task fmt --check",
 
-    "nagare": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts",
-    "nagare:patch": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts patch",
-    "nagare:minor": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts minor",
-    "nagare:major": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts major",
-    "nagare:dry": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts --dry-run",
-    "nagare:rollback": "deno run --allow-read --allow-write --allow-run --allow-net cli.ts rollback",
+    "nagare": "deno run --allow-read --allow-write --allow-run --allow-net --allow-env cli.ts",
+    "nagare:patch": "deno run --allow-read --allow-write --allow-run --allow-net --allow-env cli.ts patch",
+    "nagare:minor": "deno run --allow-read --allow-write --allow-run --allow-net --allow-env cli.ts minor",
+    "nagare:major": "deno run --allow-read --allow-write --allow-run --allow-net --allow-env cli.ts major",
+    "nagare:dry": "deno run --allow-read --allow-write --allow-run --allow-net --allow-env cli.ts --dry-run",
+    "nagare:rollback": "deno run --allow-read --allow-write --allow-run --allow-net --allow-env cli.ts rollback",
 
     "docs": "deno doc --html --name=Nagare --output=./docs ./mod.ts",
     "docs:enhance": "deno run --allow-read --allow-write enhance-docs.ts",
