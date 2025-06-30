@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.1.2] - 2025-06-30
 
 ### Changed
+
 - apply deno fmt to documentation and config files (a5bcc18)
 - add some settings for claude (a38006b)
 - update documentation for v1.1.0 intelligent file handlers (17a9b89)
