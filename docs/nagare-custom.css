@@ -43,3 +43,63 @@
 .dark .example-header {
   color: #e2e8f0;
 }
+
+/* Quick Navigation styling */
+.quick-links {
+  background-color: rgb(243 244 246);
+  border: 1px solid rgb(229 231 235);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.dark .quick-links {
+  background-color: rgb(31 41 55);
+  border-color: rgb(55 65 81);
+}
+
+.quick-links h3 {
+  margin: 0 0 1rem 0;
+  color: #4a5568;
+  font-size: 1.125rem;
+}
+
+.dark .quick-links h3 {
+  color: #e2e8f0;
+}
+
+.quick-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+}
+
+.quick-links li {
+  margin: 0;
+}
+
+.quick-links a {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+  color: #4a5568;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.dark .quick-links a {
+  color: #e2e8f0;
+}
+
+.quick-links a:hover {
+  background-color: rgb(229 231 235);
+  color: #1a202c;
+}
+
+.dark .quick-links a:hover {
+  background-color: rgb(55 65 81);
+  color: #f7fafc;
+}

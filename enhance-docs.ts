@@ -20,10 +20,10 @@ const CUSTOM_HEADER = `
   <ul>
     <li><a href="#quick-start">🚀 Quick Start</a></li>
     <li><a href="#architecture-overview">🏗️ Architecture</a></li>
-    <li><a href="#intelligent-file-handlers">🤖 File Handlers</a></li>
+    <li><a href="#intelligent-file-handlers-(v1.1.0+)">🤖 File Handlers</a></li>
     <li><a href="#conventional-commits">📝 Commit Conventions</a></li>
-    <li><a href="#troubleshooting-guide">🔧 Troubleshooting</a></li>
-    <li><a href="#common-configuration-patterns">⚙️ Configuration Patterns</a></li>
+    <li><a href="#advanced-usage">📚 Advanced Usage</a></li>
+    <li><a href="#examples">💡 Examples</a></li>
   </ul>
 </div>
 `;
@@ -72,6 +72,66 @@ const NAGARE_CUSTOM_CSS = `/* Nagare Documentation Custom Styles */
 
 .dark .example-header {
   color: #e2e8f0;
+}
+
+/* Quick Navigation styling */
+.quick-links {
+  background-color: rgb(243 244 246);
+  border: 1px solid rgb(229 231 235);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.dark .quick-links {
+  background-color: rgb(31 41 55);
+  border-color: rgb(55 65 81);
+}
+
+.quick-links h3 {
+  margin: 0 0 1rem 0;
+  color: #4a5568;
+  font-size: 1.125rem;
+}
+
+.dark .quick-links h3 {
+  color: #e2e8f0;
+}
+
+.quick-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+}
+
+.quick-links li {
+  margin: 0;
+}
+
+.quick-links a {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+  color: #4a5568;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.dark .quick-links a {
+  color: #e2e8f0;
+}
+
+.quick-links a:hover {
+  background-color: rgb(229 231 235);
+  color: #1a202c;
+}
+
+.dark .quick-links a:hover {
+  background-color: rgb(55 65 81);
+  color: #f7fafc;
 }`;
 
 async function enhanceDocs() {
@@ -143,6 +203,54 @@ async function enhanceDocs() {
   const landingPath = join(DOCS_DIR, "landing-content.html");
   await Deno.writeTextFile(landingPath, landingContent);
   console.log("✅ Created landing content");
+
+  // 4. Add CSS to all HTML files
+  console.log("🔗 Adding custom CSS to all HTML files...");
+  let cssAddedCount = 0;
+  
+  for await (const entry of Deno.readDir(DOCS_DIR)) {
+    if (entry.isDirectory) {
+      // Handle subdirectory (like ~/)
+      const subDir = join(DOCS_DIR, entry.name);
+      for await (const subEntry of Deno.readDir(subDir)) {
+        if (subEntry.name.endsWith(".html")) {
+          const filePath = join(subDir, subEntry.name);
+          try {
+            let content = await Deno.readTextFile(filePath);
+            if (!content.includes("nagare-custom.css")) {
+              // Add CSS link with proper relative path
+              content = content.replace(
+                '<link href="../prism.css" rel="stylesheet" />',
+                '<link href="../prism.css" rel="stylesheet" /><link href="../nagare-custom.css" rel="stylesheet" />'
+              );
+              await Deno.writeTextFile(filePath, content);
+              cssAddedCount++;
+            }
+          } catch (error) {
+            console.error(`Failed to update ${filePath}:`, error);
+          }
+        }
+      }
+    } else if (entry.name.endsWith(".html") && entry.name !== "index.html") {
+      // Handle root level HTML files
+      const filePath = join(DOCS_DIR, entry.name);
+      try {
+        let content = await Deno.readTextFile(filePath);
+        if (!content.includes("nagare-custom.css")) {
+          content = content.replace(
+            '<link href="prism.css" rel="stylesheet" />',
+            '<link href="prism.css" rel="stylesheet" /><link href="nagare-custom.css" rel="stylesheet" />'
+          );
+          await Deno.writeTextFile(filePath, content);
+          cssAddedCount++;
+        }
+      } catch (error) {
+        console.error(`Failed to update ${filePath}:`, error);
+      }
+    }
+  }
+  
+  console.log(`✅ Added custom CSS to ${cssAddedCount} HTML files`);
 
   console.log("\n✨ Documentation enhancement complete!");
   console.log(`📁 Enhanced docs available in: ${DOCS_DIR}`);
