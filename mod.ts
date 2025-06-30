@@ -3,14 +3,14 @@
  * that automates version bumping, changelog generation, and GitHub releases using conventional
  * commits and semantic versioning.
  *
- * | Nagare | Specifications |
- * | ------- | ------- |
- * | **Version** | 1.3.0 |
- * | **Repository** | {@link https://github.com/RickCogley/nagare} |
- * | **JSR Package** | {@link https://jsr.io/@rick/nagare} |
- * | **Documentation** | {@link https://nagare.esolia.deno.net} |
- * | **License** | MIT |
- * | **Author** | Rick Cogley, eSolia Inc. |
+ * | **Nagare** | **Specifications** |
+ * | :------- | :------- |
+ * | Version | 1.3.0 |
+ * | Repository | {@link https://github.com/RickCogley/nagare} |
+ * | JSR Package | {@link https://jsr.io/@rick/nagare} |
+ * | Documentation | {@link https://nagare.esolia.deno.net} |
+ * | License | MIT |
+ * | Author | Rick Cogley, eSolia Inc. |
  *
  * ## Core Features
  *
