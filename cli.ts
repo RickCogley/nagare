@@ -905,6 +905,7 @@ export const RELEASE_NOTES = {{ releaseNotes | jsonStringify }} as const;
 
   releaseNotes: {
     metadata: {
+      // DevSkim: ignore DS440000 - These are feature names, not hardcoded protocols
       cryptoFeatures: ['AES-GCM-256', 'PBKDF2-SHA512', 'basE91'],
       securityFeatures: ['Rate limiting', 'API authentication']
     }

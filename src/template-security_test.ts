@@ -60,7 +60,8 @@ Deno.test("template security - strict mode blocks dangerous patterns", async () 
     "validation failed",
   );
 
-  // JavaScript execution
+  // JavaScript execution - Testing that eval is properly blocked
+  // DevSkim: ignore DS156431 - This tests security, not using eval
   await assertRejects(
     () => processor.processTemplate('{{ eval("malicious code") }}', mockTemplateData),
     Error,
