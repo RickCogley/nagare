@@ -12,7 +12,7 @@ export const BUILD_INFO = {
   versionComponents: {
     major: 1,
     minor: 7,
-    patch: ,
+    patch: 0,
     prerelease: null,
   },
 } as const;
@@ -30,7 +30,7 @@ export const RELEASE_NOTES = {
   "version": "1.7.0",
   "date": "2025-07-01",
   "added": [
-    "add Microsoft DevSkim security linter workflow (ed7b90e)"
+    "add Microsoft DevSkim security linter workflow (ed7b90e)",
   ],
   "changed": [],
   "deprecated": [],
@@ -40,7 +40,7 @@ export const RELEASE_NOTES = {
     "exclude test files and docs from secret scanning (e5348e4)",
     "correct shell quoting in security workflow grep command (6e92231)",
     "resolve linting errors in security code (19bc7b8)",
-    "correct syntax error in version.ts patch value (b762e82)"
+    "correct syntax error in version.ts patch value (b762e82)",
   ],
-  "security": []
+  "security": [],
 } as const;
