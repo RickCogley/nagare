@@ -66,9 +66,11 @@ All dependencies are:
 
 ### GitHub Security Features
 
-Nagare leverages GitHub's comprehensive security platform to maintain code quality and prevent vulnerabilities:
+Nagare leverages GitHub's comprehensive security platform to maintain code quality and prevent
+vulnerabilities:
 
-1. **CodeQL Analysis**: Advanced semantic code analysis that automatically scans for security vulnerabilities
+1. **CodeQL Analysis**: Advanced semantic code analysis that automatically scans for security
+   vulnerabilities
    - Detects: SQL injection, XSS, path traversal, insecure data flow, and more
    - Runs: On every push, pull request, and weekly deep scans
    - Results: Appear in GitHub Security tab with detailed remediation guidance
@@ -90,7 +92,8 @@ Nagare leverages GitHub's comprehensive security platform to maintain code quali
    - Push Protection: Can block commits containing secrets (optional)
    - Partners: Works with service providers to revoke exposed credentials
 
-All these features are **free for public repositories** and provide enterprise-grade security monitoring.
+All these features are **free for public repositories** and provide enterprise-grade security
+monitoring.
 
 ### Known Security Considerations
 

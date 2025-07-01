@@ -499,11 +499,13 @@ assessment based on your specific use case and threat model.
 
 ## 🔒 Security
 
-Nagare is designed with security as a top priority, following OWASP guidelines and implementing multiple layers of protection:
+Nagare is designed with security as a top priority, following OWASP guidelines and implementing
+multiple layers of protection:
 
 ### Security Features
 
 #### 1. **Input Validation & Sanitization**
+
 All user inputs are validated and sanitized to prevent injection attacks:
 
 ```typescript
@@ -518,6 +520,7 @@ validateCliArgs(["--version", "1.2.3 && malicious"]); // Throws error
 ```
 
 #### 2. **Template Sandboxing**
+
 Vento templates are executed in a restricted environment:
 
 ```typescript
@@ -528,17 +531,19 @@ export default {
     validateFilePaths: true,
     auditLog: true,
     maxTemplateSize: 1048576, // 1MB limit
-  }
+  },
 } as NagareConfig;
 ```
 
 In strict mode, templates cannot:
+
 - Access file system (`Deno.readFile`, `import`, `require`)
 - Execute commands (`Deno.Command`, `Deno.run`)
 - Make network requests (`fetch`, `XMLHttpRequest`)
 - Access global objects or use dangerous patterns
 
 #### 3. **Safe File Updates**
+
 Built-in file handlers use secure, line-anchored regex patterns:
 
 ```typescript
@@ -550,6 +555,7 @@ Built-in file handlers use secure, line-anchored regex patterns:
 ```
 
 #### 4. **Command Injection Prevention**
+
 All git operations use Deno's secure Command API with validated inputs:
 
 ```typescript
@@ -560,6 +566,7 @@ new Deno.Command("git", {
 ```
 
 #### 5. **Security Audit Logging**
+
 Security-relevant events are logged for audit trails:
 
 ```typescript
@@ -578,7 +585,7 @@ Security-relevant events are logged for audit trails:
    ```typescript
    // ✅ SAFE: Simple variable substitution
    export const VERSION = "{{ version }}";
-   
+
    // ❌ AVOID: JavaScript execution
    export const DATA = {{> someFunction() }};
    ```
@@ -588,18 +595,19 @@ Security-relevant events are logged for audit trails:
    updateFiles: [
      // ✅ Use built-in handlers when possible
      { path: "./deno.json" },
-     
+
      // ⚠️  Review custom patterns carefully
      {
        path: "./custom.json",
-       patterns: { version: /.../ } // Ensure pattern is safe
-     }
-   ]
+       patterns: { version: /.../ }, // Ensure pattern is safe
+     },
+   ];
    ```
 
 ### Automated Security Testing
 
 Nagare includes comprehensive security tests that run in CI/CD:
+
 - Input validation testing
 - Template sandboxing verification
 - Command injection prevention tests

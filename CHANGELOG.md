@@ -8,10 +8,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.6.0] - 2025-07-01
 
 ### Added
+
 - add comprehensive GitHub security integrations (1bdce57)
 - implement comprehensive security enhancements (e105e6b)
 
 ### Changed
+
 - move GitHub security guide to plans and expand security feature docs (71a5d81)
 - clarify security roadmap and SAST/DAST status (c703327)
 - update code of conduct (62c81ff)

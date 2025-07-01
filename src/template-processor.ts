@@ -114,7 +114,7 @@ export class TemplateProcessor {
     const validation = await this.validateTemplateSecure(template);
     if (!validation.valid) {
       const sandboxMode = this.config.security?.templateSandbox ?? "strict";
-      
+
       if (sandboxMode === "disabled") {
         // In disabled mode, just warn
         this.logger.warn(`Template validation warning: ${validation.error}`);
@@ -292,11 +292,11 @@ export class TemplateProcessor {
   private setupSecurityContext(): void {
     // Configure Vento to use a restricted context
     const sandboxConfig = this.config.security?.templateSandbox ?? "strict";
-    
+
     if (sandboxConfig === "strict") {
       // In strict mode, templates have minimal access
       this.logger.debug("Template sandboxing enabled in strict mode");
-      
+
       // Note: Vento doesn't directly support custom contexts, but we can
       // validate templates more strictly and provide only safe functions
       // through filters instead of allowing arbitrary JavaScript
@@ -304,7 +304,7 @@ export class TemplateProcessor {
       // Moderate mode allows some additional functions but still restricted
       this.logger.debug("Template sandboxing enabled in moderate mode");
     }
-    
+
     // Log security context creation
     const securityLog = createSecurityLog("template_sandbox_initialized", {
       mode: sandboxConfig,
@@ -325,9 +325,9 @@ export class TemplateProcessor {
    * @returns Validation result with security analysis
    * @private
    */
-  private async validateTemplateSecure(
+  private validateTemplateSecure(
     template: string,
-  ): Promise<{ valid: boolean; error?: string }> {
+  ): { valid: boolean; error?: string } {
     if (!template || typeof template !== "string") {
       return { valid: false, error: "Template must be a non-empty string" };
     }
@@ -342,7 +342,7 @@ export class TemplateProcessor {
       /eval\s*\(/,
       /new\s+Function\s*\(/,
 
-      // File system access attempts  
+      // File system access attempts
       /Deno\.readTextFile/,
       /Deno\.readFile/,
       /Deno\.writeTextFile/,
@@ -363,7 +363,7 @@ export class TemplateProcessor {
       /Deno\./,
     ];
 
-    // Additional strict mode patterns  
+    // Additional strict mode patterns
     if (sandboxMode === "strict") {
       dangerousPatterns.push(
         // Block global object access
@@ -372,7 +372,7 @@ export class TemplateProcessor {
         /\.constructor/,
         /__proto__|prototype/,
         // Block direct JavaScript execution in Vento
-        /{{>/,  // Vento's JS execution syntax
+        /{{>/, // Vento's JS execution syntax
       );
     }
 
