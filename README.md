@@ -23,11 +23,6 @@ changelog generation, and GitHub releases using conventional commits and semanti
 - **🛡️ Type-Safe** - Full TypeScript support with comprehensive types
 - **🔒 Safe File Updates** - Enhanced pattern validation prevents file corruption
 
-## Badge
-
-[![JSR Version](https://jsr.io/badges/@rick/nagare)](https://jsr.io/@rick/nagare)
-[![JSR Score](https://jsr.io/badges/@rick/nagare/score)](https://jsr.io/@rick/nagare)
-
 ## 🚀 Quick Start
 
 ### Installation & Setup
