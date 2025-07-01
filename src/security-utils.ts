@@ -36,15 +36,15 @@ export function validateGitRef(ref: string, type: "tag" | "branch" | "commit"): 
 
   // Git ref rules:
   // - Cannot start with -
-  // - Cannot contain: space, ~, ^, :, ?, *, [, \, .., @{
+  // - Cannot contain: space, ~, ^, :, ?, *, [, \, `, .., @{
   // - Cannot end with .
   // - Cannot end with .lock
-  const invalidChars = /[\s~^:?*\[\]\\]/;
+  const invalidChars = /[\s~^:?*\[\]\\`]/;
   const invalidPatterns = /^-|\.\.|\.$|\.lock$|@{/;
 
   if (invalidChars.test(trimmed)) {
     throw new Error(
-      `Invalid ${type}: contains forbidden characters (space, ~, ^, :, ?, *, [, ], \\)`,
+      `Invalid ${type}: contains forbidden characters (space, ~, ^, :, ?, *, [, ], \\, \`)`,
     );
   }
 
