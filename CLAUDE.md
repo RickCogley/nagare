@@ -209,7 +209,7 @@ Nagare follows a **pragmatic hybrid approach** combining object-oriented and fun
    - Keep business logic in classes, data transformations in pure functions
    - Use TypeScript's type system extensively for compile-time safety
 
-For detailed analysis, see [PROGRAMMING-PARADIGM.md](./PROGRAMMING-PARADIGM.md)
+For detailed analysis, see [PROGRAMMING_PARADIGM.md](PROGRAMMING_PARADIGM.md)
 
 ### Code Style Requirements
 
