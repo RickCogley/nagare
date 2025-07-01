@@ -75,18 +75,24 @@ vulnerabilities:
    - Runs: On every push, pull request, and weekly deep scans
    - Results: Appear in GitHub Security tab with detailed remediation guidance
 
-2. **Dependabot**: Automated dependency management that keeps dependencies secure
+2. **DevSkim**: Microsoft's lightweight security linter for real-time pattern detection
+   - Detects: Common security anti-patterns across multiple languages
+   - Runs: On every push and pull request
+   - Coverage: Regex-based pattern matching for quick security checks
+   - Complements: CodeQL's deep analysis with fast pattern-based scanning
+
+3. **Dependabot**: Automated dependency management that keeps dependencies secure
    - Monitors: All dependencies for known vulnerabilities
    - Creates: Automatic pull requests to update vulnerable packages
    - Groups: Related updates to reduce PR noise
    - Supports: GitHub Actions and npm dependencies (Deno/JSR support pending)
 
-3. **Dependency Review**: Pull request protection that prevents introducing vulnerable dependencies
+4. **Dependency Review**: Pull request protection that prevents introducing vulnerable dependencies
    - Blocks: PRs containing high-severity vulnerabilities
    - Shows: License changes and vulnerability details
    - Integrates: Directly into PR checks for immediate feedback
 
-4. **Secret Scanning**: Detects and prevents accidental exposure of sensitive data
+5. **Secret Scanning**: Detects and prevents accidental exposure of sensitive data
    - Scans: All commits for API keys, tokens, and credentials
    - Alerts: Repository admins when secrets are detected
    - Push Protection: Can block commits containing secrets (optional)
