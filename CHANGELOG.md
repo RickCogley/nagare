@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.2] - 2025-07-01
+
+### Changed
+- add missing DevSkim suppression for test SHA (8af84ba)
+- add DevSkim suppressions for false positives (75f6d26)
+- exclude generated docs from CodeQL scanning (3d9fc92)
+- format generated files after release (d0fc09e)
+
+### Fixed
+- correct DevSkim suppression comment placement (8ed81ff)
+- address high-severity CodeQL security alerts (2fad58b)
+
 ## [1.7.1] - 2025-07-01
 
 ### Fixed
