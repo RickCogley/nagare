@@ -3,11 +3,11 @@
 /**
  * @fileoverview Check SARIF security scan results from DevSkim and other tools
  * @module check-sarif
- * 
+ *
  * @description
  * Downloads and analyzes SARIF files from GitHub Actions artifacts.
  * Can be used in CI/CD pipelines or locally to review security findings.
- * 
+ *
  * Usage:
  *   deno run --allow-read --allow-write --allow-net scripts/check-sarif.ts
  *   deno run --allow-read scripts/check-sarif.ts path/to/file.sarif
@@ -91,7 +91,7 @@ function analyzeSarifResults(sarif: SarifLog): {
 
     for (const result of run.results) {
       const level = result.level || "warning";
-      
+
       switch (level) {
         case "error":
           errors.push(result);
@@ -106,7 +106,8 @@ function analyzeSarifResults(sarif: SarifLog): {
     }
   }
 
-  const summary = `Found ${errors.length} errors, ${warnings.length} warnings, ${notes.length} notes`;
+  const summary =
+    `Found ${errors.length} errors, ${warnings.length} warnings, ${notes.length} notes`;
   return { errors, warnings, notes, summary };
 }
 
@@ -145,7 +146,7 @@ function displayResult(result: SarifResult, level: string): void {
   const location = result.locations?.[0]?.physicalLocation;
   const file = location?.artifactLocation?.uri || "unknown";
   const line = location?.region?.startLine || "?";
-  
+
   console.log(`\n  ${level.toUpperCase()}: ${result.ruleId}`);
   console.log(`  File: ${file}:${line}`);
   console.log(`  Message: ${result.message.text}`);
@@ -163,9 +164,7 @@ function hasSecurityIssues(results: ReturnType<typeof analyzeSarifResults>): boo
     "DS149435", // Command injection
   ];
 
-  return results.errors.some(error => 
-    criticalRules.includes(error.ruleId)
-  );
+  return results.errors.some((error) => criticalRules.includes(error.ruleId));
 }
 
 /**
@@ -211,7 +210,7 @@ async function main() {
     // Parse and analyze SARIF file
     const sarif = await parseSarifFile(sarifPath);
     const results = analyzeSarifResults(sarif);
-    
+
     // Display results
     displayResults(results);
 

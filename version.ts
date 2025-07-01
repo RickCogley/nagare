@@ -34,13 +34,13 @@ export const RELEASE_NOTES = {
     "add missing DevSkim suppression for test SHA (8af84ba)",
     "add DevSkim suppressions for false positives (75f6d26)",
     "exclude generated docs from CodeQL scanning (3d9fc92)",
-    "format generated files after release (d0fc09e)"
+    "format generated files after release (d0fc09e)",
   ],
   "deprecated": [],
   "removed": [],
   "fixed": [
     "correct DevSkim suppression comment placement (8ed81ff)",
-    "address high-severity CodeQL security alerts (2fad58b)"
+    "address high-severity CodeQL security alerts (2fad58b)",
   ],
-  "security": []
+  "security": [],
 } as const;

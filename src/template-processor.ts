@@ -90,7 +90,7 @@ export class TemplateProcessor {
     this.vento.filters.safeString = (str: string) => {
       if (!str) return "";
       // First escape backslashes, then quotes to ensure proper JSON escaping
-      return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+      return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
     };
   }
 

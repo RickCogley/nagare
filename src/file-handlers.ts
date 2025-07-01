@@ -322,8 +322,10 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
     detector: (path: string): boolean => path.endsWith(".md") || path.endsWith(".markdown"),
     patterns: {
       // Version badges - more specific patterns to reduce false positives
-      shieldsBadge: /(?:https?:\/\/)?shields\.io\/badge\/version-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g,
-      imgShieldsBadge: /(?:https?:\/\/)?img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g,
+      shieldsBadge:
+        /(?:https?:\/\/)?shields\.io\/badge\/version-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g,
+      imgShieldsBadge:
+        /(?:https?:\/\/)?img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g,
       npmBadge: /npm\/v\/([^/\s)]+)/g,
 
       // Direct version references

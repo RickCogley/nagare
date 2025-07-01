@@ -3,15 +3,15 @@ name: "CodeQL config"
 # Paths to exclude from analysis
 paths-ignore:
   - docs/
-  - '**/*.min.js'
-  - '**/vendor/**'
-  - '**/node_modules/**'
-  - '**/*.generated.*'
+  - "**/*.min.js"
+  - "**/vendor/**"
+  - "**/node_modules/**"
+  - "**/*.generated.*"
 
 # Additional query filters
 query-filters:
   - exclude:
-      tags: 
+      tags:
         - "experimental"
         - "deprecated"
 
