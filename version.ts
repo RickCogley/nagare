@@ -35,7 +35,7 @@ export const RELEASE_NOTES = {
   "removed": [],
   "fixed": [
     "use safe filter for numeric version components in templates (30ee84c)",
-    "correct syntax error in version.ts after v1.7.0 release (92389a4)"
+    "correct syntax error in version.ts after v1.7.0 release (92389a4)",
   ],
-  "security": []
+  "security": [],
 } as const;

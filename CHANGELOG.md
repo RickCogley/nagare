@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.7.1] - 2025-07-01
 
 ### Fixed
+
 - use safe filter for numeric version components in templates (30ee84c)
 - correct syntax error in version.ts after v1.7.0 release (92389a4)
 
