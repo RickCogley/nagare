@@ -5,7 +5,7 @@
  *
  * | **Nagare** | **Specifications** |
  * | :------- | :------- |
- * | Version | 1.5.4 |
+ * | Version | 1.5.5 |
  * | Repository | {@link https://github.com/RickCogley/nagare} |
  * | JSR Package | {@link https://jsr.io/@rick/nagare} |
  * | Documentation | {@link https://nagare.esolia.deno.net} |

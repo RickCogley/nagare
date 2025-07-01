@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.5] - 2025-07-01
+
+### Changed
+- format generated files after release (0e29070)
+
+### Fixed
+- correct Vento filter pipe syntax in templates (281616d)
+- replace any type with TemplateData in updateFn (44880d6)
+
 ## [1.5.4] - 2025-06-30
 
 ### Changed
