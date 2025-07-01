@@ -52,7 +52,10 @@
     "docs": "deno doc --html --name=\"Nagare (流れ) - Deno Release Management Library\" --output=./docs ./mod.ts",
     "docs:enhance": "deno run --allow-read --allow-write enhance-docs.ts",
     "docs:build": "deno task docs && deno task docs:enhance",
-    "docs:serve": "deno run --allow-net --allow-read jsr:@std/http/file-server --host 0.0.0.0 --port 8080 ./docs"
+    "docs:serve": "deno run --allow-net --allow-read jsr:@std/http/file-server --host 0.0.0.0 --port 8080 ./docs",
+
+    "security:check-sarif": "deno run --allow-read scripts/check-sarif.ts",
+    "security:check-patterns": "deno run --allow-read scripts/check-patterns.ts"
   },
 
   "imports": {

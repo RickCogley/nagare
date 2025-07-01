@@ -321,9 +321,9 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
     name: "Markdown Documentation",
     detector: (path: string): boolean => path.endsWith(".md") || path.endsWith(".markdown"),
     patterns: {
-      // Version badges
-      shieldsBadge: /shields\.io\/badge\/version-([^-]+)-/g,
-      imgShieldsBadge: /img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-/g,
+      // Version badges - more specific patterns to reduce false positives
+      shieldsBadge: /(?:https?:\/\/)?shields\.io\/badge\/version-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g,
+      imgShieldsBadge: /(?:https?:\/\/)?img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g,
       npmBadge: /npm\/v\/([^/\s)]+)/g,
 
       // Direct version references
@@ -337,15 +337,15 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
     replacer: (_content: string, _key: string, _oldValue: string, newValue: string): string => {
       let result = _content;
 
-      // Replace all version references
+      // Replace all version references - match the more specific patterns
       result = result.replace(
-        /shields\.io\/badge\/version-([^-]+)-/g,
-        `shields.io/badge/version-${newValue}-`,
+        /(?:https?:\/\/)?shields\.io\/badge\/version-([^-]+)-(blue|green|red|yellow|orange|brightgreen|lightgrey)/g,
+        (match, _version, color) => match.replace(/version-[^-]+-/, `version-${newValue}-`),
       );
 
       result = result.replace(
-        /img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-/g,
-        `img.shields.io/badge/version-${newValue}-`,
+        /(?:https?:\/\/)?img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-(blue|green|red|yellow|orange|brightgreen|lightgrey)/g,
+        (match, _version, color) => match.replace(/v(?:ersion)?-[^-]+-/, `version-${newValue}-`),
       );
 
       // Update version headers
@@ -933,12 +933,12 @@ export class PatternBuilder {
    */
   static versionBadge(badgeService: "shields.io" | "img.shields.io" | "any" = "any"): RegExp {
     if (badgeService === "shields.io") {
-      return /shields\.io\/badge\/version-([^-]+)-/g;
+      return /(?:https?:\/\/)?shields\.io\/badge\/version-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g;
     }
     if (badgeService === "img.shields.io") {
-      return /img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-/g;
+      return /(?:https?:\/\/)?img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g;
     }
-    // Match any common badge pattern
-    return /badge\/v(?:ersion)?[\-\/]([^\-\/\s]+)[\-\/]/g;
+    // Match any common badge pattern with color suffix
+    return /badge\/v(?:ersion)?[\-\/]([^\-\/\s]+)[\-\/](?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g;
   }
 }

@@ -86,9 +86,11 @@ export class TemplateProcessor {
       return hash ? hash.substring(0, length) : "unknown";
     };
 
-    // Safe string filter (escapes quotes for JSON)
+    // Safe string filter (escapes backslashes and quotes for JSON)
     this.vento.filters.safeString = (str: string) => {
-      return str ? str.replace(/"/g, '\\"') : "";
+      if (!str) return "";
+      // First escape backslashes, then quotes to ensure proper JSON escaping
+      return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
     };
   }
 
