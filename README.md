@@ -16,6 +16,7 @@ changelog generation, and GitHub releases using conventional commits and semanti
 - **🐙 GitHub Releases** - Automatic GitHub release creation
 - **🤖 Intelligent File Handlers** - Automatic version updates for common file types (v1.1.0+)
 - **📄 Template System** - Flexible version file templates (TypeScript, JSON, YAML, custom)
+- **✨ Extensible Version Files** - Add custom exports without full templates (v1.8.0+)
 - **🔄 Rollback Support** - Safe rollback of failed releases
 - **📚 Documentation** - Optional deno doc generation
 - **⚙️ Highly Configurable** - Extensive configuration options
@@ -204,6 +205,49 @@ export default {
 } as NagareConfig;
 ```
 
+### Extending Version Files (NEW in v1.8.0)
+
+Add custom exports to your version file without writing a full template:
+
+```typescript
+export default {
+  project: {
+    name: "My App",
+    repository: "https://github.com/user/my-app",
+  },
+
+  versionFile: {
+    path: "./version.ts",
+    template: "typescript",
+    
+    // Add custom exports to the generated file
+    additionalExports: [
+      {
+        name: "CONFIG",
+        type: "const",
+        value: { apiUrl: "https://api.example.com", timeout: 5000 },
+        description: "Application configuration",
+        asConst: true,
+      },
+      {
+        name: "Utils",
+        type: "class",
+        content: `
+  static getFullVersion(): string {
+    return \`v\${VERSION} (\${BUILD_INFO.gitCommit})\`;
+  }`,
+      },
+    ],
+    
+    // Or add raw content
+    extend: {
+      prepend: "// Auto-generated file\n\n",
+      append: "\n// End of generated content",
+    },
+  },
+};
+```
+
 ### Advanced Configuration
 
 ```typescript
@@ -211,25 +255,6 @@ export default {
   project: {
     name: "Advanced App",
     repository: "https://github.com/user/advanced-app",
-  },
-
-  versionFile: {
-    path: "./src/version.ts",
-    template: "custom",
-    customTemplate: `
-export const VERSION = "{{version}}";
-export const BUILD_INFO = {
-  buildDate: "{{buildDate}}",
-  gitCommit: "{{gitCommit}}"
-};
-export const FEATURES = {{metadata.features}};
-`,
-  },
-
-  releaseNotes: {
-    metadata: {
-      features: ["API", "Database", "Auth"],
-    },
   },
 
   updateFiles: [

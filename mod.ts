@@ -20,6 +20,7 @@
  * - **🐙 GitHub Releases** - Automatic GitHub release creation via CLI
  * - **🤖 Intelligent File Handlers** - Automatic version updates for common file types (v1.1.0+)
  * - **📄 Template System** - Flexible version file templates (TypeScript, JSON, YAML, custom)
+ * - **✨ Extensible Version Files** - Add custom exports without full templates (v1.8.0+)
  * - **🔄 Rollback Support** - Safe rollback of failed releases
  * - **🛡️ Type-Safe** - Full TypeScript support with comprehensive types
  *
@@ -103,6 +104,43 @@
  * - `fix:` → Patch version bump (1.0.0 → 1.0.1)
  * - `feat!:` or `BREAKING CHANGE:` → Major version bump (1.0.0 → 2.0.0)
  * - Other types → Patch version bump
+ *
+ * ## Extensible Version Files (v1.8.0+)
+ *
+ * Add custom exports to generated version files without writing full templates:
+ *
+ * @example Additional exports configuration
+ * ```typescript
+ * versionFile: {
+ *   path: "./version.ts",
+ *   template: "typescript",
+ *   
+ *   // Add custom exports
+ *   additionalExports: [
+ *     {
+ *       name: "API_CONFIG",
+ *       type: "const",
+ *       value: { baseUrl: "https://api.example.com", timeout: 5000 },
+ *       description: "API configuration",
+ *       asConst: true
+ *     },
+ *     {
+ *       name: "Utils",
+ *       type: "class",
+ *       content: `
+ *   static formatVersion(): string {
+ *     return \`v\${VERSION}\`;
+ *   }`
+ *     }
+ *   ],
+ *   
+ *   // Or add raw content
+ *   extend: {
+ *     prepend: "// Auto-generated file\\n\\n",
+ *     append: "\\n// End of generated content"
+ *   }
+ * }
+ * ```
  *
  * ## Advanced Usage
  *
@@ -264,6 +302,8 @@ export { BUILT_IN_HANDLERS } from "./src/file-handlers.ts";
  * Type definitions for configuration and data structures
  */
 export type {
+  /** Additional export configuration for extending version files (v1.8.0+) */
+  AdditionalExport,
   /** Mapping of conventional commit types to changelog sections */
   CommitTypeMapping,
   /** Parsed conventional commit structure */

@@ -1,0 +1,234 @@
+# Salty Upgrade Guide: Migrating to Nagare 1.8.0
+
+This guide explains how to upgrade Salty to use nagare 1.8.0's new `additionalExports` feature, which solves the version.ts overwrite issue.
+
+## Background
+
+**Problem**: When running releases, nagare regenerates version.ts which overwrites Salty's custom exports (TECH_SPECS, SECURITY_INFO, VersionUtils), causing deployment failures.
+
+**Solution**: Nagare 1.8.0 introduces `additionalExports` configuration that allows adding custom exports to the generated version file without writing a full custom template.
+
+## Migration Steps
+
+### 1. Update Nagare to 1.8.0
+
+```bash
+cd /Users/rcogley/dev/salty.esolia.pro-dd
+deno add @rick/nagare@1.8.0
+```
+
+### 2. Update nagare.config.ts
+
+Replace the current configuration with this simplified version:
+
+```typescript
+import type { NagareConfig } from "@rick/nagare/types";
+import { TemplateFormat } from "@rick/nagare/types";
+
+export default {
+  project: {
+    name: "Salty",
+    description: "Browser-Native Secure Text Encryption",
+    repository: "https://github.com/esolia/salty.esolia.pro",
+    homepage: "https://salty.esolia.pro",
+    license: "MIT",
+    author: "Rick Cogley, eSolia Inc.",
+  },
+
+  versionFile: {
+    path: "./version.ts",
+    template: TemplateFormat.TYPESCRIPT, // Use built-in template
+    
+    // Add Salty's custom exports
+    additionalExports: [
+      {
+        name: "TECH_SPECS",
+        type: "const",
+        description: "Tech specifications used by the application",
+        value: {
+          platform: "Deno Deploy",
+          runtime: "Deno",
+          cryptoFeatures: [
+            "AES-GCM-256 encryption",
+            "PBKDF2-SHA512 key derivation",
+            "600,000 iterations",
+            "basE91 encoding",
+            "Web Crypto API",
+          ],
+          securityFeatures: [
+            "Rate limiting",
+            "Input validation",
+            "Security headers",
+            "API authentication",
+            "Request size limits",
+            "Structured logging",
+            "Security event tracking",
+          ],
+          endpoints: [
+            { path: "/", description: "Japanese UI" },
+            { path: "/en/", description: "English UI" },
+            { path: "/api/encrypt", method: "POST", description: "Encrypt endpoint" },
+            { path: "/api/decrypt", method: "POST", description: "Decrypt endpoint" },
+            { path: "/health", method: "GET", description: "Health check endpoint" },
+          ],
+        },
+        asConst: true,
+      },
+      {
+        name: "SECURITY_INFO",
+        type: "const",
+        description: "Security information for the application",
+        value: {
+          rateLimiting: {
+            window: "1 hour",
+            maxRequests: 20,
+          },
+          maxPayloadSize: "1MB",
+          maxKeySize: "1KB",
+          securityHeaders: [
+            "Content-Security-Policy",
+            "Strict-Transport-Security",
+            "X-Content-Type-Options",
+            "X-Frame-Options",
+            "X-XSS-Protection",
+            "Referrer-Policy",
+          ],
+        },
+        asConst: true,
+      },
+      {
+        name: "VersionUtils",
+        type: "class",
+        description: "Version utility class",
+        content: `
+  static getExtendedVersion(): string {
+    return \`\${VERSION} (Built: \${BUILD_INFO.buildDate})\`;
+  }
+
+  static getDetailedInfo() {
+    return {
+      version: VERSION,
+      build: BUILD_INFO,
+      app: APP_INFO,
+      specs: TECH_SPECS,
+      security: SECURITY_INFO,
+    };
+  }
+
+  static isPrerelease(): boolean {
+    return BUILD_INFO.versionComponents.prerelease !== null;
+  }
+
+  static getReleaseType(): string {
+    if (this.isPrerelease()) {
+      return "prerelease";
+    }
+    return "stable";
+  }`,
+      },
+    ],
+  },
+
+  updateFiles: [
+    { path: "./deno.json" }, // Auto-detected and handled by built-in handler
+    { path: "./README.md" }, // Auto-detected and handled by built-in handler
+  ],
+
+  github: {
+    owner: "esolia",
+    repo: "salty.esolia.pro",
+    createRelease: true,
+  },
+} satisfies NagareConfig;
+```
+
+### 3. Test the Configuration
+
+First, do a dry run to verify everything works:
+
+```bash
+deno task nagare:dry
+```
+
+Check the output to ensure:
+- Version file will be generated with all custom exports
+- Files to update are detected correctly
+- Release notes look correct
+
+### 4. Run a Test Release
+
+If the dry run looks good, you can:
+
+1. Make a small commit (e.g., update README or add a comment)
+2. Run a patch release:
+   ```bash
+   deno task nagare:patch
+   ```
+
+### 5. Verify the Generated version.ts
+
+After the release, check that version.ts contains:
+- Standard exports: `VERSION`, `BUILD_INFO`, `APP_INFO`, `APP_METADATA`, `RELEASE_NOTES`
+- Custom exports: `TECH_SPECS`, `SECURITY_INFO`, `VersionUtils`
+
+The file should look like:
+
+```typescript
+/**
+ * Version information for Salty
+ * Generated by Nagare on 2025-07-01T...
+ */
+
+export const VERSION = "2.0.2"; // or whatever version
+// ... standard exports ...
+
+// Additional exports configured in nagare.config.ts
+
+/** Tech specifications used by the application */
+export const TECH_SPECS = {
+  // ... your tech specs ...
+} as const;
+
+/** Security information for the application */
+export const SECURITY_INFO = {
+  // ... your security info ...
+} as const;
+
+/** Version utility class */
+export class VersionUtils {
+  // ... your class methods ...
+}
+```
+
+## Benefits of This Approach
+
+1. **No More Overwrites**: Custom exports are preserved during releases
+2. **Simpler Configuration**: No need to maintain a full Vento template
+3. **Type Safety**: Full TypeScript support with proper types
+4. **Easier Updates**: When nagare's built-in template improves, you get the benefits automatically
+5. **Clear Separation**: Your custom code is clearly marked as additional exports
+
+## Troubleshooting
+
+If you encounter issues:
+
+1. **Ensure nagare 1.8.0 is installed**: Check with `deno info @rick/nagare`
+2. **Validate syntax**: The `content` field for classes/functions should not include the export declaration
+3. **Check for conflicts**: Make sure export names don't conflict with nagare's built-in exports
+4. **Run tests**: After upgrade, run your test suite to ensure everything works
+
+## Future Maintenance
+
+With this configuration:
+- You can easily add new exports by adding to the `additionalExports` array
+- Updates to exports can be made directly in nagare.config.ts
+- No need to worry about nagare updates breaking your custom code
+
+## Files to Commit
+
+After making these changes, commit:
+1. `deno.json` (updated nagare version)
+2. `nagare.config.ts` (new configuration with additionalExports)
+3. `deno.lock` (updated dependencies)
+
+Then run a release to test the new setup!
