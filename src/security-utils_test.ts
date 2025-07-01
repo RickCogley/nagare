@@ -43,6 +43,7 @@ Deno.test("validateGitRef - invalid tags", () => {
 
 Deno.test("validateGitRef - valid commits", () => {
   assertEquals(validateGitRef("a1b2c3d", "commit"), "a1b2c3d");
+  // DevSkim: ignore DS162092 - This is a test SHA hash, not a real token
   assertEquals(validateGitRef("1234567890abcdef", "commit"), "1234567890abcdef");
   assertEquals(
     // DevSkim: ignore DS162092 - This is a test SHA hash, not a real token
