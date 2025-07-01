@@ -31,17 +31,17 @@ export const RELEASE_NOTES = {
   "date": "2025-07-01",
   "added": [
     "implement enhanced error system with actionable suggestions (729f087)",
-    "add enhanced error system for better developer experience (bff19f7)"
+    "add enhanced error system for better developer experience (bff19f7)",
   ],
   "changed": [
     "regenerate documentation with enhanced error reference (c8b629b)",
     "add helpful links to README and create scheduled actions feature request (a4d3dc5)",
     "remove redundant badge section from README (87bf00e)",
     "add comprehensive documentation for additionalExports feature (581fae7)",
-    "format generated files after release (1f7b891)"
+    "format generated files after release (1f7b891)",
   ],
   "deprecated": [],
   "removed": [],
   "fixed": [],
-  "security": []
+  "security": [],
 } as const;

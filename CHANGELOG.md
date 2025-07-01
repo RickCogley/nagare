@@ -8,10 +8,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.9.0] - 2025-07-01
 
 ### Added
+
 - implement enhanced error system with actionable suggestions (729f087)
 - add enhanced error system for better developer experience (bff19f7)
 
 ### Changed
+
 - regenerate documentation with enhanced error reference (c8b629b)
 - add helpful links to README and create scheduled actions feature request (a4d3dc5)
 - remove redundant badge section from README (87bf00e)
