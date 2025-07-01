@@ -237,12 +237,45 @@ For detailed analysis, see [PROGRAMMING-PARADIGM.md](./PROGRAMMING-PARADIGM.md)
    detail so that a person reading in the future, will be able to understand what the commit was.
    **InfoSec Impact**: Include an InfoSec comment in commit messages when changes have security
    implications. Format: "InfoSec: [brief description of security impact/consideration]"
-
    Examples:
    - `feat: add input validation to CLI args\n\nInfoSec: Prevents injection attacks through command line parameters`
    - `fix: update GitHub API token handling\n\nInfoSec: Improves credential security and reduces token exposure risk`
    - `refactor: simplify file processing logic\n\nInfoSec: No security impact - code organization only`
    - `docs: update README installation steps` (no InfoSec comment needed)
+
+### Vento Template Engine Guidelines
+
+Nagare uses Vento for template processing. Critical things to remember:
+
+1. **Filter Syntax**: Use `|>` (F# pipeline), NOT single pipe `|`
+   - ✅ Correct: `{{ value |> jsonStringify }}`
+   - ❌ Wrong: `{{ value | jsonStringify }}`
+
+2. **Auto-escaping**: When `autoescape: true` (default), use `|> safe` for raw output
+   - JSON output: `{{ data |> jsonStringify |> safe }}`
+   - HTML content: `{{ htmlContent |> safe }}`
+
+3. **Whitespace Control**: Be careful with trim markers
+   - `{{-` removes whitespace before, including newlines
+   - `-}}` removes whitespace after
+   - Can cause issues like `prerelease:null` instead of `prerelease: null`
+
+4. **Null/Undefined Handling**: 
+   - Simple conditionals work: `{{ if metadata }}...{{ /if }}`
+   - Property access needs care: `metadata.property` throws if metadata is undefined
+   - Use explicit null checks in templates
+
+5. **Common Patterns**:
+   ```vento
+   {{- if value }}
+   {{ value |> jsonStringify |> safe }}
+   {{- else }}
+   null
+   {{- /if }}
+   ```
+
+See [plans/vento-feedback.md](./plans/vento-feedback.md) for detailed feedback and examples.
+
 9. **Documentation Updates**: After functionality is added, update the markdown documentation
    accordingly
 10. **Git Merging**: When merging master changes to an active branch, make sure both branches are

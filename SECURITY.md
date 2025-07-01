@@ -67,7 +67,11 @@ All dependencies are:
 ### Known Security Considerations
 
 1. **Custom Templates**: Custom Vento templates can execute code. Review all custom templates before
-   use.
+   use. Key security notes:
+   - Templates with `autoescape: true` (default) automatically escape HTML entities
+   - Use `|> safe` filter only when you trust the content source
+   - Always validate template data before processing
+   - See [CLAUDE.md](./CLAUDE.md#vento-template-engine-guidelines) for proper Vento usage
 
 2. **Command Execution**: While we use Deno's secure Command API, always validate configuration
    inputs.
