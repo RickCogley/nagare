@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2025-07-01
+
+### Added
+- add comprehensive GitHub security integrations (1bdce57)
+- implement comprehensive security enhancements (e105e6b)
+
+### Changed
+- move GitHub security guide to plans and expand security feature docs (71a5d81)
+- clarify security roadmap and SAST/DAST status (c703327)
+- update code of conduct (62c81ff)
+- rename programming paradigm file (d94b38b)
+- claude settings (b0643c1)
+- add CODE_OF_CONDUCT.md and update SECURITY.md (a115d1b)
+- format generated files after release (e8299e7)
+
 ## [1.5.6] - 2025-07-01
 
 ### Changed
