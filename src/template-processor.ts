@@ -5,7 +5,7 @@
  * @since 0.9.0
  */
 
-import type { NagareConfig, TemplateData } from "../types.ts";
+import type { AdditionalExport, NagareConfig, TemplateData } from "../types.ts";
 import { BUILT_IN_TEMPLATES, TemplateFormat } from "../config.ts";
 import { createSecurityLog, sanitizeErrorMessage } from "./security-utils.ts";
 import { Logger } from "./logger.ts";
@@ -218,7 +218,7 @@ export class TemplateProcessor {
    * Generate version file content using built-in templates
    *
    * Uses the configured template format to generate version file content.
-   * Delegates to processTemplate for custom templates.
+   * Supports extending templates with additional exports and custom content.
    *
    * @param data - Template data for version file generation
    * @returns Generated version file content
@@ -226,28 +226,154 @@ export class TemplateProcessor {
    *
    * @example
    * ```typescript
-   * // For built-in typescript template
+   * // For built-in typescript template with extensions
    * const content = await processor.generateVersionFile(templateData);
    * ```
    */
   async generateVersionFile(data: TemplateData): Promise<string> {
-    const templateFormat = this.config.versionFile.template;
+    const versionFile = this.config.versionFile;
+    const templateFormat = versionFile.template;
+    let content: string;
 
     if (templateFormat === TemplateFormat.CUSTOM) {
       // For custom templates, validate and use the custom template
-      if (!this.config.versionFile.customTemplate) {
+      if (!versionFile.customTemplate) {
         throw new Error("Custom template specified but no customTemplate provided");
       }
-      return await this.processTemplate(this.config.versionFile.customTemplate, data);
+      content = await this.processTemplate(versionFile.customTemplate, data);
+    } else {
+      const template = BUILT_IN_TEMPLATES[templateFormat];
+
+      if (!template) {
+        throw new Error(`Unknown template format: ${templateFormat}`);
+      }
+
+      content = await this.processTemplate(template, data);
     }
 
-    const template = BUILT_IN_TEMPLATES[templateFormat];
-
-    if (!template) {
-      throw new Error(`Unknown template format: ${templateFormat}`);
+    // Apply prepend content if specified
+    if (versionFile.extend?.prepend) {
+      content = versionFile.extend.prepend + content;
     }
 
-    return await this.processTemplate(template, data);
+    // Add additional exports if specified
+    if (versionFile.additionalExports && versionFile.additionalExports.length > 0) {
+      const additionalContent = this.generateAdditionalExports(
+        versionFile.additionalExports,
+        templateFormat,
+      );
+      content += "\n" + additionalContent;
+    }
+
+    // Apply append content if specified
+    if (versionFile.extend?.append) {
+      content += versionFile.extend.append;
+    }
+
+    return content;
+  }
+
+  /**
+   * Generate code for additional exports
+   *
+   * Converts AdditionalExport configurations into actual code based on the
+   * template format (TypeScript, JavaScript, JSON, etc.).
+   *
+   * @param exports - Array of additional export configurations
+   * @param format - Template format to determine syntax
+   * @returns Generated code for additional exports
+   * @private
+   */
+  private generateAdditionalExports(
+    exports: AdditionalExport[],
+    format: TemplateFormat,
+  ): string {
+    if (format === TemplateFormat.JSON || format === TemplateFormat.YAML) {
+      // For JSON/YAML, we can't add exports in the traditional sense
+      this.logger.warn(
+        "Additional exports are not supported for JSON/YAML templates. " +
+          "Consider using a TypeScript or custom template.",
+      );
+      return "";
+    }
+
+    const lines: string[] = [];
+
+    // Add a separator comment
+    lines.push("\n// Additional exports configured in nagare.config.ts");
+
+    for (const exp of exports) {
+      // Validate export name
+      if (!/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(exp.name)) {
+        throw new Error(`Invalid export name: ${exp.name}`);
+      }
+
+      // Add description as JSDoc if provided
+      if (exp.description) {
+        lines.push(`\n/** ${exp.description} */`);
+      }
+
+      // Generate the export based on type
+      switch (exp.type) {
+        case "const":
+        case "let":
+        case "var": {
+          if (exp.value === undefined) {
+            throw new Error(`Export ${exp.name} of type ${exp.type} requires a value`);
+          }
+          const valueStr = typeof exp.value === "string"
+            ? `"${exp.value}"`
+            : JSON.stringify(exp.value, null, 2);
+          const asConst = exp.asConst ? " as const" : "";
+          const defaultExport = exp.isDefault ? "default " : "";
+          lines.push(`export ${defaultExport}${exp.type} ${exp.name} = ${valueStr}${asConst};`);
+          break;
+        }
+
+        case "class": {
+          if (!exp.content) {
+            throw new Error(`Export ${exp.name} of type class requires content`);
+          }
+          const defaultExport = exp.isDefault ? "default " : "";
+          lines.push(`export ${defaultExport}class ${exp.name} {${exp.content}\n}`);
+          break;
+        }
+
+        case "function": {
+          if (!exp.content) {
+            throw new Error(`Export ${exp.name} of type function requires content`);
+          }
+          const asyncKeyword = exp.async ? "async " : "";
+          const defaultExport = exp.isDefault ? "default " : "";
+          lines.push(`export ${defaultExport}${asyncKeyword}function ${exp.name}${exp.content}`);
+          break;
+        }
+
+        case "interface":
+        case "type": {
+          if (!exp.content) {
+            throw new Error(`Export ${exp.name} of type ${exp.type} requires content`);
+          }
+          // TypeScript types don't support default export directly
+          const equals = exp.type === "type" ? " =" : "";
+          lines.push(`export ${exp.type} ${exp.name}${equals} ${exp.content}`);
+          break;
+        }
+
+        case "enum": {
+          if (!exp.content) {
+            throw new Error(`Export ${exp.name} of type enum requires content`);
+          }
+          lines.push(`export enum ${exp.name} {${exp.content}\n}`);
+          break;
+        }
+
+        default:
+          throw new Error(`Unsupported export type: ${(exp as any).type}`);
+      }
+    }
+
+    return lines.join("\n");
   }
 
   /**

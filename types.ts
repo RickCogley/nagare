@@ -157,6 +157,80 @@ export interface NagareConfig {
 }
 
 /**
+ * Additional export configuration for version files
+ *
+ * @description Define additional constants, classes, functions, or types to be included
+ * in generated version files. Supports various export types with TypeScript compatibility.
+ *
+ * @example
+ * ```typescript
+ * const additionalExport: AdditionalExport = {
+ *   name: "CONFIG",
+ *   type: "const",
+ *   value: { apiUrl: "https://api.example.com", timeout: 5000 },
+ *   description: "Application configuration",
+ *   asConst: true
+ * };
+ * ```
+ */
+export interface AdditionalExport {
+  /** Export name (must be a valid JavaScript identifier) */
+  name: string;
+
+  /** Export type */
+  type: "const" | "let" | "var" | "class" | "function" | "interface" | "type" | "enum";
+
+  /**
+   * The content of the export (for class, function, interface, type, enum)
+   *
+   * @description For complex types like classes and functions, provide the body content.
+   * The export declaration will be automatically generated based on the type.
+   *
+   * @example
+   * ```typescript
+   * // For a class:
+   * content: `
+   *   static getVersion(): string {
+   *     return VERSION;
+   *   }
+   * `
+   *
+   * // For a function:
+   * content: `(): string {
+   *   return \`v\${VERSION}\`;
+   * }`
+   * ```
+   */
+  content?: string;
+
+  /**
+   * The value of the export (for const, let, var)
+   *
+   * @description For simple value exports, provide the JavaScript value.
+   * Objects and arrays will be JSON stringified automatically.
+   *
+   * @example
+   * ```typescript
+   * value: { features: ["auth", "api"], version: 2 }
+   * // Results in: export const NAME = { features: ["auth", "api"], version: 2 };
+   * ```
+   */
+  value?: unknown;
+
+  /** Optional JSDoc comment description */
+  description?: string;
+
+  /** Whether to add "as const" assertion (for TypeScript const exports) */
+  asConst?: boolean;
+
+  /** Whether this export is async (for functions) */
+  async?: boolean;
+
+  /** Whether this export is default */
+  isDefault?: boolean;
+}
+
+/**
  * Version file configuration for template-based version file generation
  *
  * @description Defines how version files are generated using either built-in
@@ -213,6 +287,58 @@ export interface VersionFile {
     buildDate?: RegExp;
     gitCommit?: RegExp;
     [key: string]: RegExp | undefined;
+  };
+
+  /**
+   * Additional exports to include in the generated version file
+   *
+   * @description Define additional constants, classes, functions, or types to be included
+   * in the generated version file. This allows extending the built-in templates with
+   * project-specific exports without writing a full custom template.
+   *
+   * @example
+   * ```typescript
+   * additionalExports: [
+   *   {
+   *     name: "API_ENDPOINTS",
+   *     type: "const",
+   *     value: { users: "/api/users", data: "/api/data" },
+   *     description: "Available API endpoints"
+   *   },
+   *   {
+   *     name: "VersionUtils",
+   *     type: "class",
+   *     content: `
+   *       static getFullVersion(): string {
+   *         return \`\${VERSION} (\${BUILD_INFO.gitCommit})\`;
+   *       }
+   *     `
+   *   }
+   * ]
+   * ```
+   */
+  additionalExports?: AdditionalExport[];
+
+  /**
+   * Extend the template with additional content
+   *
+   * @description Advanced option to prepend or append raw content to the generated file.
+   * Useful for adding imports, comments, or complex code that doesn't fit the
+   * additionalExports structure.
+   *
+   * @example
+   * ```typescript
+   * extend: {
+   *   prepend: "// This file is auto-generated, do not edit manually\n",
+   *   append: "\n// End of generated content"
+   * }
+   * ```
+   */
+  extend?: {
+    /** Content to add at the beginning of the file */
+    prepend?: string;
+    /** Content to add at the end of the file */
+    append?: string;
   };
 }
 
