@@ -1,6 +1,6 @@
 {
   "name": "@rick/nagare",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "description": "Nagare (流れ) is a comprehensive release management library for Deno with conventional commits and semantic versioning support",
   "license": "MIT",
   "repository": {
