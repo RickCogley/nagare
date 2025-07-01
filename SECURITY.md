@@ -64,6 +64,34 @@ All dependencies are:
 - Version-pinned with integrity checking
 - Regularly updated for security patches
 
+### GitHub Security Features
+
+Nagare leverages GitHub's comprehensive security platform to maintain code quality and prevent vulnerabilities:
+
+1. **CodeQL Analysis**: Advanced semantic code analysis that automatically scans for security vulnerabilities
+   - Detects: SQL injection, XSS, path traversal, insecure data flow, and more
+   - Runs: On every push, pull request, and weekly deep scans
+   - Results: Appear in GitHub Security tab with detailed remediation guidance
+
+2. **Dependabot**: Automated dependency management that keeps dependencies secure
+   - Monitors: All dependencies for known vulnerabilities
+   - Creates: Automatic pull requests to update vulnerable packages
+   - Groups: Related updates to reduce PR noise
+   - Supports: GitHub Actions and npm dependencies (Deno/JSR support pending)
+
+3. **Dependency Review**: Pull request protection that prevents introducing vulnerable dependencies
+   - Blocks: PRs containing high-severity vulnerabilities
+   - Shows: License changes and vulnerability details
+   - Integrates: Directly into PR checks for immediate feedback
+
+4. **Secret Scanning**: Detects and prevents accidental exposure of sensitive data
+   - Scans: All commits for API keys, tokens, and credentials
+   - Alerts: Repository admins when secrets are detected
+   - Push Protection: Can block commits containing secrets (optional)
+   - Partners: Works with service providers to revoke exposed credentials
+
+All these features are **free for public repositories** and provide enterprise-grade security monitoring.
+
 ### Known Security Considerations
 
 1. **Custom Templates**: Custom Vento templates can execute code. Review all custom templates before

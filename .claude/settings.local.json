@@ -11,7 +11,8 @@
       "Bash(deno task:*)",
       "Bash(find:*)",
       "Bash(deno run:*)",
-      "WebFetch(domain:www.contributor-covenant.org)"
+      "WebFetch(domain:www.contributor-covenant.org)",
+      "Bash(deno eval:*)"
     ],
     "deny": []
   }
