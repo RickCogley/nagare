@@ -298,7 +298,7 @@ export const BUILD_INFO = {
     major: {{ versionComponents.major }},
     minor: {{ versionComponents.minor }},
     patch: {{ versionComponents.patch }},
-    prerelease: {{- if versionComponents.prerelease }}{{ versionComponents.prerelease |> jsonStringify }}{{- else }}null{{- /if }},
+    prerelease: {{ if versionComponents.prerelease }}{{ versionComponents.prerelease |> jsonStringify |> safe }}{{ else }}null{{ /if }},
   },
 } as const;
 
@@ -318,13 +318,13 @@ export const APP_INFO = {
 } as const;
 
 {{- if metadata }}
-export const APP_METADATA = {{ metadata |> jsonStringify }} as const;
+export const APP_METADATA = {{ metadata |> jsonStringify |> safe }} as const;
 {{- else }}
 export const APP_METADATA = {} as const;
 {{- /if }}
 
 {{- if releaseNotes }}
-export const RELEASE_NOTES = {{ releaseNotes |> jsonStringify }} as const;
+export const RELEASE_NOTES = {{ releaseNotes |> jsonStringify |> safe }} as const;
 {{- else }}
 export const RELEASE_NOTES = {} as const;
 {{- /if }}
@@ -355,7 +355,7 @@ export const JSON_TEMPLATE: string = `{
       "major": {{ versionComponents.major }},
       "minor": {{ versionComponents.minor }},
       "patch": {{ versionComponents.patch }},
-      "prerelease": {{ versionComponents.prerelease |> jsonStringify }}
+      "prerelease": {{ versionComponents.prerelease |> jsonStringify |> safe }}
     }
   },
   "appInfo": {
@@ -366,8 +366,8 @@ export const JSON_TEMPLATE: string = `{
     "homepage": "{{ project.homepage }}"{{- /if }}{{- if project.license }},
     "license": "{{ project.license }}"{{- /if }}
   }{{- if metadata }},
-  "metadata": {{ metadata |> jsonStringify }}{{- /if }},
-  "releaseNotes": {{ releaseNotes |> jsonStringify }}
+  "metadata": {{ metadata |> jsonStringify |> safe }}{{- /if }},
+  "releaseNotes": {{ releaseNotes |> jsonStringify |> safe }}
 }`;
 
 /**
@@ -393,7 +393,7 @@ buildInfo:
     major: {{ versionComponents.major }}
     minor: {{ versionComponents.minor }}
     patch: {{ versionComponents.patch }}
-    prerelease: {{ versionComponents.prerelease |> jsonStringify }}
+    prerelease: {{ versionComponents.prerelease |> jsonStringify |> safe }}
 appInfo:
   name: "{{ project.name }}"
   description: "{{ project.description }}"
@@ -408,9 +408,9 @@ appInfo:
   license: "{{ project.license }}"
   {{- /if }}
 {{- if metadata }}
-metadata: {{ metadata |> jsonStringify }}
+metadata: {{ metadata |> jsonStringify |> safe }}
 {{- /if }}
-releaseNotes: {{ releaseNotes |> jsonStringify }}
+releaseNotes: {{ releaseNotes |> jsonStringify |> safe }}
 `;
 
 /**

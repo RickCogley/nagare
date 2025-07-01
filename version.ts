@@ -13,7 +13,7 @@ export const BUILD_INFO = {
     major: 1,
     minor: 5,
     patch: 5,
-    prerelease:null,
+    prerelease: null,
   },
 } as const;
 
@@ -27,17 +27,17 @@ export const APP_INFO = {
 } as const;
 export const APP_METADATA = {} as const;
 export const RELEASE_NOTES = {
-  &quot;version&quot;: &quot;1.5.5&quot;,
-  &quot;date&quot;: &quot;2025-07-01&quot;,
-  &quot;added&quot;: [],
-  &quot;changed&quot;: [
-    &quot;format generated files after release (0e29070)&quot;
+  "version": "1.5.5",
+  "date": "2025-07-01",
+  "added": [],
+  "changed": [
+    "format generated files after release (0e29070)"
   ],
-  &quot;deprecated&quot;: [],
-  &quot;removed&quot;: [],
-  &quot;fixed&quot;: [
-    &quot;correct Vento filter pipe syntax in templates (281616d)&quot;,
-    &quot;replace any type with TemplateData in updateFn (44880d6)&quot;
+  "deprecated": [],
+  "removed": [],
+  "fixed": [
+    "correct Vento filter pipe syntax in templates (281616d)",
+    "replace any type with TemplateData in updateFn (44880d6)"
   ],
-  &quot;security&quot;: []
+  "security": []
 } as const;
