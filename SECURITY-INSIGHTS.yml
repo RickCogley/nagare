@@ -1,0 +1,46 @@
+# Security Insights Configuration
+# This file helps GitHub understand your project's security practices
+# https://github.com/ossf/security-insights-spec
+
+header:
+  schema-version: 1.0.0
+  last-updated: 2025-01-01
+  last-reviewed: 2025-01-01
+  project-url: https://github.com/RickCogley/nagare
+  project-release: 1.6.0
+  changelog: https://github.com/RickCogley/nagare/blob/main/CHANGELOG.md
+  license: https://github.com/RickCogley/nagare/blob/main/LICENSE
+
+project-lifecycle:
+  status: active
+  roadmap: https://github.com/RickCogley/nagare/blob/main/SECURITY.md
+  
+contribution-policy:
+  accepts-pull-requests: true
+  accepts-automated-pull-requests: true
+  code-of-conduct: https://github.com/RickCogley/nagare/blob/main/CODE_OF_CONDUCT.md
+  
+distribution-points:
+  - https://jsr.io/@rick/nagare
+  - https://github.com/RickCogley/nagare
+
+security-artifacts:
+  self-assessment:
+    publication-date: 2025-01-01
+    publication-url: https://github.com/RickCogley/nagare/blob/main/SECURITY.md
+    
+security-contacts:
+  - type: email
+    value: rick.cogley@esolia.co.jp
+    
+vulnerability-reporting:
+  accepts-vulnerability-reports: true
+  email-contact: rick.cogley@esolia.co.jp
+  security-policy: https://github.com/RickCogley/nagare/blob/main/SECURITY.md
+  
+dependencies:
+  third-party-packages: true
+  dependencies-lists:
+    - https://github.com/RickCogley/nagare/blob/main/deno.json
+  env-dependencies-policy:
+    policy-url: https://github.com/RickCogley/nagare/blob/main/SECURITY.md
