@@ -342,12 +342,12 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
       // Replace all version references - match the more specific patterns
       result = result.replace(
         /(?:https?:\/\/)?shields\.io\/badge\/version-([^-]+)-(blue|green|red|yellow|orange|brightgreen|lightgrey)/g,
-        (match, _version, color) => match.replace(/version-[^-]+-/, `version-${newValue}-`),
+        (match, _version, _color) => match.replace(/version-[^-]+-/, `version-${newValue}-`),
       );
 
       result = result.replace(
         /(?:https?:\/\/)?img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-(blue|green|red|yellow|orange|brightgreen|lightgrey)/g,
-        (match, _version, color) => match.replace(/v(?:ersion)?-[^-]+-/, `version-${newValue}-`),
+        (match, _version, _color) => match.replace(/v(?:ersion)?-[^-]+-/, `version-${newValue}-`),
       );
 
       // Update version headers
