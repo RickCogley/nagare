@@ -8,9 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.7.0] - 2025-07-01
 
 ### Added
+
 - add Microsoft DevSkim security linter workflow (ed7b90e)
 
 ### Fixed
+
 - add backtick to forbidden characters in git ref validation (9137670)
 - exclude test files and docs from secret scanning (e5348e4)
 - correct shell quoting in security workflow grep command (6e92231)
