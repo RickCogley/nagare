@@ -31,10 +31,10 @@ export const RELEASE_NOTES = {
   "date": "2025-07-01",
   "added": [],
   "changed": [
-    "add comprehensive Vento template engine documentation (966cc95)"
+    "add comprehensive Vento template engine documentation (966cc95)",
   ],
   "deprecated": [],
   "removed": [],
   "fixed": [],
-  "security": []
+  "security": [],
 } as const;

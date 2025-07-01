@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.5.6] - 2025-07-01
 
 ### Changed
+
 - add comprehensive Vento template engine documentation (966cc95)
 
 ## [1.5.5] - 2025-07-01

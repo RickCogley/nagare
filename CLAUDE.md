@@ -236,8 +236,7 @@ For detailed analysis, see [PROGRAMMING-PARADIGM.md](./PROGRAMMING-PARADIGM.md)
 8. **Git Commits**: Use "conventional commits" style to make commit messages, including sufficient
    detail so that a person reading in the future, will be able to understand what the commit was.
    **InfoSec Impact**: Include an InfoSec comment in commit messages when changes have security
-   implications. Format: "InfoSec: [brief description of security impact/consideration]"
-   Examples:
+   implications. Format: "InfoSec: [brief description of security impact/consideration]" Examples:
    - `feat: add input validation to CLI args\n\nInfoSec: Prevents injection attacks through command line parameters`
    - `fix: update GitHub API token handling\n\nInfoSec: Improves credential security and reduces token exposure risk`
    - `refactor: simplify file processing logic\n\nInfoSec: No security impact - code organization only`
@@ -260,7 +259,7 @@ Nagare uses Vento for template processing. Critical things to remember:
    - `-}}` removes whitespace after
    - Can cause issues like `prerelease:null` instead of `prerelease: null`
 
-4. **Null/Undefined Handling**: 
+4. **Null/Undefined Handling**:
    - Simple conditionals work: `{{ if metadata }}...{{ /if }}`
    - Property access needs care: `metadata.property` throws if metadata is undefined
    - Use explicit null checks in templates
