@@ -12,7 +12,7 @@ export const BUILD_INFO = {
   versionComponents: {
     major: 1,
     minor: 6,
-    patch: ,
+    patch: 0,
     prerelease: null,
   },
 } as const;
@@ -31,7 +31,7 @@ export const RELEASE_NOTES = {
   "date": "2025-07-01",
   "added": [
     "add comprehensive GitHub security integrations (1bdce57)",
-    "implement comprehensive security enhancements (e105e6b)"
+    "implement comprehensive security enhancements (e105e6b)",
   ],
   "changed": [
     "move GitHub security guide to plans and expand security feature docs (71a5d81)",
@@ -40,10 +40,10 @@ export const RELEASE_NOTES = {
     "rename programming paradigm file (d94b38b)",
     "claude settings (b0643c1)",
     "add CODE_OF_CONDUCT.md and update SECURITY.md (a115d1b)",
-    "format generated files after release (e8299e7)"
+    "format generated files after release (e8299e7)",
   ],
   "deprecated": [],
   "removed": [],
   "fixed": [],
-  "security": []
+  "security": [],
 } as const;
