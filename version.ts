@@ -30,16 +30,16 @@ export const RELEASE_NOTES = {
   "version": "1.8.0",
   "date": "2025-07-01",
   "added": [
-    "add additionalExports and extend options for version files (8911d5b)"
+    "add additionalExports and extend options for version files (8911d5b)",
   ],
   "changed": [
     "fix formatting and lint issues (00ded67)",
-    "format generated files after release (0fce404)"
+    "format generated files after release (0fce404)",
   ],
   "deprecated": [],
   "removed": [],
   "fixed": [
-    "improve template validation to avoid false positives (ca77022)"
+    "improve template validation to avoid false positives (ca77022)",
   ],
-  "security": []
+  "security": [],
 } as const;

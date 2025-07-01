@@ -8,13 +8,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.8.0] - 2025-07-01
 
 ### Added
+
 - add additionalExports and extend options for version files (8911d5b)
 
 ### Changed
+
 - fix formatting and lint issues (00ded67)
 - format generated files after release (0fce404)
 
 ### Fixed
+
 - improve template validation to avoid false positives (ca77022)
 
 ## [1.7.3] - 2025-07-01
