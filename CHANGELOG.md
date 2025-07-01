@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2025-07-01
+
+### Added
+- implement enhanced error system with actionable suggestions (729f087)
+- add enhanced error system for better developer experience (bff19f7)
+
+### Changed
+- regenerate documentation with enhanced error reference (c8b629b)
+- add helpful links to README and create scheduled actions feature request (a4d3dc5)
+- remove redundant badge section from README (87bf00e)
+- add comprehensive documentation for additionalExports feature (581fae7)
+- format generated files after release (1f7b891)
+
 ## [1.8.0] - 2025-07-01
 
 ### Added
