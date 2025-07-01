@@ -127,8 +127,17 @@ All dependencies are:
 
 ### In Progress
 
-- [ ] Enhanced input validation layer
-- [ ] Security-focused logging
+- [x] Enhanced input validation layer (v1.3.0)
+  - Added comprehensive `security-utils.ts` module
+  - Git reference validation (`validateGitRef`)
+  - File path validation with traversal prevention (`validateFilePath`)
+  - Commit message sanitization (`sanitizeCommitMessage`)
+  - Version string validation (`validateVersion`)
+  - Error message sanitization (`sanitizeErrorMessage`)
+  - CLI argument validation (`validateCliArgs`)
+- [x] Security-focused logging (v1.3.0)
+  - Added `createSecurityLog` function for audit trails
+  - Automatic sanitization of sensitive data in logs
 - [ ] Template sandboxing options
 
 ### Planned
