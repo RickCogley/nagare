@@ -4,7 +4,7 @@
  * @since 1.1.0
  */
 
-import type { NagareConfig } from "./types.ts";
+import type { NagareConfig, TemplateData } from "./types.ts";
 import { LogLevel, TemplateFormat } from "./types.ts";
 
 /**

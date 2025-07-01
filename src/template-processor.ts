@@ -368,8 +368,10 @@ export class TemplateProcessor {
     // Additional strict mode patterns
     if (sandboxMode === "strict") {
       dangerousPatterns.push(
-        // Block global object access
-        /globalThis|window|global/,
+        // Block global object access (more precise patterns)
+        /\bglobalThis\b(?!\s*:)/, // Match globalThis not followed by colon
+        /\bwindow\b(?!\s*:)/, // Match window not followed by colon
+        /\bglobal\b(?!\s*:)/, // Match global not followed by colon
         // Block constructor access that could lead to escapes
         /\.constructor/,
         /__proto__|prototype/,
