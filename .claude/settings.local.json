@@ -15,7 +15,8 @@
       "Bash(deno eval:*)",
       "Bash(gh api:*)",
       "Bash(curl:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Bash(deno doc:*)"
     ],
     "deny": []
   }
