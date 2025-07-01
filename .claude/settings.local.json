@@ -10,7 +10,8 @@
       "Bash(deno test:*)",
       "Bash(deno task:*)",
       "Bash(find:*)",
-      "Bash(deno run:*)"
+      "Bash(deno run:*)",
+      "WebFetch(domain:www.contributor-covenant.org)"
     ],
     "deny": []
   }
