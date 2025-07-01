@@ -12,6 +12,7 @@ import {
   validateGitRef,
   validateVersion,
 } from "./security-utils.ts";
+import { ErrorCodes, NagareError } from "./enhanced-error.ts";
 
 /**
  * Handles all Git-related operations for releases
@@ -300,7 +301,21 @@ export class GitOperations {
       this.logger.debug(securityLog);
     } catch (error) {
       this.logger.error("Error creating commit and tag:", error as Error);
-      throw new Error(sanitizeErrorMessage(error, false));
+      throw new NagareError(
+        "Failed to create commit and tag for release",
+        ErrorCodes.GIT_REMOTE_ERROR,
+        [
+          "Check that all files are properly saved",
+          "Ensure you have write permissions to the repository",
+          "Verify git is configured correctly: git config --list",
+          "Try manually: git add . && git commit -m 'message' && git tag -a v1.0.0 -m 'message'",
+        ],
+        {
+          version: validatedVersion,
+          tag: tagName,
+          error: sanitizeErrorMessage(error, false),
+        },
+      );
     }
   }
 
@@ -330,7 +345,22 @@ export class GitOperations {
       this.logger.debug(securityLog);
     } catch (error) {
       this.logger.error("Error pushing to remote:", error as Error);
-      throw new Error(sanitizeErrorMessage(error, false));
+      throw new NagareError(
+        "Failed to push changes to remote repository",
+        ErrorCodes.GIT_REMOTE_ERROR,
+        [
+          "Check your internet connection",
+          "Verify you have push permissions: git remote -v",
+          "Authenticate if needed: git push --set-upstream origin <branch>",
+          "Check if the remote exists: git remote show origin",
+          "If using SSH, ensure your SSH key is configured",
+        ],
+        {
+          remote,
+          error: sanitizeErrorMessage(error, false),
+          hint: "You may need to run 'git push' manually after resolving the issue",
+        },
+      );
     }
   }
 
@@ -358,7 +388,19 @@ export class GitOperations {
       this.logger.info(`Deleted local tag: ${validatedTag}`);
     } catch (error) {
       this.logger.error(`Failed to delete local tag ${validatedTag}:`, error as Error);
-      throw new Error(sanitizeErrorMessage(error, false));
+      throw new NagareError(
+        `Failed to delete local tag: ${validatedTag}`,
+        ErrorCodes.GIT_REMOTE_ERROR,
+        [
+          "Check if the tag exists: git tag -l",
+          "Ensure you have permissions to modify tags",
+          `Try manually: git tag -d ${validatedTag}`,
+        ],
+        {
+          tag: validatedTag,
+          error: sanitizeErrorMessage(error, false),
+        },
+      );
     }
   }
 
@@ -376,7 +418,21 @@ export class GitOperations {
       this.logger.info(`Deleted remote tag: ${validatedTag}`);
     } catch (error) {
       this.logger.error(`Failed to delete remote tag ${validatedTag}:`, error as Error);
-      throw new Error(sanitizeErrorMessage(error, false));
+      throw new NagareError(
+        `Failed to delete remote tag: ${validatedTag}`,
+        ErrorCodes.GIT_REMOTE_ERROR,
+        [
+          "Check if the tag exists on remote: git ls-remote --tags",
+          "Verify you have push permissions to the remote",
+          `Try manually: git push ${remote} --delete ${validatedTag}`,
+          "The tag might have already been deleted",
+        ],
+        {
+          tag: validatedTag,
+          remote,
+          error: sanitizeErrorMessage(error, false),
+        },
+      );
     }
   }
 
@@ -407,7 +463,22 @@ export class GitOperations {
       this.logger.debug(securityLog);
     } catch (error) {
       this.logger.error(`Failed to reset to ${validatedCommit}:`, error as Error);
-      throw new Error(sanitizeErrorMessage(error, false));
+      throw new NagareError(
+        `Failed to reset to commit: ${validatedCommit}`,
+        ErrorCodes.GIT_REMOTE_ERROR,
+        [
+          "Check if the commit/tag exists: git log --oneline or git tag -l",
+          "Ensure you don't have uncommitted changes if using --hard",
+          `Try manually: git reset ${hard ? "--hard" : "--soft"} ${validatedCommit}`,
+          "Use 'git reflog' to find lost commits if needed",
+        ],
+        {
+          target: validatedCommit,
+          resetType: hard ? "hard" : "soft",
+          error: sanitizeErrorMessage(error, false),
+          warning: hard ? "Hard reset will discard all uncommitted changes!" : undefined,
+        },
+      );
     }
   }
 
@@ -456,7 +527,21 @@ export class GitOperations {
 
     if (!result.success) {
       const error = new TextDecoder().decode(result.stderr);
-      throw new Error(`Command failed: ${cmd.join(" ")}\n${error}`);
+      throw new NagareError(
+        "Git command failed",
+        ErrorCodes.GIT_REMOTE_ERROR,
+        [
+          "Check if git is installed: git --version",
+          "Verify you're in a git repository: git status",
+          "Check the command output for specific errors",
+          "Ensure you have the necessary permissions",
+        ],
+        {
+          command: cmd.join(" "),
+          stderr: error,
+          hint: "See the stderr output above for the specific git error",
+        },
+      );
     }
 
     return new TextDecoder().decode(result.stdout);

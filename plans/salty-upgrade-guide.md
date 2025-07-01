@@ -1,12 +1,15 @@
 # Salty Upgrade Guide: Migrating to Nagare 1.8.0
 
-This guide explains how to upgrade Salty to use nagare 1.8.0's new `additionalExports` feature, which solves the version.ts overwrite issue.
+This guide explains how to upgrade Salty to use nagare 1.8.0's new `additionalExports` feature,
+which solves the version.ts overwrite issue.
 
 ## Background
 
-**Problem**: When running releases, nagare regenerates version.ts which overwrites Salty's custom exports (TECH_SPECS, SECURITY_INFO, VersionUtils), causing deployment failures.
+**Problem**: When running releases, nagare regenerates version.ts which overwrites Salty's custom
+exports (TECH_SPECS, SECURITY_INFO, VersionUtils), causing deployment failures.
 
-**Solution**: Nagare 1.8.0 introduces `additionalExports` configuration that allows adding custom exports to the generated version file without writing a full custom template.
+**Solution**: Nagare 1.8.0 introduces `additionalExports` configuration that allows adding custom
+exports to the generated version file without writing a full custom template.
 
 ## Migration Steps
 
@@ -38,7 +41,7 @@ export default {
   versionFile: {
     path: "./version.ts",
     template: TemplateFormat.TYPESCRIPT, // Use built-in template
-    
+
     // Add Salty's custom exports
     additionalExports: [
       {
@@ -151,6 +154,7 @@ deno task nagare:dry
 ```
 
 Check the output to ensure:
+
 - Version file will be generated with all custom exports
 - Files to update are detected correctly
 - Release notes look correct
@@ -168,6 +172,7 @@ If the dry run looks good, you can:
 ### 5. Verify the Generated version.ts
 
 After the release, check that version.ts contains:
+
 - Standard exports: `VERSION`, `BUILD_INFO`, `APP_INFO`, `APP_METADATA`, `RELEASE_NOTES`
 - Custom exports: `TECH_SPECS`, `SECURITY_INFO`, `VersionUtils`
 
@@ -213,13 +218,15 @@ export class VersionUtils {
 If you encounter issues:
 
 1. **Ensure nagare 1.8.0 is installed**: Check with `deno info @rick/nagare`
-2. **Validate syntax**: The `content` field for classes/functions should not include the export declaration
+2. **Validate syntax**: The `content` field for classes/functions should not include the export
+   declaration
 3. **Check for conflicts**: Make sure export names don't conflict with nagare's built-in exports
 4. **Run tests**: After upgrade, run your test suite to ensure everything works
 
 ## Future Maintenance
 
 With this configuration:
+
 - You can easily add new exports by adding to the `additionalExports` array
 - Updates to exports can be made directly in nagare.config.ts
 - No need to worry about nagare updates breaking your custom code
@@ -227,6 +234,7 @@ With this configuration:
 ## Files to Commit
 
 After making these changes, commit:
+
 1. `deno.json` (updated nagare version)
 2. `nagare.config.ts` (new configuration with additionalExports)
 3. `deno.lock` (updated dependencies)

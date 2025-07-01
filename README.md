@@ -5,17 +5,22 @@
 
 > Nagare means "flow" in Japanese - reflecting the smooth, automated flow from commits to releases.
 
-Nagare is a comprehensive, [Deno](https://deno.com/)-native release management library that automates version bumping,
-changelog generation, and GitHub releases using [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) and [semantic versioning](https://semver.org/).
+Nagare is a comprehensive, [Deno](https://deno.com/)-native release management library that
+automates version bumping, changelog generation, and GitHub releases using
+[conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) and
+[semantic versioning](https://semver.org/).
 
 ## ✨ Features
 
-- **🚀 Automated Releases** - Version bumping based on [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
-- **📝 Changelog Generation** - Automatic CHANGELOG.md following [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+- **🚀 Automated Releases** - Version bumping based on
+  [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
+- **📝 Changelog Generation** - Automatic CHANGELOG.md following
+  [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - **🏷️ Git Integration** - Smart tagging and commit management
 - **🐙 GitHub Releases** - Automatic GitHub release creation
 - **🤖 Intelligent File Handlers** - Automatic version updates for common file types (v1.1.0+)
-- **📄 Template System** - Flexible version file templates using [Vento](https://vento.js.org/) (TypeScript, JSON, YAML, custom)
+- **📄 Template System** - Flexible version file templates using [Vento](https://vento.js.org/)
+  (TypeScript, JSON, YAML, custom)
 - **✨ Extensible Version Files** - Add custom exports without full templates (v1.8.0+)
 - **🔄 Rollback Support** - Safe rollback of failed releases
 - **📚 Documentation** - Optional deno doc generation
@@ -214,7 +219,7 @@ export default {
   versionFile: {
     path: "./version.ts",
     template: "typescript",
-    
+
     // Add custom exports to the generated file
     additionalExports: [
       {
@@ -233,7 +238,7 @@ export default {
   }`,
       },
     ],
-    
+
     // Or add raw content
     extend: {
       prepend: "// Auto-generated file\n\n",

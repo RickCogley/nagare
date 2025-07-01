@@ -27,6 +27,9 @@
  *   { searchedPaths: ["./nagare.config.ts", "./nagare.config.js"] }
  * );
  * ```
+ *
+ * @see {@link ErrorCodes} for all available error codes
+ * @see {@link ErrorFactory} for pre-built error constructors
  */
 export class NagareError extends Error {
   /**
@@ -47,7 +50,7 @@ export class NagareError extends Error {
   ) {
     super(message);
     this.name = "NagareError";
-    
+
     // Ensure proper prototype chain for instanceof checks
     Object.setPrototypeOf(this, NagareError.prototype);
   }
@@ -77,7 +80,7 @@ export class NagareError extends Error {
           .replace(/([A-Z])/g, " $1")
           .replace(/^./, (str) => str.toUpperCase())
           .trim();
-        
+
         // Handle array values
         if (Array.isArray(value)) {
           output += `\n  ${formattedKey}:`;
@@ -122,7 +125,79 @@ export class NagareError extends Error {
 /**
  * Standard error codes for common Nagare errors
  *
- * Use these codes for consistent error handling across the codebase
+ * Use these codes for consistent error handling across the codebase.
+ * Each error code represents a specific failure scenario that users may encounter.
+ *
+ * ## Error Code Categories:
+ *
+ * ### Git-related errors (GIT_*)
+ * - `GIT_NOT_INITIALIZED`: Working directory is not a git repository
+ * - `GIT_UNCOMMITTED_CHANGES`: Uncommitted changes prevent release
+ * - `GIT_USER_NOT_CONFIGURED`: Git user.name or user.email not set
+ * - `GIT_NO_COMMITS`: No commits in repository
+ * - `GIT_TAG_EXISTS`: Tag already exists for version
+ * - `GIT_REMOTE_ERROR`: Error communicating with remote repository
+ *
+ * ### Configuration errors (CONFIG_*)
+ * - `CONFIG_NOT_FOUND`: No nagare.config.ts file found
+ * - `CONFIG_INVALID`: Configuration file has validation errors
+ * - `CONFIG_MISSING_REQUIRED`: Required configuration fields missing
+ *
+ * ### Version errors (VERSION_*)
+ * - `VERSION_NOT_FOUND`: Version pattern not found in file
+ * - `VERSION_INVALID_FORMAT`: Version doesn't match semver format
+ * - `VERSION_FILE_NOT_FOUND`: Specified version file doesn't exist
+ * - `VERSION_BUMP_INVALID`: Invalid bump type specified
+ *
+ * ### File operation errors (FILE_*)
+ * - `FILE_NOT_FOUND`: Specified file doesn't exist
+ * - `FILE_UPDATE_FAILED`: Failed to update file contents
+ * - `FILE_PATTERN_NO_MATCH`: Update pattern didn't match
+ * - `FILE_HANDLER_NOT_FOUND`: No handler for file type
+ * - `FILE_JSON_INVALID`: JSON file has syntax errors
+ *
+ * ### GitHub integration errors (GITHUB_*)
+ * - `GITHUB_CLI_NOT_FOUND`: GitHub CLI (gh) not installed
+ * - `GITHUB_AUTH_FAILED`: GitHub authentication failed
+ * - `GITHUB_RELEASE_FAILED`: Failed to create GitHub release
+ *
+ * ### Template errors (TEMPLATE_*)
+ * - `TEMPLATE_INVALID`: Template syntax error
+ * - `TEMPLATE_PROCESSING_FAILED`: Template rendering failed
+ * - `TEMPLATE_SECURITY_VIOLATION`: Template contains unsafe code
+ *
+ * ### Security errors (SECURITY_*)
+ * - `SECURITY_INVALID_GIT_REF`: Invalid git reference format
+ * - `SECURITY_EMPTY_GIT_REF`: Empty git reference provided
+ * - `SECURITY_INVALID_GIT_REF_CHARS`: Git reference contains forbidden characters
+ * - `SECURITY_INVALID_GIT_REF_PATTERN`: Git reference has invalid pattern
+ * - `SECURITY_GIT_TAG_TOO_LONG`: Git tag exceeds maximum length
+ * - `SECURITY_INVALID_COMMIT_HASH`: Invalid git commit hash format
+ * - `SECURITY_INVALID_FILE_PATH`: Invalid file path format
+ * - `SECURITY_PATH_TRAVERSAL`: Directory traversal attempt detected
+ * - `SECURITY_PATH_ESCAPE`: Path escapes base directory
+ * - `SECURITY_INVALID_VERSION`: Invalid version string
+ * - `SECURITY_INVALID_SEMVER_FORMAT`: Version doesn't match semver format
+ * - `SECURITY_INVALID_CLI_ARG_TYPE`: CLI argument has wrong type
+ * - `SECURITY_SHELL_INJECTION`: Shell metacharacters detected
+ * - `SECURITY_NULL_BYTE_INJECTION`: Null byte injection attempt
+ *
+ * ### General errors
+ * - `DEPENDENCY_NOT_FOUND`: Required dependency missing
+ * - `PERMISSION_DENIED`: Insufficient permissions
+ * - `OPERATION_CANCELLED`: User cancelled operation
+ * - `UNKNOWN_ERROR`: Unexpected error occurred
+ *
+ * @example
+ * ```typescript
+ * import { ErrorCodes, NagareError } from "@rick/nagare";
+ *
+ * throw new NagareError(
+ *   "Git repository not initialized",
+ *   ErrorCodes.GIT_NOT_INITIALIZED,
+ *   ["Run 'git init' to initialize repository"]
+ * );
+ * ```
  */
 export const ErrorCodes = {
   // Git-related errors
@@ -161,6 +236,22 @@ export const ErrorCodes = {
   TEMPLATE_PROCESSING_FAILED: "TEMPLATE_PROCESSING_FAILED",
   TEMPLATE_SECURITY_VIOLATION: "TEMPLATE_SECURITY_VIOLATION",
 
+  // Security-related errors
+  SECURITY_INVALID_GIT_REF: "SECURITY_INVALID_GIT_REF",
+  SECURITY_EMPTY_GIT_REF: "SECURITY_EMPTY_GIT_REF",
+  SECURITY_INVALID_GIT_REF_CHARS: "SECURITY_INVALID_GIT_REF_CHARS",
+  SECURITY_INVALID_GIT_REF_PATTERN: "SECURITY_INVALID_GIT_REF_PATTERN",
+  SECURITY_GIT_TAG_TOO_LONG: "SECURITY_GIT_TAG_TOO_LONG",
+  SECURITY_INVALID_COMMIT_HASH: "SECURITY_INVALID_COMMIT_HASH",
+  SECURITY_INVALID_FILE_PATH: "SECURITY_INVALID_FILE_PATH",
+  SECURITY_PATH_TRAVERSAL: "SECURITY_PATH_TRAVERSAL",
+  SECURITY_PATH_ESCAPE: "SECURITY_PATH_ESCAPE",
+  SECURITY_INVALID_VERSION: "SECURITY_INVALID_VERSION",
+  SECURITY_INVALID_SEMVER_FORMAT: "SECURITY_INVALID_SEMVER_FORMAT",
+  SECURITY_INVALID_CLI_ARG_TYPE: "SECURITY_INVALID_CLI_ARG_TYPE",
+  SECURITY_SHELL_INJECTION: "SECURITY_SHELL_INJECTION",
+  SECURITY_NULL_BYTE_INJECTION: "SECURITY_NULL_BYTE_INJECTION",
+
   // General errors
   DEPENDENCY_NOT_FOUND: "DEPENDENCY_NOT_FOUND",
   PERMISSION_DENIED: "PERMISSION_DENIED",
@@ -174,13 +265,45 @@ export const ErrorCodes = {
 export type ErrorCode = typeof ErrorCodes[keyof typeof ErrorCodes];
 
 /**
- * Helper function to create common errors with consistent formatting
+ * Factory class for creating common Nagare errors with consistent formatting
+ *
+ * Provides pre-configured error constructors for common failure scenarios.
+ * Each method returns a fully-configured NagareError with appropriate
+ * error code, message, and recovery suggestions.
+ *
+ * @example
+ * ```typescript
+ * import { ErrorFactory } from "@rick/nagare";
+ *
+ * // Check git repository state
+ * if (!await isGitRepository()) {
+ *   throw ErrorFactory.gitNotInitialized();
+ * }
+ *
+ * // Handle configuration errors
+ * if (!configFound) {
+ *   throw ErrorFactory.configNotFound(searchedPaths);
+ * }
+ * ```
+ *
+ * @see {@link NagareError} for the error class structure
+ * @see {@link ErrorCodes} for all available error codes
  */
 export class ErrorFactory {
-  private static readonly DOCS_BASE_URL = "https://nagare.dev/docs/errors";
+  // Note: Documentation URLs removed as they don't exist in auto-generated docs
+  // The error codes and suggestions provide sufficient guidance
 
   /**
    * Create a git not initialized error
+   *
+   * @returns {NagareError} Error indicating the current directory is not a git repository
+   *
+   * @example
+   * ```typescript
+   * if (!await git.isGitRepository()) {
+   *   throw ErrorFactory.gitNotInitialized();
+   * }
+   * ```
    */
   static gitNotInitialized(): NagareError {
     return new NagareError(
@@ -191,31 +314,45 @@ export class ErrorFactory {
         "Navigate to an existing git repository",
         "If you just cloned, ensure you're in the project directory",
       ],
-      undefined,
-      `${this.DOCS_BASE_URL}#git-not-initialized`,
     );
   }
 
   /**
    * Create an uncommitted changes error
+   *
+   * @returns {NagareError} Error indicating uncommitted changes prevent release
+   *
+   * @example
+   * ```typescript
+   * if (await git.hasUncommittedChanges()) {
+   *   throw ErrorFactory.uncommittedChanges();
+   * }
+   * ```
    */
   static uncommittedChanges(): NagareError {
     return new NagareError(
       "Uncommitted changes detected. Cannot proceed with release",
       ErrorCodes.GIT_UNCOMMITTED_CHANGES,
       [
-        "Commit your changes: git add . && git commit -m \"your message\"",
+        'Commit your changes: git add . && git commit -m "your message"',
         "Stash changes temporarily: git stash",
         "Discard changes: git checkout . (⚠️  destructive)",
         "View changes: git status",
       ],
-      undefined,
-      `${this.DOCS_BASE_URL}#uncommitted-changes`,
     );
   }
 
   /**
    * Create a configuration not found error
+   *
+   * @param searchedPaths - Array of file paths that were searched
+   * @returns {NagareError} Error with configuration setup instructions
+   *
+   * @example
+   * ```typescript
+   * const paths = ["./nagare.config.ts", "./nagare.config.js"];
+   * throw ErrorFactory.configNotFound(paths);
+   * ```
    */
   static configNotFound(searchedPaths: string[]): NagareError {
     return new NagareError(
@@ -235,12 +372,23 @@ export class ErrorFactory {
           "};",
         ].join("\n"),
       },
-      `${this.DOCS_BASE_URL}#config-not-found`,
     );
   }
 
   /**
    * Create a version not found error
+   *
+   * @param filePath - Path to the file where version was not found
+   * @param searchedPatterns - Optional array of patterns that were searched
+   * @returns {NagareError} Error with version pattern examples
+   *
+   * @example
+   * ```typescript
+   * throw ErrorFactory.versionNotFound(
+   *   "./version.ts",
+   *   ['export const VERSION']
+   * );
+   * ```
    */
   static versionNotFound(
     filePath: string,
@@ -263,12 +411,21 @@ export class ErrorFactory {
           'YAML: version: "1.0.0"',
         ],
       },
-      `${this.DOCS_BASE_URL}#version-not-found`,
     );
   }
 
   /**
    * Create a file handler not found error
+   *
+   * @param filePath - Path to the file that has no handler
+   * @returns {NagareError} Error with handler configuration suggestions
+   *
+   * @example
+   * ```typescript
+   * if (!handler) {
+   *   throw ErrorFactory.fileHandlerNotFound("./custom.cfg");
+   * }
+   * ```
    */
   static fileHandlerNotFound(filePath: string): NagareError {
     return new NagareError(
@@ -289,12 +446,24 @@ export class ErrorFactory {
           "*.ts (with VERSION export)",
         ],
       },
-      `${this.DOCS_BASE_URL}#file-handler-not-found`,
     );
   }
 
   /**
    * Create an invalid JSON error
+   *
+   * @param filePath - Path to the JSON file with syntax error
+   * @param parseError - The JSON parse error message
+   * @returns {NagareError} Error with JSON debugging suggestions
+   *
+   * @example
+   * ```typescript
+   * try {
+   *   JSON.parse(content);
+   * } catch (e) {
+   *   throw ErrorFactory.invalidJson("./config.json", e.message);
+   * }
+   * ```
    */
   static invalidJson(filePath: string, parseError: string): NagareError {
     return new NagareError(
@@ -310,12 +479,20 @@ export class ErrorFactory {
         filePath,
         parseError,
       },
-      `${this.DOCS_BASE_URL}#invalid-json`,
     );
   }
 
   /**
    * Create a GitHub CLI not found error
+   *
+   * @returns {NagareError} Error with GitHub CLI installation instructions
+   *
+   * @example
+   * ```typescript
+   * if (!await isGitHubCliInstalled()) {
+   *   throw ErrorFactory.githubCliNotFound();
+   * }
+   * ```
    */
   static githubCliNotFound(): NagareError {
     return new NagareError(
@@ -327,8 +504,6 @@ export class ErrorFactory {
         "Windows: winget install --id GitHub.cli",
         "Or disable GitHub releases in nagare.config.ts: github.createRelease = false",
       ],
-      undefined,
-      `${this.DOCS_BASE_URL}#github-cli-not-found`,
     );
   }
 }

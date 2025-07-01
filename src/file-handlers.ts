@@ -36,6 +36,7 @@
 import type { TemplateData } from "../types.ts";
 import { sanitizeErrorMessage, validateFilePath } from "./security-utils.ts";
 import { Logger } from "./logger.ts";
+import { ErrorCodes, NagareError } from "./enhanced-error.ts";
 
 /**
  * File handler definition for intelligent file updates
@@ -580,7 +581,21 @@ export class FileHandlerManager {
    */
   registerHandler(handler: FileHandler): void {
     if (this.handlers.has(handler.id)) {
-      throw new Error(`Handler with ID "${handler.id}" already exists`);
+      throw new NagareError(
+        `Handler with ID "${handler.id}" already exists`,
+        ErrorCodes.CONFIG_INVALID,
+        [
+          "Use a unique ID for each file handler",
+          "Check if you're registering the same handler twice",
+          "List existing handlers to see what IDs are in use",
+          "Consider prefixing custom handler IDs to avoid conflicts",
+        ],
+        {
+          handlerId: handler.id,
+          handlerName: handler.name,
+          existingHandlerIds: Array.from(this.handlers.keys()),
+        },
+      );
     }
     this.handlers.set(handler.id, handler);
   }

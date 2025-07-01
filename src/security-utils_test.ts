@@ -51,9 +51,21 @@ Deno.test("validateGitRef - valid commits", () => {
 });
 
 Deno.test("validateGitRef - invalid commits", () => {
-  assertThrows(() => validateGitRef("abc", "commit"), Error, "7-40 character hex");
-  assertThrows(() => validateGitRef("xyz1234", "commit"), Error, "7-40 character hex");
-  assertThrows(() => validateGitRef("123456", "commit"), Error, "7-40 character hex");
+  assertThrows(
+    () => validateGitRef("abc", "commit"),
+    Error,
+    "Invalid commit: must be a valid commit hash",
+  );
+  assertThrows(
+    () => validateGitRef("xyz1234", "commit"),
+    Error,
+    "Invalid commit: must be a valid commit hash",
+  );
+  assertThrows(
+    () => validateGitRef("123456", "commit"),
+    Error,
+    "Invalid commit: must be a valid commit hash",
+  );
 });
 
 Deno.test("validateFilePath - valid paths", () => {
@@ -159,10 +171,22 @@ Deno.test("validateVersion", () => {
   assertEquals(validateVersion("  1.2.3  "), "1.2.3");
 
   // Invalid versions
-  assertThrows(() => validateVersion("1.2"), Error, "valid semver");
-  assertThrows(() => validateVersion("a.b.c"), Error, "valid semver");
-  assertThrows(() => validateVersion("1.2.3.4"), Error, "valid semver");
-  assertThrows(() => validateVersion(""), Error, "non-empty string");
+  assertThrows(
+    () => validateVersion("1.2"),
+    Error,
+    "Invalid version: must be valid semantic version",
+  );
+  assertThrows(
+    () => validateVersion("a.b.c"),
+    Error,
+    "Invalid version: must be valid semantic version",
+  );
+  assertThrows(
+    () => validateVersion("1.2.3.4"),
+    Error,
+    "Invalid version: must be valid semantic version",
+  );
+  assertThrows(() => validateVersion(""), Error, "Invalid version: must be a non-empty string");
 });
 
 Deno.test("sanitizeErrorMessage", () => {

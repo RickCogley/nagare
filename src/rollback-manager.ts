@@ -7,6 +7,7 @@ import type { NagareConfig } from "../types.ts";
 import { GitOperations } from "./git-operations.ts";
 import { Logger, LogLevel } from "./logger.ts";
 import { sanitizeErrorMessage, validateVersion } from "./security-utils.ts";
+import { ErrorFactory } from "./enhanced-error.ts";
 
 /**
  * Result of a rollback operation
@@ -49,7 +50,7 @@ export class RollbackManager {
 
       // Validate git repository
       if (!await this.git.isGitRepository()) {
-        throw new Error("Not in a git repository");
+        throw ErrorFactory.gitNotInitialized();
       }
 
       // Get current state

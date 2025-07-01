@@ -3,6 +3,7 @@
  */
 
 import type { NagareConfig, ReleaseNotes } from "../types.ts";
+import { ErrorCodes, ErrorFactory, NagareError } from "./enhanced-error.ts";
 
 /**
  * GitHubIntegration - GitHub release management
@@ -115,7 +116,43 @@ export class GitHubIntegration {
 
     if (!result.success) {
       const error = new TextDecoder().decode(result.stderr);
-      throw new Error(`Command failed: ${cmd.join(" ")}\n${error}`);
+
+      // Check for specific GitHub CLI errors
+      if (error.includes("gh: command not found") || error.includes("'gh' is not recognized")) {
+        throw ErrorFactory.githubCliNotFound();
+      }
+
+      if (error.includes("authentication") || error.includes("401") || error.includes("403")) {
+        throw new NagareError(
+          "GitHub authentication failed",
+          ErrorCodes.GITHUB_AUTH_FAILED,
+          [
+            "Run 'gh auth login' to authenticate with GitHub",
+            "Check your GitHub token: gh auth status",
+            "Ensure you have the necessary permissions (repo access)",
+            "Try refreshing your token: gh auth refresh",
+          ],
+          {
+            command: cmd.join(" "),
+            error: error,
+          },
+        );
+      }
+
+      throw new NagareError(
+        "GitHub release creation failed",
+        ErrorCodes.GITHUB_RELEASE_FAILED,
+        [
+          "Check the command output for specific errors",
+          "Verify you're connected to the internet",
+          "Ensure the repository exists and you have access",
+          "Try creating the release manually: " + cmd.join(" "),
+        ],
+        {
+          command: cmd.join(" "),
+          stderr: error,
+        },
+      );
     }
 
     return new TextDecoder().decode(result.stdout);

@@ -4,6 +4,7 @@
 
 import { parse } from "@std/semver";
 import type { BumpType, ConventionalCommit, NagareConfig } from "../types.ts";
+import { ErrorCodes, ErrorFactory, NagareError } from "./enhanced-error.ts";
 
 /**
  * VersionUtils - Semantic versioning operations
@@ -39,10 +40,30 @@ export class VersionUtils {
         }
       }
 
-      throw new Error(`Could not find version in ${this.config.versionFile.path}`);
+      throw ErrorFactory.versionNotFound(
+        this.config.versionFile.path,
+        patternsArray.map((p) => p.toString()),
+      );
     } catch (error) {
-      throw new Error(
-        `Error reading version: ${error instanceof Error ? error.message : String(error)}`,
+      // If it's already a NagareError, re-throw it
+      if (error instanceof NagareError) {
+        throw error;
+      }
+
+      // File not found or other read error
+      throw new NagareError(
+        `Error reading version file: ${this.config.versionFile.path}`,
+        ErrorCodes.VERSION_FILE_NOT_FOUND,
+        [
+          "Check that the version file exists",
+          "Verify the file path is correct in nagare.config.ts",
+          "Ensure you have read permissions for the file",
+          "Run 'ls -la' to check file permissions",
+        ],
+        {
+          filePath: this.config.versionFile.path,
+          error: error instanceof Error ? error.message : String(error),
+        },
       );
     }
   }
@@ -67,7 +88,19 @@ export class VersionUtils {
         case "patch":
           return `${semver.major}.${semver.minor}.${semver.patch + 1}`;
         default:
-          throw new Error(`Invalid bump type: ${bumpType}`);
+          throw new NagareError(
+            `Invalid bump type: ${bumpType}`,
+            ErrorCodes.VERSION_BUMP_INVALID,
+            [
+              "Use one of the valid bump types: major, minor, patch",
+              "Check the command line arguments",
+              "Example: nagare release --bump minor",
+            ],
+            {
+              providedType: bumpType,
+              validTypes: ["major", "minor", "patch"],
+            },
+          );
       }
     }
 

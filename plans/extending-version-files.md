@@ -1,10 +1,13 @@
 # Extending Version Files
 
-Nagare 1.8.0+ provides multiple ways to extend generated version files with your own custom exports, without needing to write a full custom template.
+Nagare 1.8.0+ provides multiple ways to extend generated version files with your own custom exports,
+without needing to write a full custom template.
 
 ## Overview
 
-When generating version files, nagare provides standard exports like `VERSION`, `BUILD_INFO`, `APP_INFO`, etc. However, many projects need additional exports specific to their application. Nagare offers three approaches:
+When generating version files, nagare provides standard exports like `VERSION`, `BUILD_INFO`,
+`APP_INFO`, etc. However, many projects need additional exports specific to their application.
+Nagare offers three approaches:
 
 1. **Additional Exports** - Simple configuration for common export types
 2. **Extend with Prepend/Append** - Add raw content before/after the generated file
@@ -12,7 +15,8 @@ When generating version files, nagare provides standard exports like `VERSION`, 
 
 ## Additional Exports
 
-The `additionalExports` configuration allows you to add constants, classes, functions, and other exports to your version file.
+The `additionalExports` configuration allows you to add constants, classes, functions, and other
+exports to your version file.
 
 ### Basic Example
 
@@ -48,7 +52,7 @@ export const VERSION = "1.0.0";
 /** API configuration */
 export const API_CONFIG = {
   "url": "https://api.example.com",
-  "timeout": 5000
+  "timeout": 5000,
 } as const;
 ```
 
@@ -186,7 +190,7 @@ export default {
   versionFile: {
     path: "./version.ts",
     template: TemplateFormat.TYPESCRIPT,
-    
+
     additionalExports: [
       // Application-specific constants
       {
@@ -205,7 +209,7 @@ export default {
         },
         asConst: true,
       },
-      
+
       // Security configuration
       {
         name: "SECURITY_INFO",
@@ -220,7 +224,7 @@ export default {
         },
         asConst: true,
       },
-      
+
       // Utility class
       {
         name: "VersionUtils",
@@ -241,9 +245,11 @@ export default {
 
 ## Migration from Custom Templates
 
-If you're currently using a full custom template just to add a few exports, you can simplify your configuration:
+If you're currently using a full custom template just to add a few exports, you can simplify your
+configuration:
 
 **Before (Custom Template):**
+
 ```typescript
 versionFile: {
   template: TemplateFormat.CUSTOM,
@@ -252,6 +258,7 @@ versionFile: {
 ```
 
 **After (Additional Exports):**
+
 ```typescript
 versionFile: {
   template: TemplateFormat.TYPESCRIPT,  // Use built-in template
@@ -271,9 +278,11 @@ versionFile: {
 
 ## Limitations
 
-- Additional exports are not supported for JSON/YAML templates (these formats don't support JavaScript exports)
+- Additional exports are not supported for JSON/YAML templates (these formats don't support
+  JavaScript exports)
 - Export names must be valid JavaScript identifiers
-- The feature is designed for common use cases; very complex scenarios may still require custom templates
+- The feature is designed for common use cases; very complex scenarios may still require custom
+  templates
 
 ## Upgrading
 
@@ -283,4 +292,5 @@ To use these features, ensure you're using nagare 1.8.0 or later:
 deno add @rick/nagare@^1.8.0
 ```
 
-Then update your `nagare.config.ts` to use the new `additionalExports` or `extend` options instead of custom templates where appropriate.
+Then update your `nagare.config.ts` to use the new `additionalExports` or `extend` options instead
+of custom templates where appropriate.

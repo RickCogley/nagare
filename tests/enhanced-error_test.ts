@@ -80,7 +80,7 @@ Deno.test("ErrorFactory - Pre-built errors", async (t) => {
   });
 
   await t.step("versionNotFound", () => {
-    const error = ErrorFactory.versionNotFound("./version.ts", ['export const VERSION']);
+    const error = ErrorFactory.versionNotFound("./version.ts", ["export const VERSION"]);
     assertEquals(error.code, ErrorCodes.VERSION_NOT_FOUND);
     assertStringIncludes(error.toString(), "Could not find version in ./version.ts");
     assertStringIncludes(error.toString(), "export const VERSION");

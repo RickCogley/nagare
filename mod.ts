@@ -114,7 +114,7 @@
  * versionFile: {
  *   path: "./version.ts",
  *   template: "typescript",
- *   
+ *
  *   // Add custom exports
  *   additionalExports: [
  *     {
@@ -133,7 +133,7 @@
  *   }`
  *     }
  *   ],
- *   
+ *
  *   // Or add raw content
  *   extend: {
  *     prepend: "// Auto-generated file\\n\\n",
@@ -281,8 +281,11 @@ export { DocGenerator } from "./src/doc-generator.ts";
 /**
  * Enhanced error handling for better developer experience (v1.9.0+)
  * Provides structured errors with actionable suggestions and context.
+ *
+ * @see {@link ./src/error-reference.ts} for comprehensive error documentation
  */
 export { ErrorCodes, ErrorFactory, NagareError } from "./src/enhanced-error.ts";
+export type { ErrorCode } from "./src/enhanced-error.ts";
 
 // ==================================================================
 // File Handlers for Intelligent Updates (New in 1.1.0)

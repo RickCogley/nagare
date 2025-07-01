@@ -684,7 +684,7 @@ export class ReleaseManager {
     } catch {
       throw ErrorFactory.versionNotFound(
         this.config.versionFile.path,
-        ["Ensure the file exists", "Check the path in nagare.config.ts"]
+        ["Ensure the file exists", "Check the path in nagare.config.ts"],
       );
     }
 
@@ -695,10 +695,10 @@ export class ReleaseManager {
         "Git user.name and user.email must be configured",
         ErrorCodes.GIT_USER_NOT_CONFIGURED,
         [
-          "Set your git username: git config --global user.name \"Your Name\"",
-          "Set your git email: git config --global user.email \"your.email@example.com\"",
-          "Or set locally (without --global) for this repository only"
-        ]
+          'Set your git username: git config --global user.name "Your Name"',
+          'Set your git email: git config --global user.email "your.email@example.com"',
+          "Or set locally (without --global) for this repository only",
+        ],
       );
     }
 
@@ -725,7 +725,20 @@ export class ReleaseManager {
       for (const error of patternValidation.errors) {
         this.logger.error(error);
       }
-      throw new Error("Invalid file update patterns detected");
+      throw new NagareError(
+        "Invalid file update patterns detected",
+        ErrorCodes.CONFIG_INVALID,
+        [
+          "Review the file update patterns in your nagare.config.ts",
+          "Check the validation errors listed above",
+          "Ensure all regex patterns are valid",
+          "Verify file paths are correct",
+        ],
+        {
+          errors: patternValidation.errors,
+          hint: "See the error messages above for specific issues with each pattern",
+        },
+      );
     }
 
     this.logger.debug("Environment and pattern validation passed");
@@ -932,7 +945,26 @@ export class ReleaseManager {
         error instanceof Error ? error.message : String(error)
       }`;
       this.logger.error(errorMessage);
-      throw new Error(errorMessage);
+      // If it's already a NagareError, re-throw it
+      if (error instanceof NagareError) {
+        throw error;
+      }
+
+      throw new NagareError(
+        `Failed to update version file: ${versionFile.path}`,
+        ErrorCodes.FILE_UPDATE_FAILED,
+        [
+          "Check that the file exists and is writable",
+          "Verify the template syntax if using custom templates",
+          "Ensure the file path is correct in nagare.config.ts",
+          "Check file permissions: ls -la " + versionFile.path,
+        ],
+        {
+          filePath: versionFile.path,
+          template: versionFile.template,
+          error: error instanceof Error ? error.message : String(error),
+        },
+      );
     }
   }
 
@@ -1064,7 +1096,7 @@ export class ReleaseManager {
           });
         }
       } else {
-        throw new Error(`No updateFn, patterns, or built-in handler for ${filePattern.path}`);
+        throw ErrorFactory.fileHandlerNotFound(filePattern.path);
       }
 
       // Show update summary
@@ -1092,9 +1124,21 @@ export class ReleaseManager {
           JSON.parse(jsonContent);
           this.logger.debug(`✅ JSON validation passed for ${filePattern.path}`);
         } catch (error) {
-          throw new Error(
-            `Updated ${filePattern.path} contains invalid JSON: ${error}\n` +
-              `This suggests the update corrupted the file structure.`,
+          throw new NagareError(
+            `Updated file contains invalid JSON`,
+            ErrorCodes.FILE_JSON_INVALID,
+            [
+              "Review the update patterns - they may have corrupted the JSON structure",
+              "Check for missing commas, quotes, or brackets",
+              "Validate the original file is valid JSON before updating",
+              "Use a JSON validator to identify the specific syntax error",
+              "Consider using a custom updateFn for complex JSON updates",
+            ],
+            {
+              filePath: filePattern.path,
+              parseError: error instanceof Error ? error.message : String(error),
+              hint: "The file was modified but resulted in invalid JSON",
+            },
           );
         }
       }

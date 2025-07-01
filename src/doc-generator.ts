@@ -3,6 +3,7 @@
  */
 
 import type { NagareConfig } from "../types.ts";
+import { ErrorCodes, NagareError } from "./enhanced-error.ts";
 
 /**
  * DocGenerator - Documentation generation using deno doc
@@ -95,7 +96,21 @@ export class DocGenerator {
 
     if (!result.success) {
       const error = new TextDecoder().decode(result.stderr);
-      throw new Error(`Command failed: ${cmd.join(" ")}\n${error}`);
+      throw new NagareError(
+        "Documentation generation failed",
+        ErrorCodes.DEPENDENCY_NOT_FOUND,
+        [
+          "Ensure Deno is installed and accessible",
+          "Check that the source files exist and are valid TypeScript",
+          "Try running the command manually to see detailed errors",
+          "Verify the documentation configuration in nagare.config.ts",
+        ],
+        {
+          command: cmd.join(" "),
+          stderr: error,
+          hint: "Run 'deno doc --help' to verify deno doc is available",
+        },
+      );
     }
 
     return new TextDecoder().decode(result.stdout);
