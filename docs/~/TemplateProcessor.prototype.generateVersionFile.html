@@ -110,7 +110,7 @@
 <span class="font-bold">TemplateProcessor.prototype.generateVersionFile</span><span class="font-medium">(<span><span>data<span>: <a href="../././~/TemplateData.html" class="link">TemplateData</a></span></span></span>)<span>: <span>Promise</span>&lt;<span>string</span>&gt;</span> </span>
       </code><div class="space-y-7" id=""><div class="markdown"><p>Generate version file content using built-in templates</p>
 <p>Uses the configured template format to generate version file content.
-Delegates to processTemplate for custom templates.</p>
+Supports extending templates with additional exports and custom content.</p>
 </div><section class="section"  id="examples"><div>
       <h2 class="anchorable mb-1"><a href="#examples" class="anchor" aria-label="Anchor" tabIndex="-1"><svg
   width="16"
@@ -158,9 +158,9 @@ Examples</h2></div><div class="space-y-8"><div class="anchorable"><a href="#exam
 </a>
 <h3 class="example-header"><div class="markdown"><p>Example 1</p>
 </div></h3>
-  <div><div class="markdown"><pre class="highlight"><code class="language-typescript">// For built-in typescript template
+  <div><div class="markdown"><pre class="highlight"><code class="language-typescript">// For built-in typescript template with extensions
 const content = await processor.generateVersionFile(templateData);
-</code><button class="copyButton" data-copy="// For built-in typescript template
+</code><button class="copyButton" data-copy="// For built-in typescript template with extensions
 const content = await processor.generateVersionFile(templateData);
 "><svg class="copy" width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 <rect x="2" y="2" width="7" height="7" fill="none"/>
