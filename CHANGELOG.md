@@ -8,9 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.7.3] - 2025-07-01
 
 ### Changed
+
 - format generated files after release (770d5e9)
 
 ### Fixed
+
 - resolve linting errors preventing JSR publish (7c095b0)
 
 ## [1.7.2] - 2025-07-01
