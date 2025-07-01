@@ -34,6 +34,7 @@ import type { BumpType, NagareConfig, ReleaseNotes } from "./types.ts";
 import { LogLevel } from "./config.ts";
 import { APP_INFO, BUILD_INFO, RELEASE_NOTES, VERSION } from "./version.ts";
 import { sanitizeErrorMessage, validateCliArgs, validateFilePath } from "./src/security-utils.ts";
+import { ErrorFactory } from "./src/enhanced-error.ts";
 
 /**
  * CLI configuration options interface
@@ -261,10 +262,10 @@ async function loadConfig(configPath?: string): Promise<NagareConfig> {
   }
 
   if (configPath) {
-    throw new Error(`Configuration file not found: ${configPath}`);
+    throw ErrorFactory.configNotFound([configPath]);
   }
 
-  throw new Error(`No configuration file found. Tried: ${defaultPaths.join(", ")}`);
+  throw ErrorFactory.configNotFound(defaultPaths);
 }
 
 /**

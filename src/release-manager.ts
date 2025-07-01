@@ -30,6 +30,7 @@ import { DocGenerator } from "./doc-generator.ts";
 import { Logger } from "./logger.ts";
 import { FileHandlerManager } from "./file-handlers.ts";
 import { sanitizeErrorMessage } from "./security-utils.ts";
+import { ErrorCodes, ErrorFactory, NagareError } from "./enhanced-error.ts";
 
 /**
  * Main ReleaseManager class - coordinates the entire release process
@@ -669,27 +670,36 @@ export class ReleaseManager {
   private async validateEnvironment(): Promise<void> {
     // Check if we're in a git repository
     if (!await this.git.isGitRepository()) {
-      throw new Error("Not in a git repository");
+      throw ErrorFactory.gitNotInitialized();
     }
 
     // Check for uncommitted changes
     if (await this.git.hasUncommittedChanges()) {
-      throw new Error(
-        "Uncommitted changes detected. Please commit or stash changes before releasing.",
-      );
+      throw ErrorFactory.uncommittedChanges();
     }
 
     // Validate version file exists
     try {
       await Deno.stat(this.config.versionFile.path);
     } catch {
-      throw new Error(`Version file not found: ${this.config.versionFile.path}`);
+      throw ErrorFactory.versionNotFound(
+        this.config.versionFile.path,
+        ["Ensure the file exists", "Check the path in nagare.config.ts"]
+      );
     }
 
     // Check git configuration
     const gitUser = await this.git.getGitUser();
     if (!gitUser.name || !gitUser.email) {
-      throw new Error("Git user.name and user.email must be configured");
+      throw new NagareError(
+        "Git user.name and user.email must be configured",
+        ErrorCodes.GIT_USER_NOT_CONFIGURED,
+        [
+          "Set your git username: git config --global user.name \"Your Name\"",
+          "Set your git email: git config --global user.email \"your.email@example.com\"",
+          "Or set locally (without --global) for this repository only"
+        ]
+      );
     }
 
     // Enhanced pattern validation with handler awareness

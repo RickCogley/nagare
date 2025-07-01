@@ -278,6 +278,12 @@ export { TemplateProcessor } from "./src/template-processor.ts";
  */
 export { DocGenerator } from "./src/doc-generator.ts";
 
+/**
+ * Enhanced error handling for better developer experience (v1.9.0+)
+ * Provides structured errors with actionable suggestions and context.
+ */
+export { ErrorCodes, ErrorFactory, NagareError } from "./src/enhanced-error.ts";
+
 // ==================================================================
 // File Handlers for Intelligent Updates (New in 1.1.0)
 // ==================================================================

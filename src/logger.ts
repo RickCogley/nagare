@@ -3,6 +3,8 @@
  * Simplified version adapted from Salty's logger
  */
 
+import { NagareError } from "./enhanced-error.ts";
+
 /**
  * Log levels in order of severity
  */
@@ -51,11 +53,16 @@ export class Logger {
   }
 
   /**
-   * Log errors
+   * Log errors with support for enhanced errors
    */
-  error(message: string, error?: Error): void {
+  error(message: string, error?: Error | NagareError): void {
     if (this.logLevel <= LogLevel.ERROR) {
-      console.error(`[ERROR] ${message}`, error);
+      // Handle enhanced errors with their custom formatting
+      if (error instanceof NagareError) {
+        console.error(error.toString());
+      } else {
+        console.error(`[ERROR] ${message}`, error);
+      }
     }
   }
 
