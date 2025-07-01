@@ -497,6 +497,117 @@ Nagare addresses the OWASP Top 10 security risks:
 **Note**: While Nagare implements security best practices, always perform your own security
 assessment based on your specific use case and threat model.
 
+## 🔒 Security
+
+Nagare is designed with security as a top priority, following OWASP guidelines and implementing multiple layers of protection:
+
+### Security Features
+
+#### 1. **Input Validation & Sanitization**
+All user inputs are validated and sanitized to prevent injection attacks:
+
+```typescript
+// Git references are validated
+validateGitRef("v1.2.3; rm -rf /", "tag"); // Throws error
+
+// File paths prevent directory traversal
+validateFilePath("../../../etc/passwd", basePath); // Throws error
+
+// CLI arguments are sanitized
+validateCliArgs(["--version", "1.2.3 && malicious"]); // Throws error
+```
+
+#### 2. **Template Sandboxing**
+Vento templates are executed in a restricted environment:
+
+```typescript
+// Configure security level in nagare.config.ts
+export default {
+  security: {
+    templateSandbox: "strict", // strict | moderate | disabled
+    validateFilePaths: true,
+    auditLog: true,
+    maxTemplateSize: 1048576, // 1MB limit
+  }
+} as NagareConfig;
+```
+
+In strict mode, templates cannot:
+- Access file system (`Deno.readFile`, `import`, `require`)
+- Execute commands (`Deno.Command`, `Deno.run`)
+- Make network requests (`fetch`, `XMLHttpRequest`)
+- Access global objects or use dangerous patterns
+
+#### 3. **Safe File Updates**
+Built-in file handlers use secure, line-anchored regex patterns:
+
+```typescript
+// ✅ SAFE: Only matches top-level version in JSON
+/^(\s*)"version":\s*"([^"]+)"/m
+
+// ❌ DANGEROUS: Could match nested fields
+/"version":\s*"([^"]+)"/
+```
+
+#### 4. **Command Injection Prevention**
+All git operations use Deno's secure Command API with validated inputs:
+
+```typescript
+// Commands are constructed safely without shell interpretation
+new Deno.Command("git", {
+  args: ["tag", validateGitRef(version, "tag")],
+});
+```
+
+#### 5. **Security Audit Logging**
+Security-relevant events are logged for audit trails:
+
+```typescript
+// Automatic logging of file updates, template processing, etc.
+[SECURITY AUDIT] {"timestamp":"2025-01-01T00:00:00Z","action":"file_updated","details":{...}}
+```
+
+### Security Best Practices
+
+1. **Use Minimal Permissions**: Run Nagare with only required Deno permissions:
+   ```bash
+   deno run --allow-read=. --allow-write=. --allow-run=git,gh nagare-launcher.ts
+   ```
+
+2. **Review Custom Templates**: If using custom Vento templates, review them for security:
+   ```typescript
+   // ✅ SAFE: Simple variable substitution
+   export const VERSION = "{{ version }}";
+   
+   // ❌ AVOID: JavaScript execution
+   export const DATA = {{> someFunction() }};
+   ```
+
+3. **Validate Configuration**: Review file update patterns and custom functions:
+   ```typescript
+   updateFiles: [
+     // ✅ Use built-in handlers when possible
+     { path: "./deno.json" },
+     
+     // ⚠️  Review custom patterns carefully
+     {
+       path: "./custom.json",
+       patterns: { version: /.../ } // Ensure pattern is safe
+     }
+   ]
+   ```
+
+### Automated Security Testing
+
+Nagare includes comprehensive security tests that run in CI/CD:
+- Input validation testing
+- Template sandboxing verification
+- Command injection prevention tests
+- Path traversal prevention tests
+- Static analysis for dangerous patterns
+
+See [SECURITY.md](./SECURITY.md) for vulnerability reporting and more details.
+
 ## 📄 License
 
 MIT License - see [LICENSE](./LICENSE) for details.

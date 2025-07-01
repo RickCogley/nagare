@@ -99,6 +99,26 @@ export interface NagareConfig {
   options?: ReleaseOptions;
 
   /**
+   * Security configuration
+   *
+   * @description
+   * Security settings for template processing and file operations.
+   * Controls sandboxing levels and validation strictness.
+   *
+   * @example
+   * ```typescript
+   * security: {
+   *   templateSandbox: "strict",
+   *   validateFilePaths: true,
+   *   auditLog: true
+   * }
+   * ```
+   *
+   * @since 1.6.0
+   */
+  security?: SecurityConfig;
+
+  /**
    * Lifecycle hooks for custom operations
    *
    * @description
@@ -378,6 +398,67 @@ export interface DocsConfig {
   includePrivate?: boolean;
   /** Custom deno doc options */
   denoDocOptions?: string[];
+}
+
+/**
+ * Security configuration for Nagare
+ *
+ * @description Controls security features for template processing,
+ * file operations, and audit logging.
+ *
+ * @since 1.6.0
+ */
+export interface SecurityConfig {
+  /**
+   * Template sandboxing level
+   *
+   * @description Controls the strictness of template execution environment:
+   * - "strict": Blocks all potentially dangerous operations (default)
+   * - "moderate": Allows some safe operations but still restricted
+   * - "disabled": No sandboxing (use only with trusted templates)
+   *
+   * @default "strict"
+   */
+  templateSandbox?: "strict" | "moderate" | "disabled";
+
+  /**
+   * Enable file path validation
+   *
+   * @description When enabled, validates all file paths to prevent
+   * directory traversal attacks and access outside project root.
+   *
+   * @default true
+   */
+  validateFilePaths?: boolean;
+
+  /**
+   * Enable security audit logging
+   *
+   * @description When enabled, logs security-relevant events
+   * for audit trails and debugging.
+   *
+   * @default false
+   */
+  auditLog?: boolean;
+
+  /**
+   * Allowed template functions
+   *
+   * @description In moderate sandbox mode, specify which global
+   * functions are allowed in templates.
+   *
+   * @example ["Date", "Math", "JSON"]
+   */
+  allowedFunctions?: string[];
+
+  /**
+   * Maximum template size in bytes
+   *
+   * @description Prevents DoS attacks from extremely large templates.
+   *
+   * @default 1048576 (1MB)
+   */
+  maxTemplateSize?: number;
 }
 
 /**

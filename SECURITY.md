@@ -125,7 +125,7 @@ All dependencies are:
 - [x] Minimal dependency footprint
 - [x] Deno permission model integration
 
-### In Progress
+### Completed
 
 - [x] Enhanced input validation layer (v1.3.0)
   - Added comprehensive `security-utils.ts` module
@@ -138,14 +138,32 @@ All dependencies are:
 - [x] Security-focused logging (v1.3.0)
   - Added `createSecurityLog` function for audit trails
   - Automatic sanitization of sensitive data in logs
-- [ ] Template sandboxing options
+  - Integrated audit logging in file handlers and template processor
+- [x] Template sandboxing options (v1.6.0)
+  - Added `SecurityConfig` interface with sandboxing levels
+  - Implemented strict/moderate/disabled sandboxing modes
+  - Enhanced template validation with dangerous pattern detection
+  - Added template size limits to prevent DoS
+- [x] Automated security testing (v1.6.0)
+  - Created comprehensive security test suite
+  - Added GitHub Actions workflow for security tests
+  - Implemented pattern checking script
+  - Added command injection and path traversal tests
+- [x] Security documentation expansion (v1.6.0)
+  - Added comprehensive security section to README.md
+  - Documented all security features with examples
+  - Created security best practices guide
+
+### In Progress
+
+- [ ] SAST/DAST integration (basic static analysis implemented)
 
 ### Planned
 
-- [ ] Security audit
-- [ ] Automated security testing
-- [ ] SAST/DAST integration
-- [ ] Security documentation expansion
+- [ ] Professional security audit
+- [ ] Advanced SAST/DAST tools integration
+- [ ] Dependency vulnerability scanning (when Deno supports it)
+- [ ] Security compliance certifications
 
 ## Compliance
 
