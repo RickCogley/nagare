@@ -1,6 +1,6 @@
 /**
  * Example configuration for Salty project using nagare's additional exports feature
- * 
+ *
  * This demonstrates how to use the new additionalExports and extend features
  * instead of writing a full custom template.
  */
@@ -21,7 +21,7 @@ const config: NagareConfig = {
   versionFile: {
     path: "./version.ts",
     template: TemplateFormat.TYPESCRIPT,
-    
+
     // Add custom exports that are specific to the Salty application
     additionalExports: [
       // Tech specifications
@@ -58,7 +58,7 @@ const config: NagareConfig = {
         },
         asConst: true,
       },
-      
+
       // Security information
       {
         name: "SECURITY_INFO",
@@ -82,7 +82,7 @@ const config: NagareConfig = {
         },
         asConst: true,
       },
-      
+
       // Version utility class
       {
         name: "VersionUtils",

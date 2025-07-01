@@ -369,7 +369,7 @@ export class TemplateProcessor {
         }
 
         default:
-          throw new Error(`Unsupported export type: ${(exp as any).type}`);
+          throw new Error(`Unsupported export type: ${exp.type}`);
       }
     }
 
