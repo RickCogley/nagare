@@ -31,12 +31,12 @@ export const RELEASE_NOTES = {
   "date": "2025-07-02",
   "added": [],
   "changed": [
-    "format generated files after release (28f114f)"
+    "format generated files after release (28f114f)",
   ],
   "deprecated": [],
   "removed": [],
   "fixed": [
-    "skip git-operations tests in CI environment (40c4d05)"
+    "skip git-operations tests in CI environment (40c4d05)",
   ],
-  "security": []
+  "security": [],
 } as const;

@@ -102,9 +102,9 @@ async function createTag(dir: string, tag: string): Promise<void> {
   await tagCmd.output();
 }
 
-Deno.test({ 
+Deno.test({
   ignore: Deno.env.get("CI") === "true",
-  name: "GitOperations - isGitRepository"
+  name: "GitOperations - isGitRepository",
 }, async (t) => {
   await t.step("should return true for valid git repository", async () => {
     const tempDir = await createTempGitRepo();
@@ -139,7 +139,7 @@ Deno.test({
 
 Deno.test({
   ignore: Deno.env.get("CI") === "true",
-  name: "GitOperations - hasUncommittedChanges"
+  name: "GitOperations - hasUncommittedChanges",
 }, async (t) => {
   await t.step("should return false for clean repository", async () => {
     const tempDir = await createTempGitRepo();
@@ -201,7 +201,7 @@ Deno.test({
 
 Deno.test({
   ignore: Deno.env.get("CI") === "true",
-  name: "GitOperations - getCommitsSinceLastRelease (tests parseConventionalCommit)"
+  name: "GitOperations - getCommitsSinceLastRelease (tests parseConventionalCommit)",
 }, async (t) => {
   await t.step("should parse various commit types", async () => {
     const tempDir = await createTempGitRepo();
@@ -249,7 +249,7 @@ Deno.test({
 
 Deno.test({
   ignore: Deno.env.get("CI") === "true",
-  name: "GitOperations - getLastReleaseTag"
+  name: "GitOperations - getLastReleaseTag",
 }, async (t) => {
   await t.step("should return undefined when no tags exist", async () => {
     const tempDir = await createTempGitRepo();
@@ -316,7 +316,7 @@ Deno.test({
 
 Deno.test({
   ignore: Deno.env.get("CI") === "true",
-  name: "GitOperations - getCommitsSinceLastRelease"
+  name: "GitOperations - getCommitsSinceLastRelease",
 }, async (t) => {
   await t.step("should get all commits when no release tag exists", async () => {
     const tempDir = await createTempGitRepo();
@@ -368,7 +368,7 @@ Deno.test({
 
 Deno.test({
   ignore: Deno.env.get("CI") === "true",
-  name: "GitOperations - getCurrentCommitHash"
+  name: "GitOperations - getCurrentCommitHash",
 }, async (t) => {
   await t.step("should get current commit hash", async () => {
     const tempDir = await createTempGitRepo();
@@ -412,7 +412,7 @@ Deno.test({
 
 Deno.test({
   ignore: Deno.env.get("CI") === "true",
-  name: "GitOperations - commitAndTag"
+  name: "GitOperations - commitAndTag",
 }, async (t) => {
   await t.step("should create commit and tag", async () => {
     const tempDir = await createTempGitRepo();
@@ -489,7 +489,7 @@ Deno.test({
 
 Deno.test({
   ignore: Deno.env.get("CI") === "true",
-  name: "GitOperations - getGitUser"
+  name: "GitOperations - getGitUser",
 }, async (t) => {
   await t.step("should get git user info", async () => {
     const tempDir = await createTempGitRepo();
@@ -539,7 +539,7 @@ Deno.test({
 // Test error conditions
 Deno.test({
   ignore: Deno.env.get("CI") === "true",
-  name: "GitOperations - Error handling"
+  name: "GitOperations - Error handling",
 }, async (t) => {
   await t.step("should throw NagareError for git command failures", async () => {
     const tempDir = await Deno.makeTempDir();

@@ -8,9 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.9.3] - 2025-07-02
 
 ### Changed
+
 - format generated files after release (28f114f)
 
 ### Fixed
+
 - skip git-operations tests in CI environment (40c4d05)
 
 ## [1.9.2] - 2025-07-02
