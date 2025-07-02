@@ -9,6 +9,7 @@ import {
   assertStringIncludes,
 } from "https://deno.land/std@0.208.0/assert/mod.ts";
 import { ChangelogGenerator } from "../src/changelog-generator.ts";
+import { TemplateFormat } from "../types.ts";
 import type { NagareConfig, ReleaseNotes } from "../types.ts";
 
 // Helper function to create a test config
@@ -20,7 +21,7 @@ function createTestConfig(overrides: Partial<NagareConfig> = {}): NagareConfig {
     },
     versionFile: {
       path: "./version.ts",
-      template: "typescript" as any,
+      template: TemplateFormat.TYPESCRIPT,
     },
     ...overrides,
   };
@@ -534,11 +535,9 @@ Deno.test("ChangelogGenerator - Line endings and formatting", async (t) => {
 
     // Find section indices
     let addedIndex = -1;
-    let fixedIndex = -1;
 
     for (let i = 0; i < lines.length; i++) {
       if (lines[i] === "### Added") addedIndex = i;
-      if (lines[i] === "### Fixed") fixedIndex = i;
     }
 
     // Check there's a blank line after the last item of Added section

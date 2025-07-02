@@ -9,8 +9,9 @@ import {
   assertThrows,
 } from "https://deno.land/std@0.208.0/assert/mod.ts";
 import { VersionUtils } from "../src/version-utils.ts";
-import { ErrorCodes, NagareError } from "../src/enhanced-error.ts";
-import type { BumpType, ConventionalCommit, NagareConfig } from "../types.ts";
+import { NagareError } from "../src/enhanced-error.ts";
+import { BumpType, TemplateFormat } from "../types.ts";
+import type { ConventionalCommit, NagareConfig } from "../types.ts";
 
 // Helper function to create a test config
 function createTestConfig(overrides: Partial<NagareConfig> = {}): NagareConfig {
@@ -21,7 +22,7 @@ function createTestConfig(overrides: Partial<NagareConfig> = {}): NagareConfig {
     },
     versionFile: {
       path: "./test-version.ts",
-      template: "typescript" as any,
+      template: TemplateFormat.TYPESCRIPT,
     },
     ...overrides,
   };
@@ -46,7 +47,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
     const config = createTestConfig({
       versionFile: {
         path: "./test-version.ts",
-        template: "typescript" as any,
+        template: TemplateFormat.TYPESCRIPT,
       },
     });
     const utils = new VersionUtils(config);
@@ -65,7 +66,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
     const config = createTestConfig({
       versionFile: {
         path: "./test-version.json",
-        template: "json" as any,
+        template: TemplateFormat.JSON,
       },
     });
     const utils = new VersionUtils(config);
@@ -84,7 +85,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
     const config = createTestConfig({
       versionFile: {
         path: "./test-version.yaml",
-        template: "yaml" as any,
+        template: TemplateFormat.YAML,
       },
     });
     const utils = new VersionUtils(config);
@@ -103,7 +104,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
     const config = createTestConfig({
       versionFile: {
         path: "./test-version.txt",
-        template: "custom" as any,
+        template: TemplateFormat.CUSTOM,
         patterns: {
           version: /APP_VERSION = '([^']+)'/,
         },
@@ -125,7 +126,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
     const config = createTestConfig({
       versionFile: {
         path: "./test-version.txt",
-        template: "custom" as any,
+        template: TemplateFormat.CUSTOM,
         // No patterns specified, should use defaults
       },
     });
@@ -145,7 +146,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
     const config = createTestConfig({
       versionFile: {
         path: "./test-version.ts",
-        template: "typescript" as any,
+        template: TemplateFormat.TYPESCRIPT,
       },
     });
     const utils = new VersionUtils(config);
@@ -167,7 +168,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
     const config = createTestConfig({
       versionFile: {
         path: "./non-existent-file.ts",
-        template: "typescript" as any,
+        template: TemplateFormat.TYPESCRIPT,
       },
     });
     const utils = new VersionUtils(config);
@@ -201,7 +202,7 @@ Deno.test("VersionUtils - calculateNewVersion()", async (t) => {
 
   await t.step("Invalid bump type should throw", () => {
     assertThrows(
-      () => utils.calculateNewVersion("1.2.3", [], "invalid" as any),
+      () => utils.calculateNewVersion("1.2.3", [], "invalid" as BumpType),
       NagareError,
       "Invalid bump type",
     );
@@ -483,7 +484,7 @@ Deno.test("VersionUtils - Edge cases", async (t) => {
     const config = createTestConfig({
       versionFile: {
         path: "./multi-version.txt",
-        template: "custom" as any,
+        template: TemplateFormat.CUSTOM,
         patterns: {
           version: /^\s*VERSION = "([^"]+)"/m, // Use ^ anchor and multiline flag
         },
@@ -510,7 +511,7 @@ Deno.test("VersionUtils - Edge cases", async (t) => {
     const config = createTestConfig({
       versionFile: {
         path: "./commented-version.ts",
-        template: "typescript" as any,
+        template: TemplateFormat.TYPESCRIPT,
       },
     });
     const utils = new VersionUtils(config);
@@ -558,7 +559,7 @@ Deno.test("VersionUtils - Security considerations", async (t) => {
     const config = createTestConfig({
       versionFile: {
         path: "./test-version.txt",
-        template: "custom" as any,
+        template: TemplateFormat.CUSTOM,
         patterns: {
           // This is a potentially problematic regex that could cause ReDoS
           // (Regular Expression Denial of Service) with exponential backtracking
@@ -588,7 +589,7 @@ Deno.test("VersionUtils - Security considerations", async (t) => {
     const config = createTestConfig({
       versionFile: {
         path: "./large-version.txt",
-        template: "custom" as any,
+        template: TemplateFormat.CUSTOM,
         patterns: {
           version: /VERSION = "([^"]+)"/,
         },
@@ -612,7 +613,7 @@ Deno.test("VersionUtils - Security considerations", async (t) => {
     const config = createTestConfig({
       versionFile: {
         path: "../../../etc/passwd",
-        template: "custom" as any,
+        template: TemplateFormat.CUSTOM,
       },
     });
     const utils = new VersionUtils(config);
