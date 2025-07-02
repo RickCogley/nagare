@@ -8,6 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.9.1] - 2025-07-02
 
 ### Changed
+
 - add comprehensive tests for logger (e4d1045)
 - add comprehensive tests for changelog-generator (d2f130a)
 - add comprehensive tests for version-utils (075b45c)

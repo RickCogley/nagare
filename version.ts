@@ -35,10 +35,10 @@ export const RELEASE_NOTES = {
     "add comprehensive tests for changelog-generator (d2f130a)",
     "add comprehensive tests for version-utils (075b45c)",
     "add initial git-operations tests (WIP) (48081f3)",
-    "format generated files after release (e6019b5)"
+    "format generated files after release (e6019b5)",
   ],
   "deprecated": [],
   "removed": [],
   "fixed": [],
-  "security": []
+  "security": [],
 } as const;

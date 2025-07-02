@@ -55,7 +55,7 @@ Deno.test("ChangelogGenerator - updateChangelog()", async (t) => {
     await cleanup();
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
+
     const releaseNotes = createTestReleaseNotes({
       version: "1.0.0",
       date: "2024-01-01",
@@ -65,13 +65,16 @@ Deno.test("ChangelogGenerator - updateChangelog()", async (t) => {
     await generator.updateChangelog(releaseNotes);
 
     const content = await Deno.readTextFile("./CHANGELOG.md");
-    
+
     // Check header
     assertStringIncludes(content, "# Changelog");
-    assertStringIncludes(content, "All notable changes to this project will be documented in this file.");
+    assertStringIncludes(
+      content,
+      "All notable changes to this project will be documented in this file.",
+    );
     assertStringIncludes(content, "Keep a Changelog");
     assertStringIncludes(content, "Semantic Versioning");
-    
+
     // Check release entry
     assertStringIncludes(content, "## [1.0.0] - 2024-01-01");
     assertStringIncludes(content, "### Added");
@@ -103,11 +106,11 @@ Deno.test("ChangelogGenerator - updateChangelog()", async (t) => {
     await generator.updateChangelog(secondRelease);
 
     const content = await Deno.readTextFile("./CHANGELOG.md");
-    
+
     // Check both releases are present
     assertStringIncludes(content, "## [1.1.0] - 2024-01-15");
     assertStringIncludes(content, "## [1.0.0] - 2024-01-01");
-    
+
     // Check new release is before old release
     const v110Index = content.indexOf("## [1.1.0]");
     const v100Index = content.indexOf("## [1.0.0]");
@@ -120,7 +123,7 @@ Deno.test("ChangelogGenerator - updateChangelog()", async (t) => {
     await cleanup();
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
+
     const releaseNotes = createTestReleaseNotes({
       version: "2.0.0",
       date: "2024-02-01",
@@ -135,28 +138,28 @@ Deno.test("ChangelogGenerator - updateChangelog()", async (t) => {
     await generator.updateChangelog(releaseNotes);
 
     const content = await Deno.readTextFile("./CHANGELOG.md");
-    
+
     // Check all sections are present in correct order
     assertStringIncludes(content, "### Added");
     assertStringIncludes(content, "- New API endpoint");
     assertStringIncludes(content, "- Documentation site");
-    
+
     assertStringIncludes(content, "### Changed");
     assertStringIncludes(content, "- Updated dependencies");
     assertStringIncludes(content, "- Improved performance");
-    
+
     assertStringIncludes(content, "### Deprecated");
     assertStringIncludes(content, "- Old API format");
     assertStringIncludes(content, "- Legacy config options");
-    
+
     assertStringIncludes(content, "### Removed");
     assertStringIncludes(content, "- Unused feature");
     assertStringIncludes(content, "- Obsolete dependency");
-    
+
     assertStringIncludes(content, "### Fixed");
     assertStringIncludes(content, "- Memory leak");
     assertStringIncludes(content, "- Type errors");
-    
+
     assertStringIncludes(content, "### Security");
     assertStringIncludes(content, "- Updated vulnerable dependency");
     assertStringIncludes(content, "- Fixed XSS vulnerability");
@@ -182,7 +185,7 @@ Deno.test("ChangelogGenerator - updateChangelog()", async (t) => {
     await cleanup();
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
+
     const releaseNotes = createTestReleaseNotes({
       version: "1.2.0",
       date: "2024-01-20",
@@ -194,11 +197,11 @@ Deno.test("ChangelogGenerator - updateChangelog()", async (t) => {
     await generator.updateChangelog(releaseNotes);
 
     const content = await Deno.readTextFile("./CHANGELOG.md");
-    
+
     // Check only non-empty sections are included
     assertStringIncludes(content, "### Added");
     assertStringIncludes(content, "### Fixed");
-    
+
     // Check empty sections are not included
     assertEquals(content.includes("### Changed"), false);
     assertEquals(content.includes("### Deprecated"), false);
@@ -212,7 +215,7 @@ Deno.test("ChangelogGenerator - updateChangelog()", async (t) => {
     await cleanup();
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
+
     const releaseNotes = createTestReleaseNotes({
       version: "1.0.1",
       date: "2024-01-10",
@@ -222,10 +225,10 @@ Deno.test("ChangelogGenerator - updateChangelog()", async (t) => {
     await generator.updateChangelog(releaseNotes);
 
     const content = await Deno.readTextFile("./CHANGELOG.md");
-    
+
     // Check release header is present
     assertStringIncludes(content, "## [1.0.1] - 2024-01-10");
-    
+
     // Check no sections are included
     assertEquals(content.includes("### Added"), false);
     assertEquals(content.includes("### Changed"), false);
@@ -239,7 +242,7 @@ Deno.test("ChangelogGenerator - updateChangelog()", async (t) => {
 
   await t.step("should preserve existing content when updating", async () => {
     await cleanup();
-    
+
     // Create initial changelog with custom content
     const initialContent = `# Changelog
 
@@ -266,7 +269,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
+
     const releaseNotes = createTestReleaseNotes({
       version: "1.0.0",
       date: "2024-01-01",
@@ -276,16 +279,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     await generator.updateChangelog(releaseNotes);
 
     const content = await Deno.readTextFile("./CHANGELOG.md");
-    
+
     // Check new release is added
     assertStringIncludes(content, "## [1.0.0] - 2024-01-01");
-    
+
     // Check old releases are preserved
     assertStringIncludes(content, "## [0.9.0] - 2023-12-15");
     assertStringIncludes(content, "## [0.8.0] - 2023-12-01");
-    
+
     // Check footer links are preserved
-    assertStringIncludes(content, "[0.9.0]: https://github.com/test/project/compare/v0.8.0...v0.9.0");
+    assertStringIncludes(
+      content,
+      "[0.9.0]: https://github.com/test/project/compare/v0.8.0...v0.9.0",
+    );
     assertStringIncludes(content, "[0.8.0]: https://github.com/test/project/releases/tag/v0.8.0");
 
     // Check order
@@ -300,7 +306,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     await cleanup();
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
+
     const releaseNotes = createTestReleaseNotes({
       version: "1.0.0",
       date: "2024-01-01",
@@ -316,7 +322,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     await generator.updateChangelog(releaseNotes);
 
     const content = await Deno.readTextFile("./CHANGELOG.md");
-    
+
     // Check special characters are preserved
     assertStringIncludes(content, "- Feature with `backticks`");
     assertStringIncludes(content, "- Feature with **bold** text");
@@ -331,7 +337,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     await cleanup();
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
+
     const releaseNotes = createTestReleaseNotes({
       version: "1.0.0",
       date: "2024-01-01",
@@ -356,7 +362,7 @@ Deno.test("ChangelogGenerator - Date formatting", async (t) => {
     await cleanup();
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
+
     const releaseNotes = createTestReleaseNotes({
       version: "1.0.0",
       date: "2024-12-25",
@@ -377,7 +383,7 @@ Deno.test("ChangelogGenerator - Multiple entries with same version", async (t) =
     await cleanup();
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
+
     // First update
     const releaseNotes1 = createTestReleaseNotes({
       version: "1.0.0",
@@ -395,7 +401,7 @@ Deno.test("ChangelogGenerator - Multiple entries with same version", async (t) =
     await generator.updateChangelog(releaseNotes2);
 
     const content = await Deno.readTextFile("./CHANGELOG.md");
-    
+
     // Both entries should be present
     assertStringIncludes(content, "## [1.0.0] - 2024-01-01");
     assertStringIncludes(content, "## [1.0.0] - 2024-01-02");
@@ -409,7 +415,7 @@ Deno.test("ChangelogGenerator - Multiple entries with same version", async (t) =
 Deno.test("ChangelogGenerator - Complex changelog preservation", async (t) => {
   await t.step("should preserve complex changelog structures", async () => {
     await cleanup();
-    
+
     // Create a complex changelog with various formatting
     const complexChangelog = `# Changelog
 
@@ -455,7 +461,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
+
     const releaseNotes = createTestReleaseNotes({
       version: "1.1.0",
       date: "2024-01-15",
@@ -466,34 +472,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     await generator.updateChangelog(releaseNotes);
 
     const content = await Deno.readTextFile("./CHANGELOG.md");
-    
+
     // Check new release is added
     assertStringIncludes(content, "## [Unreleased]");
     assertStringIncludes(content, "## [1.1.0] - 2024-01-15");
     assertStringIncludes(content, "## [1.0.0] - 2023-12-31");
-    
+
     // The insertion logic actually puts the new entry right after the header,
     // before any existing sections (including [Unreleased])
     const lines = content.split("\n");
     let unreleasedLineIndex = -1;
     let v110LineIndex = -1;
-    
+
     for (let i = 0; i < lines.length; i++) {
       if (lines[i].includes("## [Unreleased]")) unreleasedLineIndex = i;
       if (lines[i].includes("## [1.1.0]")) v110LineIndex = i;
     }
-    
+
     // The new version should be inserted before [Unreleased]
-    assertEquals(v110LineIndex < unreleasedLineIndex, true, "New release should come before [Unreleased]");
-    
+    assertEquals(
+      v110LineIndex < unreleasedLineIndex,
+      true,
+      "New release should come before [Unreleased]",
+    );
+
     // Check that all content is preserved
     assertStringIncludes(content, "Work in progress feature");
     assertStringIncludes(content, "Initial stable release");
     assertStringIncludes(content, "Initial beta release");
-    
+
     // Check footer is preserved
     assertStringIncludes(content, "## Links");
-    assertStringIncludes(content, "[Unreleased]: https://github.com/test/project/compare/v1.0.0...HEAD");
+    assertStringIncludes(
+      content,
+      "[Unreleased]: https://github.com/test/project/compare/v1.0.0...HEAD",
+    );
 
     await cleanup();
   });
@@ -504,7 +517,7 @@ Deno.test("ChangelogGenerator - Line endings and formatting", async (t) => {
     await cleanup();
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
+
     const releaseNotes = createTestReleaseNotes({
       version: "1.0.0",
       date: "2024-01-01",
@@ -515,22 +528,22 @@ Deno.test("ChangelogGenerator - Line endings and formatting", async (t) => {
     await generator.updateChangelog(releaseNotes);
 
     const content = await Deno.readTextFile("./CHANGELOG.md");
-    
+
     // Check proper spacing between sections
     const lines = content.split("\n");
-    
+
     // Find section indices
     let addedIndex = -1;
     let fixedIndex = -1;
-    
+
     for (let i = 0; i < lines.length; i++) {
       if (lines[i] === "### Added") addedIndex = i;
       if (lines[i] === "### Fixed") fixedIndex = i;
     }
-    
+
     // Check there's a blank line after the last item of Added section
     assertEquals(lines[addedIndex + 3], "", "Should have blank line after Added section");
-    
+
     // Check the structure
     assertEquals(lines[addedIndex + 1], "- Feature one");
     assertEquals(lines[addedIndex + 2], "- Feature two");
@@ -544,8 +557,10 @@ Deno.test("ChangelogGenerator - Edge cases", async (t) => {
     await cleanup();
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
-    const longMessage = "This is a very long commit message that contains a lot of details about the implementation. ".repeat(5);
+
+    const longMessage =
+      "This is a very long commit message that contains a lot of details about the implementation. "
+        .repeat(5);
     const releaseNotes = createTestReleaseNotes({
       version: "1.0.0",
       date: "2024-01-01",
@@ -564,7 +579,7 @@ Deno.test("ChangelogGenerator - Edge cases", async (t) => {
     await cleanup();
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
+
     const multiLineMessage = "First line\nSecond line\nThird line";
     const releaseNotes = createTestReleaseNotes({
       version: "1.0.0",
@@ -585,7 +600,7 @@ Deno.test("ChangelogGenerator - Edge cases", async (t) => {
     await cleanup();
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
+
     const releaseNotes = createTestReleaseNotes({
       version: "2.0.0-beta.1",
       date: "2024-01-01",
@@ -604,7 +619,7 @@ Deno.test("ChangelogGenerator - Edge cases", async (t) => {
     await cleanup();
     const config = createTestConfig();
     const generator = new ChangelogGenerator(config);
-    
+
     // Test with explicit empty arrays
     const releaseNotes1 = {
       version: "1.0.0",
