@@ -9,6 +9,22 @@ Nagare uses Vento for generating version files in various formats (TypeScript, J
 the development of releases 1.5.1-1.5.5, we encountered several template-related issues that
 provided deep insights into Vento's behavior.
 
+## Update: Security Clarification from Vento Developer
+
+The Vento developer provided important clarification about JSON escaping:
+
+> "the autoEscape with json is not a good idea because the json can be exported as an html
+> attribute, so it must be escaped (example:
+> `<div data='{{ object |> JSON.stringify |> escape }}'>`."
+
+This is a critical security point. In our documentation, we now emphasize:
+
+- **In HTML contexts**: Always escape JSON to prevent XSS: `{{ data |> jsonStringify |> escape }}`
+- **In code generation**: Use `|> safe` when generating TypeScript/JSON:
+  `{{ data |> jsonStringify |> safe }}`
+
+The context determines whether `|> safe` is appropriate or a security risk.
+
 ## Positive Aspects 👍
 
 ### 1. Clean, Minimal Syntax
@@ -95,12 +111,16 @@ prerelease:{{- if condition }}value{{- /if }}
 The TypeScript type definitions could be more specific:
 
 ```typescript
-// Current
+// What we assumed
 filters: Record<string, Function>;
 
-// Could be
-filters: Record<string, (value: unknown, ...args: unknown[]) => unknown>;
+// Actual type (per Vento developer)
+// The filters type is more complex - see https://github.com/ventojs/vento/blob/main/src/environment.ts#L44
+filters: Map<string, Filter>; // Where Filter has specific structure
 ```
+
+**Update**: The Vento developer clarified that the filters type is not a simple
+`Record<string, Function>`. The actual implementation uses a more sophisticated type system.
 
 ### 5. Debugging Tools
 
@@ -113,11 +133,14 @@ template issues. Currently, we had to write custom test scripts to inspect the c
 
 Consider adding more built-in filters:
 
-- `json` - Alias for `jsonStringify |> safe`
+- `json` - JSON.stringify with proper escaping (context-aware)
 - `default` - Provide default values for null/undefined
 - `trim` - Trim whitespace
-- `escape` / `unescape` - HTML entity handling
+- `escape` / `unescape` - HTML entity handling (already exists)
 - `date` - Common date formatting
+
+Note: A `json` filter should NOT automatically apply `|> safe` as this would be a security risk in
+HTML contexts. JSON must be escaped when used in HTML attributes to prevent XSS.
 
 ### 2. Template Validation Mode
 

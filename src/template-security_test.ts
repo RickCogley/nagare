@@ -164,7 +164,8 @@ Deno.test("template security - safe templates work in all modes", async () => {
     const result1 = await processor.processTemplate("Version: {{ version }}", mockTemplateData);
     assertEquals(result1, "Version: 1.2.3");
 
-    // Using filters
+    // Using filters - Note: |> safe is appropriate here for TypeScript/JSON generation
+    // In HTML contexts, JSON should be escaped to prevent XSS
     const result2 = await processor.processTemplate(
       "Components: {{ versionComponents |> jsonStringify |> safe }}",
       {
@@ -301,4 +302,37 @@ Deno.test("template security - prototype pollution prevention", async () => {
     Error,
     "validation failed",
   );
+});
+
+Deno.test("template security - JSON in HTML contexts should be escaped", async () => {
+  const processor = new TemplateProcessor(createMockConfig("strict"));
+
+  // Test data with potential XSS
+  const xssData = {
+    ...mockTemplateData,
+    metadata: {
+      userInput: '"></div><script>alert("XSS")</script>',
+      description: "Normal text",
+    },
+  };
+
+  // JSON in HTML attribute context - should be escaped (no |> safe)
+  const htmlAttr = await processor.processTemplate(
+    '<div data-config="{{ metadata |> jsonStringify }}">Content</div>',
+    xssData,
+  );
+
+  // Should escape quotes and HTML entities
+  assertEquals(htmlAttr.includes('alert("XSS")'), false); // Script should be escaped
+  assertEquals(htmlAttr.includes("&quot;"), true); // Quotes should be escaped
+
+  // For non-HTML contexts (TypeScript, JSON files), |> safe is appropriate
+  const tsCode = await processor.processTemplate(
+    "export const CONFIG = {{ metadata |> jsonStringify |> safe }};",
+    xssData,
+  );
+
+  // In TypeScript context, we want the raw JSON with properly escaped quotes
+  assertEquals(tsCode.includes('"userInput"'), true);
+  assertEquals(tsCode.includes("alert"), true); // The XSS attempt is present but as a string
 });
