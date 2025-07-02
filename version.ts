@@ -31,12 +31,12 @@ export const RELEASE_NOTES = {
   "date": "2025-07-02",
   "added": [],
   "changed": [
-    "format generated files after release (4031312)"
+    "format generated files after release (4031312)",
   ],
   "deprecated": [],
   "removed": [],
   "fixed": [
-    "suppress false positive security alerts with DevSkim comments (08246d2)"
+    "suppress false positive security alerts with DevSkim comments (08246d2)",
   ],
-  "security": []
+  "security": [],
 } as const;

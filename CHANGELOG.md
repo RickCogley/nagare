@@ -8,9 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.9.4] - 2025-07-02
 
 ### Changed
+
 - format generated files after release (4031312)
 
 ### Fixed
+
 - suppress false positive security alerts with DevSkim comments (08246d2)
 
 ## [1.9.3] - 2025-07-02
