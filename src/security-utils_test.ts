@@ -43,10 +43,12 @@ Deno.test("validateGitRef - invalid tags", () => {
 
 Deno.test("validateGitRef - valid commits", () => {
   assertEquals(validateGitRef("a1b2c3d", "commit"), "a1b2c3d");
-  assertEquals(validateGitRef("1234567890abcdef", "commit"), "1234567890abcdef"); // DevSkim: ignore DS162092
+  // DevSkim: ignore DS162092 - Test SHA values, not real secrets
+  assertEquals(validateGitRef("1234567890abcdef", "commit"), "1234567890abcdef");
   assertEquals(
+    // DevSkim: ignore DS162092 - Test SHA values, not real secrets
     validateGitRef("1234567890abcdef1234567890abcdef12345678", "commit"),
-    "1234567890abcdef1234567890abcdef12345678", // DevSkim: ignore DS162092
+    "1234567890abcdef1234567890abcdef12345678",
   );
 });
 

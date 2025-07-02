@@ -328,6 +328,7 @@ CONFIGURATION:
   export default {
     project: {
       name: 'My App',
+      // DevSkim: ignore DS440000 - Standard HTTPS URL in example
       repository: 'https://github.com/user/my-app'
     },
     versionFile: {
@@ -786,6 +787,7 @@ export default {
   project: {
     name: 'My Awesome App',
     description: 'A fantastic Deno application',
+    // DevSkim: ignore DS440000 - Standard HTTPS URLs in example configuration
     repository: 'https://github.com/user/my-app',
     homepage: 'https://my-app.deno.dev',
     license: 'MIT',
@@ -851,6 +853,7 @@ export const EXAMPLE_MINIMAL_CONFIG: string = `import type { NagareConfig } from
 export default {
   project: {
     name: 'My App',
+    // DevSkim: ignore DS440000 - Standard HTTPS URL in example
     repository: 'https://github.com/user/my-app'
   },
   
@@ -871,6 +874,7 @@ export const EXAMPLE_CUSTOM_TEMPLATE: string = `import type { NagareConfig } fro
 export default {
   project: {
     name: 'Salty',
+    // DevSkim: ignore DS440000 - Standard HTTPS URL in example
     repository: 'https://github.com/esolia/salty.esolia.pro'
   },
   

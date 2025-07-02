@@ -12,6 +12,7 @@ const config: NagareConfig = {
   project: {
     name: "Salty",
     description: "Browser-Native Secure Text Encryption",
+    // DevSkim: ignore DS440000 - Standard HTTPS URLs for repository and homepage
     repository: "https://github.com/esolia/salty.esolia.pro",
     homepage: "https://salty.esolia.pro",
     license: "MIT",

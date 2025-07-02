@@ -323,8 +323,10 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
     detector: (path: string): boolean => path.endsWith(".md") || path.endsWith(".markdown"),
     patterns: {
       // Version badges - more specific patterns to reduce false positives
+      // DevSkim: ignore DS137138 - Intentionally matches anywhere in content for badge URLs
       shieldsBadge:
         /(?:https?:\/\/)?shields\.io\/badge\/version-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g,
+      // DevSkim: ignore DS137138 - Intentionally matches anywhere in content for badge URLs
       imgShieldsBadge:
         /(?:https?:\/\/)?img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g,
       npmBadge: /npm\/v\/([^/\s)]+)/g,
@@ -950,9 +952,11 @@ export class PatternBuilder {
    */
   static versionBadge(badgeService: "shields.io" | "img.shields.io" | "any" = "any"): RegExp {
     if (badgeService === "shields.io") {
+      // DevSkim: ignore DS137138 - Intentionally matches anywhere in content for badge URLs
       return /(?:https?:\/\/)?shields\.io\/badge\/version-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g;
     }
     if (badgeService === "img.shields.io") {
+      // DevSkim: ignore DS137138 - Intentionally matches anywhere in content for badge URLs
       return /(?:https?:\/\/)?img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g;
     }
     // Match any common badge pattern with color suffix
