@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - 2025-07-02
+
+### Added
+
+- add git pre-commit hook for automatic formatting (f28d7c5)
+
+### Changed
+
+- clarify Vento JSON escaping security requirements (5037e97)
+- update CLAUDE.md with critical learnings from recent development (4ff5638)
+- format generated files after release (1bd7f7c)
+
 ## [1.9.4] - 2025-07-02
 
 ### Changed
