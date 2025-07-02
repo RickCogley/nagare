@@ -1,0 +1,13 @@
+#!/bin/sh
+# Pre-commit hook to format code before committing
+# This prevents formatting issues in CI
+
+echo "🎨 Running deno fmt before commit..."
+
+# Run deno fmt
+deno fmt
+
+# Add any formatted files back to the commit
+git add -u
+
+echo "✅ Code formatted successfully"

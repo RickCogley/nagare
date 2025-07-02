@@ -97,6 +97,18 @@ For every code change, verify:
 - Dependency security status (Deno modules)
 - Logging of security events (release operations, file modifications)
 
+## Initial Setup
+
+### Enable Git Hooks
+
+To prevent formatting issues in CI, enable the pre-commit hook:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+This will automatically format code before each commit, preventing formatting failures in CI.
+
 ## Development Commands
 
 ### Core Development Tasks
