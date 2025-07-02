@@ -31,12 +31,12 @@ export const RELEASE_NOTES = {
   "date": "2025-07-02",
   "added": [],
   "changed": [
-    "format generated files after release (3da077c)"
+    "format generated files after release (3da077c)",
   ],
   "deprecated": [],
   "removed": [],
   "fixed": [
-    "remove 'any' types from test files to pass lint checks (01586a5)"
+    "remove 'any' types from test files to pass lint checks (01586a5)",
   ],
-  "security": []
+  "security": [],
 } as const;

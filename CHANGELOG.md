@@ -8,9 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [1.9.2] - 2025-07-02
 
 ### Changed
+
 - format generated files after release (3da077c)
 
 ### Fixed
+
 - remove 'any' types from test files to pass lint checks (01586a5)
 
 ## [1.9.1] - 2025-07-02
