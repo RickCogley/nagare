@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        deno-version: ["1.40.x", "1.41.x", "1.42.x", "2.x"]
+        deno-version: ["2.4.x", "2.x"]
 
     steps:
       - name: Checkout code
@@ -51,18 +51,18 @@ jobs:
         run: deno lint
 
       - name: Type check
-        run: deno check **/*.ts
+        run: deno check --unstable-raw-imports **/*.ts
 
       - name: Run tests
-        run: deno test --allow-all
+        run: deno test --unstable-raw-imports --allow-all
 
       - name: Test CLI functionality
         run: |
           # Test CLI help
-          deno run --allow-all cli.ts --help
+          deno run --unstable-raw-imports --allow-all cli.ts --help
 
           # Test configuration validation
-          deno run --allow-all cli.ts --dry-run || true
+          deno run --unstable-raw-imports --allow-all cli.ts --dry-run || true
 
   # Test Node.js compatibility (for JSR runtime compatibility scoring)
   test-node:
