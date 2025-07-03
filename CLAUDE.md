@@ -117,6 +117,7 @@ This will automatically format code before each commit, preventing formatting fa
 # Testing
 deno task test              # Run all tests
 deno task test:watch        # Run tests in watch mode with --watch
+deno task test:coverage     # Run tests with coverage collection
 deno test path/to/test.ts   # Run a single test file
 
 # Code Quality
@@ -124,6 +125,10 @@ deno task lint              # Run linter
 deno task fmt               # Format code
 deno task check             # Type check all TypeScript files
 deno task build             # Full validation (check + test + lint + fmt check)
+
+# Dependency Management
+deno update                 # Update all dependencies to latest versions
+deno update --dry-run       # Preview dependency updates without applying
 
 # Development
 deno task dev               # Run with watch mode on examples/test.ts
@@ -264,11 +269,13 @@ Nagare uses Vento for template processing. Critical things to remember:
 
 2. **Auto-escaping and Security**:
    - Vento auto-escapes by default for security
-   - **ALWAYS escape JSON in HTML contexts** to prevent XSS:
-     - ✅ Correct: `<div data="{{ object |> jsonStringify |> escape }}">`
-     - ❌ Wrong: `<div data="{{ object |> jsonStringify |> safe }}">`
-   - Only use `|> safe` when you're certain the content is safe and in the right context
-   - For JavaScript contexts, escape differently than HTML contexts
+   - **Context matters for escaping**:
+     - **In code generation** (TS/JS/JSON/YAML): Use `|> safe` to output raw values
+     - **In HTML contexts**: ALWAYS escape to prevent XSS:
+       - ✅ Correct: `<div data="{{ object |> jsonStringify |> escape }}">`
+       - ❌ Wrong: `<div data="{{ object |> jsonStringify |> safe }}">`
+   - Nagare's built-in templates generate code, not HTML, so `|> safe` is correct
+   - If creating custom HTML templates, you MUST escape JSON in attributes
 
 3. **Whitespace Control**: Be careful with trim markers
    - `{{-` removes whitespace before, including newlines

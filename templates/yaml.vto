@@ -1,0 +1,27 @@
+version: "{{ version }}"
+buildInfo:
+  buildDate: "{{ buildDate }}"
+  gitCommit: "{{ gitCommit }}"
+  buildEnvironment: "{{ environment }}"
+  versionComponents:
+    major: {{ versionComponents.major |> safe }}
+    minor: {{ versionComponents.minor |> safe }}
+    patch: {{ versionComponents.patch |> safe }}
+    prerelease: {{ versionComponents.prerelease |> jsonStringify |> safe }}
+appInfo:
+  name: "{{ project.name }}"
+  description: "{{ project.description }}"
+  repository: "{{ project.repository }}"
+  {{- if project.author }}
+  author: "{{ project.author }}"
+  {{- /if }}
+  {{- if project.homepage }}
+  homepage: "{{ project.homepage }}"
+  {{- /if }}
+  {{- if project.license }}
+  license: "{{ project.license }}"
+  {{- /if }}
+{{- if metadata }}
+metadata: {{ metadata |> jsonStringify |> safe }}
+{{- /if }}
+releaseNotes: {{ releaseNotes |> jsonStringify |> safe }}

@@ -16,7 +16,9 @@
       "Bash(gh api:*)",
       "Bash(curl:*)",
       "Bash(rg:*)",
-      "Bash(deno doc:*)"
+      "Bash(deno doc:*)",
+      "WebFetch(domain:deno.com)",
+      "Bash(deno:*)"
     ],
     "deny": []
   }

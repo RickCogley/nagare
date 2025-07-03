@@ -387,7 +387,7 @@ git commit -m "feat!: redesign API"               # 1.0.0 → 2.0.0
 
 ## 📋 Requirements
 
-- **Deno** 1.40+
+- **Deno** 2.4+ (uses text imports feature)
 - **Git** repository with conventional commits
 - **GitHub CLI** (`gh`) for GitHub releases (optional)
 

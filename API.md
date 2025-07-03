@@ -284,6 +284,22 @@ Processes templates for version files and release notes.
 import { TemplateProcessor } from "jsr:@rick/nagare";
 ```
 
+#### Security Considerations
+
+Nagare uses Vento templates with auto-escaping for security. Important notes:
+
+1. **Built-in templates** generate code files (TypeScript, JSON, YAML) and use `|> safe` to output
+   raw values
+2. **Custom HTML templates** MUST escape JSON data in attributes to prevent XSS:
+   ```html
+   <!-- ✅ SAFE in HTML -->
+   <div data="{{ object |> jsonStringify |> escape }}">
+
+   <!-- ❌ DANGEROUS in HTML -->
+   <div data="{{ object |> jsonStringify |> safe }}">
+   ```
+3. **Context matters**: Use `|> safe` for code generation, `|> escape` for HTML output
+
 #### Static Methods
 
 ##### `processTemplate(template: string, context: TemplateContext): string`
