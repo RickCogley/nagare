@@ -80,7 +80,8 @@
       "coverage/",
       ".github/",
       "deno.lock",
-      "nagare.config.ts"
+      "nagare.config.ts",
+      "!locales/schema.ts"
     ]
   }
 }
