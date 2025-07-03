@@ -118,7 +118,7 @@ jobs:
           deno-version: "2.x"
 
       - name: Publish to JSR
-        run: deno publish --allow-slow-types
+        run: deno publish --unstable-raw-imports --allow-slow-types
         env:
           # JSR will automatically detect GitHub Actions provenance
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

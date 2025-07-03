@@ -20,7 +20,9 @@
       "WebFetch(domain:deno.com)",
       "Bash(deno:*)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:jsr.io)"
+      "WebFetch(domain:jsr.io)",
+      "Bash(git tag:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }
