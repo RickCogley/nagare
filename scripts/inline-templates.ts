@@ -15,7 +15,7 @@ import { walk } from "jsr:@std/fs@1.0.8/walk";
 import { ensureDir } from "jsr:@std/fs@1.0.8/ensure-dir";
 import { dirname, join, relative } from "jsr:@std/path@1.0.8";
 
-const SOURCE_DIR = "./src";
+const SOURCE_DIR = ".";
 const BUILD_DIR = "./build";
 const TEMPLATE_DIR = "./templates";
 
@@ -109,7 +109,7 @@ async function inlineTemplates() {
   for await (
     const entry of walk(SOURCE_DIR, {
       exts: [".ts", ".js"],
-      skip: [/test/, /_test\.ts$/],
+      skip: [/test/, /_test\.ts$/, /^build/, /^\.git/, /^node_modules/, /^scripts/],
     })
   ) {
     if (entry.isFile) {
@@ -138,6 +138,8 @@ async function inlineTemplates() {
     "jsr.json",
     "README.md",
     "LICENSE",
+    "locales/en.yaml",
+    "locales/ja.yaml",
   ];
 
   for (const file of additionalFiles) {
@@ -148,6 +150,7 @@ async function inlineTemplates() {
       if (file.endsWith(".ts") || file.endsWith(".js")) {
         await transformFile(sourcePath, outputPath);
       } else {
+        await ensureDir(dirname(outputPath));
         await Deno.copyFile(sourcePath, outputPath);
       }
 

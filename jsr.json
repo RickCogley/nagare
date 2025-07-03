@@ -67,6 +67,7 @@
       "types.ts",
       "config.ts",
       "src/",
+      "locales/",
       "README.md",
       "LICENSE",
       "CHANGELOG.md"
