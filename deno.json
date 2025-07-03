@@ -102,6 +102,7 @@
       "types.ts",
       "config.ts",
       "src/",
+      "templates/",
       "README.md",
       "LICENSE",
       "CHANGELOG.md"
