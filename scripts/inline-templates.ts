@@ -109,7 +109,7 @@ async function inlineTemplates() {
   for await (
     const entry of walk(SOURCE_DIR, {
       exts: [".ts", ".js"],
-      skip: [/test/, /_test\.ts$/, /^build/, /^\.git/, /^node_modules/, /^scripts/],
+      skip: [/test/, /_test\.ts$/, /^build/, /^\.git/, /^node_modules/, /^scripts/, /^docs/],
     })
   ) {
     if (entry.isFile) {

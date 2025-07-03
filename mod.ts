@@ -334,6 +334,12 @@ export type {
 } from "./types.ts";
 
 /**
+ * Translation key type for i18n support
+ * @since 2.1.0
+ */
+export type { TranslationKey } from "./locales/schema.ts";
+
+/**
  * File handler types
  * @since 1.1.0
  */

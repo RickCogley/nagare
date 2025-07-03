@@ -26,7 +26,8 @@
       "Bash(mkdir:*)",
       "Bash(gh run list:*)",
       "Bash(gh run view:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(git check-ignore:*)"
     ],
     "deny": []
   }
