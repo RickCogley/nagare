@@ -117,8 +117,15 @@ jobs:
         with:
           deno-version: "2.x"
 
+      - name: Inline templates for JSR
+        run: |
+          echo "📦 Preparing for JSR publish by inlining templates..."
+          deno run -A scripts/inline-templates.ts
+
       - name: Publish to JSR
-        run: deno publish --unstable-raw-imports --allow-slow-types
+        run: |
+          cd build
+          deno publish --allow-slow-types
         env:
           # JSR will automatically detect GitHub Actions provenance
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
