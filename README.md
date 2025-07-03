@@ -385,6 +385,19 @@ git commit -m "fix: resolve login bug"            # 1.0.0 → 1.0.1
 git commit -m "feat!: redesign API"               # 1.0.0 → 2.0.0
 ```
 
+### ⚠️ Breaking Change Protection
+
+Nagare validates version bumps to ensure semantic versioning compliance:
+
+- **Breaking changes require major bump**: If commits contain `BREAKING CHANGE:` or `!`, only a
+  major version bump is allowed
+- **Automatic detection**: When no bump type is specified, Nagare automatically selects the
+  appropriate version based on commits
+- **Error prevention**: Using `nagare:minor` or `nagare:patch` with breaking changes will fail with
+  a clear error message
+
+This protection ensures you never accidentally release breaking changes as minor or patch versions.
+
 ## 📋 Requirements
 
 - **Deno** 2.4+ (uses text imports feature)

@@ -3,7 +3,8 @@
  */
 
 import { parse } from "@std/semver";
-import type { BumpType, ConventionalCommit, NagareConfig } from "../types.ts";
+import { BumpType } from "../types.ts";
+import type { ConventionalCommit, NagareConfig } from "../types.ts";
 import { ErrorCodes, ErrorFactory, NagareError } from "./enhanced-error.ts";
 
 /**
@@ -78,14 +79,86 @@ export class VersionUtils {
   ): string {
     const semver = parse(currentVersion);
 
+    // Determine minimum required bump type based on commits
+    const hasBreaking = commits.some((c) => c.breakingChange);
+    const hasFeatures = commits.some((c) => c.type === "feat");
+    const hasFixes = commits.some((c) => c.type === "fix");
+
+    let minimumBumpType: BumpType;
+    if (hasBreaking) {
+      minimumBumpType = BumpType.MAJOR;
+    } else if (hasFeatures) {
+      minimumBumpType = BumpType.MINOR;
+    } else {
+      minimumBumpType = BumpType.PATCH;
+    }
+
     if (bumpType) {
-      // Manual version bump
+      // Validate that requested bump type meets minimum requirements
+      const bumpHierarchy = {
+        [BumpType.PATCH]: 0,
+        [BumpType.MINOR]: 1,
+        [BumpType.MAJOR]: 2,
+      };
+      const requestedLevel = bumpHierarchy[bumpType];
+      const minimumLevel = bumpHierarchy[minimumBumpType];
+
+      if (requestedLevel < minimumLevel) {
+        const commitDetails: string[] = [];
+
+        if (hasBreaking) {
+          const breakingCommits = commits.filter((c) => c.breakingChange);
+          commitDetails.push(
+            `Found ${breakingCommits.length} breaking change(s):`,
+            ...breakingCommits.map((c) => `  - ${c.raw || `${c.type}: ${c.description}`}`).slice(
+              0,
+              3,
+            ),
+            breakingCommits.length > 3 ? `  ... and ${breakingCommits.length - 3} more` : "",
+          );
+        } else if (hasFeatures) {
+          const featureCommits = commits.filter((c) => c.type === "feat");
+          commitDetails.push(
+            `Found ${featureCommits.length} feature(s):`,
+            ...featureCommits.map((c) => `  - ${c.raw || `feat: ${c.description}`}`).slice(0, 3),
+            featureCommits.length > 3 ? `  ... and ${featureCommits.length - 3} more` : "",
+          );
+        }
+
+        throw new NagareError(
+          `Cannot use ${bumpType} bump: commits require at least ${minimumBumpType}`,
+          ErrorCodes.VERSION_BUMP_INVALID,
+          [
+            `Your commits indicate a minimum ${minimumBumpType} version bump is required`,
+            "",
+            ...commitDetails.filter((line) => line !== ""),
+            "",
+            "Options:",
+            `1. Use '${minimumBumpType}' or higher: nagare release ${minimumBumpType}`,
+            "2. Let Nagare auto-detect: nagare release",
+            minimumBumpType === BumpType.MAJOR
+              ? "3. Remove BREAKING CHANGE from commits if not intended"
+              : minimumBumpType === BumpType.MINOR
+              ? "3. Change feat: to fix: or another type if it's not a new feature"
+              : "",
+          ].filter((line) => line !== ""),
+          {
+            requestedBumpType: bumpType,
+            minimumBumpType,
+            hasBreakingChanges: hasBreaking,
+            hasFeatures,
+            hasFixes,
+          },
+        );
+      }
+
+      // Manual version bump (requested type meets minimum requirements)
       switch (bumpType) {
-        case "major":
+        case BumpType.MAJOR:
           return `${semver.major + 1}.0.0`;
-        case "minor":
+        case BumpType.MINOR:
           return `${semver.major}.${semver.minor + 1}.0`;
-        case "patch":
+        case BumpType.PATCH:
           return `${semver.major}.${semver.minor}.${semver.patch + 1}`;
         default:
           throw new NagareError(
@@ -104,11 +177,7 @@ export class VersionUtils {
       }
     }
 
-    // Auto-calculate based on conventional commits
-    const hasBreaking = commits.some((c) => c.breakingChange);
-    const hasFeatures = commits.some((c) => c.type === "feat");
-    const hasFixes = commits.some((c) => c.type === "fix");
-
+    // Auto-calculate based on conventional commits (no explicit bump type)
     if (hasBreaking) {
       return `${semver.major + 1}.0.0`;
     } else if (hasFeatures) {

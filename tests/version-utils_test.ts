@@ -208,6 +208,141 @@ Deno.test("VersionUtils - calculateNewVersion()", async (t) => {
     );
   });
 
+  await t.step("Should reject minor bump with breaking changes", () => {
+    const commits: ConventionalCommit[] = [
+      {
+        type: "feat",
+        description: "add new feature",
+        breakingChange: true,
+        hash: "abc123",
+        date: "2024-01-01",
+        raw: "feat!: add new feature with breaking changes",
+      },
+    ];
+    assertThrows(
+      () => utils.calculateNewVersion("1.2.3", commits, BumpType.MINOR),
+      NagareError,
+      "Cannot use minor bump: commits require at least major",
+    );
+  });
+
+  await t.step("Should reject patch bump with breaking changes", () => {
+    const commits: ConventionalCommit[] = [
+      {
+        type: "fix",
+        description: "fix bug",
+        breakingChange: true,
+        hash: "def456",
+        date: "2024-01-01",
+        raw: "fix!: fix bug with breaking changes",
+      },
+      {
+        type: "feat",
+        description: "another breaking change",
+        breakingChange: true,
+        hash: "ghi789",
+        date: "2024-01-01",
+        raw: "feat: another feature\n\nBREAKING CHANGE: API changed",
+      },
+    ];
+    assertThrows(
+      () => utils.calculateNewVersion("1.2.3", commits, BumpType.PATCH),
+      NagareError,
+      "Cannot use patch bump: commits require at least major",
+    );
+  });
+
+  await t.step("Should reject patch bump when features require minor", () => {
+    const commits: ConventionalCommit[] = [
+      {
+        type: "feat",
+        description: "add new feature",
+        hash: "abc123",
+        date: "2024-01-01",
+        raw: "feat: add new feature",
+      },
+      {
+        type: "fix",
+        description: "fix a bug",
+        hash: "def456",
+        date: "2024-01-01",
+      },
+    ];
+    assertThrows(
+      () => utils.calculateNewVersion("1.2.3", commits, BumpType.PATCH),
+      NagareError,
+      "Cannot use patch bump: commits require at least minor",
+    );
+  });
+
+  await t.step("Should allow major bump with breaking changes", () => {
+    const commits: ConventionalCommit[] = [
+      {
+        type: "feat",
+        description: "add new feature",
+        breakingChange: true,
+        hash: "abc123",
+        date: "2024-01-01",
+        raw: "feat!: add new feature with breaking changes",
+      },
+    ];
+    const newVersion = utils.calculateNewVersion("1.2.3", commits, BumpType.MAJOR);
+    assertEquals(newVersion, "2.0.0");
+  });
+
+  await t.step("Should allow minor bump when features require minor", () => {
+    const commits: ConventionalCommit[] = [
+      {
+        type: "feat",
+        description: "add new feature",
+        hash: "abc123",
+        date: "2024-01-01",
+      },
+      {
+        type: "fix",
+        description: "fix bug",
+        hash: "def456",
+        date: "2024-01-01",
+      },
+    ];
+    const newVersion = utils.calculateNewVersion("1.2.3", commits, BumpType.MINOR);
+    assertEquals(newVersion, "1.3.0");
+  });
+
+  await t.step("Should allow major bump when only patch required", () => {
+    const commits: ConventionalCommit[] = [
+      {
+        type: "fix",
+        description: "fix bug",
+        hash: "abc123",
+        date: "2024-01-01",
+      },
+      {
+        type: "docs",
+        description: "update docs",
+        hash: "def456",
+        date: "2024-01-01",
+      },
+    ];
+    // Allowing major bump even though only patch is required
+    const newVersion = utils.calculateNewVersion("1.2.3", commits, BumpType.MAJOR);
+    assertEquals(newVersion, "2.0.0");
+  });
+
+  await t.step("Should allow minor bump when only patch required", () => {
+    const commits: ConventionalCommit[] = [
+      {
+        type: "fix",
+        description: "fix bug",
+        hash: "abc123",
+        date: "2024-01-01",
+      },
+    ];
+    // Allowing minor bump even though only patch is required
+    const newVersion = utils.calculateNewVersion("1.2.3", commits, BumpType.MINOR);
+    assertEquals(newVersion, "1.3.0");
+  });
+
   await t.step("Auto-calculate - breaking change", () => {
     const commits: ConventionalCommit[] = [
       {
