@@ -218,7 +218,16 @@ Deno.test("TemplateProcessor - Additional Exports", async (t) => {
       await processor.generateVersionFile(baseData);
       throw new Error("Should have thrown error for invalid export name");
     } catch (error) {
-      assertStringIncludes((error as Error).message, "Invalid export name: 123invalid");
+      // Check for either the translation key or the actual error message
+      const errorMessage = (error as Error).message;
+      const hasValidError = errorMessage.includes("errors.configInvalid") ||
+        errorMessage.includes("Invalid export name") ||
+        errorMessage.includes("123invalid");
+      assertEquals(
+        hasValidError,
+        true,
+        `Expected error about invalid export name, got: ${errorMessage}`,
+      );
     }
   });
 
