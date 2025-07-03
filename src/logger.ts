@@ -4,6 +4,20 @@
  */
 
 import { NagareError } from "./enhanced-error.ts";
+import { getI18n, t } from "./i18n.ts";
+import type { TranslationKey } from "../locales/schema.ts";
+
+/**
+ * Helper to check if i18n is available
+ */
+function hasI18n(): boolean {
+  try {
+    getI18n();
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Log levels in order of severity
@@ -87,5 +101,72 @@ export class Logger {
 
     // Always log security events regardless of log level
     console.log(`[SECURITY AUDIT] ${JSON.stringify(auditEntry)}`);
+  }
+
+  // i18n-enabled logging methods
+
+  /**
+   * Log a message with i18n support
+   * Falls back to the key if i18n is not available
+   */
+  log(
+    level: LogLevel,
+    messageKeyOrString: string | TranslationKey,
+    params?: Record<string, unknown>,
+  ): void {
+    const message = hasI18n() && this.isTranslationKey(messageKeyOrString)
+      ? t(messageKeyOrString as TranslationKey, params)
+      : messageKeyOrString;
+
+    switch (level) {
+      case LogLevel.DEBUG:
+        this.debug(message);
+        break;
+      case LogLevel.INFO:
+        this.info(message);
+        break;
+      case LogLevel.WARN:
+        this.warn(message);
+        break;
+      case LogLevel.ERROR:
+        this.error(message);
+        break;
+    }
+  }
+
+  /**
+   * Log debug information with i18n support
+   */
+  debugI18n(key: TranslationKey, params?: Record<string, unknown>): void {
+    this.log(LogLevel.DEBUG, key, params);
+  }
+
+  /**
+   * Log info with i18n support
+   */
+  infoI18n(key: TranslationKey, params?: Record<string, unknown>): void {
+    this.log(LogLevel.INFO, key, params);
+  }
+
+  /**
+   * Log warning with i18n support
+   */
+  warnI18n(key: TranslationKey, params?: Record<string, unknown>): void {
+    this.log(LogLevel.WARN, key, params);
+  }
+
+  /**
+   * Log error with i18n support
+   */
+  errorI18n(key: TranslationKey, params?: Record<string, unknown>): void {
+    this.log(LogLevel.ERROR, key, params);
+  }
+
+  /**
+   * Check if a string could be a translation key
+   * Simple heuristic: contains dots (e.g., "cli.release.success")
+   */
+  private isTranslationKey(str: string): boolean {
+    return str.includes(".");
   }
 }

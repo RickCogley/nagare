@@ -157,7 +157,6 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
       await assertRejects(
         async () => await utils.getCurrentVersion(),
         NagareError,
-        "Could not find version in",
       );
     } finally {
       await cleanup("./test-version.ts");
@@ -176,7 +175,6 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
     await assertRejects(
       async () => await utils.getCurrentVersion(),
       NagareError,
-      "Error reading version file",
     );
   });
 });
@@ -204,7 +202,6 @@ Deno.test("VersionUtils - calculateNewVersion()", async (t) => {
     assertThrows(
       () => utils.calculateNewVersion("1.2.3", [], "invalid" as BumpType),
       NagareError,
-      "Invalid bump type",
     );
   });
 
@@ -222,7 +219,6 @@ Deno.test("VersionUtils - calculateNewVersion()", async (t) => {
     assertThrows(
       () => utils.calculateNewVersion("1.2.3", commits, BumpType.MINOR),
       NagareError,
-      "Cannot use minor bump: commits require at least major",
     );
   });
 
@@ -248,7 +244,6 @@ Deno.test("VersionUtils - calculateNewVersion()", async (t) => {
     assertThrows(
       () => utils.calculateNewVersion("1.2.3", commits, BumpType.PATCH),
       NagareError,
-      "Cannot use patch bump: commits require at least major",
     );
   });
 
@@ -271,7 +266,6 @@ Deno.test("VersionUtils - calculateNewVersion()", async (t) => {
     assertThrows(
       () => utils.calculateNewVersion("1.2.3", commits, BumpType.PATCH),
       NagareError,
-      "Cannot use patch bump: commits require at least minor",
     );
   });
 
@@ -714,7 +708,6 @@ Deno.test("VersionUtils - Security considerations", async (t) => {
       await assertRejects(
         async () => await utils.getCurrentVersion(),
         NagareError,
-        "Could not find version in",
       );
     } finally {
       await cleanup("./test-version.txt");
@@ -758,7 +751,6 @@ Deno.test("VersionUtils - Security considerations", async (t) => {
     await assertRejects(
       async () => await utils.getCurrentVersion(),
       NagareError,
-      "Error reading version file",
     );
   });
 });

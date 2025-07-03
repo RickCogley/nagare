@@ -6,6 +6,7 @@
  */
 
 import type { AdditionalExport, NagareConfig, TemplateData } from "../types.ts";
+import type { TranslationKey } from "../locales/schema.ts";
 import { BUILT_IN_TEMPLATES, TemplateFormat } from "../config.ts";
 import { createSecurityLog, sanitizeErrorMessage } from "./security-utils.ts";
 import { Logger } from "./logger.ts";
@@ -124,18 +125,14 @@ export class TemplateProcessor {
       } else {
         // In strict and moderate mode, block dangerous templates
         throw new NagareError(
-          "Template validation failed",
+          "errors.templateSecurityViolation" as TranslationKey,
           ErrorCodes.TEMPLATE_SECURITY_VIOLATION,
-          [
-            "Remove dangerous patterns from the template",
-            "Check for JavaScript execution attempts, file system access, or network calls",
-            "Use only safe template variables and filters",
-            "Consider using 'disabled' sandbox mode if you need advanced features (security risk)",
-          ],
           {
-            validationError: validation.error,
-            sandboxMode,
-            hint: "Templates are restricted for security. See OWASP A03 - Injection",
+            context: {
+              validationError: validation.error,
+              sandboxMode,
+              hint: "Templates are restricted for security. See OWASP A03 - Injection",
+            },
           },
         );
       }
@@ -163,19 +160,15 @@ export class TemplateProcessor {
       }
 
       throw new NagareError(
-        "Template processing failed",
+        "errors.templateProcessingFailed" as TranslationKey,
         ErrorCodes.TEMPLATE_PROCESSING_FAILED,
-        [
-          "Check template syntax - use {{ variable }} for variables",
-          "Verify all variables used in the template exist in the data",
-          "Use |> for filters, not | (e.g., {{ value |> jsonStringify }})",
-          "Check for unclosed tags or mismatched brackets",
-        ],
         {
-          error: sanitizeErrorMessage(error, false),
-          templateLength: template.length,
-          dataKeys: Object.keys(enhancedData),
-          hint: "Common issue: Using | instead of |> for filters in Vento",
+          context: {
+            error: sanitizeErrorMessage(error, false),
+            templateLength: template.length,
+            dataKeys: Object.keys(enhancedData),
+            hint: "Common issue: Using | instead of |> for filters in Vento",
+          },
         },
       );
     }
@@ -271,16 +264,16 @@ export class TemplateProcessor {
       // For custom templates, validate and use the custom template
       if (!versionFile.customTemplate) {
         throw new NagareError(
-          "Custom template specified but no customTemplate provided",
+          "errors.configMissingRequired" as TranslationKey,
           ErrorCodes.CONFIG_MISSING_REQUIRED,
-          [
-            "Add 'customTemplate' property to versionFile configuration",
-            "Use a built-in template instead (typescript, json, yaml, text)",
-            "Example: versionFile: { template: 'custom', customTemplate: 'export const VERSION = \"{{ version }}\";' }",
-          ],
           {
-            configuredTemplate: templateFormat,
-            availableTemplates: Object.keys(BUILT_IN_TEMPLATES),
+            context: {
+              configuredTemplate: templateFormat,
+              availableTemplates: Object.keys(BUILT_IN_TEMPLATES),
+            },
+            suggestions: [
+              "suggestions.checkConfig" as TranslationKey,
+            ],
           },
         );
       }
@@ -290,17 +283,17 @@ export class TemplateProcessor {
 
       if (!template) {
         throw new NagareError(
-          `Unknown template format: ${templateFormat}`,
+          "errors.templateInvalid" as TranslationKey,
           ErrorCodes.TEMPLATE_INVALID,
-          [
-            "Use one of the built-in template formats: typescript, json, yaml, text",
-            "Or use 'custom' with a customTemplate property",
-            "Check for typos in the template format name",
-          ],
           {
-            providedFormat: templateFormat,
-            availableFormats: Object.keys(BUILT_IN_TEMPLATES),
-            example: "versionFile: { template: 'typescript' }",
+            context: {
+              providedFormat: templateFormat,
+              availableFormats: Object.keys(BUILT_IN_TEMPLATES),
+              example: "versionFile: { template: 'typescript' }",
+            },
+            suggestions: [
+              "suggestions.checkConfig" as TranslationKey,
+            ],
           },
         );
       }
@@ -363,18 +356,17 @@ export class TemplateProcessor {
       // Validate export name
       if (!/^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(exp.name)) {
         throw new NagareError(
-          `Invalid export name: ${exp.name}`,
+          "errors.configInvalid" as TranslationKey,
           ErrorCodes.CONFIG_INVALID,
-          [
-            "Use valid JavaScript identifier names",
-            "Start with a letter, underscore, or dollar sign",
-            "Use only letters, numbers, underscores, or dollar signs",
-            "Avoid JavaScript reserved words",
-          ],
           {
-            invalidName: exp.name,
-            validPattern: "Must match: /^[a-zA-Z_$][a-zA-Z0-9_$]*$/",
-            examples: ["VERSION_INFO", "buildMetadata", "_internal", "$version"],
+            context: {
+              invalidName: exp.name,
+              validPattern: "Must match: /^[a-zA-Z_$][a-zA-Z0-9_$]*$/",
+              examples: ["VERSION_INFO", "buildMetadata", "_internal", "$version"],
+            },
+            suggestions: [
+              "suggestions.checkConfig" as TranslationKey,
+            ],
           },
         );
       }
@@ -391,17 +383,17 @@ export class TemplateProcessor {
         case "var": {
           if (exp.value === undefined) {
             throw new NagareError(
-              `Export ${exp.name} of type ${exp.type} requires a value`,
+              "errors.configMissingRequired" as TranslationKey,
               ErrorCodes.CONFIG_MISSING_REQUIRED,
-              [
-                "Add a 'value' property to the export configuration",
-                "Example: { name: 'BUILD_DATE', type: 'const', value: new Date().toISOString() }",
-                "For dynamic values, consider using a function export instead",
-              ],
               {
-                exportName: exp.name,
-                exportType: exp.type,
-                configuration: exp,
+                context: {
+                  exportName: exp.name,
+                  exportType: exp.type,
+                  configuration: exp,
+                },
+                suggestions: [
+                  "suggestions.checkConfig" as TranslationKey,
+                ],
               },
             );
           }
@@ -417,17 +409,17 @@ export class TemplateProcessor {
         case "class": {
           if (!exp.content) {
             throw new NagareError(
-              `Export ${exp.name} of type class requires content`,
+              "errors.configMissingRequired" as TranslationKey,
               ErrorCodes.CONFIG_MISSING_REQUIRED,
-              [
-                "Add a 'content' property with the class body",
-                "Example: { name: 'Version', type: 'class', content: 'constructor() { this.value = VERSION; }' }",
-                "The content should be the class body without the class declaration",
-              ],
               {
-                exportName: exp.name,
-                exportType: exp.type,
-                configuration: exp,
+                context: {
+                  exportName: exp.name,
+                  exportType: exp.type,
+                  configuration: exp,
+                },
+                suggestions: [
+                  "suggestions.checkConfig" as TranslationKey,
+                ],
               },
             );
           }
@@ -439,17 +431,17 @@ export class TemplateProcessor {
         case "function": {
           if (!exp.content) {
             throw new NagareError(
-              `Export ${exp.name} of type function requires content`,
+              "errors.configMissingRequired" as TranslationKey,
               ErrorCodes.CONFIG_MISSING_REQUIRED,
-              [
-                "Add a 'content' property with the function signature and body",
-                "Example: { name: 'getVersion', type: 'function', content: '() { return VERSION; }' }",
-                "Include parameters and body, but not the 'function' keyword",
-              ],
               {
-                exportName: exp.name,
-                exportType: exp.type,
-                configuration: exp,
+                context: {
+                  exportName: exp.name,
+                  exportType: exp.type,
+                  configuration: exp,
+                },
+                suggestions: [
+                  "suggestions.checkConfig" as TranslationKey,
+                ],
               },
             );
           }
@@ -463,19 +455,17 @@ export class TemplateProcessor {
         case "type": {
           if (!exp.content) {
             throw new NagareError(
-              `Export ${exp.name} of type ${exp.type} requires content`,
+              "errors.configMissingRequired" as TranslationKey,
               ErrorCodes.CONFIG_MISSING_REQUIRED,
-              [
-                `Add a 'content' property with the ${exp.type} definition`,
-                exp.type === "interface"
-                  ? "Example: { name: 'VersionInfo', type: 'interface', content: '{ version: string; date: string; }' }"
-                  : "Example: { name: 'VersionString', type: 'type', content: 'string' }",
-                `The content should be the ${exp.type} body/definition only`,
-              ],
               {
-                exportName: exp.name,
-                exportType: exp.type,
-                configuration: exp,
+                context: {
+                  exportName: exp.name,
+                  exportType: exp.type,
+                  configuration: exp,
+                },
+                suggestions: [
+                  "suggestions.checkConfig" as TranslationKey,
+                ],
               },
             );
           }
@@ -488,17 +478,17 @@ export class TemplateProcessor {
         case "enum": {
           if (!exp.content) {
             throw new NagareError(
-              `Export ${exp.name} of type enum requires content`,
+              "errors.configMissingRequired" as TranslationKey,
               ErrorCodes.CONFIG_MISSING_REQUIRED,
-              [
-                "Add a 'content' property with the enum members",
-                "Example: { name: 'ReleaseType', type: 'enum', content: 'Major = 'major', Minor = 'minor', Patch = 'patch'' }",
-                "The content should be the enum body without the enum declaration",
-              ],
               {
-                exportName: exp.name,
-                exportType: exp.type,
-                configuration: exp,
+                context: {
+                  exportName: exp.name,
+                  exportType: exp.type,
+                  configuration: exp,
+                },
+                suggestions: [
+                  "suggestions.checkConfig" as TranslationKey,
+                ],
               },
             );
           }
@@ -508,26 +498,26 @@ export class TemplateProcessor {
 
         default:
           throw new NagareError(
-            `Unsupported export type: ${exp.type}`,
+            "errors.configInvalid" as TranslationKey,
             ErrorCodes.CONFIG_INVALID,
-            [
-              "Use one of the supported export types: const, let, var, function, class, interface, type, enum",
-              "Check for typos in the export type",
-              "For other export needs, consider using custom template content",
-            ],
             {
-              providedType: exp.type,
-              supportedTypes: [
-                "const",
-                "let",
-                "var",
-                "function",
-                "class",
-                "interface",
-                "type",
-                "enum",
+              context: {
+                providedType: exp.type,
+                supportedTypes: [
+                  "const",
+                  "let",
+                  "var",
+                  "function",
+                  "class",
+                  "interface",
+                  "type",
+                  "enum",
+                ],
+                exportName: exp.name,
+              },
+              suggestions: [
+                "suggestions.checkConfig" as TranslationKey,
               ],
-              exportName: exp.name,
             },
           );
       }

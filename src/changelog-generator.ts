@@ -94,6 +94,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    * Insert new entry into existing changelog
    */
   private insertNewEntry(existingContent: string, newEntry: string): string {
+    // Extract version from new entry
+    const versionMatch = newEntry.match(/## \[([^\]]+)\]/);
+    if (versionMatch) {
+      const version = versionMatch[1];
+
+      // Check if this version already exists
+      const versionPattern = new RegExp(
+        `## \\[${version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\]`,
+      );
+      if (versionPattern.test(existingContent)) {
+        // Version already exists, replace it
+        const versionStart = existingContent.search(versionPattern);
+        const nextVersionStart = existingContent.indexOf("\n## ", versionStart + 1);
+
+        if (nextVersionStart === -1) {
+          // This is the last version entry
+          return existingContent.slice(0, versionStart) + newEntry;
+        } else {
+          // There are more versions after this one
+          return existingContent.slice(0, versionStart) + newEntry +
+            existingContent.slice(nextVersionStart + 1);
+        }
+      }
+    }
+
+    // Version doesn't exist, add it normally
     const headerEnd = existingContent.indexOf("\n## ");
 
     if (headerEnd === -1) {

@@ -5,6 +5,31 @@
  * @since 1.9.0
  */
 
+import { getI18n, t } from "./i18n.ts";
+import type { TranslationKey } from "../locales/schema.ts";
+
+/**
+ * Helper to check if i18n is available
+ */
+function hasI18n(): boolean {
+  try {
+    getI18n();
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Options for i18n-enabled error creation
+ */
+export interface ErrorOptions {
+  params?: Record<string, unknown>;
+  suggestions?: TranslationKey[];
+  context?: Record<string, unknown>;
+  docsUrl?: string;
+}
+
 /**
  * Enhanced error class for Nagare with actionable suggestions
  *
@@ -32,23 +57,64 @@
  * @see {@link ErrorFactory} for pre-built error constructors
  */
 export class NagareError extends Error {
+  public readonly suggestions?: string[];
+  public readonly docsUrl?: string;
+  public readonly context?: Record<string, unknown>;
+
   /**
-   * Create an enhanced error with suggestions
-   *
-   * @param message - Primary error message
-   * @param code - Error code for programmatic handling
-   * @param suggestions - List of actionable suggestions to resolve the error
-   * @param context - Additional context information
-   * @param docsUrl - Link to relevant documentation
+   * Create an enhanced error (backward compatible string version)
+   * @deprecated Use the i18n version with TranslationKey instead
    */
   constructor(
     message: string,
+    code: string,
+    suggestions?: string[],
+    context?: Record<string, unknown>,
+    docsUrl?: string,
+  );
+
+  /**
+   * Create an enhanced error with i18n support
+   */
+  constructor(
+    messageKey: TranslationKey,
+    code: string,
+    options?: ErrorOptions,
+  );
+
+  constructor(
+    messageOrKey: string | TranslationKey,
     public readonly code: string,
-    public readonly suggestions?: string[],
-    public readonly context?: Record<string, unknown>,
-    public readonly docsUrl?: string,
+    suggestionsOrOptions?: string[] | ErrorOptions,
+    context?: Record<string, unknown>,
+    docsUrl?: string,
   ) {
+    // Detect if using i18n based on whether third param is an object (not array)
+    const isI18n = typeof suggestionsOrOptions === "object" &&
+      !Array.isArray(suggestionsOrOptions);
+
+    // Determine message before calling super
+    const message = (isI18n && hasI18n())
+      ? t(messageOrKey as TranslationKey, (suggestionsOrOptions as ErrorOptions).params)
+      : messageOrKey as string;
+
+    // Call super with determined message
     super(message);
+
+    // Set properties based on API type
+    if (isI18n && hasI18n()) {
+      // New i18n path
+      const options = suggestionsOrOptions as ErrorOptions;
+      this.suggestions = options.suggestions?.map((key) => t(key));
+      this.context = options.context;
+      this.docsUrl = options.docsUrl;
+    } else {
+      // Legacy path
+      this.suggestions = suggestionsOrOptions as string[];
+      this.context = context;
+      this.docsUrl = docsUrl;
+    }
+
     this.name = "NagareError";
 
     // Ensure proper prototype chain for instanceof checks
@@ -306,13 +372,28 @@ export class ErrorFactory {
    * ```
    */
   static gitNotInitialized(): NagareError {
+    if (hasI18n()) {
+      return new NagareError(
+        "errors.gitNotRepo" as TranslationKey,
+        ErrorCodes.GIT_NOT_INITIALIZED,
+        {
+          suggestions: [
+            "suggestions.runGitInit" as TranslationKey,
+            "suggestions.navigateToRepo" as TranslationKey,
+            "suggestions.checkProjectDir" as TranslationKey,
+          ],
+        },
+      );
+    }
+
+    // Fallback to hardcoded (backward compatible)
     return new NagareError(
       "Not in a git repository",
       ErrorCodes.GIT_NOT_INITIALIZED,
       [
         "Initialize a git repository: git init",
         "Navigate to an existing git repository",
-        "If you just cloned, ensure you're in the project directory",
+        "Check that you're in the correct project directory",
       ],
     );
   }
@@ -330,13 +411,29 @@ export class ErrorFactory {
    * ```
    */
   static uncommittedChanges(): NagareError {
+    if (hasI18n()) {
+      return new NagareError(
+        "errors.gitNotClean" as TranslationKey,
+        ErrorCodes.GIT_UNCOMMITTED_CHANGES,
+        {
+          suggestions: [
+            "suggestions.commitChanges" as TranslationKey,
+            "suggestions.stashChanges" as TranslationKey,
+            "suggestions.discardChanges" as TranslationKey,
+            "suggestions.viewChanges" as TranslationKey,
+          ],
+        },
+      );
+    }
+
+    // Fallback to hardcoded (backward compatible)
     return new NagareError(
-      "Uncommitted changes detected. Cannot proceed with release",
+      "Uncommitted changes in repository",
       ErrorCodes.GIT_UNCOMMITTED_CHANGES,
       [
-        'Commit your changes: git add . && git commit -m "your message"',
+        "Commit all changes: git add . && git commit -m 'message'",
         "Stash changes temporarily: git stash",
-        "Discard changes: git checkout . (⚠️  destructive)",
+        "Discard all changes: git reset --hard (WARNING: destructive)",
         "View changes: git status",
       ],
     );
@@ -355,13 +452,38 @@ export class ErrorFactory {
    * ```
    */
   static configNotFound(searchedPaths: string[]): NagareError {
+    if (hasI18n()) {
+      return new NagareError(
+        "errors.configNotFound" as TranslationKey,
+        ErrorCodes.CONFIG_NOT_FOUND,
+        {
+          params: { path: searchedPaths.join(", ") },
+          suggestions: [
+            "suggestions.runNagareInit" as TranslationKey,
+            "suggestions.createConfigManually" as TranslationKey,
+            "suggestions.specifyConfigPath" as TranslationKey,
+          ],
+          context: {
+            searchedPaths,
+            exampleConfig: [
+              "export default {",
+              '  project: { name: "my-app", repository: "https://github.com/user/repo" },',
+              '  versionFile: { path: "./version.ts", template: "typescript" }',
+              "};",
+            ].join("\n"),
+          },
+        },
+      );
+    }
+
+    // Fallback to hardcoded (backward compatible)
     return new NagareError(
-      "No Nagare configuration file found",
+      `Configuration file not found. Searched: ${searchedPaths.join(", ")}`,
       ErrorCodes.CONFIG_NOT_FOUND,
       [
         "Run 'nagare init' to create a configuration file",
-        "Create nagare.config.ts manually",
-        "Specify a custom config path: nagare release --config ./path/to/config.ts",
+        "Create nagare.config.ts manually in the project root",
+        "Specify config path: nagare release --config ./path/to/config.ts",
       ],
       {
         searchedPaths,
@@ -394,13 +516,38 @@ export class ErrorFactory {
     filePath: string,
     searchedPatterns?: string[],
   ): NagareError {
+    if (hasI18n()) {
+      return new NagareError(
+        "errors.versionNotFound" as TranslationKey,
+        ErrorCodes.VERSION_NOT_FOUND,
+        {
+          params: { file: filePath },
+          suggestions: [
+            "suggestions.addVersionPattern" as TranslationKey,
+            "suggestions.configureCustomPattern" as TranslationKey,
+            "suggestions.ensureFileReadable" as TranslationKey,
+          ],
+          context: {
+            filePath,
+            searchedPatterns,
+            commonPatterns: [
+              'TypeScript: export const VERSION = "1.0.0"',
+              'JSON: "version": "1.0.0"',
+              'YAML: version: "1.0.0"',
+            ],
+          },
+        },
+      );
+    }
+
+    // Fallback to hardcoded (backward compatible)
     return new NagareError(
-      `Could not find version in ${filePath}`,
+      `Version pattern not found in ${filePath}`,
       ErrorCodes.VERSION_NOT_FOUND,
       [
-        "Add a version to your file matching one of the common patterns",
-        "Configure a custom pattern in your nagare.config.ts",
-        "Ensure the version file exists and is readable",
+        "Add a version pattern to the file (e.g., 'export const VERSION = \"1.0.0\"')",
+        "Configure a custom pattern in fileHandlers section of config",
+        "Ensure the file exists and is readable",
       ],
       {
         filePath,
@@ -428,13 +575,39 @@ export class ErrorFactory {
    * ```
    */
   static fileHandlerNotFound(filePath: string): NagareError {
+    if (hasI18n()) {
+      return new NagareError(
+        "errors.fileHandlerNotFound" as TranslationKey,
+        ErrorCodes.FILE_HANDLER_NOT_FOUND,
+        {
+          params: { file: filePath },
+          suggestions: [
+            "suggestions.addCustomUpdateFn" as TranslationKey,
+            "suggestions.useBuiltInHandler" as TranslationKey,
+            "suggestions.defineCustomPatterns" as TranslationKey,
+          ],
+          context: {
+            filePath,
+            supportedTypes: [
+              "deno.json",
+              "package.json",
+              "jsr.json",
+              "README.md",
+              "*.ts (with VERSION export)",
+            ],
+          },
+        },
+      );
+    }
+
+    // Fallback to hardcoded (backward compatible)
     return new NagareError(
       `No file handler found for ${filePath}`,
       ErrorCodes.FILE_HANDLER_NOT_FOUND,
       [
-        "Add a custom updateFn in your nagare.config.ts",
-        "Use a built-in handler by renaming to a standard file name",
-        "Define custom patterns for this file type",
+        "Add a custom updateFn in fileHandlers configuration",
+        "Use a built-in handler by naming the file appropriately",
+        "Define custom patterns in fileHandlers.defaultPatterns",
       ],
       {
         filePath,
@@ -466,14 +639,35 @@ export class ErrorFactory {
    * ```
    */
   static invalidJson(filePath: string, parseError: string): NagareError {
+    if (hasI18n()) {
+      return new NagareError(
+        "errors.fileJsonInvalid" as TranslationKey,
+        ErrorCodes.FILE_JSON_INVALID,
+        {
+          params: { file: filePath },
+          suggestions: [
+            "suggestions.checkJsonSyntax" as TranslationKey,
+            "suggestions.validateJson" as TranslationKey,
+            "suggestions.checkJsonCommas" as TranslationKey,
+            "suggestions.revertRecentChanges" as TranslationKey,
+          ],
+          context: {
+            filePath,
+            parseError,
+          },
+        },
+      );
+    }
+
+    // Fallback to hardcoded (backward compatible)
     return new NagareError(
       `Invalid JSON in ${filePath}`,
       ErrorCodes.FILE_JSON_INVALID,
       [
-        "Check for syntax errors in the JSON file",
-        "Validate JSON at jsonlint.com",
-        "Ensure no trailing commas or missing quotes",
-        "Revert recent changes if the file was working before",
+        "Check JSON syntax (trailing commas, missing quotes)",
+        "Validate with a JSON linter or formatter",
+        "Look for missing or extra commas between elements",
+        "Revert recent changes and apply them incrementally",
       ],
       {
         filePath,
@@ -495,14 +689,30 @@ export class ErrorFactory {
    * ```
    */
   static githubCliNotFound(): NagareError {
+    if (hasI18n()) {
+      return new NagareError(
+        "errors.githubCliNotFound" as TranslationKey,
+        ErrorCodes.GITHUB_CLI_NOT_FOUND,
+        {
+          suggestions: [
+            "suggestions.installGitHubCli" as TranslationKey,
+            "suggestions.installGitHubCliMac" as TranslationKey,
+            "suggestions.installGitHubCliWindows" as TranslationKey,
+            "suggestions.disableGitHubReleases" as TranslationKey,
+          ],
+        },
+      );
+    }
+
+    // Fallback to hardcoded (backward compatible)
     return new NagareError(
-      "GitHub CLI (gh) is not installed",
+      "GitHub CLI (gh) not found",
       ErrorCodes.GITHUB_CLI_NOT_FOUND,
       [
-        "Install GitHub CLI: https://cli.github.com/manual/installation",
-        "macOS: brew install gh",
-        "Windows: winget install --id GitHub.cli",
-        "Or disable GitHub releases in nagare.config.ts: github.createRelease = false",
+        "Install GitHub CLI from https://cli.github.com",
+        "On macOS: brew install gh",
+        "On Windows: winget install GitHub.cli",
+        "Disable GitHub releases: set github.createRelease = false",
       ],
     );
   }

@@ -8,6 +8,7 @@
  */
 
 import { NagareError } from "./enhanced-error.ts";
+import type { TranslationKey } from "../locales/schema.ts";
 
 /**
  * Validates and sanitizes a git reference (branch, tag, commit)
@@ -26,14 +27,17 @@ import { NagareError } from "./enhanced-error.ts";
 export function validateGitRef(ref: string, type: "tag" | "branch" | "commit"): string {
   if (!ref || typeof ref !== "string") {
     throw new NagareError(
-      `Invalid ${type}: must be a non-empty string`,
+      "errors.securityInvalidGitRef" as TranslationKey,
       "SECURITY_INVALID_GIT_REF",
-      [
-        `Provide a valid ${type} as a string`,
-        "Check that the value is not null or undefined",
-        "Ensure the value is not a number or object",
-      ],
-      { providedValue: ref, expectedType: type },
+      {
+        params: { type },
+        suggestions: [
+          "suggestions.provideValidGitRef" as TranslationKey,
+          "suggestions.checkNotNullOrUndefined" as TranslationKey,
+          "suggestions.ensureStringType" as TranslationKey,
+        ],
+        context: { providedValue: ref, expectedType: type },
+      },
     );
   }
 
@@ -43,14 +47,16 @@ export function validateGitRef(ref: string, type: "tag" | "branch" | "commit"): 
   // Check for empty after trim
   if (trimmed.length === 0) {
     throw new NagareError(
-      `Invalid ${type}: cannot be empty`,
+      "errors.securityEmptyGitRef" as TranslationKey,
       "SECURITY_EMPTY_GIT_REF",
-      [
-        `Provide a non-empty ${type} name`,
-        "Check for accidental whitespace-only values",
-        "Verify the input source is providing the correct value",
-      ],
-      { type, originalValue: ref },
+      {
+        params: { type },
+        suggestions: [
+          "suggestions.provideNonEmpty" as TranslationKey,
+          "suggestions.checkWhitespace" as TranslationKey,
+        ],
+        context: { type, originalValue: ref },
+      },
     );
   }
 
@@ -64,35 +70,41 @@ export function validateGitRef(ref: string, type: "tag" | "branch" | "commit"): 
 
   if (invalidChars.test(trimmed)) {
     throw new NagareError(
-      `Invalid ${type}: contains forbidden characters`,
+      "errors.securityInvalidGitRefChars" as TranslationKey,
       "SECURITY_INVALID_GIT_REF_CHARS",
-      [
-        "Remove special characters: space, ~, ^, :, ?, *, [, ], \\, `",
-        "Use only alphanumeric characters, hyphens, underscores, and forward slashes",
-        "Check Git naming conventions: https://git-scm.com/docs/git-check-ref-format",
-      ],
       {
-        type,
-        value: trimmed,
-        forbiddenCharacters: "space, ~, ^, :, ?, *, [, ], \\, `",
+        params: { type },
+        suggestions: [
+          "suggestions.removeSpecialChars" as TranslationKey,
+          "suggestions.useAlphanumeric" as TranslationKey,
+          "suggestions.checkGitDocs" as TranslationKey,
+        ],
+        context: {
+          type,
+          value: trimmed,
+          forbiddenCharacters: "space, ~, ^, :, ?, *, [, ], \\, `",
+        },
       },
     );
   }
 
   if (invalidPatterns.test(trimmed)) {
     throw new NagareError(
-      `Invalid ${type}: contains invalid pattern`,
+      "errors.securityInvalidGitRefPattern" as TranslationKey,
       "SECURITY_INVALID_GIT_REF_PATTERN",
-      [
-        "Ensure the name doesn't start with hyphen (-)",
-        "Remove any double dots (..) from the name",
-        "Ensure the name doesn't end with dot (.) or .lock",
-        "Remove any @{ sequences",
-      ],
       {
-        type,
-        value: trimmed,
-        invalidPatterns: "starts with -, contains .., ends with . or .lock, contains @{",
+        params: { type },
+        suggestions: [
+          "suggestions.noStartWithHyphen" as TranslationKey,
+          "suggestions.removeDoubleDots" as TranslationKey,
+          "suggestions.noEndWithDotOrLock" as TranslationKey,
+          "suggestions.removeAtBraces" as TranslationKey,
+        ],
+        context: {
+          type,
+          value: trimmed,
+          invalidPatterns: "starts with -, contains .., ends with . or .lock, contains @{",
+        },
       },
     );
   }
@@ -100,34 +112,40 @@ export function validateGitRef(ref: string, type: "tag" | "branch" | "commit"): 
   // Additional validation for specific types
   if (type === "tag" && trimmed.length > 255) {
     throw new NagareError(
-      "Invalid tag: maximum length exceeded",
+      "errors.securityGitTagTooLong" as TranslationKey,
       "SECURITY_GIT_TAG_TOO_LONG",
-      [
-        "Shorten the tag name to 255 characters or less",
-        "Use a more concise naming convention",
-        "Consider using abbreviated version numbers",
-      ],
       {
-        currentLength: trimmed.length,
-        maxLength: 255,
-        value: trimmed,
+        params: { currentLength: trimmed.length, maxLength: 255 },
+        suggestions: [
+          "suggestions.useShorterName" as TranslationKey,
+          "suggestions.useConciseNaming" as TranslationKey,
+          "suggestions.useAbbreviatedVersions" as TranslationKey,
+        ],
+        context: {
+          currentLength: trimmed.length,
+          maxLength: 255,
+          value: trimmed,
+        },
       },
     );
   }
 
   if (type === "commit" && !/^[a-fA-F0-9]{7,40}$/.test(trimmed)) {
     throw new NagareError(
-      "Invalid commit: must be a valid commit hash",
+      "errors.securityInvalidCommitHash" as TranslationKey,
       "SECURITY_INVALID_COMMIT_HASH",
-      [
-        "Provide a valid Git commit hash (7-40 hexadecimal characters)",
-        "Use 'git rev-parse HEAD' to get the current commit hash",
-        "Use 'git log --oneline' to see commit hashes",
-      ],
       {
-        value: trimmed,
-        expectedFormat: "7-40 character hexadecimal string",
-        example: "a1b2c3d or a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0",
+        params: {},
+        suggestions: [
+          "suggestions.provideFullHash" as TranslationKey,
+          "suggestions.useGitRevParse" as TranslationKey,
+          "suggestions.checkGitLog" as TranslationKey,
+        ],
+        context: {
+          value: trimmed,
+          expectedFormat: "7-40 character hexadecimal string",
+          example: "a1b2c3d or a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0",
+        },
       },
     );
   }
@@ -151,14 +169,17 @@ export function validateGitRef(ref: string, type: "tag" | "branch" | "commit"): 
 export function validateFilePath(path: string, basePath: string): string {
   if (!path || typeof path !== "string") {
     throw new NagareError(
-      "Invalid path: must be a non-empty string",
+      "errors.securityInvalidPath" as TranslationKey,
       "SECURITY_INVALID_FILE_PATH",
-      [
-        "Provide a valid file path as a string",
-        "Check that the path is not null or undefined",
-        "Ensure the path is not a number or object",
-      ],
-      { providedValue: path, basePath },
+      {
+        params: {},
+        suggestions: [
+          "suggestions.provideValidPath" as TranslationKey,
+          "suggestions.checkNotNullOrUndefined" as TranslationKey,
+          "suggestions.ensureStringType" as TranslationKey,
+        ],
+        context: { providedValue: path, basePath },
+      },
     );
   }
 
@@ -169,18 +190,21 @@ export function validateFilePath(path: string, basePath: string): string {
   // Check for directory traversal attempts
   if (normalizedPath.includes("../") || normalizedPath.includes("..\\")) {
     throw new NagareError(
-      "Security violation: directory traversal attempt detected",
+      "errors.securityPathTraversal" as TranslationKey,
       "SECURITY_PATH_TRAVERSAL",
-      [
-        "Use absolute paths or paths relative to the current directory",
-        "Remove any '../' sequences from the path",
-        "Ensure the path stays within the project directory",
-      ],
       {
-        attemptedPath: path,
-        normalizedPath,
-        basePath,
-        securityNote: "This is a potential security vulnerability (OWASP A01)",
+        params: {},
+        suggestions: [
+          "suggestions.useAbsolutePath" as TranslationKey,
+          "suggestions.removeTraversal" as TranslationKey,
+          "suggestions.stayWithinProject" as TranslationKey,
+        ],
+        context: {
+          attemptedPath: path,
+          normalizedPath,
+          basePath,
+          securityNote: "This is a potential security vulnerability (OWASP A01)",
+        },
       },
     );
   }
@@ -200,18 +224,21 @@ export function validateFilePath(path: string, basePath: string): string {
 
   if (!isTempPath && !resolvedPath.startsWith(normalizedBase)) {
     throw new NagareError(
-      "Security violation: path escapes base directory",
+      "errors.securityPathEscape" as TranslationKey,
       "SECURITY_PATH_ESCAPE",
-      [
-        "Ensure the file path is within the project directory",
-        "Use relative paths from the project root",
-        "Check for symbolic links that might escape the directory",
-      ],
       {
-        attemptedPath: path,
-        resolvedPath,
-        basePath: normalizedBase,
-        securityNote: "Path access outside base directory is restricted (OWASP A01)",
+        params: {},
+        suggestions: [
+          "suggestions.stayWithinProject" as TranslationKey,
+          "suggestions.useRelativePaths" as TranslationKey,
+          "suggestions.checkSymbolicLinks" as TranslationKey,
+        ],
+        context: {
+          attemptedPath: path,
+          resolvedPath,
+          basePath: normalizedBase,
+          securityNote: "Path access outside base directory is restricted (OWASP A01)",
+        },
       },
     );
   }
@@ -305,14 +332,17 @@ export function sanitizeCommitMessage(message: string): string {
 export function validateVersion(version: string): string {
   if (!version || typeof version !== "string") {
     throw new NagareError(
-      "Invalid version: must be a non-empty string",
+      "errors.securityInvalidVersion" as TranslationKey,
       "SECURITY_INVALID_VERSION",
-      [
-        "Provide a valid semantic version string",
-        "Use format: MAJOR.MINOR.PATCH (e.g., 1.2.3)",
-        "Check that the version is not null or undefined",
-      ],
-      { providedValue: version },
+      {
+        params: {},
+        suggestions: [
+          "suggestions.provideSemver" as TranslationKey,
+          "suggestions.useSemverFormat" as TranslationKey,
+          "suggestions.checkNotNullOrUndefined" as TranslationKey,
+        ],
+        context: { providedValue: version },
+      },
     );
   }
 
@@ -323,16 +353,19 @@ export function validateVersion(version: string): string {
 
   if (!semverPattern.test(trimmed)) {
     throw new NagareError(
-      "Invalid version: must be valid semantic version",
+      "errors.securityInvalidSemverFormat" as TranslationKey,
       "SECURITY_INVALID_SEMVER_FORMAT",
-      [
-        "Use semantic versioning format: MAJOR.MINOR.PATCH",
-        "Valid examples: 1.2.3, v1.2.3, 1.2.3-beta.1, 1.2.3+build.123",
-        "See https://semver.org for format specification",
-      ],
       {
-        providedValue: trimmed,
-        validFormats: ["1.2.3", "v1.2.3", "1.2.3-beta.1", "1.2.3-rc.1+build.123"],
+        params: {},
+        suggestions: [
+          "suggestions.useSemverFormat" as TranslationKey,
+          "suggestions.validSemverExamples" as TranslationKey,
+          "suggestions.checkSemverDocs" as TranslationKey,
+        ],
+        context: {
+          providedValue: trimmed,
+          validFormats: ["1.2.3", "v1.2.3", "1.2.3-beta.1", "1.2.3-rc.1+build.123"],
+        },
       },
     );
   }
@@ -404,17 +437,20 @@ export function validateCliArgs(args: string[]): string[] {
   for (const arg of args) {
     if (typeof arg !== "string") {
       throw new NagareError(
-        "Invalid argument: all arguments must be strings",
+        "errors.securityInvalidCliArgType" as TranslationKey,
         "SECURITY_INVALID_CLI_ARG_TYPE",
-        [
-          "Ensure all command line arguments are strings",
-          "Convert numbers to strings before passing",
-          "Check for null or undefined values in the arguments array",
-        ],
         {
-          invalidArg: arg,
-          argType: typeof arg,
-          allArgs: args,
+          params: {},
+          suggestions: [
+            "suggestions.ensureStringArgs" as TranslationKey,
+            "suggestions.convertNumbersToStrings" as TranslationKey,
+            "suggestions.checkForNullUndefined" as TranslationKey,
+          ],
+          context: {
+            invalidArg: arg,
+            argType: typeof arg,
+            allArgs: args,
+          },
         },
       );
     }
@@ -422,18 +458,21 @@ export function validateCliArgs(args: string[]): string[] {
     // Check for shell metacharacters
     if (shellMetachars.test(arg)) {
       throw new NagareError(
-        "Security violation: argument contains shell metacharacters",
+        "errors.securityShellInjection" as TranslationKey,
         "SECURITY_SHELL_INJECTION",
-        [
-          "Remove shell metacharacters from the argument",
-          "Escape special characters if they are necessary",
-          "Use parameter substitution instead of shell expansion",
-          "Forbidden characters: ; & | ` $ ( ) < > { } [ ] ! * ? # ~ newline",
-        ],
         {
-          argument: arg,
-          detectedMetachars: arg.match(shellMetachars)?.[0],
-          securityNote: "Shell injection vulnerability detected (OWASP A03)",
+          params: {},
+          suggestions: [
+            "suggestions.removeShellMetachars" as TranslationKey,
+            "suggestions.escapeSpecialChars" as TranslationKey,
+            "suggestions.useParamSubstitution" as TranslationKey,
+            "suggestions.forbiddenChars" as TranslationKey,
+          ],
+          context: {
+            argument: arg,
+            detectedMetachars: arg.match(shellMetachars)?.[0],
+            securityNote: "Shell injection vulnerability detected (OWASP A03)",
+          },
         },
       );
     }
@@ -441,16 +480,19 @@ export function validateCliArgs(args: string[]): string[] {
     // Check for null bytes
     if (arg.includes("\0")) {
       throw new NagareError(
-        "Security violation: argument contains null byte",
+        "errors.securityNullByteInjection" as TranslationKey,
         "SECURITY_NULL_BYTE_INJECTION",
-        [
-          "Remove null bytes from the argument",
-          "Check the source of the input for corruption",
-          "Validate input encoding before processing",
-        ],
         {
-          argument: arg,
-          securityNote: "Null byte injection can bypass security checks (OWASP A03)",
+          params: {},
+          suggestions: [
+            "suggestions.removeNullBytes" as TranslationKey,
+            "suggestions.checkInputSource" as TranslationKey,
+            "suggestions.validateEncoding" as TranslationKey,
+          ],
+          context: {
+            argument: arg,
+            securityNote: "Null byte injection can bypass security checks (OWASP A03)",
+          },
         },
       );
     }

@@ -35,6 +35,7 @@ import { LogLevel } from "./config.ts";
 import { APP_INFO, BUILD_INFO, RELEASE_NOTES, VERSION } from "./version.ts";
 import { sanitizeErrorMessage, validateCliArgs, validateFilePath } from "./src/security-utils.ts";
 import { ErrorFactory } from "./src/enhanced-error.ts";
+import { initI18n } from "./src/i18n.ts";
 
 /**
  * CLI configuration options interface
@@ -538,6 +539,16 @@ function formatInfo(message: string): string {
  * ```
  */
 export async function cli(args: string[]): Promise<void> {
+  // Initialize i18n early
+  try {
+    await initI18n({
+      localesDir: new URL("../locales", import.meta.url).pathname,
+    });
+  } catch (error) {
+    console.error(formatError(`Failed to initialize i18n: ${sanitizeErrorMessage(error, false)}`));
+    // Continue without i18n - English will be used as fallback
+  }
+
   let command: string | undefined;
   let bumpType: string | undefined;
   let options: CLIOptions;
@@ -713,6 +724,20 @@ await cli(Deno.args);
     // Load configuration
     console.log(formatInfo("Loading configuration..."));
     const config = await loadConfig(options.config);
+
+    // Apply locale from config if specified
+    if (config.locale) {
+      try {
+        const { setLocale } = await import("./src/i18n.ts");
+        await setLocale(config.locale);
+      } catch (error) {
+        console.warn(
+          formatInfo(
+            `Could not set locale to ${config.locale}: ${sanitizeErrorMessage(error, false)}`,
+          ),
+        );
+      }
+    }
 
     // Apply CLI options to config
     if (options.dryRun !== undefined) {

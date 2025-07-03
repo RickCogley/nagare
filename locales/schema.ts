@@ -8,6 +8,8 @@
 export interface TranslationKeys {
   errors: {
     gitNotInitialized: string;
+    gitNotRepo: string;
+    gitNotClean: string;
     gitUncommittedChanges: string;
     gitUserNotConfigured: string;
     gitNoCommits: string;
@@ -110,7 +112,29 @@ export interface TranslationKeys {
     checkPath: string;
     verifyPermissions: string;
     runGitInit: string;
+    navigateToRepo: string;
+    checkProjectDir: string;
     commitChanges: string;
+    stashChanges: string;
+    discardChanges: string;
+    viewChanges: string;
+    runNagareInit: string;
+    createConfigManually: string;
+    specifyConfigPath: string;
+    addVersionPattern: string;
+    configureCustomPattern: string;
+    ensureFileReadable: string;
+    addCustomUpdateFn: string;
+    useBuiltInHandler: string;
+    defineCustomPatterns: string;
+    checkJsonSyntax: string;
+    validateJson: string;
+    checkJsonCommas: string;
+    revertRecentChanges: string;
+    installGitHubCli: string;
+    installGitHubCliMac: string;
+    installGitHubCliWindows: string;
+    disableGitHubReleases: string;
     useValidType: string;
     checkGitHub: string;
     checkConfig: string;
@@ -179,6 +203,8 @@ export interface TranslationKeys {
  */
 export type TranslationKey =
   | "errors.gitNotInitialized"
+  | "errors.gitNotRepo"
+  | "errors.gitNotClean"
   | "errors.gitUncommittedChanges"
   | "errors.gitUserNotConfigured"
   | "errors.gitNoCommits"
@@ -265,7 +291,29 @@ export type TranslationKey =
   | "suggestions.checkPath"
   | "suggestions.verifyPermissions"
   | "suggestions.runGitInit"
+  | "suggestions.navigateToRepo"
+  | "suggestions.checkProjectDir"
   | "suggestions.commitChanges"
+  | "suggestions.stashChanges"
+  | "suggestions.discardChanges"
+  | "suggestions.viewChanges"
+  | "suggestions.runNagareInit"
+  | "suggestions.createConfigManually"
+  | "suggestions.specifyConfigPath"
+  | "suggestions.addVersionPattern"
+  | "suggestions.configureCustomPattern"
+  | "suggestions.ensureFileReadable"
+  | "suggestions.addCustomUpdateFn"
+  | "suggestions.useBuiltInHandler"
+  | "suggestions.defineCustomPatterns"
+  | "suggestions.checkJsonSyntax"
+  | "suggestions.validateJson"
+  | "suggestions.checkJsonCommas"
+  | "suggestions.revertRecentChanges"
+  | "suggestions.installGitHubCli"
+  | "suggestions.installGitHubCliMac"
+  | "suggestions.installGitHubCliWindows"
+  | "suggestions.disableGitHubReleases"
   | "suggestions.useValidType"
   | "suggestions.checkGitHub"
   | "suggestions.checkConfig"

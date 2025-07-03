@@ -34,6 +34,7 @@
  */
 
 import type { TemplateData } from "../types.ts";
+import type { TranslationKey } from "../locales/schema.ts";
 import { sanitizeErrorMessage, validateFilePath } from "./security-utils.ts";
 import { Logger } from "./logger.ts";
 import { ErrorCodes, NagareError } from "./enhanced-error.ts";
@@ -584,18 +585,17 @@ export class FileHandlerManager {
   registerHandler(handler: FileHandler): void {
     if (this.handlers.has(handler.id)) {
       throw new NagareError(
-        `Handler with ID "${handler.id}" already exists`,
+        "errors.configInvalid" as TranslationKey,
         ErrorCodes.CONFIG_INVALID,
-        [
-          "Use a unique ID for each file handler",
-          "Check if you're registering the same handler twice",
-          "List existing handlers to see what IDs are in use",
-          "Consider prefixing custom handler IDs to avoid conflicts",
-        ],
         {
-          handlerId: handler.id,
-          handlerName: handler.name,
-          existingHandlerIds: Array.from(this.handlers.keys()),
+          context: {
+            handlerId: handler.id,
+            handlerName: handler.name,
+            existingHandlerIds: Array.from(this.handlers.keys()),
+          },
+          suggestions: [
+            "suggestions.checkConfig" as TranslationKey,
+          ],
         },
       );
     }

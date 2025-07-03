@@ -4,6 +4,7 @@
  */
 
 import type { ConventionalCommit, NagareConfig } from "../types.ts";
+import type { TranslationKey } from "../locales/schema.ts";
 import { Logger } from "./logger.ts";
 import {
   createSecurityLog,
@@ -137,15 +138,24 @@ export class GitOperations {
   async getLastReleaseTag(): Promise<string> {
     try {
       const tagPrefix = this.config.options?.tagPrefix || "v";
+
+      // Get all tags matching the prefix, sorted by version
       const result = await this.runCommand([
         "git",
-        "describe",
-        "--tags",
-        "--abbrev=0",
-        "--match",
+        "tag",
+        "-l",
         `${tagPrefix}*`,
+        "--sort=-version:refname",
       ]);
-      return result.trim();
+
+      const tags = result.trim().split("\n").filter(Boolean);
+      if (tags.length === 0) {
+        this.logger.debug("No previous tags found, using all commits");
+        return "";
+      }
+
+      // Return the latest tag (first in the sorted list)
+      return tags[0];
     } catch {
       this.logger.debug("No previous tags found, using all commits");
       return ""; // Return empty string to indicate no previous tags
@@ -302,18 +312,20 @@ export class GitOperations {
     } catch (error) {
       this.logger.error("Error creating commit and tag:", error as Error);
       throw new NagareError(
-        "Failed to create commit and tag for release",
+        "errors.gitRemoteError" as TranslationKey,
         ErrorCodes.GIT_REMOTE_ERROR,
-        [
-          "Check that all files are properly saved",
-          "Ensure you have write permissions to the repository",
-          "Verify git is configured correctly: git config --list",
-          "Try manually: git add . && git commit -m 'message' && git tag -a v1.0.0 -m 'message'",
-        ],
         {
-          version: validatedVersion,
-          tag: tagName,
-          error: sanitizeErrorMessage(error, false),
+          params: { error: "Failed to create commit and tag for release" },
+          suggestions: [
+            "suggestions.checkPath" as TranslationKey,
+            "suggestions.verifyPermissions" as TranslationKey,
+            "suggestions.checkConfig" as TranslationKey,
+          ],
+          context: {
+            version: validatedVersion,
+            tag: tagName,
+            error: sanitizeErrorMessage(error, false),
+          },
         },
       );
     }
@@ -346,19 +358,19 @@ export class GitOperations {
     } catch (error) {
       this.logger.error("Error pushing to remote:", error as Error);
       throw new NagareError(
-        "Failed to push changes to remote repository",
+        "errors.gitRemoteError" as TranslationKey,
         ErrorCodes.GIT_REMOTE_ERROR,
-        [
-          "Check your internet connection",
-          "Verify you have push permissions: git remote -v",
-          "Authenticate if needed: git push --set-upstream origin <branch>",
-          "Check if the remote exists: git remote show origin",
-          "If using SSH, ensure your SSH key is configured",
-        ],
         {
-          remote,
-          error: sanitizeErrorMessage(error, false),
-          hint: "You may need to run 'git push' manually after resolving the issue",
+          params: { error: "Failed to push changes to remote repository" },
+          suggestions: [
+            "suggestions.checkConfig" as TranslationKey,
+            "suggestions.verifyPermissions" as TranslationKey,
+          ],
+          context: {
+            remote,
+            error: sanitizeErrorMessage(error, false),
+            hint: "You may need to run 'git push' manually after resolving the issue",
+          },
         },
       );
     }
@@ -389,16 +401,18 @@ export class GitOperations {
     } catch (error) {
       this.logger.error(`Failed to delete local tag ${validatedTag}:`, error as Error);
       throw new NagareError(
-        `Failed to delete local tag: ${validatedTag}`,
+        "errors.gitRemoteError" as TranslationKey,
         ErrorCodes.GIT_REMOTE_ERROR,
-        [
-          "Check if the tag exists: git tag -l",
-          "Ensure you have permissions to modify tags",
-          `Try manually: git tag -d ${validatedTag}`,
-        ],
         {
-          tag: validatedTag,
-          error: sanitizeErrorMessage(error, false),
+          params: { error: `Failed to delete local tag: ${validatedTag}` },
+          suggestions: [
+            "suggestions.checkConfig" as TranslationKey,
+            "suggestions.verifyPermissions" as TranslationKey,
+          ],
+          context: {
+            tag: validatedTag,
+            error: sanitizeErrorMessage(error, false),
+          },
         },
       );
     }
@@ -419,18 +433,19 @@ export class GitOperations {
     } catch (error) {
       this.logger.error(`Failed to delete remote tag ${validatedTag}:`, error as Error);
       throw new NagareError(
-        `Failed to delete remote tag: ${validatedTag}`,
+        "errors.gitRemoteError" as TranslationKey,
         ErrorCodes.GIT_REMOTE_ERROR,
-        [
-          "Check if the tag exists on remote: git ls-remote --tags",
-          "Verify you have push permissions to the remote",
-          `Try manually: git push ${remote} --delete ${validatedTag}`,
-          "The tag might have already been deleted",
-        ],
         {
-          tag: validatedTag,
-          remote,
-          error: sanitizeErrorMessage(error, false),
+          params: { error: `Failed to delete remote tag: ${validatedTag}` },
+          suggestions: [
+            "suggestions.checkConfig" as TranslationKey,
+            "suggestions.verifyPermissions" as TranslationKey,
+          ],
+          context: {
+            tag: validatedTag,
+            remote,
+            error: sanitizeErrorMessage(error, false),
+          },
         },
       );
     }
@@ -464,19 +479,20 @@ export class GitOperations {
     } catch (error) {
       this.logger.error(`Failed to reset to ${validatedCommit}:`, error as Error);
       throw new NagareError(
-        `Failed to reset to commit: ${validatedCommit}`,
+        "errors.gitRemoteError" as TranslationKey,
         ErrorCodes.GIT_REMOTE_ERROR,
-        [
-          "Check if the commit/tag exists: git log --oneline or git tag -l",
-          "Ensure you don't have uncommitted changes if using --hard",
-          `Try manually: git reset ${hard ? "--hard" : "--soft"} ${validatedCommit}`,
-          "Use 'git reflog' to find lost commits if needed",
-        ],
         {
-          target: validatedCommit,
-          resetType: hard ? "hard" : "soft",
-          error: sanitizeErrorMessage(error, false),
-          warning: hard ? "Hard reset will discard all uncommitted changes!" : undefined,
+          params: { error: `Failed to reset to commit: ${validatedCommit}` },
+          suggestions: [
+            "suggestions.checkConfig" as TranslationKey,
+            "suggestions.checkGitLog" as TranslationKey,
+          ],
+          context: {
+            target: validatedCommit,
+            resetType: hard ? "hard" : "soft",
+            error: sanitizeErrorMessage(error, false),
+            warning: hard ? "Hard reset will discard all uncommitted changes!" : undefined,
+          },
         },
       );
     }
@@ -528,18 +544,19 @@ export class GitOperations {
     if (!result.success) {
       const error = new TextDecoder().decode(result.stderr);
       throw new NagareError(
-        "Git command failed",
+        "errors.commandFailed" as TranslationKey,
         ErrorCodes.GIT_REMOTE_ERROR,
-        [
-          "Check if git is installed: git --version",
-          "Verify you're in a git repository: git status",
-          "Check the command output for specific errors",
-          "Ensure you have the necessary permissions",
-        ],
         {
-          command: cmd.join(" "),
-          stderr: error,
-          hint: "See the stderr output above for the specific git error",
+          params: { command: cmd.join(" ") },
+          suggestions: [
+            "suggestions.checkConfig" as TranslationKey,
+            "suggestions.verifyPermissions" as TranslationKey,
+          ],
+          context: {
+            command: cmd.join(" "),
+            stderr: error,
+            hint: "See the stderr output above for the specific git error",
+          },
         },
       );
     }

@@ -308,7 +308,6 @@ Deno.test("FileHandlerManager should support custom handlers", async () => {
       manager.registerHandler(customHandler);
     },
     Error,
-    'Handler with ID "custom-config" already exists',
   );
 });
 

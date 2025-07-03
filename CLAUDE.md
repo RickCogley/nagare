@@ -228,6 +228,43 @@ Nagare follows a **pragmatic hybrid approach** combining object-oriented and fun
 
 For detailed analysis, see [PROGRAMMING_PARADIGM.md](PROGRAMMING_PARADIGM.md)
 
+### File Organization Convention
+
+The project follows a clear separation of concerns for file placement:
+
+1. **Root Directory** - Entry points and exports only:
+   - `cli.ts` - Main CLI entry point
+   - `mod.ts` - Library entry point
+   - `config.ts` - Configuration loader
+   - `nagare.config.ts` - User configuration file
+   - `types.ts` - Exported type definitions
+   - `version.ts` - Auto-generated version info
+
+2. **`/src` Directory** - Core runtime code (distributed with package):
+   - Release management components (`release-manager.ts`, `rollback-manager.ts`)
+   - File operations (`file-handlers.ts`, `template-processor.ts`)
+   - Git integration (`git-operations.ts`, `github-integration.ts`)
+   - All code that runs when users execute nagare
+
+3. **`/scripts` Directory** - Development tools (NOT distributed):
+   - Build utilities (`inline-templates.ts`, `publish-to-jsr.ts`)
+   - Code generation (`generate-i18n-types.ts`)
+   - Documentation tools (`enhance-docs.ts`, `fix-docs-urls.ts`)
+   - Analysis scripts (`find-nagare-errors.ts`, `check-patterns.ts`)
+
+4. **`/plans` Directory** - Documentation and design documents:
+   - Architecture decisions and proposals
+   - Migration guides and upgrade paths
+   - Generated explanations and findings
+   - Any markdown documentation that isn't user-facing
+
+5. **`/tests` Directory** - Test files:
+   - Unit tests for all `/src` components
+   - Integration tests for end-to-end scenarios
+
+**Key Principle**: Keep the root clean with only essential entry points. Users interact with root
+files, runtime code lives in `/src`, and development tools go in `/scripts`.
+
 ### Code Style Requirements
 
 - **Formatting**: 2 spaces, double quotes, semicolons required, 100 char line width

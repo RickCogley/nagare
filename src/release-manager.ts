@@ -14,6 +14,7 @@ import type {
   ReleaseResult,
   TemplateData,
 } from "../types.ts";
+import type { TranslationKey } from "../locales/schema.ts";
 import {
   DEFAULT_COMMIT_TYPES,
   DEFAULT_CONFIG,
@@ -692,13 +693,13 @@ export class ReleaseManager {
     const gitUser = await this.git.getGitUser();
     if (!gitUser.name || !gitUser.email) {
       throw new NagareError(
-        "Git user.name and user.email must be configured",
+        "errors.gitUserNotConfigured" as TranslationKey,
         ErrorCodes.GIT_USER_NOT_CONFIGURED,
-        [
-          'Set your git username: git config --global user.name "Your Name"',
-          'Set your git email: git config --global user.email "your.email@example.com"',
-          "Or set locally (without --global) for this repository only",
-        ],
+        {
+          suggestions: [
+            "suggestions.checkConfig" as TranslationKey,
+          ],
+        },
       );
     }
 
@@ -726,17 +727,15 @@ export class ReleaseManager {
         this.logger.error(error);
       }
       throw new NagareError(
-        "Invalid file update patterns detected",
+        "errors.configInvalid" as TranslationKey,
         ErrorCodes.CONFIG_INVALID,
-        [
-          "Review the file update patterns in your nagare.config.ts",
-          "Check the validation errors listed above",
-          "Ensure all regex patterns are valid",
-          "Verify file paths are correct",
-        ],
         {
-          errors: patternValidation.errors,
-          hint: "See the error messages above for specific issues with each pattern",
+          context: {
+            errors: patternValidation.errors,
+          },
+          suggestions: [
+            "suggestions.checkConfig" as TranslationKey,
+          ],
         },
       );
     }
@@ -951,18 +950,19 @@ export class ReleaseManager {
       }
 
       throw new NagareError(
-        `Failed to update version file: ${versionFile.path}`,
+        "errors.fileUpdateFailed" as TranslationKey,
         ErrorCodes.FILE_UPDATE_FAILED,
-        [
-          "Check that the file exists and is writable",
-          "Verify the template syntax if using custom templates",
-          "Ensure the file path is correct in nagare.config.ts",
-          "Check file permissions: ls -la " + versionFile.path,
-        ],
         {
-          filePath: versionFile.path,
-          template: versionFile.template,
-          error: error instanceof Error ? error.message : String(error),
+          context: {
+            filePath: versionFile.path,
+            template: versionFile.template,
+            error: error instanceof Error ? error.message : String(error),
+          },
+          suggestions: [
+            "suggestions.checkPath" as TranslationKey,
+            "suggestions.verifyPermissions" as TranslationKey,
+            "suggestions.checkConfig" as TranslationKey,
+          ],
         },
       );
     }
@@ -1123,21 +1123,20 @@ export class ReleaseManager {
 
           JSON.parse(jsonContent);
           this.logger.debug(`✅ JSON validation passed for ${filePattern.path}`);
-        } catch (error) {
+        } catch (_error) {
           throw new NagareError(
-            `Updated file contains invalid JSON`,
+            "errors.fileJsonInvalid" as TranslationKey,
             ErrorCodes.FILE_JSON_INVALID,
-            [
-              "Review the update patterns - they may have corrupted the JSON structure",
-              "Check for missing commas, quotes, or brackets",
-              "Validate the original file is valid JSON before updating",
-              "Use a JSON validator to identify the specific syntax error",
-              "Consider using a custom updateFn for complex JSON updates",
-            ],
             {
-              filePath: filePattern.path,
-              parseError: error instanceof Error ? error.message : String(error),
-              hint: "The file was modified but resulted in invalid JSON",
+              context: {
+                filePath: filePattern.path,
+              },
+              suggestions: [
+                "suggestions.checkJsonSyntax" as TranslationKey,
+                "suggestions.validateJson" as TranslationKey,
+                "suggestions.checkJsonCommas" as TranslationKey,
+                "suggestions.addCustomUpdateFn" as TranslationKey,
+              ],
             },
           );
         }

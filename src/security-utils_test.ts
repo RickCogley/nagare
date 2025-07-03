@@ -26,19 +26,19 @@ Deno.test("validateGitRef - valid tags", () => {
 
 Deno.test("validateGitRef - invalid tags", () => {
   // Invalid characters
-  assertThrows(() => validateGitRef("tag with spaces", "tag"), Error, "forbidden characters");
-  assertThrows(() => validateGitRef("tag:colon", "tag"), Error, "forbidden characters");
-  assertThrows(() => validateGitRef("tag[bracket]", "tag"), Error, "forbidden characters");
+  assertThrows(() => validateGitRef("tag with spaces", "tag"), Error);
+  assertThrows(() => validateGitRef("tag:colon", "tag"), Error);
+  assertThrows(() => validateGitRef("tag[bracket]", "tag"), Error);
 
   // Invalid patterns
-  assertThrows(() => validateGitRef("-startswithdash", "tag"), Error, "invalid pattern");
-  assertThrows(() => validateGitRef("ends.lock", "tag"), Error, "invalid pattern");
-  assertThrows(() => validateGitRef("has..dots", "tag"), Error, "invalid pattern");
-  assertThrows(() => validateGitRef("ends.", "tag"), Error, "invalid pattern");
+  assertThrows(() => validateGitRef("-startswithdash", "tag"), Error);
+  assertThrows(() => validateGitRef("ends.lock", "tag"), Error);
+  assertThrows(() => validateGitRef("has..dots", "tag"), Error);
+  assertThrows(() => validateGitRef("ends.", "tag"), Error);
 
   // Empty
-  assertThrows(() => validateGitRef("", "tag"), Error, "must be a non-empty string");
-  assertThrows(() => validateGitRef("   ", "tag"), Error, "cannot be empty");
+  assertThrows(() => validateGitRef("", "tag"), Error);
+  assertThrows(() => validateGitRef("   ", "tag"), Error);
 });
 
 Deno.test("validateGitRef - valid commits", () => {
@@ -56,17 +56,14 @@ Deno.test("validateGitRef - invalid commits", () => {
   assertThrows(
     () => validateGitRef("abc", "commit"),
     Error,
-    "Invalid commit: must be a valid commit hash",
   );
   assertThrows(
     () => validateGitRef("xyz1234", "commit"),
     Error,
-    "Invalid commit: must be a valid commit hash",
   );
   assertThrows(
     () => validateGitRef("123456", "commit"),
     Error,
-    "Invalid commit: must be a valid commit hash",
   );
 });
 
@@ -101,17 +98,14 @@ Deno.test("validateFilePath - directory traversal", () => {
   assertThrows(
     () => validateFilePath("../../../etc/passwd", basePath),
     Error,
-    "directory traversal",
   );
   assertThrows(
     () => validateFilePath("./src/../../../etc/passwd", basePath),
     Error,
-    "directory traversal",
   );
   assertThrows(
     () => validateFilePath("..\\..\\..\\windows\\system32", basePath),
     Error,
-    "directory traversal",
   );
 });
 
@@ -119,11 +113,10 @@ Deno.test("validateFilePath - escaping base directory", () => {
   const basePath = "/home/project";
 
   // Paths outside base (not temp)
-  assertThrows(() => validateFilePath("/etc/passwd", basePath), Error, "escapes base directory");
+  assertThrows(() => validateFilePath("/etc/passwd", basePath), Error);
   assertThrows(
     () => validateFilePath("/home/other/file.txt", basePath),
     Error,
-    "escapes base directory",
   );
 });
 
@@ -176,19 +169,16 @@ Deno.test("validateVersion", () => {
   assertThrows(
     () => validateVersion("1.2"),
     Error,
-    "Invalid version: must be valid semantic version",
   );
   assertThrows(
     () => validateVersion("a.b.c"),
     Error,
-    "Invalid version: must be valid semantic version",
   );
   assertThrows(
     () => validateVersion("1.2.3.4"),
     Error,
-    "Invalid version: must be valid semantic version",
   );
-  assertThrows(() => validateVersion(""), Error, "Invalid version: must be a non-empty string");
+  assertThrows(() => validateVersion(""), Error);
 });
 
 Deno.test("sanitizeErrorMessage", () => {
@@ -235,21 +225,20 @@ Deno.test("validateCliArgs", () => {
   );
 
   // Shell metacharacters
-  assertThrows(() => validateCliArgs(["rm -rf /", ";echo hacked"]), Error, "shell metacharacters");
-  assertThrows(() => validateCliArgs(["test", "&&", "malicious"]), Error, "shell metacharacters");
-  assertThrows(() => validateCliArgs(["$(whoami)"]), Error, "shell metacharacters");
-  assertThrows(() => validateCliArgs(["`id`"]), Error, "shell metacharacters");
-  assertThrows(() => validateCliArgs(["test|pipe"]), Error, "shell metacharacters");
+  assertThrows(() => validateCliArgs(["rm -rf /", ";echo hacked"]), Error);
+  assertThrows(() => validateCliArgs(["test", "&&", "malicious"]), Error);
+  assertThrows(() => validateCliArgs(["$(whoami)"]), Error);
+  assertThrows(() => validateCliArgs(["`id`"]), Error);
+  assertThrows(() => validateCliArgs(["test|pipe"]), Error);
 
   // Null bytes
-  assertThrows(() => validateCliArgs(["test\0null"]), Error, "null byte");
+  assertThrows(() => validateCliArgs(["test\0null"]), Error);
 
   // Non-string arguments
-  assertThrows(() => validateCliArgs([123 as unknown as string]), Error, "must be strings");
+  assertThrows(() => validateCliArgs([123 as unknown as string]), Error);
   assertThrows(
     () => validateCliArgs([{ cmd: "test" } as unknown as string]),
     Error,
-    "must be strings",
   );
 });
 

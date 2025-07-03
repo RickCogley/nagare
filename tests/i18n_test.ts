@@ -5,10 +5,9 @@
 import {
   assertEquals,
   assertExists,
-  assertRejects,
   assertThrows,
 } from "https://deno.land/std@0.208.0/assert/mod.ts";
-import { getI18n, getLocale, I18n, initI18n, setLocale, t as translate } from "../src/i18n.ts";
+import { getLocale, I18n, initI18n, setLocale, t as translate } from "../src/i18n.ts";
 
 // Helper to get test locales directory
 const testLocalesDir = new URL("../locales", import.meta.url).pathname;
@@ -155,7 +154,7 @@ Deno.test("I18n - locale switching", async (t) => {
 Deno.test("I18n - global instance", async (t) => {
   await t.step("should throw if not initialized", () => {
     // Reset global instance
-    (globalThis as any).__nagareI18n = null;
+    (globalThis as { __nagareI18n?: I18n | null }).__nagareI18n = null;
 
     assertThrows(
       () => translate("any.key"),

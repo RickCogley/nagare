@@ -3,6 +3,7 @@
  */
 
 import type { NagareConfig, ReleaseNotes } from "../types.ts";
+import type { TranslationKey } from "../locales/schema.ts";
 import { ErrorCodes, ErrorFactory, NagareError } from "./enhanced-error.ts";
 
 /**
@@ -124,33 +125,31 @@ export class GitHubIntegration {
 
       if (error.includes("authentication") || error.includes("401") || error.includes("403")) {
         throw new NagareError(
-          "GitHub authentication failed",
+          "errors.githubAuthFailed" as TranslationKey,
           ErrorCodes.GITHUB_AUTH_FAILED,
-          [
-            "Run 'gh auth login' to authenticate with GitHub",
-            "Check your GitHub token: gh auth status",
-            "Ensure you have the necessary permissions (repo access)",
-            "Try refreshing your token: gh auth refresh",
-          ],
           {
-            command: cmd.join(" "),
-            error: error,
+            context: {
+              command: cmd.join(" "),
+              error: error,
+            },
+            suggestions: [
+              "suggestions.checkGitHub" as TranslationKey,
+            ],
           },
         );
       }
 
       throw new NagareError(
-        "GitHub release creation failed",
+        "errors.githubReleaseFailed" as TranslationKey,
         ErrorCodes.GITHUB_RELEASE_FAILED,
-        [
-          "Check the command output for specific errors",
-          "Verify you're connected to the internet",
-          "Ensure the repository exists and you have access",
-          "Try creating the release manually: " + cmd.join(" "),
-        ],
         {
-          command: cmd.join(" "),
-          stderr: error,
+          context: {
+            command: cmd.join(" "),
+            stderr: error,
+          },
+          suggestions: [
+            "suggestions.checkGitHub" as TranslationKey,
+          ],
         },
       );
     }

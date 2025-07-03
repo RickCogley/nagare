@@ -5,6 +5,7 @@
 import { parse } from "@std/semver";
 import { BumpType } from "../types.ts";
 import type { ConventionalCommit, NagareConfig } from "../types.ts";
+import type { TranslationKey } from "../locales/schema.ts";
 import { ErrorCodes, ErrorFactory, NagareError } from "./enhanced-error.ts";
 
 /**
@@ -53,17 +54,18 @@ export class VersionUtils {
 
       // File not found or other read error
       throw new NagareError(
-        `Error reading version file: ${this.config.versionFile.path}`,
+        "errors.versionFileNotFound" as TranslationKey,
         ErrorCodes.VERSION_FILE_NOT_FOUND,
-        [
-          "Check that the version file exists",
-          "Verify the file path is correct in nagare.config.ts",
-          "Ensure you have read permissions for the file",
-          "Run 'ls -la' to check file permissions",
-        ],
         {
-          filePath: this.config.versionFile.path,
-          error: error instanceof Error ? error.message : String(error),
+          context: {
+            filePath: this.config.versionFile.path,
+            error: error instanceof Error ? error.message : String(error),
+          },
+          suggestions: [
+            "suggestions.checkPath" as TranslationKey,
+            "suggestions.checkConfig" as TranslationKey,
+            "suggestions.verifyPermissions" as TranslationKey,
+          ],
         },
       );
     }
@@ -126,28 +128,17 @@ export class VersionUtils {
         }
 
         throw new NagareError(
-          `Cannot use ${bumpType} bump: commits require at least ${minimumBumpType}`,
+          "errors.breakingRequiresMajor" as TranslationKey,
           ErrorCodes.VERSION_BUMP_INVALID,
-          [
-            `Your commits indicate a minimum ${minimumBumpType} version bump is required`,
-            "",
-            ...commitDetails.filter((line) => line !== ""),
-            "",
-            "Options:",
-            `1. Use '${minimumBumpType}' or higher: nagare release ${minimumBumpType}`,
-            "2. Let Nagare auto-detect: nagare release",
-            minimumBumpType === BumpType.MAJOR
-              ? "3. Remove BREAKING CHANGE from commits if not intended"
-              : minimumBumpType === BumpType.MINOR
-              ? "3. Change feat: to fix: or another type if it's not a new feature"
-              : "",
-          ].filter((line) => line !== ""),
           {
-            requestedBumpType: bumpType,
-            minimumBumpType,
-            hasBreakingChanges: hasBreaking,
-            hasFeatures,
-            hasFixes,
+            context: {
+              requestedBumpType: bumpType,
+              minimumBumpType,
+              hasBreakingChanges: hasBreaking,
+              hasFeatures,
+              hasFixes,
+              commitDetails: commitDetails.filter((line) => line !== ""),
+            },
           },
         );
       }
@@ -162,16 +153,16 @@ export class VersionUtils {
           return `${semver.major}.${semver.minor}.${semver.patch + 1}`;
         default:
           throw new NagareError(
-            `Invalid bump type: ${bumpType}`,
+            "errors.versionBumpInvalid" as TranslationKey,
             ErrorCodes.VERSION_BUMP_INVALID,
-            [
-              "Use one of the valid bump types: major, minor, patch",
-              "Check the command line arguments",
-              "Example: nagare release --bump minor",
-            ],
             {
-              providedType: bumpType,
-              validTypes: ["major", "minor", "patch"],
+              context: {
+                providedType: bumpType,
+                validTypes: ["major", "minor", "patch"],
+              },
+              suggestions: [
+                "suggestions.useValidType" as TranslationKey,
+              ],
             },
           );
       }

@@ -65,7 +65,7 @@ Deno.test("ErrorFactory - Pre-built errors", async (t) => {
   await t.step("uncommittedChanges", () => {
     const error = ErrorFactory.uncommittedChanges();
     assertEquals(error.code, ErrorCodes.GIT_UNCOMMITTED_CHANGES);
-    assertStringIncludes(error.toString(), "Uncommitted changes detected");
+    assertStringIncludes(error.toString(), "Uncommitted changes in repository");
     assertStringIncludes(error.toString(), "git add . && git commit");
     assertStringIncludes(error.toString(), "git stash");
   });
@@ -73,7 +73,7 @@ Deno.test("ErrorFactory - Pre-built errors", async (t) => {
   await t.step("configNotFound", () => {
     const error = ErrorFactory.configNotFound(["./nagare.config.ts", "./nagare.config.js"]);
     assertEquals(error.code, ErrorCodes.CONFIG_NOT_FOUND);
-    assertStringIncludes(error.toString(), "No Nagare configuration file found");
+    assertStringIncludes(error.toString(), "Configuration file not found");
     assertStringIncludes(error.toString(), "nagare init");
     assertStringIncludes(error.toString(), "./nagare.config.ts");
     assertStringIncludes(error.toString(), "./nagare.config.js");
@@ -82,7 +82,7 @@ Deno.test("ErrorFactory - Pre-built errors", async (t) => {
   await t.step("versionNotFound", () => {
     const error = ErrorFactory.versionNotFound("./version.ts", ["export const VERSION"]);
     assertEquals(error.code, ErrorCodes.VERSION_NOT_FOUND);
-    assertStringIncludes(error.toString(), "Could not find version in ./version.ts");
+    assertStringIncludes(error.toString(), "Version pattern not found in ./version.ts");
     assertStringIncludes(error.toString(), "export const VERSION");
   });
 
@@ -97,14 +97,14 @@ Deno.test("ErrorFactory - Pre-built errors", async (t) => {
     const error = ErrorFactory.invalidJson("./config.json", "Unexpected token");
     assertEquals(error.code, ErrorCodes.FILE_JSON_INVALID);
     assertStringIncludes(error.toString(), "Invalid JSON in ./config.json");
-    assertStringIncludes(error.toString(), "jsonlint.com");
+    assertStringIncludes(error.toString(), "JSON syntax");
     assertStringIncludes(error.toString(), "Unexpected token");
   });
 
   await t.step("githubCliNotFound", () => {
     const error = ErrorFactory.githubCliNotFound();
     assertEquals(error.code, ErrorCodes.GITHUB_CLI_NOT_FOUND);
-    assertStringIncludes(error.toString(), "GitHub CLI (gh) is not installed");
+    assertStringIncludes(error.toString(), "GitHub CLI (gh) not found");
     assertStringIncludes(error.toString(), "brew install gh");
     assertStringIncludes(error.toString(), "github.createRelease = false");
   });
