@@ -4,7 +4,6 @@ deno.lock
 
 # Build outputs
 dist/
-build/
 out/
 *.js.map
 
