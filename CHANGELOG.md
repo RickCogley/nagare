@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2025-07-03
+
+### Added
+
+- migrate to Deno 2.4 text imports for templates (39c313d)
+
+### Fixed
+
+- include templates directory in JSR publish configuration (7db1682)
+- add --unstable-raw-imports flag to deno publish command (7553e19)
+- update GitHub Actions workflow for Deno 2.4 compatibility (0e0a0f9)
+
 ## [1.10.0] - 2025-07-02
 
 ### Added
