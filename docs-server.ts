@@ -23,6 +23,8 @@ const DOCS_CONFIG = {
     404: "./docs/404.html",
     500: "./docs/500.html",
   },
+  /** Path to redirect mapping file */
+  redirectMapPath: "./docs/redirects.json",
 } as const;
 
 /**
@@ -147,11 +149,32 @@ function serve404(): Response {
 }
 
 /**
+ * Loads redirect mappings from the generated redirects.json file
+ */
+let redirectMap: Record<string, string> | null = null;
+
+async function loadRedirectMap(): Promise<Record<string, string>> {
+  if (redirectMap !== null) return redirectMap;
+
+  try {
+    const redirectData = await Deno.readTextFile(DOCS_CONFIG.redirectMapPath);
+    const parsedMap = JSON.parse(redirectData) as Record<string, string>;
+    redirectMap = parsedMap;
+    return parsedMap;
+  } catch {
+    // If no redirect map exists, return empty object
+    const emptyMap: Record<string, string> = {};
+    redirectMap = emptyMap;
+    return emptyMap;
+  }
+}
+
+/**
  * Handles routing for documentation requests
  */
 async function handleDocsRequest(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const pathname = url.pathname;
+  let pathname = url.pathname;
 
   // Handle CORS preflight
   if (request.method === "OPTIONS" && DOCS_CONFIG.enableCORS) {
@@ -177,14 +200,65 @@ async function handleDocsRequest(request: Request): Promise<Response> {
     );
   }
 
+  // Check redirect map for legacy ~ URLs
+  const redirects = await loadRedirectMap();
+  if (redirects[pathname]) {
+    const headers = createSecurityHeaders();
+    headers.set("Location", redirects[pathname]);
+    return new Response(null, {
+      status: 301,
+      headers,
+    });
+  }
+
+  // URL rewriting for Deno Deploy compatibility
+  // Replace URL-encoded tilde (%7E) with actual tilde
+  // This handles cases where browsers encode the ~ character
+  if (pathname.includes("%7E")) {
+    pathname = pathname.replace(/%7E/g, "~");
+  }
+
+  // Create a modified request with the cleaned pathname
+  const modifiedUrl = new URL(request.url);
+  modifiedUrl.pathname = pathname;
+  const modifiedRequest = new Request(modifiedUrl.toString(), {
+    method: request.method,
+    headers: request.headers,
+    body: request.body,
+  });
+
   try {
     // Serve files from docs directory
-    const response = await serveDir(request, {
+    const response = await serveDir(modifiedRequest, {
       fsRoot: DOCS_CONFIG.docsDir,
       showDirListing: DOCS_CONFIG.enableDirListing,
       showIndex: true,
       enableCors: DOCS_CONFIG.enableCORS,
     });
+
+    // If we get a 404 and the path contains /~/, try alternative approaches
+    if (response.status === 404 && pathname.includes("/~/")) {
+      // Try URL-encoding the tilde
+      const encodedPath = pathname.replace(/\/~\//g, "/%7E/");
+      const encodedUrl = new URL(request.url);
+      encodedUrl.pathname = encodedPath;
+      const encodedRequest = new Request(encodedUrl.toString(), {
+        method: request.method,
+        headers: request.headers,
+        body: request.body,
+      });
+
+      const encodedResponse = await serveDir(encodedRequest, {
+        fsRoot: DOCS_CONFIG.docsDir,
+        showDirListing: DOCS_CONFIG.enableDirListing,
+        showIndex: true,
+        enableCors: DOCS_CONFIG.enableCORS,
+      });
+
+      if (encodedResponse.status === 200) {
+        return encodedResponse;
+      }
+    }
 
     // Add security headers to successful responses
     if (response.status === 200) {

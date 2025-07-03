@@ -154,6 +154,24 @@ export interface NagareConfig {
     /** Functions to run after release */
     postRelease?: Array<() => Promise<void>>;
   };
+
+  /**
+   * Locale for messages (e.g., "en", "ja")
+   *
+   * @description
+   * Set the language for all CLI output, error messages, and prompts.
+   * If not specified, auto-detects from NAGARE_LOCALE or system locale.
+   *
+   * @example
+   * ```typescript
+   * locale: "ja"  // Use Japanese translations
+   * locale: "en"  // Use English (default)
+   * ```
+   *
+   * @default Auto-detected from environment
+   * @since 2.1.0
+   */
+  locale?: string;
 }
 
 /**

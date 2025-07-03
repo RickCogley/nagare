@@ -1,0 +1,195 @@
+# Japanese translations for Nagare
+# 日本語翻訳
+
+# エラーメッセージ
+errors:
+  # Gitエラー
+  gitNotInitialized: "Gitリポジトリではありません"
+  gitUncommittedChanges: "コミットされていない変更があります。リリースを続行できません"
+  gitUserNotConfigured: "Gitユーザーが設定されていません"
+  gitNoCommits: "前回のリリース以降のコミットが見つかりません"
+  gitTagExists: "タグ {tag} は既に存在します"
+  gitRemoteError: "Gitリモートエラー: {error}"
+
+  # 設定エラー
+  configNotFound: "設定ファイルが見つかりません"
+  configInvalid: "無効な設定: {error}"
+  configMissingRequired: "必須設定が不足しています: {field}"
+
+  # バージョンエラー
+  versionNotFound: "{path} でバージョンが見つかりません。使用パターン: {patterns}"
+  versionInvalidFormat: "無効なバージョン形式: {version}"
+  versionFileNotFound: "バージョンファイルが見つかりません: {path}"
+  versionBumpInvalid: "無効なバンプタイプ: {type}"
+
+  # ファイルエラー
+  fileNotFound: "ファイルが見つかりません: {path}"
+  fileUpdateFailed: "{path} の更新に失敗しました: {error}"
+  filePatternNoMatch: "ファイル内でパターンが一致しません: {path}"
+  fileHandlerNotFound: "ファイルタイプのハンドラーが見つかりません: {type}"
+  fileJsonInvalid: "無効なJSONファイル: {path}"
+
+  # GitHubエラー
+  githubCliNotFound: "GitHub CLI (gh) が見つかりません"
+  githubAuthFailed: "GitHub認証に失敗しました"
+  githubReleaseFailed: "GitHubリリースの作成に失敗しました: {error}"
+
+  # テンプレートエラー
+  templateInvalid: "無効なテンプレート構文: {error}"
+  templateProcessingFailed: "テンプレート処理に失敗しました: {error}"
+  templateSecurityViolation: "テンプレートに安全でないコードが含まれています"
+
+  # セキュリティエラー
+  securityInvalidGitRef: "無効なGit参照: {ref}"
+  securityEmptyGitRef: "Git参照は空にできません"
+  securityInvalidGitRefChars: "Git参照に禁止文字が含まれています"
+  securityInvalidGitRefPattern: "Git参照のパターンが無効です"
+  securityGitTagTooLong: "Gitタグが最大長を超えています"
+  securityInvalidCommitHash: "無効なGitコミットハッシュ: {hash}"
+  securityInvalidFilePath: "無効なファイルパス: {path}"
+  securityPathTraversal: "ディレクトリトラバーサルの試みを検出しました"
+  securityPathEscape: "パスがベースディレクトリを超えています"
+  securityInvalidVersion: "無効なバージョン文字列: {version}"
+  securityInvalidSemverFormat: "バージョンがsemver形式と一致しません"
+  securityInvalidCliArgType: "無効なCLI引数タイプ"
+  securityShellInjection: "シェルメタ文字が検出されました"
+  securityNullByteInjection: "ヌルバイトインジェクションの試み"
+
+  # 一般エラー
+  dependencyNotFound: "必要な依存関係が見つかりません: {name}"
+  permissionDenied: "権限が拒否されました: {operation}"
+  operationCancelled: "ユーザーによって操作がキャンセルされました"
+  unknownError: "予期しないエラーが発生しました: {error}"
+
+  # レガシー/互換性（元のキーを保持）
+  invalidBumpType: "無効なバンプタイプ: {type}"
+  breakingRequiresMajor: "{requested}バンプは使用できません: コミットには最低でも{minimum}が必要です"
+  commandFailed: "コマンドが失敗しました: {command}"
+  noCommits: "前回のリリース以降のコミットが見つかりません"
+  tagExists: "タグ {tag} は既に存在します"
+  rollbackFailed: "ロールバックに失敗しました: {error}"
+  templateError: "テンプレートエラー: {error}"
+
+# CLIメッセージ
+cli:
+  release:
+    description: "新しいリリースを作成"
+    calculating: "{count}個のコミットからバージョンバンプを計算中..."
+    currentVersion: "現在のバージョン: {version}"
+    newVersion: "新しいバージョン: {version}"
+    updating: "{count}個のファイルを更新中..."
+    committing: "リリースコミットとタグを作成中..."
+    pushing: "リモートにプッシュ中..."
+    creatingGithub: "GitHubリリースを作成中..."
+    success: "✅ バージョン {version} をリリースしました"
+    dryRun: "🔍 ドライラン: バージョン {version} をリリースする予定"
+    noChanges: "リリースする変更がありません"
+
+  rollback:
+    description: "リリースをロールバック"
+    confirm: "本当にバージョン {version} にロールバックしますか？"
+    rollingBack: "バージョン {version} にロールバック中..."
+    restoringFiles: "{count}個のファイルを復元中..."
+    removingTag: "タグ {tag} を削除中..."
+    success: "✅ バージョン {version} にロールバックしました"
+    cancelled: "ロールバックがキャンセルされました"
+
+  init:
+    description: "プロジェクトでNagareを初期化"
+    creating: "Nagare設定を作成中..."
+    success: "✅ Nagareが正常に初期化されました"
+    exists: "Nagareは既に初期化されています"
+
+  commands:
+    patch: "パッチバージョンをバンプ (1.0.0 → 1.0.1)"
+    minor: "マイナーバージョンをバンプ (1.0.0 → 1.1.0)"
+    major: "メジャーバージョンをバンプ (1.0.0 → 2.0.0)"
+    auto: "コミットから自動的にバージョンバンプを検出"
+
+  options:
+    dryRun: "変更を適用せずにプレビュー"
+    skipConfirmation: "確認プロンプトをスキップ"
+    skipGithub: "GitHubリリース作成をスキップ"
+    skipDocs: "ドキュメント生成をスキップ"
+    verbose: "詳細出力を有効化"
+    quiet: "必須でない出力を抑制"
+
+# プロンプト
+prompts:
+  confirm: "続行しますか？ (y/n)"
+  yes: "y"
+  no: "n"
+
+# エラー回復の提案
+suggestions:
+  checkPath: "ファイルパスが正しいか確認してください"
+  verifyPermissions: "ファイルの読み取り権限があることを確認してください"
+  runGitInit: "'git init' を実行してリポジトリを初期化してください"
+  commitChanges: "リリース前に変更をコミットまたはスタッシュしてください"
+  useValidType: "有効なバンプタイプを使用してください: major, minor, patch"
+  checkGitHub: "GitHub CLIがインストールされ、認証されていることを確認してください"
+  checkConfig: "nagare.config.tsファイルが有効であることを確認してください"
+
+# 変更履歴セクション
+changelog:
+  title: "変更履歴"
+  unreleased: "未リリース"
+  added: "追加"
+  changed: "変更"
+  deprecated: "非推奨"
+  removed: "削除"
+  fixed: "修正"
+  security: "セキュリティ"
+  breakingChanges: "破壊的変更"
+
+# Gitコミットタイプ
+commitTypes:
+  feat: "機能"
+  fix: "バグ修正"
+  docs: "ドキュメント"
+  style: "スタイル"
+  refactor: "リファクタリング"
+  perf: "パフォーマンス改善"
+  test: "テスト"
+  build: "ビルドシステム"
+  ci: "継続的インテグレーション"
+  chore: "雑務"
+  revert: "取り消し"
+
+# ログレベル
+log:
+  error: "エラー"
+  warn: "警告"
+  info: "情報"
+  debug: "デバッグ"
+
+# ファイルハンドラーメッセージ
+fileHandlers:
+  updating: "{path} を更新中"
+  skipping: "{path} をスキップ (変更不要)"
+  preview: "{path} を更新予定"
+  pattern: "使用パターン: {pattern}"
+  customHandler: "{path} にカスタムハンドラーを使用"
+
+# バージョン情報
+version:
+  current: "現在のバージョン: {version}"
+  previous: "以前のバージョン: {version}"
+  bump: "バージョンバンプ: {from} → {to}"
+
+# Gitメッセージ
+git:
+  status: "Gitステータスを確認中..."
+  clean: "作業ディレクトリはクリーンです"
+  uncommitted: "コミットされていない変更が見つかりました"
+  tag: "タグ {tag} を作成中"
+  commit: "コミットを作成中: {message}"
+  push: "{remote} にプッシュ中"
+
+# 時間/日付
+time:
+  just_now: "たった今"
+  seconds_ago: "{count}秒前"
+  minutes_ago: "{count}分前"
+  hours_ago: "{count}時間前"
+  days_ago: "{count}日前"

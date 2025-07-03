@@ -22,7 +22,8 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:jsr.io)",
       "Bash(git tag:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": []
   }

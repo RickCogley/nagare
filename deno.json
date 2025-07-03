@@ -52,15 +52,19 @@
 
     "docs": "deno doc --html --name=\"Nagare (流れ) - Deno Release Management Library\" --output=./docs ./mod.ts",
     "docs:enhance": "deno run --allow-read --allow-write enhance-docs.ts",
-    "docs:build": "deno task docs && deno task docs:enhance",
+    "docs:fix-urls": "deno run --allow-read --allow-write fix-docs-urls.ts",
+    "docs:build": "deno task docs && deno task docs:enhance && deno task docs:fix-urls",
     "docs:serve": "deno run --allow-net --allow-read jsr:@std/http/file-server --host 0.0.0.0 --port 8080 ./docs",
 
     "security:check-sarif": "deno run --allow-read scripts/check-sarif.ts",
-    "security:check-patterns": "deno run --allow-read scripts/check-patterns.ts"
+    "security:check-patterns": "deno run --allow-read scripts/check-patterns.ts",
+
+    "i18n:types": "deno run --allow-read --allow-write scripts/generate-i18n-types.ts"
   },
 
   "imports": {
     "@std/semver": "jsr:@std/semver@^1.0.0",
+    "@std/yaml": "jsr:@std/yaml@^1.0.0",
     "vento": "jsr:@vento/vento@^1.14.0"
   },
 

@@ -1,0 +1,195 @@
+# English translations for Nagare
+# This is the default/fallback locale
+
+# Error messages
+errors:
+  # Git errors
+  gitNotInitialized: "Not in a git repository"
+  gitUncommittedChanges: "Uncommitted changes detected. Cannot proceed with release"
+  gitUserNotConfigured: "Git user not configured"
+  gitNoCommits: "No commits found since last release"
+  gitTagExists: "Tag {tag} already exists"
+  gitRemoteError: "Git remote error: {error}"
+
+  # Configuration errors
+  configNotFound: "Configuration file not found"
+  configInvalid: "Invalid configuration: {error}"
+  configMissingRequired: "Missing required configuration: {field}"
+
+  # Version errors
+  versionNotFound: "Could not find version in {path} using patterns: {patterns}"
+  versionInvalidFormat: "Invalid version format: {version}"
+  versionFileNotFound: "Version file not found: {path}"
+  versionBumpInvalid: "Invalid bump type: {type}"
+
+  # File errors
+  fileNotFound: "File not found: {path}"
+  fileUpdateFailed: "Failed to update {path}: {error}"
+  filePatternNoMatch: "Pattern didn't match in file: {path}"
+  fileHandlerNotFound: "No handler found for file type: {type}"
+  fileJsonInvalid: "Invalid JSON in file: {path}"
+
+  # GitHub errors
+  githubCliNotFound: "GitHub CLI (gh) not found"
+  githubAuthFailed: "GitHub authentication failed"
+  githubReleaseFailed: "Failed to create GitHub release: {error}"
+
+  # Template errors
+  templateInvalid: "Invalid template syntax: {error}"
+  templateProcessingFailed: "Template processing failed: {error}"
+  templateSecurityViolation: "Template contains unsafe code"
+
+  # Security errors
+  securityInvalidGitRef: "Invalid git reference: {ref}"
+  securityEmptyGitRef: "Git reference cannot be empty"
+  securityInvalidGitRefChars: "Git reference contains forbidden characters"
+  securityInvalidGitRefPattern: "Git reference has invalid pattern"
+  securityGitTagTooLong: "Git tag exceeds maximum length"
+  securityInvalidCommitHash: "Invalid git commit hash: {hash}"
+  securityInvalidFilePath: "Invalid file path: {path}"
+  securityPathTraversal: "Directory traversal attempt detected"
+  securityPathEscape: "Path escapes base directory"
+  securityInvalidVersion: "Invalid version string: {version}"
+  securityInvalidSemverFormat: "Version doesn't match semver format"
+  securityInvalidCliArgType: "Invalid CLI argument type"
+  securityShellInjection: "Shell metacharacters detected"
+  securityNullByteInjection: "Null byte injection attempt"
+
+  # General errors
+  dependencyNotFound: "Required dependency not found: {name}"
+  permissionDenied: "Permission denied: {operation}"
+  operationCancelled: "Operation cancelled by user"
+  unknownError: "An unexpected error occurred: {error}"
+
+  # Legacy/compatibility (keeping original keys)
+  invalidBumpType: "Invalid bump type: {type}"
+  breakingRequiresMajor: "Cannot use {requested} bump: commits require at least {minimum}"
+  commandFailed: "Command failed: {command}"
+  noCommits: "No commits found since last release"
+  tagExists: "Tag {tag} already exists"
+  rollbackFailed: "Failed to rollback: {error}"
+  templateError: "Template error: {error}"
+
+# CLI messages
+cli:
+  release:
+    description: "Create a new release"
+    calculating: "Calculating version bump from {count} commits..."
+    currentVersion: "Current version: {version}"
+    newVersion: "New version: {version}"
+    updating: "Updating {count} files..."
+    committing: "Creating release commit and tag..."
+    pushing: "Pushing to remote..."
+    creatingGithub: "Creating GitHub release..."
+    success: "✅ Released version {version}"
+    dryRun: "🔍 DRY RUN: Would release version {version}"
+    noChanges: "No changes to release"
+
+  rollback:
+    description: "Rollback a release"
+    confirm: "Are you sure you want to rollback to {version}?"
+    rollingBack: "Rolling back to version {version}..."
+    restoringFiles: "Restoring {count} files..."
+    removingTag: "Removing tag {tag}..."
+    success: "✅ Rolled back to version {version}"
+    cancelled: "Rollback cancelled"
+
+  init:
+    description: "Initialize Nagare in your project"
+    creating: "Creating Nagare configuration..."
+    success: "✅ Nagare initialized successfully"
+    exists: "Nagare is already initialized"
+
+  commands:
+    patch: "Bump patch version (1.0.0 → 1.0.1)"
+    minor: "Bump minor version (1.0.0 → 1.1.0)"
+    major: "Bump major version (1.0.0 → 2.0.0)"
+    auto: "Auto-detect version bump from commits"
+
+  options:
+    dryRun: "Preview changes without applying them"
+    skipConfirmation: "Skip confirmation prompts"
+    skipGithub: "Skip GitHub release creation"
+    skipDocs: "Skip documentation generation"
+    verbose: "Enable verbose output"
+    quiet: "Suppress non-essential output"
+
+# Prompts
+prompts:
+  confirm: "Proceed? (y/n)"
+  yes: "y"
+  no: "n"
+
+# Suggestions for error recovery
+suggestions:
+  checkPath: "Check that the file path is correct"
+  verifyPermissions: "Verify you have read permissions for the file"
+  runGitInit: "Run 'git init' to initialize a repository"
+  commitChanges: "Commit or stash your changes before releasing"
+  useValidType: "Use one of the valid bump types: major, minor, patch"
+  checkGitHub: "Ensure GitHub CLI is installed and authenticated"
+  checkConfig: "Verify your nagare.config.ts file is valid"
+
+# Changelog sections
+changelog:
+  title: "Changelog"
+  unreleased: "Unreleased"
+  added: "Added"
+  changed: "Changed"
+  deprecated: "Deprecated"
+  removed: "Removed"
+  fixed: "Fixed"
+  security: "Security"
+  breakingChanges: "BREAKING CHANGES"
+
+# Git commit types
+commitTypes:
+  feat: "Features"
+  fix: "Bug Fixes"
+  docs: "Documentation"
+  style: "Styles"
+  refactor: "Code Refactoring"
+  perf: "Performance Improvements"
+  test: "Tests"
+  build: "Build System"
+  ci: "Continuous Integration"
+  chore: "Chores"
+  revert: "Reverts"
+
+# Logging levels
+log:
+  error: "ERROR"
+  warn: "WARN"
+  info: "INFO"
+  debug: "DEBUG"
+
+# File handler messages
+fileHandlers:
+  updating: "Updating {path}"
+  skipping: "Skipping {path} (no changes needed)"
+  preview: "Would update {path}"
+  pattern: "Using pattern: {pattern}"
+  customHandler: "Using custom handler for {path}"
+
+# Version info
+version:
+  current: "Current version: {version}"
+  previous: "Previous version: {version}"
+  bump: "Version bump: {from} → {to}"
+
+# Git messages
+git:
+  status: "Checking git status..."
+  clean: "Working directory is clean"
+  uncommitted: "Found uncommitted changes"
+  tag: "Creating tag {tag}"
+  commit: "Creating commit: {message}"
+  push: "Pushing to {remote}"
+
+# Time/Date
+time:
+  just_now: "just now"
+  seconds_ago: "{count} seconds ago"
+  minutes_ago: "{count} minutes ago"
+  hours_ago: "{count} hours ago"
+  days_ago: "{count} days ago"
