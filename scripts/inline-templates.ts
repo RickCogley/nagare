@@ -162,6 +162,9 @@ async function inlineTemplates() {
     }
   }
 
+  // Create a .gitignore in build directory to prevent exclusion issues
+  await Deno.writeTextFile(join(BUILD_DIR, ".gitignore"), "# Empty gitignore to override parent\n");
+
   console.log(`
 🎉 Template inlining complete!
    - Transformed: ${transformedCount} files
