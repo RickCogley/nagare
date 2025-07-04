@@ -29,7 +29,8 @@
       "Bash(cat:*)",
       "Bash(git check-ignore:*)",
       "Bash(gh workflow:*)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(sed:*)"
     ],
     "deny": []
   }

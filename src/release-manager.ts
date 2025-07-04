@@ -1175,7 +1175,7 @@ export class ReleaseManager {
     let value: unknown = data;
 
     for (const key of keys) {
-      if (value && typeof value === "object" && value !== null && key in value) {
+      if (value != null && typeof value === "object" && key in value) {
         value = (value as Record<string, unknown>)[key];
       } else {
         return undefined;
