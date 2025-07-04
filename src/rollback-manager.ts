@@ -8,7 +8,6 @@ import { GitOperations } from "./git-operations.ts";
 import { Logger, LogLevel } from "./logger.ts";
 import { sanitizeErrorMessage, validateVersion } from "./security-utils.ts";
 import { ErrorFactory } from "./enhanced-error.ts";
-import { t } from "./i18n.ts";
 import { confirmI18n } from "./cli-utils.ts";
 
 /**
@@ -42,7 +41,7 @@ export class RollbackManager {
    */
   async rollback(targetVersion?: string): Promise<RollbackResult> {
     try {
-      this.logger.infoI18n("log.rollback.starting", { version: target || "latest" });
+      this.logger.infoI18n("log.rollback.starting", { version: targetVersion || "latest" });
 
       // Log security audit event
       this.logger.audit("rollback_started", {
