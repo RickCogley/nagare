@@ -33,9 +33,10 @@ const config: NagareConfig = {
         value: {
           platform: "Deno Deploy",
           runtime: "Deno",
+          // DevSkim: ignore DS440000 - These are descriptive documentation strings, not protocol configuration
           cryptoFeatures: [
-            "AES-GCM-256 encryption",
-            "PBKDF2-SHA512 key derivation",
+            "AES-GCM-256 encryption", // DevSkim: ignore DS440000
+            "PBKDF2-SHA512 key derivation", // DevSkim: ignore DS440000
             "600,000 iterations",
             "basE91 encoding",
             "Web Crypto API",

@@ -337,7 +337,7 @@ Deno.test("ChangelogGenerator - Edge cases", async (t) => {
         added: [
           "Support for `markdown` code blocks",
           "Added **bold** and *italic* text",
-          "Fixed [link](http://example.com) handling",
+          "Fixed [link](https://example.com) handling",
         ],
       });
 
@@ -348,7 +348,7 @@ Deno.test("ChangelogGenerator - Edge cases", async (t) => {
       // Check that special characters are preserved
       assertStringIncludes(content, "- Support for `markdown` code blocks");
       assertStringIncludes(content, "- Added **bold** and *italic* text");
-      assertStringIncludes(content, "- Fixed [link](http://example.com) handling");
+      assertStringIncludes(content, "- Fixed [link](https://example.com) handling");
     } finally {
       Deno.chdir(originalCwd);
       await Deno.remove(tempDir, { recursive: true });

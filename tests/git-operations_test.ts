@@ -21,7 +21,7 @@
  * To run other tests without these failures:
  *   deno test --filter "!GitOperations"
  *
- * See GitHub issue: https://github.com/RickCogley/nagare/issues/[TODO]
+ * See GitHub issue: https://github.com/RickCogley/nagare/issues/[TODO: create issue for git i18n test failures]
  */
 
 import {
@@ -132,7 +132,9 @@ Deno.test({
   if (!Deno.env.get("CI")) {
     console.warn("⚠️  Note: Some git integration tests may fail locally due to i18n changes.");
     console.warn("   These tests are skipped in CI and don't affect releases.");
-    console.warn("   See: https://github.com/RickCogley/nagare/issues/[TODO]");
+    console.warn(
+      "   See: https://github.com/RickCogley/nagare/issues/[TODO: create issue for git i18n test failures]",
+    );
   }
   await t.step("should return true for valid git repository", async () => {
     const tempDir = await createTempGitRepo();
