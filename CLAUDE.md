@@ -374,3 +374,50 @@ See [plans/vento-feedback.md](./plans/vento-feedback.md) for detailed feedback a
     ```
     This is particularly important for tests that require actual git repositories or file system
     operations that may conflict in CI
+
+## Security Scanning Configuration
+
+### DevSkim and CodeQL Integration
+
+The project uses both DevSkim and CodeQL for security scanning. Understanding their suppression
+syntax is critical:
+
+1. **DevSkim Suppressions**:
+   - Format: `// DevSkim: ignore DS######` where DS###### is the rule ID
+   - **MUST be placed inline at the END of the offending line**
+   - Common rules:
+     - `DS162092` - Hardcoded tokens/keys (use for test SHA values)
+     - `DS137138` - Regex patterns (use for intentional unanchored patterns)
+     - `DS176209` - TODO comments
+     - `DS189424` - eval usage
+     - `DS440000` or `DS440011` - SSL/TLS protocol references
+   - Example: `const sha = "abc123"; // DevSkim: ignore DS162092`
+
+2. **CodeQL Suppressions**:
+   - Format: `// codeql[rule-id]` where rule-id is the CodeQL query ID
+   - **MUST be placed on a SEPARATE LINE BEFORE the offending code**
+   - Common rules:
+     - `js/redos` - Regular expression denial of service
+     - `js/regex/missing-regexp-anchor` - Unanchored regex patterns
+   - Example:
+     ```typescript
+     // codeql[js/redos]
+     const pattern = /(a+)+b/;
+     ```
+
+3. **Directory Exclusions**:
+   - DevSkim: Configure in `.github/workflows/devskim.yml` using `ignore-globs`
+   - CodeQL: Configure in `.github/codeql/codeql-config.yml` using `paths-ignore`
+   - The `/docs` directory is auto-generated and should be excluded from both scanners
+
+4. **False Positive Guidelines**:
+   - Test data (SHA values, tokens) should use DevSkim suppressions
+   - Intentional security test patterns should be suppressed with clear comments
+   - Documentation strings mentioning crypto/SSL should be suppressed
+   - Always add explanation comments for why a suppression is needed
+
+5. **Important Notes**:
+   - Never use the old `// lgtm` syntax - it's deprecated
+   - DevSkim comments go inline, CodeQL comments go on the line before
+   - Some scanners need workflow restarts to recognize new suppressions
+   - Always verify suppressions work before considering alerts resolved
