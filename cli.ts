@@ -408,57 +408,74 @@ function showVersion(): void {
  * ```
  */
 function showDetailedVersion(): void {
+  // Try to use i18n, fall back to English if not available
+  const tryT = (key: string, params?: Record<string, unknown>): string => {
+    try {
+      return t(key, params);
+    } catch {
+      // Fallback to key if i18n not initialized
+      return key;
+    }
+  };
+
   console.log(`🌊 ${APP_INFO.name} v${VERSION}`);
-  console.log(`📝 ${APP_INFO.description}`);
-  console.log(`📦 Repository: ${APP_INFO.repository}`);
-  console.log(`📄 License: ${APP_INFO.license}`);
+  console.log(`📝 ${tryT("cli.version.description")}: ${APP_INFO.description}`);
+  console.log(`📦 ${tryT("cli.version.repository")}: ${APP_INFO.repository}`);
+  console.log(`📄 ${tryT("cli.version.license")}: ${APP_INFO.license}`);
   console.log();
-  console.log("📋 Build Information:");
-  console.log(`   📅 Build Date: ${BUILD_INFO.buildDate}`);
-  console.log(`   🔗 Git Commit: ${BUILD_INFO.gitCommit}`);
-  console.log(`   🏗️  Environment: ${BUILD_INFO.buildEnvironment}`);
+  console.log(`📋 ${tryT("cli.version.buildInfo")}:`);
+  console.log(`   📅 ${tryT("cli.version.buildDate")}: ${BUILD_INFO.buildDate}`);
+  console.log(`   🔗 ${tryT("cli.version.gitCommit")}: ${BUILD_INFO.gitCommit}`);
+  console.log(`   🏗️  ${tryT("cli.version.environment")}: ${BUILD_INFO.buildEnvironment}`);
 
   // Type guard to ensure RELEASE_NOTES has the expected structure
   if (isValidReleaseNotes(RELEASE_NOTES) && RELEASE_NOTES.version === VERSION) {
     console.log();
-    console.log(`📰 Release Notes (v${RELEASE_NOTES.version} - ${RELEASE_NOTES.date}):`);
+    console.log(
+      `📰 ${
+        tryT("cli.version.releaseNotes", {
+          version: RELEASE_NOTES.version,
+          date: RELEASE_NOTES.date,
+        })
+      }:`,
+    );
 
     if (RELEASE_NOTES.added && RELEASE_NOTES.added.length > 0) {
-      console.log("   ✨ Added:");
+      console.log(`   ✨ ${tryT("cli.version.added")}:`);
       RELEASE_NOTES.added.forEach((item: string) => console.log(`      • ${item}`));
     }
 
     if (RELEASE_NOTES.changed && RELEASE_NOTES.changed.length > 0) {
-      console.log("   🔄 Changed:");
+      console.log(`   🔄 ${tryT("cli.version.changed")}:`);
       RELEASE_NOTES.changed.forEach((item: string) => console.log(`      • ${item}`));
     }
 
     if (RELEASE_NOTES.fixed && RELEASE_NOTES.fixed.length > 0) {
-      console.log("   🐛 Fixed:");
+      console.log(`   🐛 ${tryT("cli.version.fixed")}:`);
       RELEASE_NOTES.fixed.forEach((item: string) => console.log(`      • ${item}`));
     }
 
     if (RELEASE_NOTES.deprecated && RELEASE_NOTES.deprecated.length > 0) {
-      console.log("   ⚠️  Deprecated:");
+      console.log(`   ⚠️  ${tryT("cli.version.deprecated")}:`);
       RELEASE_NOTES.deprecated.forEach((item: string) => console.log(`      • ${item}`));
     }
 
     if (RELEASE_NOTES.removed && RELEASE_NOTES.removed.length > 0) {
-      console.log("   🗑️  Removed:");
+      console.log(`   🗑️  ${tryT("cli.version.removed")}:`);
       RELEASE_NOTES.removed.forEach((item: string) => console.log(`      • ${item}`));
     }
 
     if (RELEASE_NOTES.security && RELEASE_NOTES.security.length > 0) {
-      console.log("   🔒 Security:");
+      console.log(`   🔒 ${tryT("cli.version.security")}:`);
       RELEASE_NOTES.security.forEach((item: string) => console.log(`      • ${item}`));
     }
   }
 
   console.log();
-  console.log("🚀 Runtime Information:");
-  console.log(`   🦕 Deno: ${Deno.version.deno}`);
-  console.log(`   🔧 V8: ${Deno.version.v8}`);
-  console.log(`   📘 TypeScript: ${Deno.version.typescript}`);
+  console.log(`🚀 ${tryT("cli.version.runtimeInfo")}:`);
+  console.log(`   🦕 ${tryT("cli.version.deno")}: ${Deno.version.deno}`);
+  console.log(`   🔧 ${tryT("cli.version.v8")}: ${Deno.version.v8}`);
+  console.log(`   📘 ${tryT("cli.version.typescript")}: ${Deno.version.typescript}`);
 }
 
 /**
@@ -607,7 +624,7 @@ export async function cli(args: string[]): Promise<void> {
 
   // Handle init command separately (doesn't need config)
   if (command === "init") {
-    console.log(formatInfo("Initializing Nagare in current directory..."));
+    console.log(formatInfo(tryT("cli.init.initializing")));
 
     // Create nagare-launcher.ts
     const launcherContent = `#!/usr/bin/env deno run -A
@@ -650,13 +667,13 @@ await cli(Deno.args);
 
     try {
       await Deno.writeTextFile("./nagare-launcher.ts", launcherContent);
-      console.log(formatSuccess("Created nagare-launcher.ts"));
+      console.log(formatSuccess(tryT("cli.init.createdLauncher")));
     } catch (error) {
       console.error(
         formatError(
-          `Failed to create nagare-launcher.ts: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
+          tryT("cli.init.failedLauncher", {
+            error: error instanceof Error ? error.message : String(error),
+          }),
         ),
       );
       Deno.exit(1);
@@ -665,26 +682,26 @@ await cli(Deno.args);
     // Check for existing nagare.config.ts
     try {
       await Deno.stat("./nagare.config.ts");
-      console.log(formatInfo("Found existing nagare.config.ts"));
+      console.log(formatInfo(tryT("cli.init.foundConfig")));
     } catch {
       // Create a minimal nagare.config.ts
-      console.log(formatInfo("Creating minimal nagare.config.ts..."));
+      console.log(formatInfo(tryT("cli.init.creatingConfig")));
       try {
         await Deno.writeTextFile("./nagare.config.ts", EXAMPLE_MINIMAL_CONFIG);
-        console.log(formatSuccess("Created nagare.config.ts"));
+        console.log(formatSuccess(tryT("cli.init.createdConfig")));
       } catch (error) {
         console.error(
           formatError(
-            `Failed to create nagare.config.ts: ${
-              error instanceof Error ? error.message : String(error)
-            }`,
+            tryT("cli.init.failedConfig", {
+              error: error instanceof Error ? error.message : String(error),
+            }),
           ),
         );
       }
     }
 
     // Check if deno.json exists and provide guidance
-    console.log(formatInfo("Checking for deno.json..."));
+    console.log(formatInfo(tryT("cli.init.checkingDeno")));
     try {
       const denoJsonContent = await Deno.readTextFile("./deno.json");
       const denoJson = JSON.parse(denoJsonContent);
@@ -697,9 +714,9 @@ await cli(Deno.args);
       const hasTasks = denoJson.tasks.nagare || denoJson.tasks.release;
 
       if (hasTasks) {
-        console.log(formatInfo("Found existing Nagare tasks in deno.json"));
+        console.log(formatInfo(tryT("cli.init.foundTasks")));
       } else {
-        console.log(formatInfo("Add these tasks to your deno.json:"));
+        console.log(formatInfo(tryT("cli.init.addTasks")));
         console.log(`
   "tasks": {
     "nagare": "deno run -A nagare-launcher.ts",
@@ -713,7 +730,7 @@ await cli(Deno.args);
 `);
       }
     } catch {
-      console.log(formatInfo("No deno.json found. Create one with the following content:"));
+      console.log(formatInfo(tryT("cli.init.noDeno")));
       console.log(`
 {
   "tasks": {
@@ -730,14 +747,14 @@ await cli(Deno.args);
     }
 
     console.log();
-    console.log(formatSuccess("Nagare initialization complete!"));
+    console.log(formatSuccess(tryT("cli.init.complete")));
     console.log();
-    console.log("Next steps:");
-    console.log("1. Edit nagare.config.ts to configure your project");
-    console.log("2. Add the tasks shown above to your deno.json");
-    console.log("3. Run 'deno task release' to create your first release");
+    console.log(tryT("cli.init.nextSteps"));
+    console.log(tryT("cli.init.nextStep1"));
+    console.log(tryT("cli.init.nextStep2"));
+    console.log(tryT("cli.init.nextStep3"));
     console.log();
-    console.log("For more information, visit: https://github.com/RickCogley/nagare");
+    console.log(tryT("cli.init.moreInfo", { url: "https://github.com/RickCogley/nagare" }));
     return;
   }
 

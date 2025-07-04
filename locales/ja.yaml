@@ -101,6 +101,23 @@ cli:
     creating: "Nagare設定を作成中..."
     success: "✅ Nagareが正常に初期化されました"
     exists: "Nagareは既に初期化されています"
+    initializing: "現在のディレクトリでNagareを初期化しています..."
+    createdLauncher: "nagare-launcher.tsを作成しました"
+    failedLauncher: "nagare-launcher.tsの作成に失敗しました: {error}"
+    foundConfig: "既存のnagare.config.tsが見つかりました"
+    creatingConfig: "最小限のnagare.config.tsを作成中..."
+    createdConfig: "nagare.config.tsを作成しました"
+    failedConfig: "nagare.config.tsの作成に失敗しました: {error}"
+    checkingDeno: "deno.jsonを確認中..."
+    foundTasks: "deno.jsonに既存のNagareタスクが見つかりました"
+    addTasks: "以下のタスクをdeno.jsonに追加してください："
+    noDeno: "deno.jsonが見つかりません。以下の内容で作成してください："
+    complete: "Nagareの初期化が完了しました！"
+    nextSteps: "次のステップ："
+    nextStep1: "1. nagare.config.tsを編集してプロジェクトを設定"
+    nextStep2: "2. 上記のタスクをdeno.jsonに追加"
+    nextStep3: "3. 'deno task release'を実行して最初のリリースを作成"
+    moreInfo: "詳細情報: {url}"
 
   commands:
     patch: "パッチバージョンをバンプ (1.0.0 → 1.0.1)"
@@ -166,11 +183,36 @@ cli:
 
     moreInfo: "詳細情報: {url}"
 
+  version:
+    description: "説明"
+    repository: "リポジトリ"
+    license: "ライセンス"
+    buildInfo: "ビルド情報"
+    buildDate: "ビルド日時"
+    gitCommit: "Gitコミット"
+    environment: "環境"
+    releaseNotes: "リリースノート (v{version} - {date})"
+    added: "追加"
+    changed: "変更"
+    fixed: "修正"
+    deprecated: "非推奨"
+    removed: "削除"
+    security: "セキュリティ"
+    runtimeInfo: "ランタイム情報"
+    deno: "Deno"
+    v8: "V8"
+    typescript: "TypeScript"
+
 # プロンプト
 prompts:
   confirm: "続行しますか？ (y/n)"
   yes: "y"
   no: "n"
+  proceedRelease: "リリースを続行しますか？"
+  releaseCancelled: "リリースがキャンセルされました"
+  undoRollback: "リリースの変更を元に戻します。続行しますか？"
+  rollbackCancelled: "ロールバックがキャンセルされました"
+  deleteRemoteTag: "リモートタグ {tag} が存在します。削除しますか？"
 
 # エラー回復の提案
 suggestions:
@@ -230,8 +272,50 @@ commitTypes:
   chore: "雑務"
   revert: "取り消し"
 
-# ログレベル
+# ログメッセージ
 log:
+  release:
+    starting: "🚀 Nagareでリリースプロセスを開始しています..."
+    noFiles: "📄 更新用の追加ファイルは設定されていません"
+    fileUpdatePreview: "📄 ファイル更新プレビュー:"
+    filePreview: "ファイル: {path}"
+    usingHandler: "📦 組み込み{handler}ハンドラーを使用"
+    customFunction: "✅ カスタム更新関数を使用"
+    noChanges: "変更なし"
+    foundMatch: "✅ {line}行目: \"{before}\" → \"{after}\""
+    noMatches: "❌ 更新するバージョン参照が見つかりません"
+    suggestions: "💡 設定の提案:"
+    suggestBuiltin: "✅ {path}は自動的に組み込み{handler}ハンドラーを使用します"
+    currentVersion: "📦 現在のバージョン: {version}"
+    noCommits: "前回のリリース以降のコミットが見つかりません"
+    commitsFound: "📝 前回のリリース以降に{count}個のコミットが見つかりました"
+    newVersion: "📈 新しいバージョン: {version}"
+    releaseNotes: "📋 リリースノートプレビュー:"
+    dryRunMode: "🔍 ドライランモード - すべての変更をプレビューしています..."
+    dryRunInfo: "🏃 ドライランモード - 変更は行われません"
+    updatingFiles: "📝 {count}個のファイルを更新中..."
+    generatingChangelog: "📋 変更履歴を生成中..."
+    committingChanges: "📦 変更をコミットしてタグを作成中..."
+    pushingToRemote: "🚀 リモートにプッシュ中..."
+    creatingGitHub: "🐙 GitHubリリースを作成中..."
+    gitHubSuccess: "✅ GitHubリリースが作成されました: {url}"
+    generatingDocs: "📚 ドキュメントを生成中..."
+    releaseSuccess: "✅ バージョン{version}が正常にリリースされました"
+    releaseUrl: "🎉 リリースを確認: {url}"
+    noFilesToUpdate: "ℹ️  更新用のファイルが設定されていません"
+    processingFiles: "📄 ファイル更新を処理中..."
+
+  rollback:
+    starting: "🔄 バージョン{version}へのロールバックを開始しています..."
+    noReleaseTags: "リリースタグが見つかりません"
+    availableTags: "利用可能なタグ: {tags}"
+    targetNotFound: "ターゲットバージョン{version}が見つかりません"
+    rollingBack: "{version}にロールバック中..."
+    restoringFiles: "📝 {count}個のファイルを復元中..."
+    removingTag: "🏷️  タグ{tag}を削除中..."
+    removingGitHub: "🐙 GitHubリリースを削除中..."
+    success: "✅ バージョン{version}に正常にロールバックしました"
+
   error: "エラー"
   warn: "警告"
   info: "情報"

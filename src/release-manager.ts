@@ -32,6 +32,8 @@ import { Logger } from "./logger.ts";
 import { FileHandlerManager } from "./file-handlers.ts";
 import { sanitizeErrorMessage } from "./security-utils.ts";
 import { ErrorCodes, ErrorFactory, NagareError } from "./enhanced-error.ts";
+import { t } from "./i18n.ts";
+import { confirmI18n } from "./cli-utils.ts";
 
 /**
  * Main ReleaseManager class - coordinates the entire release process
@@ -339,21 +341,21 @@ export class ReleaseManager {
    */
   private async previewFileUpdates(templateData: TemplateData): Promise<void> {
     if (!this.config.updateFiles || this.config.updateFiles.length === 0) {
-      this.logger.info("📄 No additional files configured for updates");
+      this.logger.infoI18n("log.release.noFiles");
       return;
     }
 
-    this.logger.info("\n📄 File Update Preview:");
+    this.logger.infoI18n("log.release.fileUpdatePreview");
 
     for (const filePattern of this.config.updateFiles) {
       try {
         const content = await Deno.readTextFile(filePattern.path);
-        this.logger.info(`\n  File: ${filePattern.path}`);
+        this.logger.info(`\n  ${t("log.release.filePreview", { path: filePattern.path })}`);
 
         // Check if using built-in handler
         const handler = this.fileHandlerManager.getHandler(filePattern.path);
         if (handler && !filePattern.patterns && !filePattern.updateFn) {
-          this.logger.info(`    📦 Using built-in ${handler.name} handler`);
+          this.logger.infoI18n("log.release.usingHandler", { handler: handler.name });
 
           // For built-in handlers, we need to determine which pattern key to use
           // Default to "version" for most handlers
@@ -385,7 +387,7 @@ export class ReleaseManager {
             }
 
             if (!foundMatch) {
-              this.logger.warn(`    ❌ No version references found to update`);
+              this.logger.warnI18n("log.release.noMatches");
             }
             continue;
           }
@@ -412,7 +414,7 @@ export class ReleaseManager {
         }
 
         if (filePattern.updateFn) {
-          this.logger.info("    ✅ Uses custom update function");
+          this.logger.infoI18n("log.release.customFunction");
           continue;
         }
 
@@ -441,7 +443,7 @@ export class ReleaseManager {
         }
 
         if (!hasChanges && !handler) {
-          this.logger.info("    No changes");
+          this.logger.infoI18n("log.release.noChanges");
         }
       } catch (error) {
         this.logger.error(`    ❌ Cannot read file: ${error}`);
@@ -487,7 +489,7 @@ export class ReleaseManager {
     const startTime = Date.now();
 
     try {
-      this.logger.info("🚀 Starting release process with Nagare...\n");
+      this.logger.infoI18n("log.release.starting");
 
       // Log security audit event for release start
       this.logger.audit("release_started", {
@@ -508,22 +510,20 @@ export class ReleaseManager {
 
       // Get current version
       const currentVersion = await this.versionUtils.getCurrentVersion();
-      this.logger.info(`📦 Current version: ${currentVersion}`);
+      this.logger.infoI18n("log.release.currentVersion", { version: currentVersion });
 
       // Get commits since last release
       const commits = await this.git.getCommitsSinceLastRelease();
-      this.logger.info(`📝 Found ${commits.length} commits since last release`);
+      this.logger.infoI18n("log.release.commitsFound", { count: commits.length });
 
       if (commits.length === 0 && !bumpType) {
-        this.logger.info(
-          "ℹ️  No commits found since last release. Use --patch, --minor, or --major to force a release.",
-        );
+        this.logger.infoI18n("log.release.noCommits");
         return { success: false, error: "No commits found" };
       }
 
       // Calculate new version
       const newVersion = this.versionUtils.calculateNewVersion(currentVersion, commits, bumpType);
-      this.logger.info(`📈 New version: ${newVersion}`);
+      this.logger.infoI18n("log.release.newVersion", { version: newVersion });
 
       // Generate release notes
       const releaseNotes = this.generateReleaseNotes(newVersion, commits);
@@ -544,21 +544,21 @@ export class ReleaseManager {
 
       // Enhanced preview for dry run
       if (this.config.options?.dryRun) {
-        this.logger.info("\n🔍 DRY RUN MODE - Previewing all changes...\n");
+        this.logger.infoI18n("log.release.dryRunMode");
         await this.previewFileUpdates(templateData);
       }
 
       // Confirm release (unless skipped)
       if (!this.config.options?.skipConfirmation && !this.config.options?.dryRun) {
-        const proceed = confirm("\n❓ Proceed with release?");
+        const proceed = confirmI18n("prompts.proceedRelease");
         if (!proceed) {
-          this.logger.info("❌ Release cancelled");
+          this.logger.infoI18n("prompts.releaseCancelled");
           return { success: false, error: "User cancelled" };
         }
       }
 
       if (this.config.options?.dryRun) {
-        this.logger.info("\n🏃 Dry run mode - no changes will be made");
+        this.logger.infoI18n("log.release.dryRunInfo");
         return {
           success: true,
           version: newVersion,
@@ -581,7 +581,7 @@ export class ReleaseManager {
       // Generate documentation if enabled
       if (this.config.docs?.enabled) {
         await this.docGenerator.generateDocs();
-        this.logger.info("📚 Generated documentation");
+        this.logger.infoI18n("log.release.generatingDocs");
       }
 
       // Git operations
@@ -610,11 +610,7 @@ export class ReleaseManager {
         }
       }
 
-      this.logger.info("\n🎉 Release completed successfully!");
-      this.logger.info(`   Version: ${newVersion}`);
-      this.logger.info("   Next steps:");
-      this.logger.info("   1. Push changes: git push origin main --tags");
-      this.logger.info("   2. Deploy to production");
+      this.logger.infoI18n("log.release.releaseSuccess", { version: newVersion });
 
       // Log security audit event for successful release
       this.logger.audit("release_completed", {
@@ -708,7 +704,7 @@ export class ReleaseManager {
 
     // Show suggestions
     if (patternValidation.suggestions.length > 0) {
-      this.logger.info("\n💡 Configuration suggestions:");
+      this.logger.infoI18n("log.release.suggestions");
       for (const suggestion of patternValidation.suggestions) {
         this.logger.info(suggestion);
       }
@@ -809,7 +805,7 @@ export class ReleaseManager {
    * Helps users understand what changes are included before confirming release.
    */
   private previewRelease(releaseNotes: ReleaseNotes): void {
-    this.logger.info("\n📋 Release Notes Preview:");
+    this.logger.infoI18n("log.release.releaseNotes");
     this.logger.info(`Version: ${releaseNotes.version}`);
     this.logger.info(`Date: ${releaseNotes.date}`);
 
@@ -873,17 +869,17 @@ export class ReleaseManager {
 
     // Update additional files with enhanced validation
     if (this.config.updateFiles && this.config.updateFiles.length > 0) {
-      this.logger.info("\n📄 Processing file updates...");
+      this.logger.infoI18n("log.release.processingFiles");
 
       for (const filePattern of this.config.updateFiles) {
         await this.updateCustomFile(filePattern, templateData);
         updatedFiles.push(filePattern.path);
       }
 
-      this.logger.info(`✅ Updated ${this.config.updateFiles.length} additional files`);
+      this.logger.infoI18n("log.release.updatingFiles", { count: this.config.updateFiles.length });
     }
 
-    this.logger.info(`✅ Updated ${updatedFiles.length} files total`);
+    this.logger.infoI18n("log.release.updatingFiles", { count: updatedFiles.length });
     return updatedFiles;
   }
 

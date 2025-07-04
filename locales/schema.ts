@@ -90,6 +90,23 @@ export interface TranslationKeys {
       creating: string;
       success: string;
       exists: string;
+      initializing: string;
+      createdLauncher: string;
+      failedLauncher: string;
+      foundConfig: string;
+      creatingConfig: string;
+      createdConfig: string;
+      failedConfig: string;
+      checkingDeno: string;
+      foundTasks: string;
+      addTasks: string;
+      noDeno: string;
+      complete: string;
+      nextSteps: string;
+      nextStep1: string;
+      nextStep2: string;
+      nextStep3: string;
+      moreInfo: string;
     };
     commands: {
       patch: string;
@@ -148,11 +165,84 @@ export interface TranslationKeys {
       safePatternsWarning: string;
       moreInfo: string;
     };
+    version: {
+      description: string;
+      repository: string;
+      license: string;
+      buildInfo: string;
+      buildDate: string;
+      gitCommit: string;
+      environment: string;
+      releaseNotes: string;
+      added: string;
+      changed: string;
+      fixed: string;
+      deprecated: string;
+      removed: string;
+      security: string;
+      runtimeInfo: string;
+      deno: string;
+      v8: string;
+      typescript: string;
+    };
+  };
+  log: {
+    release: {
+      starting: string;
+      noFiles: string;
+      fileUpdatePreview: string;
+      filePreview: string;
+      usingHandler: string;
+      customFunction: string;
+      noChanges: string;
+      foundMatch: string;
+      noMatches: string;
+      suggestions: string;
+      suggestBuiltin: string;
+      currentVersion: string;
+      noCommits: string;
+      commitsFound: string;
+      newVersion: string;
+      releaseNotes: string;
+      dryRunMode: string;
+      dryRunInfo: string;
+      updatingFiles: string;
+      generatingChangelog: string;
+      committingChanges: string;
+      pushingToRemote: string;
+      creatingGitHub: string;
+      gitHubSuccess: string;
+      generatingDocs: string;
+      releaseSuccess: string;
+      releaseUrl: string;
+      noFilesToUpdate: string;
+      processingFiles: string;
+    };
+    rollback: {
+      starting: string;
+      noReleaseTags: string;
+      availableTags: string;
+      targetNotFound: string;
+      rollingBack: string;
+      restoringFiles: string;
+      removingTag: string;
+      removingGitHub: string;
+      success: string;
+    };
+    error: string;
+    warn: string;
+    info: string;
+    debug: string;
   };
   prompts: {
     confirm: string;
     yes: string;
     no: string;
+    proceedRelease: string;
+    releaseCancelled: string;
+    undoRollback: string;
+    rollbackCancelled: string;
+    deleteRemoteTag: string;
   };
   suggestions: {
     checkPath: string;
@@ -257,12 +347,6 @@ export interface TranslationKeys {
     ci: string;
     chore: string;
     revert: string;
-  };
-  log: {
-    error: string;
-    warn: string;
-    info: string;
-    debug: string;
   };
   fileHandlers: {
     updating: string;
@@ -373,6 +457,23 @@ export type TranslationKey =
   | "cli.init.creating"
   | "cli.init.success"
   | "cli.init.exists"
+  | "cli.init.initializing"
+  | "cli.init.createdLauncher"
+  | "cli.init.failedLauncher"
+  | "cli.init.foundConfig"
+  | "cli.init.creatingConfig"
+  | "cli.init.createdConfig"
+  | "cli.init.failedConfig"
+  | "cli.init.checkingDeno"
+  | "cli.init.foundTasks"
+  | "cli.init.addTasks"
+  | "cli.init.noDeno"
+  | "cli.init.complete"
+  | "cli.init.nextSteps"
+  | "cli.init.nextStep1"
+  | "cli.init.nextStep2"
+  | "cli.init.nextStep3"
+  | "cli.init.moreInfo"
   | "cli.commands.patch"
   | "cli.commands.minor"
   | "cli.commands.major"
@@ -424,9 +525,74 @@ export type TranslationKey =
   | "cli.help.safePatternsNote"
   | "cli.help.safePatternsWarning"
   | "cli.help.moreInfo"
+  | "cli.version.description"
+  | "cli.version.repository"
+  | "cli.version.license"
+  | "cli.version.buildInfo"
+  | "cli.version.buildDate"
+  | "cli.version.gitCommit"
+  | "cli.version.environment"
+  | "cli.version.releaseNotes"
+  | "cli.version.added"
+  | "cli.version.changed"
+  | "cli.version.fixed"
+  | "cli.version.deprecated"
+  | "cli.version.removed"
+  | "cli.version.security"
+  | "cli.version.runtimeInfo"
+  | "cli.version.deno"
+  | "cli.version.v8"
+  | "cli.version.typescript"
+  | "log.release.starting"
+  | "log.release.noFiles"
+  | "log.release.fileUpdatePreview"
+  | "log.release.filePreview"
+  | "log.release.usingHandler"
+  | "log.release.customFunction"
+  | "log.release.noChanges"
+  | "log.release.foundMatch"
+  | "log.release.noMatches"
+  | "log.release.suggestions"
+  | "log.release.suggestBuiltin"
+  | "log.release.currentVersion"
+  | "log.release.noCommits"
+  | "log.release.commitsFound"
+  | "log.release.newVersion"
+  | "log.release.releaseNotes"
+  | "log.release.dryRunMode"
+  | "log.release.dryRunInfo"
+  | "log.release.updatingFiles"
+  | "log.release.generatingChangelog"
+  | "log.release.committingChanges"
+  | "log.release.pushingToRemote"
+  | "log.release.creatingGitHub"
+  | "log.release.gitHubSuccess"
+  | "log.release.generatingDocs"
+  | "log.release.releaseSuccess"
+  | "log.release.releaseUrl"
+  | "log.release.noFilesToUpdate"
+  | "log.release.processingFiles"
+  | "log.rollback.starting"
+  | "log.rollback.noReleaseTags"
+  | "log.rollback.availableTags"
+  | "log.rollback.targetNotFound"
+  | "log.rollback.rollingBack"
+  | "log.rollback.restoringFiles"
+  | "log.rollback.removingTag"
+  | "log.rollback.removingGitHub"
+  | "log.rollback.success"
+  | "log.error"
+  | "log.warn"
+  | "log.info"
+  | "log.debug"
   | "prompts.confirm"
   | "prompts.yes"
   | "prompts.no"
+  | "prompts.proceedRelease"
+  | "prompts.releaseCancelled"
+  | "prompts.undoRollback"
+  | "prompts.rollbackCancelled"
+  | "prompts.deleteRemoteTag"
   | "suggestions.checkPath"
   | "suggestions.verifyPermissions"
   | "suggestions.runGitInit"
@@ -525,10 +691,6 @@ export type TranslationKey =
   | "commitTypes.ci"
   | "commitTypes.chore"
   | "commitTypes.revert"
-  | "log.error"
-  | "log.warn"
-  | "log.info"
-  | "log.debug"
   | "fileHandlers.updating"
   | "fileHandlers.skipping"
   | "fileHandlers.preview"

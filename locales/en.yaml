@@ -104,6 +104,23 @@ cli:
     creating: "Creating Nagare configuration..."
     success: "✅ Nagare initialized successfully"
     exists: "Nagare is already initialized"
+    initializing: "Initializing Nagare in current directory..."
+    createdLauncher: "Created nagare-launcher.ts"
+    failedLauncher: "Failed to create nagare-launcher.ts: {error}"
+    foundConfig: "Found existing nagare.config.ts"
+    creatingConfig: "Creating minimal nagare.config.ts..."
+    createdConfig: "Created nagare.config.ts"
+    failedConfig: "Failed to create nagare.config.ts: {error}"
+    checkingDeno: "Checking for deno.json..."
+    foundTasks: "Found existing Nagare tasks in deno.json"
+    addTasks: "Add these tasks to your deno.json:"
+    noDeno: "No deno.json found. Create one with the following content:"
+    complete: "Nagare initialization complete!"
+    nextSteps: "Next steps:"
+    nextStep1: "1. Edit nagare.config.ts to configure your project"
+    nextStep2: "2. Add the tasks shown above to your deno.json"
+    nextStep3: "3. Run 'deno task release' to create your first release"
+    moreInfo: "For more information, visit: {url}"
 
   commands:
     patch: "Bump patch version (1.0.0 → 1.0.1)"
@@ -169,11 +186,86 @@ cli:
 
     moreInfo: "For more information, visit: {url}"
 
+  version:
+    description: "Description"
+    repository: "Repository"
+    license: "License"
+    buildInfo: "Build Information"
+    buildDate: "Build Date"
+    gitCommit: "Git Commit"
+    environment: "Environment"
+    releaseNotes: "Release Notes (v{version} - {date})"
+    added: "Added"
+    changed: "Changed"
+    fixed: "Fixed"
+    deprecated: "Deprecated"
+    removed: "Removed"
+    security: "Security"
+    runtimeInfo: "Runtime Information"
+    deno: "Deno"
+    v8: "V8"
+    typescript: "TypeScript"
+
+# Log messages
+log:
+  release:
+    starting: "🚀 Starting release process with Nagare..."
+    noFiles: "📄 No additional files configured for updates"
+    fileUpdatePreview: "📄 File Update Preview:"
+    filePreview: "File: {path}"
+    usingHandler: "📦 Using built-in {handler} handler"
+    customFunction: "✅ Uses custom update function"
+    noChanges: "No changes"
+    foundMatch: "✅ Line {line}: \"{before}\" → \"{after}\""
+    noMatches: "❌ No version references found to update"
+    suggestions: "💡 Configuration suggestions:"
+    suggestBuiltin: "✅ {path} will use built-in {handler} handler automatically"
+    currentVersion: "📦 Current version: {version}"
+    noCommits: "No commits found since last release"
+    commitsFound: "📝 Found {count} commits since last release"
+    newVersion: "📈 New version: {version}"
+    releaseNotes: "📋 Release Notes Preview:"
+    dryRunMode: "🔍 DRY RUN MODE - Previewing all changes..."
+    dryRunInfo: "🏃 Dry run mode - no changes will be made"
+    updatingFiles: "📝 Updating {count} files..."
+    generatingChangelog: "📋 Generating changelog..."
+    committingChanges: "📦 Committing changes and creating tag..."
+    pushingToRemote: "🚀 Pushing to remote..."
+    creatingGitHub: "🐙 Creating GitHub release..."
+    gitHubSuccess: "✅ GitHub release created: {url}"
+    generatingDocs: "📚 Generating documentation..."
+    releaseSuccess: "✅ Successfully released version {version}"
+    releaseUrl: "🎉 View release at: {url}"
+    noFilesToUpdate: "ℹ️  No files configured for updates"
+    processingFiles: "📄 Processing file updates..."
+
+  rollback:
+    starting: "🔄 Starting rollback to version {version}..."
+    noReleaseTags: "No release tags found"
+    availableTags: "Available tags: {tags}"
+    targetNotFound: "Target version {version} not found"
+    rollingBack: "Rolling back to {version}..."
+    restoringFiles: "📝 Restoring {count} files..."
+    removingTag: "🏷️  Removing tag {tag}..."
+    removingGitHub: "🐙 Removing GitHub release..."
+    success: "✅ Successfully rolled back to {version}"
+
+  # Logging levels
+  error: "ERROR"
+  warn: "WARN"
+  info: "INFO"
+  debug: "DEBUG"
+
 # Prompts
 prompts:
   confirm: "Proceed? (y/n)"
   yes: "y"
   no: "n"
+  proceedRelease: "Proceed with release?"
+  releaseCancelled: "Release cancelled"
+  undoRollback: "This will undo release changes. Continue?"
+  rollbackCancelled: "Rollback cancelled"
+  deleteRemoteTag: "Remote tag {tag} exists. Delete it?"
 
 # Suggestions for error recovery
 suggestions:
@@ -282,13 +374,6 @@ commitTypes:
   ci: "Continuous Integration"
   chore: "Chores"
   revert: "Reverts"
-
-# Logging levels
-log:
-  error: "ERROR"
-  warn: "WARN"
-  info: "INFO"
-  debug: "DEBUG"
 
 # File handler messages
 fileHandlers:

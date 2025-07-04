@@ -8,6 +8,8 @@ import { GitOperations } from "./git-operations.ts";
 import { Logger, LogLevel } from "./logger.ts";
 import { sanitizeErrorMessage, validateVersion } from "./security-utils.ts";
 import { ErrorFactory } from "./enhanced-error.ts";
+import { t } from "./i18n.ts";
+import { confirmI18n } from "./cli-utils.ts";
 
 /**
  * Result of a rollback operation
@@ -40,7 +42,7 @@ export class RollbackManager {
    */
   async rollback(targetVersion?: string): Promise<RollbackResult> {
     try {
-      this.logger.info("🔄 Starting release rollback...\n");
+      this.logger.infoI18n("log.rollback.starting", { version: target || "latest" });
 
       // Log security audit event
       this.logger.audit("rollback_started", {
@@ -94,9 +96,9 @@ export class RollbackManager {
 
       // Confirm rollback
       if (!this.config.options?.skipConfirmation) {
-        const proceed = confirm("\n❓ This will undo release changes. Continue?");
+        const proceed = confirmI18n("prompts.undoRollback");
         if (!proceed) {
-          this.logger.info("❌ Rollback cancelled");
+          this.logger.infoI18n("prompts.rollbackCancelled");
           return { success: false, error: "User cancelled" };
         }
       }
@@ -108,7 +110,7 @@ export class RollbackManager {
       const tagName = `${tagPrefix}${versionToRollback}`;
 
       if (localTags.includes(tagName)) {
-        this.logger.info(`🗑️  Removing local tag: ${tagName}`);
+        this.logger.infoI18n("log.rollback.removingTag", { tag: tagName });
         await this.git.deleteLocalTag(tagName);
         rollbackActions.push(`Removed local tag ${tagName}`);
       }
@@ -125,7 +127,7 @@ export class RollbackManager {
       // 3. Try to remove remote tag if it exists
       if (await this.git.remoteTagExists(tagName)) {
         const deleteRemote = this.config.options?.skipConfirmation ||
-          confirm(`🗑️  Remote tag ${tagName} exists. Delete it?`);
+          confirmI18n("prompts.deleteRemoteTag", { tag: tagName });
 
         if (deleteRemote) {
           try {
@@ -139,7 +141,7 @@ export class RollbackManager {
         }
       }
 
-      this.logger.info("\n✅ Rollback completed successfully!");
+      this.logger.infoI18n("log.rollback.success", { version: versionToRollback });
       this.logger.info("\n📋 Actions taken:");
       rollbackActions.forEach((action) => this.logger.info(`   ✓ ${action}`));
 

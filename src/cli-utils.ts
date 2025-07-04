@@ -142,3 +142,19 @@ export function printPrompt(key: TranslationKey | string, params?: Record<string
   const message = hasI18n() && key.includes(".") ? t(key as TranslationKey, params) : key;
   console.log(`❓ ${message}`);
 }
+
+/**
+ * Show a confirmation prompt with i18n support
+ * Uses Deno's built-in confirm() function
+ *
+ * @param key - Translation key or raw message
+ * @param params - Parameters for message interpolation
+ * @returns True if user confirmed, false otherwise
+ */
+export function confirmI18n(
+  key: TranslationKey | string,
+  params?: Record<string, unknown>,
+): boolean {
+  const message = hasI18n() && key.includes(".") ? t(key as TranslationKey, params) : key;
+  return confirm(`\n❓ ${message}`);
+}
