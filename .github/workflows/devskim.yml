@@ -27,6 +27,10 @@ jobs:
         with:
           directory-to-scan: .
           # Exclude paths
+          ignore-globs: |
+            **/docs/**
+            **/*.min.js
+            **/node_modules/**
           should-scan-archives: false
           output-filename: devskim-results.sarif
           # Customize rules if needed

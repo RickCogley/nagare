@@ -325,9 +325,11 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
     patterns: {
       // Version badges - more specific patterns to reduce false positives
       shieldsBadge:
-        /(?:https?:\/\/)?shields\.io\/badge\/version-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g, // CodeQL: ignore[js/regex/missing-regexp-anchor] // DevSkim: ignore DS137138
+        // codeql[js/regex/missing-regexp-anchor]
+        /(?:https?:\/\/)?shields\.io\/badge\/version-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g,
       imgShieldsBadge:
-        /(?:https?:\/\/)?img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g, // CodeQL: ignore[js/regex/missing-regexp-anchor] // DevSkim: ignore DS137138
+        // codeql[js/regex/missing-regexp-anchor]
+        /(?:https?:\/\/)?img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g,
       npmBadge: /npm\/v\/([^/\s)]+)/g,
 
       // Direct version references
@@ -950,10 +952,12 @@ export class PatternBuilder {
    */
   static versionBadge(badgeService: "shields.io" | "img.shields.io" | "any" = "any"): RegExp {
     if (badgeService === "shields.io") {
-      return /(?:https?:\/\/)?shields\.io\/badge\/version-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g; // CodeQL: ignore[js/regex/missing-regexp-anchor] // DevSkim: ignore DS137138
+      // codeql[js/regex/missing-regexp-anchor]
+      return /(?:https?:\/\/)?shields\.io\/badge\/version-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g;
     }
     if (badgeService === "img.shields.io") {
-      return /(?:https?:\/\/)?img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g; // CodeQL: ignore[js/regex/missing-regexp-anchor] // DevSkim: ignore DS137138
+      // codeql[js/regex/missing-regexp-anchor]
+      return /(?:https?:\/\/)?img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g;
     }
     // Match any common badge pattern with color suffix
     return /badge\/v(?:ersion)?[\-\/]([^\-\/\s]+)[\-\/](?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g;
