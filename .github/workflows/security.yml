@@ -31,8 +31,8 @@ jobs:
       - name: Run security tests
         run: |
           echo "Running security unit tests..."
-          deno test --allow-all src/security-utils_test.ts
-          deno test --allow-all src/template-security_test.ts
+          deno test --unstable-raw-imports --allow-all src/security-utils_test.ts
+          deno test --unstable-raw-imports --allow-all src/template-security_test.ts
 
       - name: Check for dangerous patterns
         run: |
@@ -83,7 +83,7 @@ jobs:
       - name: Test command injection prevention
         run: |
           echo "Testing command injection prevention..."
-          deno eval "
+          deno eval --unstable-raw-imports "
             import { validateGitRef, validateCliArgs } from './src/security-utils.ts';
 
             // Test dangerous inputs are rejected
@@ -111,7 +111,7 @@ jobs:
       - name: Test path traversal prevention
         run: |
           echo "Testing path traversal prevention..."
-          deno eval "
+          deno eval --unstable-raw-imports "
             import { validateFilePath } from './src/security-utils.ts';
 
             const dangerous = [
