@@ -973,8 +973,7 @@ export const RELEASE_NOTES = {{ releaseNotes | jsonStringify }} as const;
 
   releaseNotes: {
     metadata: {
-      // DevSkim: ignore DS440000 - These are descriptive strings for documentation, not protocol configuration
-      cryptoFeatures: ['AES-GCM-256', 'PBKDF2-SHA512', 'basE91'], // DevSkim: ignore DS440011
+      cryptoFeatures: ['AES-GCM-256', 'PBKDF2-SHA512', 'basE91'], // DevSkim: ignore DS440000,DS440011 - These are descriptive strings for documentation, not protocol configuration
       securityFeatures: ['Rate limiting', 'API authentication']
     }
   },

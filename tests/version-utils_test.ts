@@ -693,9 +693,8 @@ Deno.test("VersionUtils - Security considerations", async (t) => {
           // This is a potentially problematic regex that could cause ReDoS
           // (Regular Expression Denial of Service) with exponential backtracking
           // The pattern (a+)+ can cause catastrophic backtracking on strings like "aaaa...c"
-          // DevSkim: ignore DS137138 - Intentional ReDoS pattern for testing protection
           // codeql[js/redos]
-          version: /(a+)+b/,
+          version: /(a+)+b/, // DevSkim: ignore DS137138 - Intentional ReDoS pattern for testing protection
         },
       },
     });
