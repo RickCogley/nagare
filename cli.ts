@@ -541,8 +541,13 @@ function formatInfo(message: string): string {
 export async function cli(args: string[]): Promise<void> {
   // Initialize i18n early
   try {
+    // Resolve locales directory based on whether we're running from source or package
+    const localesDir = import.meta.url.startsWith("file://")
+      ? new URL("./locales", import.meta.url).pathname
+      : "./locales";
+
     await initI18n({
-      localesDir: new URL("../locales", import.meta.url).pathname,
+      localesDir,
     });
   } catch (error) {
     console.error(formatError(`Failed to initialize i18n: ${sanitizeErrorMessage(error, false)}`));

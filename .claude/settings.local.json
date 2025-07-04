@@ -28,7 +28,8 @@
       "Bash(gh run view:*)",
       "Bash(cat:*)",
       "Bash(git check-ignore:*)",
-      "Bash(gh workflow:*)"
+      "Bash(gh workflow:*)",
+      "Bash(git stash:*)"
     ],
     "deny": []
   }
