@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2025-07-04
+
+### Changed
+
+- add security scanning configuration section to CLAUDE.md (1aa61e8)
+
+### Fixed
+
+- correct placement of DevSkim inline suppression comments (c158af5)
+- configure DevSkim to ignore docs and fix CodeQL suppression syntax (7957726)
+- add both DevSkim and CodeQL suppression comments for all security alerts (794c794)
+- properly place inline DevSkim comments to resolve all code scanning alerts (a73059c)
+- add inline DevSkim comments to resolve code scanning alerts (6ec032b)
+- resolve code scanning security alerts (1918d0c)
+- resolve static analysis warnings for type comparison and regex anchors (1c83bcd)
+- add --unstable-raw-imports flag to security tests (633af26)
+- remove unused import and fix undefined variable in rollback-manager (0d85f56)
+
 ## [2.2.0] - 2025-07-04
 
 ### Added
