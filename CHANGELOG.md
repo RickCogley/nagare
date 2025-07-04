@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2025-07-04
+
+### Added
+
+- complete i18n implementation for CLI output (df29e8c)
+- add internationalized help text (bd21415)
+
+### Changed
+
+- add i18n usage examples and fix locale path resolution (23a585c)
+
 ## [2.1.0] - 2025-07-03
 
 ### Added
