@@ -62,7 +62,7 @@ Deno.test("template security - strict mode blocks dangerous patterns", async () 
   // JavaScript execution - Testing that eval is properly blocked
   // DevSkim: ignore DS104863 - Intentional eval in test to verify security protection
   await assertRejects(
-    () => processor.processTemplate('{{ eval("malicious code") }}', mockTemplateData), // DevSkim: ignore DS440900 // DevSkim: ignore DS440900
+    () => processor.processTemplate('{{ eval("malicious code") }}', mockTemplateData), // DevSkim: ignore DS189424
     Error,
   );
 

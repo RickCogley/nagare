@@ -21,7 +21,7 @@
  * To run other tests without these failures:
  *   deno test --filter "!GitOperations"
  *
- * See GitHub issue: https://github.com/RickCogley/nagare/issues/[TODO: create issue for git i18n test failures] // DevSkim: ignore DS162086 // DevSkim: ignore DS162086
+ * See GitHub issue: https://github.com/RickCogley/nagare/issues/[TODO: create issue for git i18n test failures] // DevSkim: ignore DS176209
  */
 
 import {
@@ -133,7 +133,7 @@ Deno.test({
     console.warn("⚠️  Note: Some git integration tests may fail locally due to i18n changes.");
     console.warn("   These tests are skipped in CI and don't affect releases.");
     console.warn(
-      "   See: https://github.com/RickCogley/nagare/issues/[TODO: create issue for git i18n test failures]", // DevSkim: ignore DS162086 // DevSkim: ignore DS162086
+      "   See: https://github.com/RickCogley/nagare/issues/[TODO: create issue for git i18n test failures]", // DevSkim: ignore DS176209
     );
   }
   await t.step("should return true for valid git repository", async () => {
