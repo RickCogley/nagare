@@ -119,6 +119,56 @@ cli:
     verbose: "Enable verbose output"
     quiet: "Suppress non-essential output"
 
+  help:
+    title: "{name} v{version} - {description}"
+    usage: "USAGE:"
+    usageLine1: "nagare <command> [options]"
+    usageLine2: "nagare release [major|minor|patch] [options]"
+    usageLine3: "nagare rollback [version] [options]"
+
+    commands: "COMMANDS:"
+    commandRelease: "release    Create a new release (default)"
+    commandRollback: "rollback   Rollback a release"
+    commandInit: "init       Initialize Nagare in current directory"
+
+    bumpTypes: "BUMP TYPES:"
+    bumpMajor: "major      Increment major version (1.0.0 -> 2.0.0)"
+    bumpMinor: "minor      Increment minor version (1.0.0 -> 1.1.0)"
+    bumpPatch: "patch      Increment patch version (1.0.0 -> 1.0.1)"
+
+    options: "OPTIONS:"
+    optionConfig: "--config, -c <path>         Path to configuration file"
+    optionDryRun: "--dry-run                   Preview changes without making them"
+    optionSkipConfirm: "--skip-confirmation, -y     Skip confirmation prompts"
+    optionLogLevel: "--log-level <level>         Set log level (DEBUG, INFO, WARN, ERROR)"
+    optionHelp: "--help, -h                  Show this help message"
+    optionVersion: "--version, -v               Show version information"
+    optionVersionDetailed: "--version-detailed          Show detailed version information"
+    optionVersionJson: "--version-json              Show version information in JSON format"
+
+    examples: "EXAMPLES:"
+    exampleInit: "nagare init                         # Initialize Nagare in current directory"
+    exampleRelease: "nagare release                       # Auto-determine version bump from commits"
+    exampleReleaseMinor: "nagare release minor                # Force minor version bump"
+    exampleDryRun: "nagare release --dry-run            # Preview release without making changes"
+    exampleRollback: "nagare rollback                     # Rollback latest release"
+    exampleRollbackVersion: "nagare rollback 1.2.0               # Rollback specific version"
+    exampleConfig: "nagare --config ./my-config.ts      # Use custom config file"
+    exampleVersionDetailed: "nagare --version-detailed           # Show build info and release notes"
+    exampleVersionJson: "nagare --version-json               # Output version info as JSON"
+
+    configuration: "CONFIGURATION:"
+    configIntro: "Create a nagare.config.ts file in your project root:"
+
+    safePatterns: "SAFE FILE UPDATE PATTERNS:"
+    safePatternsIntro: "Always use line-anchored patterns for JSON files to prevent corruption:"
+    safeExample: "✅ SAFE:   /^(\\s*)\"version\":\\s*\"([^\"]+)\"/m"
+    unsafeExample: "❌ UNSAFE: /\"version\":\\s*\"([^\"]+)\"/"
+    safePatternsNote: "The unsafe pattern can match task definitions and corrupt your files."
+    safePatternsWarning: "Nagare will warn you if dangerous patterns are detected."
+
+    moreInfo: "For more information, visit: {url}"
+
 # Prompts
 prompts:
   confirm: "Proceed? (y/n)"

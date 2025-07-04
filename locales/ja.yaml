@@ -116,6 +116,56 @@ cli:
     verbose: "詳細出力を有効化"
     quiet: "必須でない出力を抑制"
 
+  help:
+    title: "{name} v{version} - {description}"
+    usage: "使用方法:"
+    usageLine1: "nagare <command> [options]"
+    usageLine2: "nagare release [major|minor|patch] [options]"
+    usageLine3: "nagare rollback [version] [options]"
+
+    commands: "コマンド:"
+    commandRelease: "release    新しいリリースを作成 (デフォルト)"
+    commandRollback: "rollback   リリースをロールバック"
+    commandInit: "init       現在のディレクトリでNagareを初期化"
+
+    bumpTypes: "バンプタイプ:"
+    bumpMajor: "major      メジャーバージョンをインクリメント (1.0.0 -> 2.0.0)"
+    bumpMinor: "minor      マイナーバージョンをインクリメント (1.0.0 -> 1.1.0)"
+    bumpPatch: "patch      パッチバージョンをインクリメント (1.0.0 -> 1.0.1)"
+
+    options: "オプション:"
+    optionConfig: "--config, -c <path>         設定ファイルへのパス"
+    optionDryRun: "--dry-run                   変更を適用せずにプレビュー"
+    optionSkipConfirm: "--skip-confirmation, -y     確認プロンプトをスキップ"
+    optionLogLevel: "--log-level <level>         ログレベルを設定 (DEBUG, INFO, WARN, ERROR)"
+    optionHelp: "--help, -h                  このヘルプメッセージを表示"
+    optionVersion: "--version, -v               バージョン情報を表示"
+    optionVersionDetailed: "--version-detailed          詳細なバージョン情報を表示"
+    optionVersionJson: "--version-json              JSON形式でバージョン情報を表示"
+
+    examples: "例:"
+    exampleInit: "nagare init                         # 現在のディレクトリでNagareを初期化"
+    exampleRelease: "nagare release                       # コミットから自動的にバージョンバンプを決定"
+    exampleReleaseMinor: "nagare release minor                # マイナーバージョンバンプを強制"
+    exampleDryRun: "nagare release --dry-run            # 変更を行わずにリリースをプレビュー"
+    exampleRollback: "nagare rollback                     # 最新のリリースをロールバック"
+    exampleRollbackVersion: "nagare rollback 1.2.0               # 特定のバージョンをロールバック"
+    exampleConfig: "nagare --config ./my-config.ts      # カスタム設定ファイルを使用"
+    exampleVersionDetailed: "nagare --version-detailed           # ビルド情報とリリースノートを表示"
+    exampleVersionJson: "nagare --version-json               # バージョン情報をJSONとして出力"
+
+    configuration: "設定:"
+    configIntro: "プロジェクトのルートにnagare.config.tsファイルを作成:"
+
+    safePatterns: "安全なファイル更新パターン:"
+    safePatternsIntro: "JSONファイルの破損を防ぐため、常に行頭アンカーパターンを使用してください:"
+    safeExample: "✅ 安全:   /^(\\s*)\"version\":\\s*\"([^\"]+)\"/m"
+    unsafeExample: "❌ 危険: /\"version\":\\s*\"([^\"]+)\"/"
+    safePatternsNote: "危険なパターンはタスク定義にマッチしてファイルを破損する可能性があります。"
+    safePatternsWarning: "Nagareは危険なパターンが検出された場合に警告します。"
+
+    moreInfo: "詳細情報: {url}"
+
 # プロンプト
 prompts:
   confirm: "続行しますか？ (y/n)"

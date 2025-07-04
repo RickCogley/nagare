@@ -47,6 +47,9 @@ export interface TranslationKeys {
     securityInvalidCliArgType: string;
     securityShellInjection: string;
     securityNullByteInjection: string;
+    securityInvalidPath: string;
+    securityPathNotAbsolute: string;
+    securityForbiddenChars: string;
     dependencyNotFound: string;
     permissionDenied: string;
     operationCancelled: string;
@@ -102,6 +105,49 @@ export interface TranslationKeys {
       verbose: string;
       quiet: string;
     };
+    help: {
+      title: string;
+      usage: string;
+      usageLine1: string;
+      usageLine2: string;
+      usageLine3: string;
+      commands: string;
+      commandRelease: string;
+      commandRollback: string;
+      commandInit: string;
+      bumpTypes: string;
+      bumpMajor: string;
+      bumpMinor: string;
+      bumpPatch: string;
+      options: string;
+      optionConfig: string;
+      optionDryRun: string;
+      optionSkipConfirm: string;
+      optionLogLevel: string;
+      optionHelp: string;
+      optionVersion: string;
+      optionVersionDetailed: string;
+      optionVersionJson: string;
+      examples: string;
+      exampleInit: string;
+      exampleRelease: string;
+      exampleReleaseMinor: string;
+      exampleDryRun: string;
+      exampleRollback: string;
+      exampleRollbackVersion: string;
+      exampleConfig: string;
+      exampleVersionDetailed: string;
+      exampleVersionJson: string;
+      configuration: string;
+      configIntro: string;
+      safePatterns: string;
+      safePatternsIntro: string;
+      safeExample: string;
+      unsafeExample: string;
+      safePatternsNote: string;
+      safePatternsWarning: string;
+      moreInfo: string;
+    };
   };
   prompts: {
     confirm: string;
@@ -138,6 +184,55 @@ export interface TranslationKeys {
     useValidType: string;
     checkGitHub: string;
     checkConfig: string;
+    provideValidString: string;
+    checkNotNull: string;
+    ensureNotNumberOrObject: string;
+    provideNonEmpty: string;
+    checkWhitespace: string;
+    useSimpleNames: string;
+    useOnlyAlphanumeric: string;
+    avoidSpecialChars: string;
+    checkGitDocs: string;
+    followGitNaming: string;
+    useShorterName: string;
+    provideFullHash: string;
+    checkGitLog: string;
+    useAbsolutePath: string;
+    removeTraversal: string;
+    stayWithinProject: string;
+    useForwardSlashes: string;
+    checkPathExists: string;
+    provideSemver: string;
+    checkVersionFormat: string;
+    removeInvalidChars: string;
+    provideValidGitRef: string;
+    checkNotNullOrUndefined: string;
+    ensureStringType: string;
+    removeSpecialChars: string;
+    useAlphanumeric: string;
+    noStartWithHyphen: string;
+    removeDoubleDots: string;
+    noEndWithDotOrLock: string;
+    removeAtBraces: string;
+    useConciseNaming: string;
+    useAbbreviatedVersions: string;
+    checkForNullUndefined: string;
+    checkInputSource: string;
+    convertNumbersToStrings: string;
+    ensureStringArgs: string;
+    escapeSpecialChars: string;
+    forbiddenChars: string;
+    provideValidPath: string;
+    removeNullBytes: string;
+    removeShellMetachars: string;
+    checkSemverDocs: string;
+    checkSymbolicLinks: string;
+    useGitRevParse: string;
+    useParamSubstitution: string;
+    useRelativePaths: string;
+    useSemverFormat: string;
+    validateEncoding: string;
+    validSemverExamples: string;
   };
   changelog: {
     title: string;
@@ -242,6 +337,9 @@ export type TranslationKey =
   | "errors.securityInvalidCliArgType"
   | "errors.securityShellInjection"
   | "errors.securityNullByteInjection"
+  | "errors.securityInvalidPath"
+  | "errors.securityPathNotAbsolute"
+  | "errors.securityForbiddenChars"
   | "errors.dependencyNotFound"
   | "errors.permissionDenied"
   | "errors.operationCancelled"
@@ -285,6 +383,47 @@ export type TranslationKey =
   | "cli.options.skipDocs"
   | "cli.options.verbose"
   | "cli.options.quiet"
+  | "cli.help.title"
+  | "cli.help.usage"
+  | "cli.help.usageLine1"
+  | "cli.help.usageLine2"
+  | "cli.help.usageLine3"
+  | "cli.help.commands"
+  | "cli.help.commandRelease"
+  | "cli.help.commandRollback"
+  | "cli.help.commandInit"
+  | "cli.help.bumpTypes"
+  | "cli.help.bumpMajor"
+  | "cli.help.bumpMinor"
+  | "cli.help.bumpPatch"
+  | "cli.help.options"
+  | "cli.help.optionConfig"
+  | "cli.help.optionDryRun"
+  | "cli.help.optionSkipConfirm"
+  | "cli.help.optionLogLevel"
+  | "cli.help.optionHelp"
+  | "cli.help.optionVersion"
+  | "cli.help.optionVersionDetailed"
+  | "cli.help.optionVersionJson"
+  | "cli.help.examples"
+  | "cli.help.exampleInit"
+  | "cli.help.exampleRelease"
+  | "cli.help.exampleReleaseMinor"
+  | "cli.help.exampleDryRun"
+  | "cli.help.exampleRollback"
+  | "cli.help.exampleRollbackVersion"
+  | "cli.help.exampleConfig"
+  | "cli.help.exampleVersionDetailed"
+  | "cli.help.exampleVersionJson"
+  | "cli.help.configuration"
+  | "cli.help.configIntro"
+  | "cli.help.safePatterns"
+  | "cli.help.safePatternsIntro"
+  | "cli.help.safeExample"
+  | "cli.help.unsafeExample"
+  | "cli.help.safePatternsNote"
+  | "cli.help.safePatternsWarning"
+  | "cli.help.moreInfo"
   | "prompts.confirm"
   | "prompts.yes"
   | "prompts.no"
@@ -317,6 +456,55 @@ export type TranslationKey =
   | "suggestions.useValidType"
   | "suggestions.checkGitHub"
   | "suggestions.checkConfig"
+  | "suggestions.provideValidString"
+  | "suggestions.checkNotNull"
+  | "suggestions.ensureNotNumberOrObject"
+  | "suggestions.provideNonEmpty"
+  | "suggestions.checkWhitespace"
+  | "suggestions.useSimpleNames"
+  | "suggestions.useOnlyAlphanumeric"
+  | "suggestions.avoidSpecialChars"
+  | "suggestions.checkGitDocs"
+  | "suggestions.followGitNaming"
+  | "suggestions.useShorterName"
+  | "suggestions.provideFullHash"
+  | "suggestions.checkGitLog"
+  | "suggestions.useAbsolutePath"
+  | "suggestions.removeTraversal"
+  | "suggestions.stayWithinProject"
+  | "suggestions.useForwardSlashes"
+  | "suggestions.checkPathExists"
+  | "suggestions.provideSemver"
+  | "suggestions.checkVersionFormat"
+  | "suggestions.removeInvalidChars"
+  | "suggestions.provideValidGitRef"
+  | "suggestions.checkNotNullOrUndefined"
+  | "suggestions.ensureStringType"
+  | "suggestions.removeSpecialChars"
+  | "suggestions.useAlphanumeric"
+  | "suggestions.noStartWithHyphen"
+  | "suggestions.removeDoubleDots"
+  | "suggestions.noEndWithDotOrLock"
+  | "suggestions.removeAtBraces"
+  | "suggestions.useConciseNaming"
+  | "suggestions.useAbbreviatedVersions"
+  | "suggestions.checkForNullUndefined"
+  | "suggestions.checkInputSource"
+  | "suggestions.convertNumbersToStrings"
+  | "suggestions.ensureStringArgs"
+  | "suggestions.escapeSpecialChars"
+  | "suggestions.forbiddenChars"
+  | "suggestions.provideValidPath"
+  | "suggestions.removeNullBytes"
+  | "suggestions.removeShellMetachars"
+  | "suggestions.checkSemverDocs"
+  | "suggestions.checkSymbolicLinks"
+  | "suggestions.useGitRevParse"
+  | "suggestions.useParamSubstitution"
+  | "suggestions.useRelativePaths"
+  | "suggestions.useSemverFormat"
+  | "suggestions.validateEncoding"
+  | "suggestions.validSemverExamples"
   | "changelog.title"
   | "changelog.unreleased"
   | "changelog.added"

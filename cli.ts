@@ -35,7 +35,7 @@ import { LogLevel } from "./config.ts";
 import { APP_INFO, BUILD_INFO, RELEASE_NOTES, VERSION } from "./version.ts";
 import { sanitizeErrorMessage, validateCliArgs, validateFilePath } from "./src/security-utils.ts";
 import { ErrorFactory } from "./src/enhanced-error.ts";
-import { initI18n } from "./src/i18n.ts";
+import { initI18n, t } from "./src/i18n.ts";
 
 /**
  * CLI configuration options interface
@@ -282,47 +282,63 @@ async function loadConfig(configPath?: string): Promise<NagareConfig> {
  * ```
  */
 function showHelp(): void {
+  // Try to use i18n, fall back to English if not available
+  const tryT = (key: string, params?: Record<string, unknown>): string => {
+    try {
+      return t(key, params);
+    } catch {
+      // Fallback to key if i18n not initialized
+      return key;
+    }
+  };
+
   console.log(`
-${APP_INFO.name} v${VERSION} - ${APP_INFO.description}
+${
+    tryT("cli.help.title", {
+      name: APP_INFO.name,
+      version: VERSION,
+      description: APP_INFO.description,
+    })
+  }
 
-USAGE:
-  nagare <command> [options]
-  nagare release [major|minor|patch] [options]
-  nagare rollback [version] [options]
+${tryT("cli.help.usage")}
+  ${tryT("cli.help.usageLine1")}
+  ${tryT("cli.help.usageLine2")}
+  ${tryT("cli.help.usageLine3")}
 
-COMMANDS:
-  release    Create a new release (default)
-  rollback   Rollback a release
-  init       Initialize Nagare in current directory
+${tryT("cli.help.commands")}
+  ${tryT("cli.help.commandRelease")}
+  ${tryT("cli.help.commandRollback")}
+  ${tryT("cli.help.commandInit")}
 
-BUMP TYPES:
-  major      Increment major version (1.0.0 -> 2.0.0)
-  minor      Increment minor version (1.0.0 -> 1.1.0)  
-  patch      Increment patch version (1.0.0 -> 1.0.1)
+${tryT("cli.help.bumpTypes")}
+  ${tryT("cli.help.bumpMajor")}
+  ${tryT("cli.help.bumpMinor")}
+  ${tryT("cli.help.bumpPatch")}
 
-OPTIONS:
-  --config, -c <path>         Path to configuration file
-  --dry-run                   Preview changes without making them
-  --skip-confirmation, -y     Skip confirmation prompts
-  --log-level <level>         Set log level (DEBUG, INFO, WARN, ERROR)
-  --help, -h                  Show this help message
-  --version, -v               Show version information
-  --version-detailed          Show detailed version information
-  --version-json              Show version information in JSON format
+${tryT("cli.help.options")}
+  ${tryT("cli.help.optionConfig")}
+  ${tryT("cli.help.optionDryRun")}
+  ${tryT("cli.help.optionSkipConfirm")}
+  ${tryT("cli.help.optionLogLevel")}
+  ${tryT("cli.help.optionHelp")}
+  ${tryT("cli.help.optionVersion")}
+  ${tryT("cli.help.optionVersionDetailed")}
+  ${tryT("cli.help.optionVersionJson")}
 
-EXAMPLES:
-  nagare init                         # Initialize Nagare in current directory
-  nagare release                       # Auto-determine version bump from commits
-  nagare release minor                # Force minor version bump
-  nagare release --dry-run            # Preview release without making changes
-  nagare rollback                     # Rollback latest release
-  nagare rollback 1.2.0               # Rollback specific version
-  nagare --config ./my-config.ts      # Use custom config file
-  nagare --version-detailed           # Show build info and release notes
-  nagare --version-json               # Output version info as JSON
+${tryT("cli.help.examples")}
+  ${tryT("cli.help.exampleInit")}
+  ${tryT("cli.help.exampleRelease")}
+  ${tryT("cli.help.exampleReleaseMinor")}
+  ${tryT("cli.help.exampleDryRun")}
+  ${tryT("cli.help.exampleRollback")}
+  ${tryT("cli.help.exampleRollbackVersion")}
+  ${tryT("cli.help.exampleConfig")}
+  ${tryT("cli.help.exampleVersionDetailed")}
+  ${tryT("cli.help.exampleVersionJson")}
 
-CONFIGURATION:
-  Create a nagare.config.ts file in your project root:
+${tryT("cli.help.configuration")}
+  ${tryT("cli.help.configIntro")}
 
   import type { NagareConfig } from '@rick/nagare';
 
@@ -347,16 +363,16 @@ CONFIGURATION:
     ]
   } as NagareConfig;
 
-SAFE FILE UPDATE PATTERNS:
-  Always use line-anchored patterns for JSON files to prevent corruption:
+${tryT("cli.help.safePatterns")}
+  ${tryT("cli.help.safePatternsIntro")}
   
-  ✅ SAFE:   /^(\\s*)"version":\\s*"([^"]+)"/m
-  ❌ UNSAFE: /"version":\\s*"([^"]+)"/
+  ${tryT("cli.help.safeExample")}
+  ${tryT("cli.help.unsafeExample")}
   
-  The unsafe pattern can match task definitions and corrupt your files.
-  Nagare will warn you if dangerous patterns are detected.
+  ${tryT("cli.help.safePatternsNote")}
+  ${tryT("cli.help.safePatternsWarning")}
 
-For more information, visit: ${APP_INFO.repository}
+${tryT("cli.help.moreInfo", { url: APP_INFO.repository })}
 `);
 }
 
