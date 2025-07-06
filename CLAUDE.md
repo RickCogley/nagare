@@ -421,3 +421,18 @@ syntax is critical:
    - DevSkim comments go inline, CodeQL comments go on the line before
    - Some scanners need workflow restarts to recognize new suppressions
    - Always verify suppressions work before considering alerts resolved
+
+## Methodologies
+
+This project uses the Aichaku adaptive methodology system.
+
+Aichaku is installed globally and provides adaptive methodology support that blends approaches based
+on your natural language:
+
+- Say "sprint" → Scrum practices activate
+- Say "shape" → Shape Up principles engage
+- Say "kanban" → Flow-based practices emerge
+
+Global methodologies location: ~/.claude/methodologies/ Project customizations: ./.claude/user/
+
+Learn more: https://github.com/RickCogley/aichaku
