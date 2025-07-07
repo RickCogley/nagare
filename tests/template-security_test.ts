@@ -2,7 +2,7 @@
  * Tests for template security validation improvements
  */
 
-import { assertEquals } from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { assertEquals } from "@std/assert";
 import { TemplateProcessor } from "../src/template-processor.ts";
 import type { NagareConfig } from "../types.ts";
 import { TemplateFormat } from "../config.ts";

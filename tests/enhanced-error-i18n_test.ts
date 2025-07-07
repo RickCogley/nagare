@@ -3,7 +3,7 @@
  * @description Verify that enhanced errors work with i18n system
  */
 
-import { assertEquals, assertStringIncludes } from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { assertEquals, assertStringIncludes } from "@std/assert";
 import { ErrorCodes, ErrorFactory } from "../src/enhanced-error.ts";
 import { initI18n } from "../src/i18n.ts";
 

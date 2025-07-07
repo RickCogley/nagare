@@ -4,7 +4,7 @@
  * @description Handles routing for HTML docs, API reference, and assets
  */
 
-import { serveDir } from "https://deno.land/std@0.208.0/http/file_server.ts";
+import { serveDir } from "@std/http/file-server";
 
 /**
  * Configuration for the documentation server

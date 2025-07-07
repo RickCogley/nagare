@@ -3,11 +3,7 @@
  * @description Comprehensive test coverage for semantic versioning operations
  */
 
-import {
-  assertEquals,
-  assertRejects,
-  assertThrows,
-} from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { assertEquals, assertRejects, assertThrows } from "@std/assert";
 import { VersionUtils } from "../src/version-utils.ts";
 import { NagareError } from "../src/enhanced-error.ts";
 import { BumpType, TemplateFormat } from "../types.ts";

@@ -7,8 +7,8 @@
  * InfoSec: Path traversal protection via validatePath function ensures only docs directory is modified
  */
 
-import { walk } from "https://deno.land/std@0.208.0/fs/walk.ts";
-import { join, relative, resolve } from "https://deno.land/std@0.208.0/path/mod.ts";
+import { walk } from "@std/fs";
+import { join, relative, resolve } from "@std/path";
 
 const DOCS_DIR = "./docs";
 const TILDE_REPLACEMENT = "__SYMBOLS__"; // URL-friendly replacement for ~

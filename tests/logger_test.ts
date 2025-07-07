@@ -5,8 +5,8 @@
  * InfoSec: Tests include security audit logging verification to ensure proper security event tracking
  */
 
-import { assertEquals, assertStringIncludes } from "https://deno.land/std@0.208.0/assert/mod.ts";
-import { assertSpyCalls, spy } from "https://deno.land/std@0.208.0/testing/mock.ts";
+import { assertEquals, assertStringIncludes } from "@std/assert";
+import { assertSpyCalls, spy } from "@std/testing/mock";
 import { Logger, LogLevel } from "../src/logger.ts";
 import { NagareError } from "../src/enhanced-error.ts";
 

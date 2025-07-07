@@ -119,6 +119,31 @@ export interface NagareConfig {
   security?: SecurityConfig;
 
   /**
+   * Release workflow configuration
+   *
+   * @description
+   * Advanced release workflow settings including JSR verification,
+   * auto-fix capabilities, and progress visualization.
+   *
+   * @example
+   * ```typescript
+   * release: {
+   *   verifyJsrPublish: true,
+   *   autoFix: {
+   *     basic: true,
+   *     ai: {
+   *       enabled: true,
+   *       provider: "claude-code"
+   *     }
+   *   }
+   * }
+   * ```
+   *
+   * @since 3.0.0
+   */
+  release?: ReleaseConfig;
+
+  /**
    * Lifecycle hooks for custom operations
    *
    * @description
@@ -619,6 +644,191 @@ export interface ReleaseOptions {
   tagPrefix?: string;
   /** Log level */
   logLevel?: LogLevel;
+}
+
+/**
+ * Release workflow configuration
+ *
+ * @description Advanced settings for release workflow automation including
+ * JSR verification, auto-fixing, and progress visualization.
+ *
+ * @since 3.0.0
+ */
+export interface ReleaseConfig {
+  /**
+   * JSR publish verification settings
+   *
+   * @description Enable verification that packages are successfully published to JSR.
+   * Can be a boolean for simple enable/disable or an object for detailed configuration.
+   *
+   * @example
+   * ```typescript
+   * verifyJsrPublish: true
+   * // or
+   * verifyJsrPublish: {
+   *   enabled: true,
+   *   maxAttempts: 30,
+   *   pollInterval: 10000,
+   *   timeout: 600000
+   * }
+   * ```
+   */
+  verifyJsrPublish?: boolean | JsrVerificationConfig;
+
+  /**
+   * Auto-fix configuration for CI/CD errors
+   *
+   * @description Configure automatic fixing of common CI/CD errors.
+   * Includes both deterministic fixes and optional AI-powered solutions.
+   *
+   * @example
+   * ```typescript
+   * autoFix: {
+   *   basic: true,
+   *   ai: {
+   *     enabled: true,
+   *     provider: "claude-code",
+   *     maxAttempts: 3
+   *   },
+   *   types: ["lint", "format", "version-conflict"]
+   * }
+   * ```
+   */
+  autoFix?: AutoFixConfig;
+
+  /**
+   * Progress visualization settings
+   *
+   * @description Configure how progress is displayed during release operations.
+   *
+   * @example
+   * ```typescript
+   * progress: {
+   *   enabled: true,
+   *   style: "detailed",
+   *   showElapsedTime: true
+   * }
+   * ```
+   */
+  progress?: ProgressConfig;
+
+  /**
+   * GitHub Actions monitoring settings
+   *
+   * @description Configure monitoring of GitHub Actions workflows.
+   *
+   * @example
+   * ```typescript
+   * monitoring: {
+   *   workflowFile: ".github/workflows/publish.yml",
+   *   pollInterval: 10000,
+   *   timeout: 600000
+   * }
+   * ```
+   */
+  monitoring?: MonitoringConfig;
+}
+
+/**
+ * JSR verification configuration
+ */
+export interface JsrVerificationConfig {
+  /** Enable JSR verification */
+  enabled: boolean;
+  /** Maximum polling attempts (default: 30) */
+  maxAttempts?: number;
+  /** Polling interval in milliseconds (default: 10000) */
+  pollInterval?: number;
+  /** Total timeout in milliseconds (default: 600000) */
+  timeout?: number;
+}
+
+/**
+ * Auto-fix configuration
+ */
+export interface AutoFixConfig {
+  /**
+   * Enable basic deterministic fixes
+   *
+   * @description Enables simple fixes like running formatters with --fix flag,
+   * bumping versions for conflicts, and retrying transient failures.
+   *
+   * @default true
+   */
+  basic?: boolean;
+
+  /**
+   * AI-powered fix configuration
+   *
+   * @description Configure AI assistance for complex error fixing.
+   * Requires an AI tool like Claude Code or GitHub Copilot to be available.
+   */
+  ai?: AIFixConfig;
+
+  /**
+   * Types of errors to auto-fix
+   *
+   * @description Specify which error types should be automatically fixed.
+   * If not specified, all supported types are eligible for fixing.
+   *
+   * @default ["lint", "format", "security-scan", "type-check", "version-conflict"]
+   */
+  types?: Array<
+    | "lint"
+    | "format"
+    | "security-scan"
+    | "type-check"
+    | "version-conflict"
+    | "test-failure"
+  >;
+}
+
+/**
+ * AI fix configuration
+ */
+export interface AIFixConfig {
+  /** Enable AI-powered fixes (default: false) */
+  enabled: boolean;
+  /** AI provider to use */
+  provider?: "claude-code" | "github-copilot" | "custom";
+  /** Custom command to invoke AI tool */
+  command?: string;
+  /** Additional flags to pass to AI tool */
+  flags?: string[];
+  /** Maximum fix attempts (default: 3) */
+  maxAttempts?: number;
+  /** Timeout for AI operations in milliseconds */
+  timeout?: number;
+}
+
+/**
+ * Progress visualization configuration
+ */
+export interface ProgressConfig {
+  /** Enable progress indicators (default: true) */
+  enabled?: boolean;
+  /** Progress indicator style */
+  style?: "detailed" | "minimal" | "quiet";
+  /** Show elapsed time (default: true) */
+  showElapsedTime?: boolean;
+  /** Show time estimates (default: true) */
+  showEstimates?: boolean;
+  /** Update interval in milliseconds (default: 100) */
+  updateInterval?: number;
+}
+
+/**
+ * GitHub Actions monitoring configuration
+ */
+export interface MonitoringConfig {
+  /** Workflow file to monitor (e.g., ".github/workflows/publish.yml") */
+  workflowFile?: string;
+  /** Polling interval in milliseconds (default: 10000) */
+  pollInterval?: number;
+  /** Monitoring timeout in milliseconds (default: 600000) */
+  timeout?: number;
+  /** Extract logs for failed jobs (default: true) */
+  extractLogs?: boolean;
 }
 
 /**

@@ -2,11 +2,7 @@
  * @fileoverview Tests for i18n functionality
  */
 
-import {
-  assertEquals,
-  assertExists,
-  assertThrows,
-} from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { assertEquals, assertExists, assertThrows } from "@std/assert";
 import { getLocale, I18n, initI18n, setLocale, t as translate } from "../src/i18n.ts";
 
 // Helper to get test locales directory

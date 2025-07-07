@@ -34,6 +34,11 @@ import { sanitizeErrorMessage } from "./security-utils.ts";
 import { ErrorCodes, ErrorFactory, NagareError } from "./enhanced-error.ts";
 import { t } from "./i18n.ts";
 import { confirmI18n } from "./cli-utils.ts";
+import { JsrVerifier } from "./jsr-verifier.ts";
+import { GitHubActionsMonitor } from "./github-actions-monitor.ts";
+import { LogParser } from "./log-parser.ts";
+import { AutoFixer } from "./auto-fixer.ts";
+import { ProgressIndicator } from "./progress-indicator.ts";
 
 /**
  * Main ReleaseManager class - coordinates the entire release process
@@ -603,6 +608,33 @@ export class ReleaseManager {
         githubReleaseUrl = await this.github.createRelease(releaseNotes);
       }
 
+      // JSR verification and CI/CD monitoring for JSR-enabled projects
+      if (this.shouldVerifyJsrPublish()) {
+        this.logger.info("\n🔍 Verifying JSR publication...");
+
+        // Initialize progress indicator if configured
+        const progress = this.createProgressIndicator();
+        await progress?.startStage("jsr", "Waiting for JSR publication");
+
+        const jsrResult = await this.verifyJsrPublication(newVersion, progress);
+
+        if (!jsrResult.success) {
+          await progress?.errorStage("jsr", jsrResult.error || "JSR verification failed");
+
+          // Log security audit event for JSR failure
+          this.logger.audit("jsr_verification_failed", {
+            version: newVersion,
+            error: jsrResult.error,
+            attempts: jsrResult.attempts,
+          });
+
+          throw new Error(jsrResult.error || "JSR publication verification failed");
+        }
+
+        await progress?.completeStage("jsr");
+        this.logger.info(`✅ Package published to JSR: ${jsrResult.jsrUrl}`);
+      }
+
       // Run post-release hooks
       if (this.config.hooks?.postRelease) {
         for (const hook of this.config.hooks.postRelease) {
@@ -618,6 +650,7 @@ export class ReleaseManager {
         previousVersion: currentVersion,
         commitCount: commits.length,
         githubRelease: !!githubReleaseUrl,
+        jsrPublished: this.shouldVerifyJsrPublish(),
         duration: Date.now() - startTime,
       });
 
@@ -1278,6 +1311,320 @@ export class ReleaseManager {
    */
   getConfig(): NagareConfig {
     return this.config;
+  }
+
+  /**
+   * Check if JSR publish verification should be performed
+   *
+   * @private
+   * @returns {boolean} Whether to verify JSR publication
+   */
+  private shouldVerifyJsrPublish(): boolean {
+    const jsrConfig = this.config.release?.verifyJsrPublish;
+    if (typeof jsrConfig === "boolean") {
+      return jsrConfig;
+    }
+    return jsrConfig?.enabled ?? false;
+  }
+
+  /**
+   * Create progress indicator instance
+   *
+   * @private
+   * @returns {ProgressIndicator | null} Progress indicator or null if disabled
+   */
+  private createProgressIndicator(): ProgressIndicator | null {
+    const progressConfig = this.config.release?.progress;
+    if (progressConfig?.enabled === false) {
+      return null;
+    }
+
+    return new ProgressIndicator({
+      style: progressConfig?.style || "detailed",
+      showElapsedTime: progressConfig?.showElapsedTime ?? true,
+      showEstimates: progressConfig?.showEstimates ?? true,
+    });
+  }
+
+  /**
+   * Verify JSR publication with monitoring and auto-fix
+   *
+   * @private
+   * @param {string} version - Version to verify
+   * @param {ProgressIndicator | null} progress - Progress indicator instance
+   * @returns {Promise<Object>} Verification result
+   */
+  private async verifyJsrPublication(
+    version: string,
+    progress: ProgressIndicator | null,
+  ): Promise<{
+    success: boolean;
+    jsrUrl?: string;
+    error?: string;
+    attempts?: number;
+  }> {
+    try {
+      // Initialize components
+      const jsrVerifier = new JsrVerifier(this.config);
+      const packageInfo = await jsrVerifier.getPackageInfo();
+
+      if (!packageInfo) {
+        return {
+          success: false,
+          error: "No JSR package configuration found in deno.json",
+        };
+      }
+
+      // Get repo info for GitHub Actions monitoring
+      const repoInfo = await GitHubActionsMonitor.getRepoInfo();
+      if (!repoInfo) {
+        // Fallback to direct JSR verification without CI/CD monitoring
+        const result = await jsrVerifier.verifyPublication(
+          packageInfo,
+          async (attempt, max) => {
+            this.logger.info(`Checking JSR... (attempt ${attempt}/${max})`);
+            await progress?.updateSubstep("jsr", "verification", "active");
+          },
+        );
+
+        if (result.success) {
+          return {
+            success: true,
+            jsrUrl: jsrVerifier.getPackageUrl(packageInfo),
+            attempts: result.attempts,
+          };
+        }
+
+        return {
+          success: false,
+          error: result.error,
+          attempts: result.attempts,
+        };
+      }
+
+      // Monitor GitHub Actions workflow
+      const monitor = new GitHubActionsMonitor(repoInfo.owner, repoInfo.repo);
+      const workflowFile = this.config.release?.monitoring?.workflowFile ||
+        ".github/workflows/publish.yml";
+
+      // Get the latest workflow run
+      const latestRun = await monitor.getLatestRun(workflowFile);
+      if (!latestRun) {
+        // No workflow found, fall back to direct JSR verification
+        return await this.directJsrVerification(jsrVerifier, packageInfo, progress);
+      }
+
+      // Monitor the workflow
+      await progress?.setSubsteps("ci-cd", [
+        { name: "workflow-trigger", status: "success" },
+        { name: "workflow-running", status: "active" },
+        { name: "jsr-publish", status: "pending" },
+      ]);
+
+      const monitorResult = await monitor.monitorRun(latestRun.id, {
+        pollInterval: this.config.release?.monitoring?.pollInterval || 10000,
+        timeout: this.config.release?.monitoring?.timeout || 600000,
+        onProgress: async (run, jobs) => {
+          if (run.status === "completed") {
+            await progress?.updateSubstep(
+              "ci-cd",
+              "workflow-running",
+              run.conclusion === "success" ? "success" : "error",
+            );
+          }
+
+          // Update job status
+          const publishJob = jobs.find((j) => j.name.toLowerCase().includes("publish"));
+          if (publishJob) {
+            await progress?.updateSubstep(
+              "ci-cd",
+              "jsr-publish",
+              publishJob.status === "completed"
+                ? (publishJob.conclusion === "success" ? "success" : "error")
+                : "active",
+            );
+          }
+        },
+      });
+
+      // Handle workflow results
+      if (monitorResult.run.conclusion === "success") {
+        // Verify JSR publication
+        const jsrResult = await jsrVerifier.verifyPublication(packageInfo);
+        if (jsrResult.success) {
+          return {
+            success: true,
+            jsrUrl: jsrVerifier.getPackageUrl(packageInfo),
+            attempts: jsrResult.attempts,
+          };
+        }
+        return {
+          success: false,
+          error: "Workflow succeeded but package not found on JSR",
+          attempts: jsrResult.attempts,
+        };
+      }
+
+      // Workflow failed - attempt auto-fix if configured
+      if (monitorResult.run.conclusion === "failure" && monitorResult.logs) {
+        return await this.attemptAutoFix(monitorResult.logs, version, monitor, progress);
+      }
+
+      return {
+        success: false,
+        error: `GitHub Actions workflow ${monitorResult.run.conclusion || "failed"}`,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: `JSR verification error: ${sanitizeErrorMessage(error, false)}`,
+      };
+    }
+  }
+
+  /**
+   * Direct JSR verification without CI/CD monitoring
+   *
+   * @private
+   */
+  private async directJsrVerification(
+    verifier: JsrVerifier,
+    packageInfo: { scope: string; name: string; version: string },
+    _progress: ProgressIndicator | null,
+  ): Promise<{ success: boolean; jsrUrl?: string; error?: string; attempts?: number }> {
+    const result = await verifier.verifyPublication(
+      packageInfo,
+      (attempt, max) => {
+        this.logger.info(`Checking JSR... (attempt ${attempt}/${max})`);
+      },
+    );
+
+    if (result.success) {
+      return {
+        success: true,
+        jsrUrl: verifier.getPackageUrl(packageInfo),
+        attempts: result.attempts,
+      };
+    }
+
+    return {
+      success: false,
+      error: result.error,
+      attempts: result.attempts,
+    };
+  }
+
+  /**
+   * Attempt to auto-fix CI/CD errors
+   *
+   * @private
+   */
+  private async attemptAutoFix(
+    logs: string,
+    _version: string,
+    monitor: GitHubActionsMonitor,
+    progress: ProgressIndicator | null,
+  ): Promise<{ success: boolean; jsrUrl?: string; error?: string }> {
+    if (!this.config.release?.autoFix?.basic && !this.config.release?.autoFix?.ai?.enabled) {
+      // Auto-fix not enabled, return the error
+      const parser = new LogParser();
+      const parseResult = parser.parseLog(logs);
+      return {
+        success: false,
+        error: `CI/CD failed: ${parseResult.summary}`,
+      };
+    }
+
+    await progress?.fixingStage("ci-cd", "Attempting to fix CI/CD errors...");
+
+    // Parse the logs
+    const parser = new LogParser();
+    const parseResult = parser.parseLog(logs);
+
+    if (parseResult.errors.length === 0) {
+      return {
+        success: false,
+        error: "CI/CD failed but no specific errors found in logs",
+      };
+    }
+
+    // Initialize auto-fixer
+    const fixer = new AutoFixer(this.config);
+    await fixer.initialize();
+
+    // Attempt fixes
+    let fixAttempt = 0;
+    const maxAttempts = this.config.release?.autoFix?.ai?.maxAttempts || 3;
+
+    while (fixAttempt < maxAttempts) {
+      fixAttempt++;
+      this.logger.info(`\n🔧 Auto-fix attempt ${fixAttempt}/${maxAttempts}`);
+
+      const fixResult = await fixer.fixErrors(
+        parseResult.errors,
+        (msg) => this.logger.info(`  ${msg}`),
+      );
+
+      if (fixResult.success && fixResult.fixed > 0) {
+        // Commit the fixes
+        await fixer.commitFixes(fixResult.changes);
+
+        // Push the fixes
+        await this.git.pushToRemote();
+
+        // Trigger workflow again
+        const workflowFile = this.config.release?.monitoring?.workflowFile ||
+          ".github/workflows/publish.yml";
+        const newRunId = await monitor.triggerWorkflow(workflowFile);
+
+        if (!newRunId) {
+          return {
+            success: false,
+            error: "Failed to retrigger workflow after fixes",
+          };
+        }
+
+        // Monitor the new run
+        const retryResult = await monitor.monitorRun(newRunId, {
+          onProgress: (run) => {
+            this.logger.info(`Workflow status: ${run.status}`);
+          },
+        });
+
+        if (retryResult.run.conclusion === "success") {
+          // Verify JSR publication
+          const jsrVerifier = new JsrVerifier(this.config);
+          const packageInfo = await jsrVerifier.getPackageInfo();
+          if (packageInfo) {
+            const jsrResult = await jsrVerifier.verifyPublication(packageInfo);
+            if (jsrResult.success) {
+              return {
+                success: true,
+                jsrUrl: jsrVerifier.getPackageUrl(packageInfo),
+              };
+            }
+          }
+        }
+
+        // Parse new logs if failed again
+        if (retryResult.logs) {
+          const newParseResult = parser.parseLog(retryResult.logs);
+          if (newParseResult.errors.length > 0) {
+            // Update errors for next iteration
+            parseResult.errors = newParseResult.errors;
+            continue;
+          }
+        }
+      }
+
+      // No more fixable errors
+      break;
+    }
+
+    return {
+      success: false,
+      error: `Failed to fix CI/CD errors after ${fixAttempt} attempts: ${parseResult.summary}`,
+    };
   }
 
   /**

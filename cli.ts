@@ -587,6 +587,15 @@ export async function cli(args: string[]): Promise<void> {
     // Continue without i18n - English will be used as fallback
   }
 
+  // Helper to try translating with fallback
+  const tryT = (key: string, params?: Record<string, unknown>) => {
+    try {
+      return t(key, params);
+    } catch {
+      return key;
+    }
+  };
+
   let command: string | undefined;
   let bumpType: string | undefined;
   let options: CLIOptions;

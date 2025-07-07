@@ -189,6 +189,44 @@ const config: NagareConfig = {
   hooks: {
     postRelease: [postReleaseFormattingCheck],
   },
+
+  /**
+   * Release workflow configuration
+   *
+   * @description
+   * Enables JSR verification and auto-fix capabilities
+   * for ensuring releases complete successfully
+   */
+  release: {
+    // Verify package appears on JSR after release
+    verifyJsrPublish: true,
+
+    // Auto-fix configuration for CI/CD errors
+    autoFix: {
+      basic: true, // Enable deterministic fixes
+      ai: {
+        enabled: true, // Enable AI-powered fixes
+        provider: "claude-code",
+        flags: ["--extended-thinking"],
+        maxAttempts: 3,
+      },
+      types: ["lint", "format", "security-scan", "type-check", "version-conflict"],
+    },
+
+    // Progress visualization
+    progress: {
+      enabled: true,
+      style: "detailed",
+      showElapsedTime: true,
+    },
+
+    // GitHub Actions monitoring
+    monitoring: {
+      workflowFile: ".github/workflows/publish.yml",
+      pollInterval: 10000, // 10 seconds
+      timeout: 600000, // 10 minutes
+    },
+  },
 };
 
 // Export as default

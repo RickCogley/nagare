@@ -2,7 +2,7 @@
  * @fileoverview Tests for changelog generation
  */
 
-import { assertEquals, assertStringIncludes } from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { assertEquals, assertStringIncludes } from "@std/assert";
 import { ChangelogGenerator } from "../src/changelog-generator.ts";
 import type { NagareConfig, ReleaseNotes } from "../types.ts";
 import { TemplateFormat } from "../types.ts";

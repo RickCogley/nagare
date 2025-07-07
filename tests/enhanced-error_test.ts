@@ -3,7 +3,7 @@
  * @description Verify that enhanced errors provide helpful suggestions
  */
 
-import { assertEquals, assertStringIncludes } from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { assertEquals, assertStringIncludes } from "@std/assert";
 import { ErrorCodes, ErrorFactory, NagareError } from "../src/enhanced-error.ts";
 
 Deno.test("NagareError - Basic functionality", async (t) => {

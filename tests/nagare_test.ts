@@ -6,12 +6,7 @@
  * Tests core functionality including the new file handler system (v1.1.0)
  */
 
-import {
-  assertEquals,
-  assertExists,
-  assertInstanceOf,
-  assertThrows,
-} from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { assertEquals, assertExists, assertInstanceOf, assertThrows } from "@std/assert";
 import { VERSION } from "../version.ts";
 import { DEFAULT_COMMIT_TYPES } from "../config.ts";
 import { BumpType, LogLevel, TemplateFormat } from "../types.ts";

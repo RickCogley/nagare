@@ -3,7 +3,7 @@
  * @description Verify that the additional exports feature works correctly
  */
 
-import { assertEquals, assertStringIncludes } from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { assertEquals, assertStringIncludes } from "@std/assert";
 import { TemplateProcessor } from "../src/template-processor.ts";
 import type { NagareConfig, TemplateData } from "../types.ts";
 import { TemplateFormat } from "../config.ts";

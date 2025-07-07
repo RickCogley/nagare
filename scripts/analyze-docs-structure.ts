@@ -5,8 +5,8 @@
  * @description Helps diagnose and potentially find alternative documentation generation approaches
  */
 
-import { walk } from "https://deno.land/std@0.208.0/fs/walk.ts";
-import { relative } from "https://deno.land/std@0.208.0/path/mod.ts";
+import { walk } from "@std/fs";
+import { relative } from "@std/path";
 
 const DOCS_DIR = "./docs";
 

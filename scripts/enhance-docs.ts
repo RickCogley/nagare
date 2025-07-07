@@ -9,8 +9,8 @@
  * - Quick links to important sections
  */
 
-import { ensureDir } from "https://deno.land/std@0.208.0/fs/ensure_dir.ts";
-import { join } from "https://deno.land/std@0.208.0/path/mod.ts";
+import { ensureDir } from "@std/fs";
+import { join } from "@std/path";
 
 const DOCS_DIR = "./docs";
 

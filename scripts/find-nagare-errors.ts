@@ -3,7 +3,7 @@
  * Find all NagareError instances that need i18n updates
  */
 
-import { walk } from "https://deno.land/std@0.208.0/fs/walk.ts";
+import { walk } from "@std/fs";
 
 const errorPattern = /new NagareError\s*\(/g;
 
