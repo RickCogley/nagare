@@ -43,12 +43,12 @@
     "check": "deno check --unstable-raw-imports **/*.ts",
     "build": "deno task check && deno task test && deno task lint && deno task fmt --check",
 
-    "nagare": "deno run --unstable-raw-imports --allow-read --allow-write --allow-run --allow-net --allow-env cli.ts",
-    "nagare:patch": "deno run --unstable-raw-imports --allow-read --allow-write --allow-run --allow-net --allow-env cli.ts patch",
-    "nagare:minor": "deno run --unstable-raw-imports --allow-read --allow-write --allow-run --allow-net --allow-env cli.ts minor",
-    "nagare:major": "deno run --unstable-raw-imports --allow-read --allow-write --allow-run --allow-net --allow-env cli.ts major",
-    "nagare:dry": "deno run --unstable-raw-imports --allow-read --allow-write --allow-run --allow-net --allow-env cli.ts --dry-run",
-    "nagare:rollback": "deno run --unstable-raw-imports --allow-read --allow-write --allow-run --allow-net --allow-env cli.ts rollback",
+    "nagare": "deno run --unstable-raw-imports -A nagare-launcher.ts",
+    "nagare:patch": "deno task nagare patch",
+    "nagare:minor": "deno task nagare minor",
+    "nagare:major": "deno task nagare major",
+    "nagare:dry": "deno task nagare --dry-run",
+    "nagare:rollback": "deno task nagare rollback",
 
     "docs": "deno doc --html --name=\"Nagare (流れ) - Deno Release Management Library\" --output=./docs ./mod.ts",
     "docs:enhance": "deno run --allow-read --allow-write scripts/enhance-docs.ts",
@@ -128,7 +128,8 @@
       "coverage/",
       ".github/",
       "deno.lock",
-      "nagare.config.ts"
+      "nagare.config.ts",
+      "nagare-launcher.ts"
     ]
   }
 }
