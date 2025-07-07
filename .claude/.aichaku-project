@@ -1,7 +1,7 @@
 {
-  "version": "0.5.0",
-  "globalVersion": "0.5.0",
-  "createdAt": "2025-07-06T23:29:05.589Z",
+  "version": "0.6.0",
+  "globalVersion": "0.6.0",
+  "createdAt": "2025-07-07T11:03:56.900Z",
   "customizations": {
     "userDir": "./user"
   }
