@@ -5,7 +5,7 @@
  *
  * | **Nagare** | **Specifications** |
  * | :------- | :------- |
- * | Version | 2.2.1 |
+ * | Version | 2.3.0 |
  * | Repository | {@link https://github.com/RickCogley/nagare} |
  * | JSR Package | {@link https://jsr.io/@rick/nagare} |
  * | Documentation | {@link https://nagare.esolia.deno.net} |

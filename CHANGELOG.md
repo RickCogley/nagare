@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2025-07-07
+
+### Added
+
+- add JSR verification and auto-fix system for release workflow (5aabed1)
+- integrate aichaku adaptive methodology system (8915200)
+
+### Changed
+
+- upgrade aichaku integration and project configuration (cc8ed9b)
+- organize Claude Code session summaries (29c64d3)
+
 ## [2.2.1] - 2025-07-04
 
 ### Changed
