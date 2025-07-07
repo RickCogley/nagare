@@ -45,27 +45,44 @@ This command will:
 - Create a minimal `nagare.config.ts` if one doesn't exist
 - Show you which tasks to add to your `deno.json`
 
-#### Manual Setup
-
-1. **Create a CLI wrapper file** (`run-nagare.ts`):
-
-```typescript
-#!/usr/bin/env deno run -A
-import { cli } from "jsr:@rick/nagare/cli";
-await cli(Deno.args);
-```
-
-2. **Add tasks to your `deno.json`**:
+After running init, add these tasks to your `deno.json`:
 
 ```json
 {
   "tasks": {
-    "nagare": "deno run -A run-nagare.ts",
-    "release": "deno task nagare",
-    "release:patch": "deno task nagare patch",
-    "release:minor": "deno task nagare minor",
-    "release:major": "deno task nagare major",
-    "release:dry": "deno task nagare --dry-run"
+    "nagare": "deno run -A nagare-launcher.ts",
+    "nagare:patch": "deno task nagare patch",
+    "nagare:minor": "deno task nagare minor",
+    "nagare:major": "deno task nagare major",
+    "nagare:dry": "deno task nagare --dry-run",
+    "nagare:rollback": "deno task nagare rollback"
+  }
+}
+```
+
+Then use Nagare with:
+
+```bash
+deno task nagare           # Auto-detect version bump from commits
+deno task nagare:minor     # Force minor version bump
+deno task nagare:patch     # Force patch version bump
+```
+
+#### Manual Setup (Without Local Config)
+
+If you prefer to use Nagare directly from JSR without a local configuration file:
+
+1. **Add tasks to your `deno.json`**:
+
+```json
+{
+  "tasks": {
+    "nagare": "deno run -A jsr:@rick/nagare/cli",
+    "nagare:patch": "deno task nagare patch",
+    "nagare:minor": "deno task nagare minor",
+    "nagare:major": "deno task nagare major",
+    "nagare:dry": "deno task nagare --dry-run",
+    "nagare:rollback": "deno task nagare rollback"
   }
 }
 ```
