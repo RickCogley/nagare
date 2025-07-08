@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.0] - 2025-07-08
+
+### Added
+
+- add pre-flight validation system to prevent release failures (1177e80)
+
+### Changed
+
+- bump version to 5.2.0 (b71a138)
+- disable tests in pre-flight checks for demo (0cc0bd6)
+- increase AI fix maxAttempts from 3 to 5 (5f92058)
+
+### Fixed
+
+- resolve linting error in test mock (e184855)
+- read current version from git tags instead of version file (3c34320)
+- add unstable-raw-imports flag to pre-flight test command (e9117e6)
+- add unstable-raw-imports flag to type check (1280491)
+- resolve linting errors in release manager (2011bfd)
+- prevent release failures with pre-flight validation (0a245c3)
+
 ## [2.7.0] - 2025-07-08
 
 ### Added
