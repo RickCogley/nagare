@@ -500,6 +500,7 @@ export default {
   aiAutoFix: {
     enabled: true,
     provider: "claude-code", // or "github-copilot" or "custom"
+    thinkingLevel: "think", // "think" | "megathink" | "ultrathink"
     maxAttempts: 3, // Maximum fix attempts per issue
     requireConfirmation: true, // Ask before applying fixes
   },
@@ -510,7 +511,10 @@ export default {
 
 1. **Claude Code** (`claude-code`)
    - Uses Anthropic's Claude for intelligent code fixes
-   - Requires `ANTHROPIC_API_KEY` environment variable
+   - Supports configurable thinking levels:
+     - `"think"`: Basic analysis, lowest token usage (default, good for limited plans)
+     - `"megathink"`: Deeper analysis, medium token usage
+     - `"ultrathink"`: Deepest analysis, highest token usage (best for complex issues)
    - Best for complex issues and refactoring
 
 2. **GitHub Copilot** (`github-copilot`)
@@ -536,6 +540,7 @@ export default {
   aiAutoFix: {
     enabled: true,
     provider: "claude-code",
+    thinkingLevel: "megathink", // Balance between depth and token usage
     maxAttempts: 3,
     requireConfirmation: true,
 

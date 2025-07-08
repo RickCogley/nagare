@@ -207,7 +207,11 @@ const config: NagareConfig = {
       ai: {
         enabled: true, // Enable AI-powered fixes
         provider: "claude-code",
-        flags: ["--extended-thinking"],
+        // Note: Extended thinking is triggered via keywords in the prompt.
+        // Claude Code recognizes "think", "megathink", and "ultrathink" keywords
+        // with different token allocations. Choose based on your plan limits.
+        thinkingLevel: "ultrathink", // Use maximum analysis (for unlimited plans)
+        flags: [], // No CLI flags needed
         maxAttempts: 3,
       },
       types: ["lint", "format", "security-scan", "type-check", "version-conflict"],

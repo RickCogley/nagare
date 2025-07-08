@@ -403,8 +403,19 @@ export class AutoFixer {
       lines.push("");
     }
 
-    lines.push("Please apply the necessary fixes to resolve these errors.");
-    lines.push("Use extended thinking to ensure the fixes are correct.");
+    // Get the thinking level from config, default to "think"
+    const thinkingLevel = this.config.release?.autoFix?.ai?.thinkingLevel || "think";
+    const thinkingKeyword = thinkingLevel.toUpperCase();
+
+    lines.push(`${thinkingKeyword}: Analyze and fix these CI/CD errors.`);
+    lines.push("");
+    lines.push("Requirements:");
+    lines.push("1. Deep analysis of each error and its root cause");
+    lines.push("2. Consider multiple solution approaches");
+    lines.push("3. Implement comprehensive fixes that address underlying issues");
+    lines.push("4. Ensure all fixes are correct and won't introduce new problems");
+    lines.push("");
+    lines.push("For efficiency, execute independent fixes in parallel where possible.");
 
     return lines.join("\n");
   }

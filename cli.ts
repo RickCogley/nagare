@@ -762,6 +762,28 @@ await cli(Deno.args);
           console.log("  - GitHub Copilot: gh extension install github/gh-copilot");
         }
 
+        // Ask about thinking level for Claude
+        let thinkingLevel = "think";
+        if (availableTools.includes("claude")) {
+          console.log(formatInfo("\nClaude Code thinking level affects token usage:"));
+          console.log("  1. think - Basic analysis (lowest token usage, good for limited plans)");
+          console.log("  2. megathink - Deeper analysis (medium token usage)");
+          console.log(
+            "  3. ultrathink - Deepest analysis (highest token usage, best for complex issues)",
+          );
+          const level = prompt("Choose thinking level (1-3) [1]:") || "1";
+          switch (level) {
+            case "2":
+              thinkingLevel = "megathink";
+              break;
+            case "3":
+              thinkingLevel = "ultrathink";
+              break;
+            default:
+              thinkingLevel = "think";
+          }
+        }
+
         // Generate config with AI features
         const aiProvider = availableTools.includes("claude")
           ? "claude-code"
@@ -789,6 +811,7 @@ export default {
       ai: {
         enabled: ${availableTools.length > 0},
         provider: '${aiProvider}',
+        thinkingLevel: '${thinkingLevel}',  // Controls token usage: think, megathink, ultrathink
         maxAttempts: 3,
         timeout: 30000
       },

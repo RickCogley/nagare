@@ -832,6 +832,17 @@ export interface AIFixConfig {
   maxAttempts?: number;
   /** Timeout for AI operations in milliseconds */
   timeout?: number;
+  /**
+   * Thinking level for Claude Code (default: "think")
+   *
+   * @description Controls the depth of analysis and token usage:
+   * - "think": Basic analysis, lowest token usage (good for limited plans)
+   * - "megathink": Deeper analysis, medium token usage
+   * - "ultrathink": Deepest analysis, highest token usage (best for complex issues)
+   *
+   * @default "think"
+   */
+  thinkingLevel?: "think" | "megathink" | "ultrathink";
 }
 
 /**
