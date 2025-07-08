@@ -16,6 +16,8 @@ export interface I18nConfig {
   fallbackLocale?: string;
   /** Directory containing locale files */
   localesDir?: string;
+  /** Explicit language to use, overrides defaultLocale and auto-detection */
+  language?: string;
 }
 
 /**
@@ -28,7 +30,8 @@ export class I18n {
   private localesDir: string;
 
   constructor(config: I18nConfig = {}) {
-    this.currentLocale = config.defaultLocale || this.detectLocale();
+    // Use explicit language if provided, otherwise defaultLocale, otherwise detect
+    this.currentLocale = config.language || config.defaultLocale || this.detectLocale();
     this.fallbackLocale = config.fallbackLocale || "en";
     this.localesDir = config.localesDir || "./locales";
   }
@@ -179,8 +182,13 @@ let globalI18n: I18n | null = null;
 
 /**
  * Initialize global i18n instance
+ * @param configOrLanguage - Either a full I18nConfig object or a language string
  */
-export async function initI18n(config?: I18nConfig): Promise<I18n> {
+export async function initI18n(configOrLanguage?: I18nConfig | string): Promise<I18n> {
+  const config = typeof configOrLanguage === "string"
+    ? { language: configOrLanguage }
+    : configOrLanguage;
+
   globalI18n = new I18n(config);
   await globalI18n.init();
   return globalI18n;

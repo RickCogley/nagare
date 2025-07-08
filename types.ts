@@ -647,6 +647,39 @@ export interface ReleaseOptions {
 }
 
 /**
+ * Nagare runtime options
+ *
+ * @description Options that can be passed to Nagare at runtime,
+ * typically through CLI arguments or programmatic API calls.
+ *
+ * @example
+ * ```typescript
+ * const options: NagareOptions = {
+ *   language: "ja",
+ *   logLevel: LogLevel.DEBUG
+ * };
+ * ```
+ */
+export interface NagareOptions extends ReleaseOptions {
+  /**
+   * Language for CLI output and messages
+   *
+   * @description Sets the language for all user-facing text including
+   * prompts, error messages, and status updates. Overrides the locale
+   * setting in configuration.
+   *
+   * @example
+   * ```typescript
+   * language: "en"  // English
+   * language: "ja"  // Japanese
+   * ```
+   *
+   * @default Inherited from config locale or system
+   */
+  language?: "en" | "ja";
+}
+
+/**
  * Release workflow configuration
  *
  * @description Advanced settings for release workflow automation including

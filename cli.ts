@@ -62,6 +62,8 @@ interface CLIOptions {
   versionDetailed?: boolean;
   /** Show version information in JSON format */
   versionJson?: boolean;
+  /** Language for messages (en or ja) */
+  lang?: string;
 }
 
 /**
@@ -167,6 +169,14 @@ function parseArgs(args: string[]): {
         const level = validatedArgs[i];
         if (level && level in LogLevel) {
           options.logLevel = LogLevel[level as keyof typeof LogLevel];
+        }
+        break;
+      }
+      case "--lang": {
+        i++;
+        const lang = validatedArgs[i];
+        if (lang && (lang === "en" || lang === "ja")) {
+          options.lang = lang;
         }
         break;
       }
@@ -321,6 +331,7 @@ ${tryT("cli.help.options")}
   ${tryT("cli.help.optionDryRun")}
   ${tryT("cli.help.optionSkipConfirm")}
   ${tryT("cli.help.optionLogLevel")}
+  --lang <lang>             Set language (en or ja). Falls back to NAGARE_LANG env var
   ${tryT("cli.help.optionHelp")}
   ${tryT("cli.help.optionVersion")}
   ${tryT("cli.help.optionVersionDetailed")}
@@ -572,15 +583,37 @@ function formatInfo(message: string): string {
  * ```
  */
 export async function cli(args: string[]): Promise<void> {
-  // Initialize i18n early
+  // Parse args first to get lang option
+  let command: string | undefined;
+  let bumpType: string | undefined;
+  let options: CLIOptions;
+
+  try {
+    const parsed = parseArgs(args);
+    command = parsed.command;
+    bumpType = parsed.bumpType;
+    options = parsed.options;
+  } catch (error) {
+    console.error(formatError(`Invalid arguments: ${sanitizeErrorMessage(error, false)}`));
+    Deno.exit(1);
+  }
+
+  // Initialize i18n early with language preference
   try {
     // Resolve locales directory based on whether we're running from source or package
     const localesDir = import.meta.url.startsWith("file://")
       ? new URL("./locales", import.meta.url).pathname
       : "./locales";
 
+    // Determine language preference:
+    // 1. CLI flag takes highest priority
+    // 2. Environment variable as fallback
+    // 3. Default to "en"
+    const lang = options.lang || Deno.env.get("NAGARE_LANG") || "en";
+
     await initI18n({
       localesDir,
+      language: lang,
     });
   } catch (error) {
     console.error(formatError(`Failed to initialize i18n: ${sanitizeErrorMessage(error, false)}`));
@@ -595,20 +628,6 @@ export async function cli(args: string[]): Promise<void> {
       return key;
     }
   };
-
-  let command: string | undefined;
-  let bumpType: string | undefined;
-  let options: CLIOptions;
-
-  try {
-    const parsed = parseArgs(args);
-    command = parsed.command;
-    bumpType = parsed.bumpType;
-    options = parsed.options;
-  } catch (error) {
-    console.error(formatError(`Invalid arguments: ${sanitizeErrorMessage(error, false)}`));
-    Deno.exit(1);
-  }
 
   // Handle version options first
   if (options.version) {

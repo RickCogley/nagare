@@ -28,6 +28,51 @@ Deno.test("I18n - initialization", async (t) => {
     assertEquals(i18n.getLocale(), "ja");
   });
 
+  await t.step("should use explicit language over defaultLocale", async () => {
+    const i18n = new I18n({
+      language: "ja",
+      defaultLocale: "en",
+      localesDir: testLocalesDir,
+    });
+    await i18n.init();
+
+    assertEquals(i18n.getLocale(), "ja");
+  });
+
+  await t.step("should use explicit language over auto-detection", async () => {
+    // Save current env
+    const originalLocale = Deno.env.get("NAGARE_LOCALE");
+    const originalLang = Deno.env.get("LANG");
+
+    try {
+      // Set environment to suggest English
+      Deno.env.set("NAGARE_LOCALE", "en");
+      Deno.env.set("LANG", "en_US.UTF-8");
+
+      // But explicitly request Japanese
+      const i18n = new I18n({
+        language: "ja",
+        localesDir: testLocalesDir,
+      });
+      await i18n.init();
+
+      // Should use the explicit language
+      assertEquals(i18n.getLocale(), "ja");
+    } finally {
+      // Restore environment
+      if (originalLocale) {
+        Deno.env.set("NAGARE_LOCALE", originalLocale);
+      } else {
+        Deno.env.delete("NAGARE_LOCALE");
+      }
+      if (originalLang) {
+        Deno.env.set("LANG", originalLang);
+      } else {
+        Deno.env.delete("LANG");
+      }
+    }
+  });
+
   await t.step("should fall back to English for invalid locale", async () => {
     const i18n = new I18n({
       defaultLocale: "invalid",
@@ -167,6 +212,17 @@ Deno.test("I18n - global instance", async (t) => {
 
     const translation = translate("errors.gitNotRepo");
     assertEquals(translation, "Not in a git repository");
+  });
+
+  await t.step("should accept language string directly", async () => {
+    // Need to provide full config with localesDir for tests
+    await initI18n({
+      language: "ja",
+      localesDir: testLocalesDir,
+    });
+
+    const translation = translate("errors.gitNotRepo");
+    assertEquals(translation, "Gitリポジトリではありません");
   });
 
   await t.step("should support global locale switching", async () => {
