@@ -209,6 +209,7 @@ cli:
     commands: "コマンド:"
     commandRelease: "release    新しいリリースを作成 (デフォルト)"
     commandRollback: "rollback   リリースをロールバック"
+    commandRetry: "retry      失敗したリリースを再試行 (タグを削除して再実行)"
     commandInit: "init       現在のディレクトリでNagareを初期化"
 
     bumpTypes: "バンプタイプ:"

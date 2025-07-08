@@ -760,6 +760,30 @@ export interface ReleaseConfig {
    * ```
    */
   monitoring?: MonitoringConfig;
+
+  /**
+   * Pre-flight checks configuration
+   *
+   * @description Configure validation checks to run before creating releases.
+   * Helps prevent CI/CD failures by catching issues early.
+   *
+   * @example
+   * ```typescript
+   * preflightChecks: {
+   *   runTests: true,
+   *   custom: [
+   *     {
+   *       name: "Security Scan",
+   *       command: ["deno", "task", "security"],
+   *       fixable: false
+   *     }
+   *   ]
+   * }
+   * ```
+   *
+   * @since 2.8.0
+   */
+  preflightChecks?: PreflightChecksConfig;
 }
 
 /**
@@ -873,6 +897,19 @@ export interface MonitoringConfig {
   timeout?: number;
   /** Extract logs for failed jobs (default: true) */
   extractLogs?: boolean;
+}
+
+/**
+ * Pre-flight checks configuration
+ *
+ * @description Configure validation checks to run before creating releases
+ * @since 2.8.0
+ */
+export interface PreflightChecksConfig {
+  /** Whether to run tests during pre-flight checks (default: true) */
+  runTests?: boolean;
+  /** Custom pre-flight checks to run in addition to defaults */
+  custom?: PreflightCheck[];
 }
 
 /**
@@ -1007,6 +1044,46 @@ export interface TemplateData {
  */
 export interface CommitTypeMapping {
   [commitType: string]: "added" | "changed" | "deprecated" | "removed" | "fixed" | "security";
+}
+
+/**
+ * Pre-flight check configuration
+ *
+ * @description Defines a validation check to run before creating releases
+ * @since 2.8.0
+ */
+export interface PreflightCheck {
+  /** Display name for the check */
+  name: string;
+  /** Command and arguments to execute */
+  command: string[];
+  /** Whether failures can be auto-fixed */
+  fixable?: boolean;
+  /** Command to run for auto-fix (if fixable) */
+  fixCommand?: string[];
+  /** Description of what this check validates */
+  description?: string;
+}
+
+/**
+ * Result from pre-flight validation
+ *
+ * @description Contains the outcome of pre-flight checks
+ * @since 2.8.0
+ */
+export interface PreflightResult {
+  /** Whether all checks passed */
+  success: boolean;
+  /** Name of the check that failed (if any) */
+  failedCheck?: string;
+  /** Whether the failure can be auto-fixed */
+  fixable?: boolean;
+  /** The command that failed */
+  command?: string[];
+  /** Error output from the failed command */
+  error?: string;
+  /** Suggested fix for the failure */
+  suggestion?: string;
 }
 
 /**

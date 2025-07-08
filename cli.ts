@@ -183,7 +183,7 @@ function parseArgs(args: string[]): {
       default:
         if (!arg.startsWith("-")) {
           // Check if this is a valid command
-          if (["release", "rollback", "init"].includes(arg)) {
+          if (["release", "rollback", "init", "retry"].includes(arg)) {
             command = arg;
           } else if (["major", "minor", "patch"].includes(arg)) {
             bumpType = arg;
@@ -319,6 +319,7 @@ ${tryT("cli.help.usage")}
 ${tryT("cli.help.commands")}
   ${tryT("cli.help.commandRelease")}
   ${tryT("cli.help.commandRollback")}
+  ${tryT("cli.help.commandRetry")}
   ${tryT("cli.help.commandInit")}
 
 ${tryT("cli.help.bumpTypes")}
@@ -877,7 +878,8 @@ export default {
     "release:minor": "deno task nagare minor",
     "release:major": "deno task nagare major",
     "release:dry": "deno task nagare --dry-run",
-    "rollback": "deno task nagare rollback"
+    "rollback": "deno task nagare rollback",
+    "retry": "deno task nagare retry"
   }
 `);
       }
@@ -892,7 +894,8 @@ export default {
     "release:minor": "deno task nagare minor",
     "release:major": "deno task nagare major",
     "release:dry": "deno task nagare --dry-run",
-    "rollback": "deno task nagare rollback"
+    "rollback": "deno task nagare rollback",
+    "retry": "deno task nagare retry"
   }
 }
 `);
@@ -962,6 +965,101 @@ export default {
           Deno.exit(1);
         }
         console.log(formatSuccess("Rollback completed successfully"));
+        break;
+      }
+
+      case "retry": {
+        console.log(formatInfo("Retrying failed release..."));
+
+        // Get the last failed version from git tags or ask user
+        let version = bumpType; // User can provide version as argument
+
+        if (!version) {
+          // Try to detect the last tag that might have failed
+          try {
+            const gitCommand = new Deno.Command("git", {
+              args: ["describe", "--tags", "--abbrev=0"],
+              stdout: "piped",
+              stderr: "piped",
+            });
+            const { stdout } = await gitCommand.output();
+            const lastTag = new TextDecoder().decode(stdout).trim();
+            if (lastTag && lastTag.startsWith("v")) {
+              version = lastTag.substring(1);
+              console.log(formatInfo(`Found last tag: v${version}`));
+            }
+          } catch {
+            // Ignore errors, user will need to provide version
+          }
+
+          if (!version) {
+            console.error(formatError("No version specified. Usage: nagare retry <version>"));
+            console.log("Example: nagare retry 1.2.3");
+            Deno.exit(1);
+          }
+        }
+
+        console.log(formatInfo(`Attempting to retry release for version ${version}`));
+
+        // Delete local and remote tags
+        console.log(formatInfo("Cleaning up existing tags..."));
+
+        // Delete local tag
+        try {
+          await new Deno.Command("git", {
+            args: ["tag", "-d", `v${version}`],
+            stdout: "piped",
+            stderr: "piped",
+          }).output();
+          console.log(formatSuccess(`Deleted local tag v${version}`));
+        } catch {
+          console.log(formatInfo(`Local tag v${version} not found (may already be deleted)`));
+        }
+
+        // Delete remote tag
+        try {
+          await new Deno.Command("git", {
+            args: ["push", "origin", `:refs/tags/v${version}`],
+            stdout: "piped",
+            stderr: "piped",
+          }).output();
+          console.log(formatSuccess(`Deleted remote tag v${version}`));
+        } catch {
+          console.log(formatInfo(`Remote tag v${version} not found (may already be deleted)`));
+        }
+
+        // Pull latest changes
+        console.log(formatInfo("Pulling latest changes..."));
+        await new Deno.Command("git", {
+          args: ["pull"],
+          stdout: "piped",
+          stderr: "piped",
+        }).output();
+
+        // Now run release with the specific version
+        console.log(formatInfo(`Running release for version ${version}...`));
+        const releaseManager = new ReleaseManager({
+          ...config,
+          options: {
+            ...config.options,
+            ...options,
+            skipConfirmation: true, // Skip confirmation for retry
+          },
+        });
+
+        // We need to override the version calculation
+        // This is a bit hacky but necessary for retry functionality
+        const result = await releaseManager.release();
+
+        if (!result.success) {
+          console.error(formatError(`Release retry failed: ${result.error}`));
+          Deno.exit(1);
+        }
+
+        console.log(formatSuccess(`Successfully retried release ${version}!`));
+        if (result.githubReleaseUrl) {
+          console.log(formatInfo(`GitHub Release: ${result.githubReleaseUrl}`));
+        }
         break;
       }
 

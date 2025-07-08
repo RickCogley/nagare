@@ -146,6 +146,7 @@ cli:
     commands: "COMMANDS:"
     commandRelease: "release    Create a new release (default)"
     commandRollback: "rollback   Rollback a release"
+    commandRetry: "retry      Retry a failed release (deletes tag and re-runs)"
     commandInit: "init       Initialize Nagare in current directory"
 
     bumpTypes: "BUMP TYPES:"

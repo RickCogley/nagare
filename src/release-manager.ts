@@ -10,6 +10,8 @@ import type {
   ConventionalCommit,
   FileUpdatePattern,
   NagareConfig,
+  PreflightCheck,
+  PreflightResult,
   ReleaseNotes,
   ReleaseResult,
   TemplateData,
@@ -582,6 +584,53 @@ export class ReleaseManager {
         filesCount: updatedFiles.length,
         files: updatedFiles,
       });
+
+      // CRITICAL: Format all files BEFORE committing
+      await this.formatChangedFiles();
+
+      // CRITICAL: Run pre-flight validation BEFORE creating tags
+      const preflightResult = await this.performPreflightChecks();
+      if (!preflightResult.success) {
+        // Try auto-fix if available
+        if (preflightResult.fixable && this.config.release?.autoFix?.basic) {
+          this.logger.info(`🔧 Attempting to auto-fix ${preflightResult.failedCheck}...`);
+          const fixResult = await this.attemptAutoFix(preflightResult);
+
+          if (fixResult.success) {
+            // Re-run pre-flight checks after fix
+            const retryResult = await this.performPreflightChecks();
+            if (!retryResult.success) {
+              throw ErrorFactory.createReleaseError(
+                `Pre-flight check failed after auto-fix: ${retryResult.failedCheck}`,
+                {
+                  check: retryResult.failedCheck,
+                  error: retryResult.error,
+                  suggestion: retryResult.suggestion,
+                },
+              );
+            }
+          } else {
+            throw ErrorFactory.createReleaseError(
+              `Pre-flight check failed: ${preflightResult.failedCheck}`,
+              {
+                check: preflightResult.failedCheck,
+                error: preflightResult.error,
+                suggestion: preflightResult.suggestion ||
+                  "Run the command manually to see detailed output",
+              },
+            );
+          }
+        } else {
+          throw ErrorFactory.createReleaseError(
+            `Pre-flight check failed: ${preflightResult.failedCheck}`,
+            {
+              check: preflightResult.failedCheck,
+              error: preflightResult.error,
+              suggestion: preflightResult.suggestion || "Fix the issues and try again",
+            },
+          );
+        }
+      }
 
       // Generate documentation if enabled
       if (this.config.docs?.enabled) {
@@ -1625,6 +1674,250 @@ export class ReleaseManager {
       success: false,
       error: `Failed to fix CI/CD errors after ${fixAttempt} attempts: ${parseResult.summary}`,
     };
+  }
+
+  /**
+   * Get pre-flight checks to run before release
+   *
+   * @private
+   * @returns {PreflightCheck[]} Array of pre-flight checks
+   *
+   * @description
+   * Defines the validation checks to run before creating a release.
+   * These checks ensure code quality and prevent failed releases.
+   *
+   * @since 2.8.0
+   */
+  private getPreflightChecks(): PreflightCheck[] {
+    const checks: PreflightCheck[] = [
+      {
+        name: "Format Check",
+        command: ["deno", "fmt", "--check"],
+        fixable: true,
+        fixCommand: ["deno", "fmt"],
+        description: "Validates code formatting matches project standards",
+      },
+      {
+        name: "Lint Check",
+        command: ["deno", "lint"],
+        fixable: false,
+        description: "Checks for code quality issues and potential bugs",
+      },
+      {
+        name: "Type Check",
+        command: ["deno", "check", "**/*.ts"],
+        fixable: false,
+        description: "Validates TypeScript type correctness",
+      },
+    ];
+
+    // Add test check if not explicitly disabled
+    if (this.config.release?.preflightChecks?.runTests !== false) {
+      checks.push({
+        name: "Test Suite",
+        command: ["deno", "test", "--allow-all"],
+        fixable: false,
+        description: "Runs all unit and integration tests",
+      });
+    }
+
+    // Add custom checks if configured
+    if (this.config.release?.preflightChecks?.custom) {
+      checks.push(...this.config.release.preflightChecks.custom);
+    }
+
+    return checks;
+  }
+
+  /**
+   * Perform pre-flight validation checks
+   *
+   * @private
+   * @returns {Promise<PreflightResult>} Result of pre-flight checks
+   *
+   * @description
+   * Runs all configured pre-flight checks to validate the codebase
+   * before creating a release. This prevents common CI/CD failures.
+   *
+   * @since 2.8.0
+   */
+  private async performPreflightChecks(): Promise<PreflightResult> {
+    const checks = this.getPreflightChecks();
+
+    if (checks.length === 0) {
+      return { success: true };
+    }
+
+    this.logger.info("\n🔍 Running pre-flight checks...");
+
+    for (const check of checks) {
+      this.logger.info(`\n  ▶ ${check.name}`);
+      if (check.description) {
+        this.logger.debug(`    ${check.description}`);
+      }
+
+      try {
+        const command = new Deno.Command(check.command[0], {
+          args: check.command.slice(1),
+          stdout: "piped",
+          stderr: "piped",
+        });
+
+        const { code, stdout, stderr } = await command.output();
+
+        if (code === 0) {
+          this.logger.info(`    ✅ ${check.name} passed`);
+        } else {
+          const errorOutput = new TextDecoder().decode(stderr) || new TextDecoder().decode(stdout);
+          const errorLines = errorOutput.trim().split("\n");
+          const errorSummary = errorLines.slice(0, 5).join("\n    ");
+
+          this.logger.error(`    ❌ ${check.name} failed`);
+          this.logger.error(`    ${errorSummary}`);
+          if (errorLines.length > 5) {
+            this.logger.error(`    ... and ${errorLines.length - 5} more errors`);
+          }
+
+          // Determine suggestion based on check type
+          let suggestion = "Fix the issues and try again";
+          if (check.fixable) {
+            suggestion = `Run 'deno task fmt' to fix formatting issues automatically`;
+          } else if (check.name.includes("Lint")) {
+            suggestion = "Fix linting issues manually - check the output above";
+          } else if (check.name.includes("Type")) {
+            suggestion = "Fix TypeScript type errors - check your type definitions";
+          } else if (check.name.includes("Test")) {
+            suggestion = "Fix failing tests or skip with --skip-tests flag";
+          }
+
+          return {
+            success: false,
+            failedCheck: check.name,
+            fixable: check.fixable || false,
+            command: check.command,
+            error: errorOutput,
+            suggestion,
+          };
+        }
+      } catch (error) {
+        this.logger.error(`    ❌ ${check.name} failed to execute`);
+        return {
+          success: false,
+          failedCheck: check.name,
+          fixable: false,
+          command: check.command,
+          error: `Failed to execute command: ${error}`,
+          suggestion: `Ensure ${check.command[0]} is installed and available in PATH`,
+        };
+      }
+    }
+
+    this.logger.info("\n✅ All pre-flight checks passed!");
+    return { success: true };
+  }
+
+  /**
+   * Format all changed files after version updates
+   *
+   * @private
+   * @returns {Promise<void>}
+   *
+   * @description
+   * Runs Deno formatter on all files to ensure consistent formatting
+   * before committing. This prevents CI failures due to formatting issues.
+   *
+   * @since 2.8.0
+   */
+  private async formatChangedFiles(): Promise<void> {
+    this.logger.info("\n🎨 Formatting changed files...");
+
+    try {
+      const command = new Deno.Command("deno", {
+        args: ["fmt"],
+        stdout: "piped",
+        stderr: "piped",
+      });
+
+      const { code, stderr } = await command.output();
+
+      if (code !== 0) {
+        const errorOutput = new TextDecoder().decode(stderr);
+        this.logger.warn(`⚠️  Formatting completed with warnings: ${errorOutput}`);
+      } else {
+        this.logger.info("✅ All files formatted successfully");
+      }
+    } catch (error) {
+      this.logger.warn(`⚠️  Could not format files: ${error}`);
+      // Don't throw - formatting failure shouldn't block release
+    }
+  }
+
+  /**
+   * Attempt to auto-fix pre-flight check failures
+   *
+   * @private
+   * @param {PreflightResult} result - Pre-flight check result to fix
+   * @returns {Promise<PreflightResult>} Result after attempting fix
+   *
+   * @description
+   * Tries to automatically fix issues identified by pre-flight checks.
+   * Currently supports auto-formatting for format check failures.
+   *
+   * @since 2.8.0
+   */
+  private async attemptAutoFix(result: PreflightResult): Promise<PreflightResult> {
+    if (!result.fixable || !result.failedCheck) {
+      return result;
+    }
+
+    this.logger.info(`\n🔧 Attempting to auto-fix ${result.failedCheck}...`);
+
+    // Find the check that failed
+    const checks = this.getPreflightChecks();
+    const failedCheck = checks.find((c) => c.name === result.failedCheck);
+
+    if (!failedCheck || !failedCheck.fixCommand) {
+      return result;
+    }
+
+    try {
+      const command = new Deno.Command(failedCheck.fixCommand[0], {
+        args: failedCheck.fixCommand.slice(1),
+        stdout: "piped",
+        stderr: "piped",
+      });
+
+      const { code, stdout, stderr } = await command.output();
+
+      if (code === 0) {
+        this.logger.info(`✅ Successfully fixed ${result.failedCheck}`);
+
+        // Add fixed files to git
+        const gitAddCommand = new Deno.Command("git", {
+          args: ["add", "-A"],
+          stdout: "piped",
+          stderr: "piped",
+        });
+        await gitAddCommand.output();
+
+        return { success: true };
+      } else {
+        const errorOutput = new TextDecoder().decode(stderr) || new TextDecoder().decode(stdout);
+        this.logger.error(`❌ Auto-fix failed: ${errorOutput}`);
+        return {
+          ...result,
+          error: `Auto-fix failed: ${errorOutput}`,
+          suggestion: "Fix the issues manually and try again",
+        };
+      }
+    } catch (error) {
+      this.logger.error(`❌ Auto-fix failed: ${error}`);
+      return {
+        ...result,
+        error: `Auto-fix error: ${error}`,
+        suggestion: "Fix the issues manually and try again",
+      };
+    }
   }
 
   /**
