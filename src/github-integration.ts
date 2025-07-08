@@ -52,6 +52,7 @@ export class GitHubIntegration {
           `Release ${releaseNotes.version}`,
           "--notes-file",
           tempFile,
+          "--draft=false",
         ]);
 
         const releaseUrl = `${this.config.project.repository}/releases/tag/${tagName}`;

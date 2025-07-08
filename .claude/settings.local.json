@@ -31,7 +31,9 @@
       "Bash(gh workflow:*)",
       "Bash(git stash:*)",
       "Bash(sed:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(gh release edit:*)",
+      "Bash(gh release view:*)"
     ],
     "deny": []
   }
