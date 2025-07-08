@@ -212,7 +212,7 @@ const config: NagareConfig = {
         // with different token allocations. Choose based on your plan limits.
         thinkingLevel: "ultrathink", // Use maximum analysis (for unlimited plans)
         flags: [], // No CLI flags needed
-        maxAttempts: 3,
+        maxAttempts: 5,
       },
       types: ["lint", "format", "security-scan", "type-check", "version-conflict"],
     },
