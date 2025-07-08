@@ -5,11 +5,6 @@
 
 > Nagare means "flow" in Japanese - reflecting the smooth, automated flow from commits to releases.
 
-> ⚠️ **Version Notice**: JSR may show v5.2.0 as the latest version due to a versioning bug that has
-> been fixed. Please use v2.8.0 or later for the correct release sequence. The jump from v2.7.0 to
-> v5.2.0 was caused by a bug where failed releases incremented the version number. This has been
-> fixed in v2.8.0.
-
 Nagare is a comprehensive, [Deno](https://deno.com/)-native release management library that
 automates version bumping, changelog generation, and GitHub releases using
 [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) and

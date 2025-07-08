@@ -7,9 +7,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [2.8.0] - 2025-07-08
 
-**IMPORTANT**: This version fixes a critical bug where version numbers could jump unexpectedly
-(e.g., from v2.7.0 to v5.2.0) when releases failed. The fix ensures Nagare reads the current version
-from git tags instead of version files.
+This version includes critical fixes for the release process, including pre-flight validation and
+proper version detection.
 
 ### Added
 
@@ -22,8 +21,8 @@ from git tags instead of version files.
 
 ### Fixed
 
-- **CRITICAL**: read current version from git tags instead of version file (3c34320) - fixes version
-  jump bug
+- **CRITICAL**: read current version from git tags instead of version file (3c34320) - prevents
+  version jumps when releases fail
 - resolve linting error in test mock (e184855)
 - add unstable-raw-imports flag to pre-flight test command (e9117e6)
 - add unstable-raw-imports flag to type check (1280491)
