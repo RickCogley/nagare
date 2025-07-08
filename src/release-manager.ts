@@ -1715,7 +1715,7 @@ export class ReleaseManager {
       },
       {
         name: "Type Check",
-        command: ["deno", "check", "**/*.ts"],
+        command: ["deno", "check", "--unstable-raw-imports", "**/*.ts"],
         fixable: false,
         description: "Validates TypeScript type correctness",
       },
