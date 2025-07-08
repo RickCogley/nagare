@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2025-07-08
+
+### Added
+
+- complete Japanese translations for nagare (7d65d53)
+
+### Changed
+
+- add language setting documentation (e6aff0a)
+
+### Fixed
+
+- ensure GitHub releases are never created as drafts (f158757)
+
 ## [2.4.0] - 2025-07-08
 
 ### Added
