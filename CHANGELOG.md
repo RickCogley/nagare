@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.1] - 2025-07-08
+
+### Changed
+
+- close out completed Claude projects (2fda967)
+- remove v5.2.0 version anomaly warnings (6af5463)
+- add version notice about v5.2.0 anomaly (7f946ed)
+
 ## [2.8.0] - 2025-07-08
 
 This version includes critical fixes for the release process, including pre-flight validation and
