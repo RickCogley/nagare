@@ -27,7 +27,7 @@ function createTestConfig(overrides: Partial<NagareConfig> = {}): NagareConfig {
 
 // Mock GitOperations for testing
 const mockGitOps: Partial<GitOperations> = {
-  getLastReleaseTag: async () => "", // Return empty string to force file reading
+  getLastReleaseTag: () => Promise.resolve(""), // Return empty string to force file reading
 };
 
 // Helper function to create a test version file
