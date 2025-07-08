@@ -33,7 +33,8 @@
       "Bash(sed:*)",
       "Bash(git commit:*)",
       "Bash(gh release edit:*)",
-      "Bash(gh release view:*)"
+      "Bash(gh release view:*)",
+      "Bash(gh release list:*)"
     ],
     "deny": []
   }

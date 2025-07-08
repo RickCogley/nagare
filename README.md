@@ -470,6 +470,116 @@ NAGARE_LANG=ja deno task nagare:minor
 deno task nagare
 ```
 
+## 🤖 AI-Powered Auto-Fix (Optional)
+
+Nagare includes an optional AI-powered auto-fix feature that can automatically resolve common issues
+during the release process. This feature is **completely optional** and **disabled by default**.
+
+### Overview
+
+When enabled, the AI auto-fix feature can:
+
+- Automatically resolve formatting issues
+- Fix simple linting errors
+- Correct common TypeScript type errors
+- Address minor configuration problems
+- Suggest and apply fixes for failing tests
+
+### How to Enable
+
+Add the `aiAutoFix` configuration to your `nagare.config.ts`:
+
+```typescript
+export default {
+  project: {
+    name: "My App",
+    repository: "https://github.com/user/my-app",
+  },
+
+  // Enable AI auto-fix
+  aiAutoFix: {
+    enabled: true,
+    provider: "claude-code", // or "github-copilot" or "custom"
+    maxAttempts: 3, // Maximum fix attempts per issue
+    requireConfirmation: true, // Ask before applying fixes
+  },
+} as NagareConfig;
+```
+
+### Supported Providers
+
+1. **Claude Code** (`claude-code`)
+   - Uses Anthropic's Claude for intelligent code fixes
+   - Requires `ANTHROPIC_API_KEY` environment variable
+   - Best for complex issues and refactoring
+
+2. **GitHub Copilot** (`github-copilot`)
+   - Integrates with GitHub Copilot CLI
+   - Requires GitHub Copilot subscription
+   - Optimized for quick fixes and completions
+
+3. **Custom Provider** (`custom`)
+   - Implement your own AI provider
+   - Define custom fix logic
+   - Integrate with any AI service
+
+### Example Configuration
+
+```typescript
+// Full configuration example
+export default {
+  project: {
+    name: "My App",
+    repository: "https://github.com/user/my-app",
+  },
+
+  aiAutoFix: {
+    enabled: true,
+    provider: "claude-code",
+    maxAttempts: 3,
+    requireConfirmation: true,
+
+    // Optional: Specify which types of issues to auto-fix
+    fixTypes: ["format", "lint", "type", "test"],
+
+    // Optional: Custom provider configuration
+    customProvider: {
+      endpoint: "https://api.myai.com/fix",
+      apiKey: "YOUR_API_KEY",
+      model: "custom-model-v1",
+    },
+  },
+} as NagareConfig;
+```
+
+### Usage
+
+When auto-fix is enabled and Nagare encounters an issue:
+
+1. The issue is analyzed and a fix is suggested
+2. If `requireConfirmation` is true, you'll be prompted to review the fix
+3. The fix is applied and the operation continues
+4. If the fix fails, Nagare will attempt up to `maxAttempts` times
+
+### Security Considerations
+
+- AI providers never receive sensitive data like API keys or tokens
+- All fixes are sandboxed and validated before application
+- Code changes are logged for audit purposes
+- You can review all proposed changes before they're applied
+
+### Disabling Auto-Fix
+
+Auto-fix is disabled by default. To explicitly disable it:
+
+```typescript
+aiAutoFix: {
+  enabled: false;
+}
+```
+
+Or simply omit the `aiAutoFix` configuration entirely.
+
 ## 🆘 Troubleshooting
 
 ### Common Issues

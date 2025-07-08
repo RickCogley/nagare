@@ -712,11 +712,112 @@ await cli(Deno.args);
       await Deno.stat("./nagare.config.ts");
       console.log(formatInfo(tryT("cli.init.foundConfig")));
     } catch {
-      // Create a minimal nagare.config.ts
+      // Ask about AI features
+      console.log(formatInfo("Would you like to enable AI-powered auto-fix features? (y/N)"));
+      const enableAI = prompt("Enable AI features?")?.toLowerCase() === "y";
+
+      let configTemplate = EXAMPLE_MINIMAL_CONFIG;
+
+      if (enableAI) {
+        console.log(formatInfo("Detecting available AI tools..."));
+
+        // Check for available AI tools
+        const availableTools: string[] = [];
+
+        // Check for Claude CLI
+        try {
+          const claudeCheck = new Deno.Command("claude", {
+            args: ["--version"],
+            stdout: "piped",
+            stderr: "piped",
+          });
+          const result = await claudeCheck.output();
+          if (result.success) {
+            availableTools.push("claude");
+            console.log(formatSuccess("Found Claude CLI"));
+          }
+        } catch {
+          // Claude not available
+        }
+
+        // Check for GitHub Copilot CLI
+        try {
+          const ghCheck = new Deno.Command("gh", {
+            args: ["copilot", "--version"],
+            stdout: "piped",
+            stderr: "piped",
+          });
+          const result = await ghCheck.output();
+          if (result.success) {
+            availableTools.push("gh-copilot");
+            console.log(formatSuccess("Found GitHub Copilot CLI"));
+          }
+        } catch {
+          // GitHub Copilot not available
+        }
+
+        if (availableTools.length === 0) {
+          console.log(formatInfo("No AI tools detected. You can install them later:"));
+          console.log("  - Claude CLI: https://claude.ai/cli");
+          console.log("  - GitHub Copilot: gh extension install github/gh-copilot");
+        }
+
+        // Generate config with AI features
+        const aiProvider = availableTools.includes("claude")
+          ? "claude-code"
+          : availableTools.includes("gh-copilot")
+          ? "github-copilot"
+          : "claude-code";
+
+        configTemplate = `import type { NagareConfig } from '@rick/nagare';
+
+export default {
+  project: {
+    name: 'My App',
+    // DevSkim: ignore DS440000 - Standard HTTPS URL in example
+    repository: 'https://github.com/user/my-app'
+  },
+  
+  versionFile: {
+    path: './version.ts',
+    template: 'typescript'
+  },
+  
+  release: {
+    autoFix: {
+      basic: true,  // Enable deterministic fixes (formatting, version bumps, etc.)
+      ai: {
+        enabled: ${availableTools.length > 0},
+        provider: '${aiProvider}',
+        maxAttempts: 3,
+        timeout: 30000
+      },
+      // Types of errors to auto-fix
+      types: ['lint', 'format', 'security-scan', 'type-check', 'version-conflict']
+    }
+  }
+} as NagareConfig;`;
+      }
+
+      // Create nagare.config.ts
       console.log(formatInfo(tryT("cli.init.creatingConfig")));
       try {
-        await Deno.writeTextFile("./nagare.config.ts", EXAMPLE_MINIMAL_CONFIG);
+        await Deno.writeTextFile("./nagare.config.ts", configTemplate);
         console.log(formatSuccess(tryT("cli.init.createdConfig")));
+
+        if (enableAI) {
+          console.log();
+          console.log(formatInfo("AI auto-fix features have been configured!"));
+          console.log("When CI checks fail, Nagare will automatically attempt to fix:");
+          console.log("  - Formatting issues (deno fmt)");
+          console.log("  - Linting issues (deno lint)");
+          console.log("  - Security scan violations");
+          console.log("  - Type checking errors");
+          console.log("  - Version conflicts");
+          console.log();
+          console.log("The AI assistant will analyze error messages and suggest fixes,");
+          console.log("which can be automatically applied with your approval.");
+        }
       } catch (error) {
         console.error(
           formatError(
