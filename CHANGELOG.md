@@ -7,20 +7,24 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [2.8.0] - 2025-07-08
 
+**IMPORTANT**: This version fixes a critical bug where version numbers could jump unexpectedly
+(e.g., from v2.7.0 to v5.2.0) when releases failed. The fix ensures Nagare reads the current version
+from git tags instead of version files.
+
 ### Added
 
 - add pre-flight validation system to prevent release failures (1177e80)
 
 ### Changed
 
-- bump version to 5.2.0 (b71a138)
 - disable tests in pre-flight checks for demo (0cc0bd6)
 - increase AI fix maxAttempts from 3 to 5 (5f92058)
 
 ### Fixed
 
+- **CRITICAL**: read current version from git tags instead of version file (3c34320) - fixes version
+  jump bug
 - resolve linting error in test mock (e184855)
-- read current version from git tags instead of version file (3c34320)
 - add unstable-raw-imports flag to pre-flight test command (e9117e6)
 - add unstable-raw-imports flag to type check (1280491)
 - resolve linting errors in release manager (2011bfd)
