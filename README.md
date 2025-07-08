@@ -429,6 +429,45 @@ export GITHUB_TOKEN="ghp_xxxxxxxxxxxx"
 
 # Optional: Custom build environment
 export NODE_ENV="production"
+
+# Optional: Display language (defaults to English)
+export NAGARE_LANG="en"  # or "ja" for Japanese
+```
+
+## 🌐 Language Settings
+
+Nagare supports both English and Japanese interfaces. By default, it uses English regardless of your
+system locale.
+
+### Setting the Language
+
+You can set the display language in three ways (in order of priority):
+
+1. **CLI Flag**: `--lang en` or `--lang ja`
+   ```bash
+   deno task nagare --lang ja          # Use Japanese
+   deno task nagare:minor --lang en    # Use English
+   ```
+
+2. **Environment Variable**: `NAGARE_LANG`
+   ```bash
+   export NAGARE_LANG=ja
+   deno task nagare                    # Will use Japanese
+   ```
+
+3. **Default**: English (en)
+
+### Examples
+
+```bash
+# Show help in Japanese
+deno task nagare --help --lang ja
+
+# Release with Japanese messages
+NAGARE_LANG=ja deno task nagare:minor
+
+# Always use English (default)
+deno task nagare
 ```
 
 ## 🆘 Troubleshooting

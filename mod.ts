@@ -23,6 +23,7 @@
  * - **✨ Extensible Version Files** - Add custom exports without full templates (v1.8.0+)
  * - **🔄 Rollback Support** - Safe rollback of failed releases
  * - **🛡️ Type-Safe** - Full TypeScript support with comprehensive types
+ * - **🌐 Multi-Language** - English and Japanese interfaces (v2.4.0+)
  *
  * ## Quick Start
  *
