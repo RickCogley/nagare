@@ -594,39 +594,49 @@ export class ReleaseManager {
         // Try auto-fix if available
         if (preflightResult.fixable && this.config.release?.autoFix?.basic) {
           this.logger.info(`🔧 Attempting to auto-fix ${preflightResult.failedCheck}...`);
-          const fixResult = await this.attemptAutoFix(preflightResult);
+          const fixResult = await this.attemptPreflightAutoFix(preflightResult);
 
           if (fixResult.success) {
             // Re-run pre-flight checks after fix
             const retryResult = await this.performPreflightChecks();
             if (!retryResult.success) {
-              throw ErrorFactory.createReleaseError(
+              throw new NagareError(
                 `Pre-flight check failed after auto-fix: ${retryResult.failedCheck}`,
+                ErrorCodes.RELEASE_FAILED,
                 {
-                  check: retryResult.failedCheck,
-                  error: retryResult.error,
-                  suggestion: retryResult.suggestion,
+                  suggestions: [retryResult.suggestion || "Fix the issues manually and try again"],
+                  context: {
+                    check: retryResult.failedCheck,
+                    error: retryResult.error,
+                  },
                 },
               );
             }
           } else {
-            throw ErrorFactory.createReleaseError(
+            throw new NagareError(
               `Pre-flight check failed: ${preflightResult.failedCheck}`,
+              ErrorCodes.RELEASE_FAILED,
               {
-                check: preflightResult.failedCheck,
-                error: preflightResult.error,
-                suggestion: preflightResult.suggestion ||
-                  "Run the command manually to see detailed output",
+                suggestions: [
+                  preflightResult.suggestion || "Run the command manually to see detailed output",
+                ],
+                context: {
+                  check: preflightResult.failedCheck,
+                  error: preflightResult.error,
+                },
               },
             );
           }
         } else {
-          throw ErrorFactory.createReleaseError(
+          throw new NagareError(
             `Pre-flight check failed: ${preflightResult.failedCheck}`,
+            ErrorCodes.PRE_FLIGHT_CHECK_FAILED,
             {
-              check: preflightResult.failedCheck,
-              error: preflightResult.error,
-              suggestion: preflightResult.suggestion || "Fix the issues and try again",
+              suggestions: [preflightResult.suggestion || "Fix the issues and try again"],
+              context: {
+                check: preflightResult.failedCheck,
+                error: preflightResult.error,
+              },
             },
           );
         }
@@ -1865,7 +1875,7 @@ export class ReleaseManager {
    *
    * @since 2.8.0
    */
-  private async attemptAutoFix(result: PreflightResult): Promise<PreflightResult> {
+  private async attemptPreflightAutoFix(result: PreflightResult): Promise<PreflightResult> {
     if (!result.fixable || !result.failedCheck) {
       return result;
     }
