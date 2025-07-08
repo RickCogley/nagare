@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.0] - 2025-07-08
+
+### Changed
+
+- increase AI fix maxAttempts from 3 to 5 (5f92058)
+
+### Fixed
+
+- add unstable-raw-imports flag to type check (1280491)
+- resolve linting errors in release manager (2011bfd)
+- prevent release failures with pre-flight validation (0a245c3)
+
 ## [4.0.0] - 2025-07-08
 
 ### Changed

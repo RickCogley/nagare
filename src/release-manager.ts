@@ -603,12 +603,10 @@ export class ReleaseManager {
               throw new NagareError(
                 `Pre-flight check failed after auto-fix: ${retryResult.failedCheck}`,
                 ErrorCodes.RELEASE_FAILED,
+                [retryResult.suggestion || "Fix the issues manually and try again"],
                 {
-                  suggestions: [retryResult.suggestion || "Fix the issues manually and try again"],
-                  context: {
-                    check: retryResult.failedCheck,
-                    error: retryResult.error,
-                  },
+                  check: retryResult.failedCheck,
+                  error: retryResult.error,
                 },
               );
             }
@@ -616,27 +614,21 @@ export class ReleaseManager {
             throw new NagareError(
               `Pre-flight check failed: ${preflightResult.failedCheck}`,
               ErrorCodes.RELEASE_FAILED,
+              [preflightResult.suggestion || "Run the command manually to see detailed output"],
               {
-                suggestions: [
-                  preflightResult.suggestion || "Run the command manually to see detailed output",
-                ],
-                context: {
-                  check: preflightResult.failedCheck,
-                  error: preflightResult.error,
-                },
+                check: preflightResult.failedCheck,
+                error: preflightResult.error,
               },
             );
           }
         } else {
           throw new NagareError(
             `Pre-flight check failed: ${preflightResult.failedCheck}`,
-            ErrorCodes.PRE_FLIGHT_CHECK_FAILED,
+            ErrorCodes.RELEASE_FAILED,
+            [preflightResult.suggestion || "Fix the issues and try again"],
             {
-              suggestions: [preflightResult.suggestion || "Fix the issues and try again"],
-              context: {
-                check: preflightResult.failedCheck,
-                error: preflightResult.error,
-              },
+              check: preflightResult.failedCheck,
+              error: preflightResult.error,
             },
           );
         }
