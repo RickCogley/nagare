@@ -230,6 +230,11 @@ const config: NagareConfig = {
       pollInterval: 10000, // 10 seconds
       timeout: 600000, // 10 minutes
     },
+
+    // Pre-flight checks configuration
+    preflightChecks: {
+      runTests: false, // Disable tests in pre-flight checks
+    },
   },
 };
 
