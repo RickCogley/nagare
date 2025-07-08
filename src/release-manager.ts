@@ -171,7 +171,7 @@ export class ReleaseManager {
   constructor(config: NagareConfig) {
     this.config = this.mergeWithDefaults(config);
     this.git = new GitOperations(this.config);
-    this.versionUtils = new VersionUtils(this.config);
+    this.versionUtils = new VersionUtils(this.config, this.git);
     this.changelogGenerator = new ChangelogGenerator(this.config);
     this.github = new GitHubIntegration(this.config);
     this.templateProcessor = new TemplateProcessor(this.config);

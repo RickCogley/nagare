@@ -8,6 +8,7 @@ import { VersionUtils } from "../src/version-utils.ts";
 import { NagareError } from "../src/enhanced-error.ts";
 import { BumpType, TemplateFormat } from "../types.ts";
 import type { ConventionalCommit, NagareConfig } from "../types.ts";
+import type { GitOperations } from "../src/git-operations.ts";
 
 // Helper function to create a test config
 function createTestConfig(overrides: Partial<NagareConfig> = {}): NagareConfig {
@@ -23,6 +24,11 @@ function createTestConfig(overrides: Partial<NagareConfig> = {}): NagareConfig {
     ...overrides,
   };
 }
+
+// Mock GitOperations for testing
+const mockGitOps: Partial<GitOperations> = {
+  getLastReleaseTag: async () => "", // Return empty string to force file reading
+};
 
 // Helper function to create a test version file
 async function createVersionFile(path: string, content: string): Promise<void> {
@@ -46,7 +52,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
         template: TemplateFormat.TYPESCRIPT,
       },
     });
-    const utils = new VersionUtils(config);
+    const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
     await createVersionFile("./test-version.ts", 'export const VERSION = "1.2.3";\n');
 
@@ -65,7 +71,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
         template: TemplateFormat.JSON,
       },
     });
-    const utils = new VersionUtils(config);
+    const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
     await createVersionFile("./test-version.json", '{\n  "version": "2.0.0"\n}\n');
 
@@ -84,7 +90,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
         template: TemplateFormat.YAML,
       },
     });
-    const utils = new VersionUtils(config);
+    const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
     await createVersionFile("./test-version.yaml", 'version: "3.1.4"\n');
 
@@ -106,7 +112,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
         },
       },
     });
-    const utils = new VersionUtils(config);
+    const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
     await createVersionFile("./test-version.txt", "APP_VERSION = '4.5.6'\n");
 
@@ -126,7 +132,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
         // No patterns specified, should use defaults
       },
     });
-    const utils = new VersionUtils(config);
+    const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
     await createVersionFile("./test-version.txt", 'export const VERSION = "7.8.9";\n');
 
@@ -145,7 +151,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
         template: TemplateFormat.TYPESCRIPT,
       },
     });
-    const utils = new VersionUtils(config);
+    const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
     await createVersionFile("./test-version.ts", 'export const BUILD_DATE = "2024-01-01";\n');
 
@@ -166,7 +172,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
         template: TemplateFormat.TYPESCRIPT,
       },
     });
-    const utils = new VersionUtils(config);
+    const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
     await assertRejects(
       async () => await utils.getCurrentVersion(),
@@ -177,7 +183,7 @@ Deno.test("VersionUtils - getCurrentVersion()", async (t) => {
 
 Deno.test("VersionUtils - calculateNewVersion()", async (t) => {
   const config = createTestConfig();
-  const utils = new VersionUtils(config);
+  const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
   await t.step("Manual bump type - major", () => {
     const newVersion = utils.calculateNewVersion("1.2.3", [], "major" as BumpType);
@@ -461,7 +467,7 @@ Deno.test("VersionUtils - calculateNewVersion()", async (t) => {
 
 Deno.test("VersionUtils - parseVersion()", async (t) => {
   const config = createTestConfig();
-  const utils = new VersionUtils(config);
+  const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
   await t.step("Parse simple version", () => {
     const parsed = utils.parseVersion("1.2.3");
@@ -567,7 +573,7 @@ Deno.test("VersionUtils - parseVersion()", async (t) => {
 
 Deno.test("VersionUtils - Edge cases", async (t) => {
   const config = createTestConfig();
-  const utils = new VersionUtils(config);
+  const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
   await t.step("Handle commits with all properties", () => {
     const commits: ConventionalCommit[] = [
@@ -615,7 +621,7 @@ Deno.test("VersionUtils - Edge cases", async (t) => {
         },
       },
     });
-    const utils = new VersionUtils(config);
+    const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
     const content = `
       OLD_VERSION = "0.9.0"
@@ -639,7 +645,7 @@ Deno.test("VersionUtils - Edge cases", async (t) => {
         template: TemplateFormat.TYPESCRIPT,
       },
     });
-    const utils = new VersionUtils(config);
+    const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
     const content = `
       // This is the version file
@@ -694,7 +700,7 @@ Deno.test("VersionUtils - Security considerations", async (t) => {
         },
       },
     });
-    const utils = new VersionUtils(config);
+    const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
     // Create a file that would trigger the regex
     await createVersionFile("./test-version.txt", "aaaaaaaaaaaaaaaaaaaaaaaac");
@@ -720,7 +726,7 @@ Deno.test("VersionUtils - Security considerations", async (t) => {
         },
       },
     });
-    const utils = new VersionUtils(config);
+    const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
     // Create a large file with version at the end
     const largeContent = "x".repeat(1000000) + '\nVERSION = "1.0.0"\n';
@@ -741,7 +747,7 @@ Deno.test("VersionUtils - Security considerations", async (t) => {
         template: TemplateFormat.CUSTOM,
       },
     });
-    const utils = new VersionUtils(config);
+    const utils = new VersionUtils(config, mockGitOps as GitOperations);
 
     // Should fail to read the file (doesn't exist in test environment)
     await assertRejects(

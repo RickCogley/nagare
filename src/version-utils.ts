@@ -7,21 +7,43 @@ import { BumpType } from "../types.ts";
 import type { ConventionalCommit, NagareConfig } from "../types.ts";
 import type { TranslationKey } from "../locales/schema.ts";
 import { ErrorCodes, ErrorFactory, NagareError } from "./enhanced-error.ts";
+import type { GitOperations } from "./git-operations.ts";
 
 /**
  * VersionUtils - Semantic versioning operations
  */
 export class VersionUtils {
   private config: NagareConfig;
+  private git: GitOperations;
 
-  constructor(config: NagareConfig) {
+  constructor(config: NagareConfig, git: GitOperations) {
     this.config = config;
+    this.git = git;
   }
 
   /**
-   * Get current version from version file
+   * Get current version from git tags first, then fall back to version file
    */
   async getCurrentVersion(): Promise<string> {
+    // First, try to get version from git tags
+    try {
+      const lastTag = await this.git.getLastReleaseTag();
+      if (lastTag) {
+        const tagPrefix = this.config.options?.tagPrefix || "v";
+        const version = lastTag.replace(new RegExp(`^${tagPrefix}`), "");
+        // Validate it's a valid semver
+        try {
+          parse(version);
+          return version;
+        } catch {
+          // Invalid version in tag, fall through to file
+        }
+      }
+    } catch {
+      // No tags or git error, fall through to file
+    }
+
+    // Fall back to reading from version file (for initial release)
     try {
       const content = await Deno.readTextFile(this.config.versionFile.path);
 
