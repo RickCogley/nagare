@@ -37,7 +37,8 @@
       "Bash(gh release list:*)",
       "Bash(mv:*)",
       "Bash(jq:*)",
-      "WebFetch(domain:docs.anthropic.com)"
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(tree:*)"
     ],
     "deny": []
   }
