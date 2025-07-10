@@ -434,6 +434,10 @@ interface NagareConfig {
   metadata?: Record<string, unknown>;
   generateDocs?: boolean;
   docsDir?: string;
+  hooks?: {
+    preRelease?: Array<() => Promise<void>>;
+    postRelease?: Array<() => Promise<void>>;
+  };
 }
 ```
 
@@ -931,6 +935,381 @@ async function customRelease() {
   }
 }
 ```
+
+## Lifecycle Hooks
+
+Nagare supports lifecycle hooks that allow you to run custom operations at specific points in the
+release process. This is useful for tasks like validation, building binaries, notifications, or any
+other custom operations you need.
+
+### Available Hooks
+
+- **`preRelease`**: Functions executed before the release process begins
+- **`postRelease`**: Functions executed after the release is complete
+
+### Hook Configuration
+
+Hooks are configured in the `hooks` section of your `nagare.config.ts`:
+
+```typescript
+export default {
+  // ... other configuration ...
+
+  hooks: {
+    preRelease: [
+      async () => {
+        // Your pre-release logic here
+      },
+    ],
+    postRelease: [
+      async () => {
+        // Your post-release logic here
+      },
+    ],
+  },
+} satisfies NagareConfig;
+```
+
+### Example: Pre-Release Validation
+
+Here's an example of using `preRelease` hooks to run validation checks before releasing:
+
+```typescript
+hooks: {
+  preRelease: [
+    async () => {
+      console.log("🔍 Running pre-release checks...");
+
+      // Format check
+      const fmtCheck = new Deno.Command("deno", {
+        args: ["fmt", "--check"],
+      });
+      const fmtResult = await fmtCheck.output();
+      if (!fmtResult.success) {
+        throw new Error("Format check failed - run 'deno fmt' first");
+      }
+
+      // Lint check
+      const lintCmd = new Deno.Command("deno", {
+        args: ["lint"],
+      });
+      const lintResult = await lintCmd.output();
+      if (!lintResult.success) {
+        throw new Error("Lint check failed");
+      }
+
+      // Type check
+      const checkCmd = new Deno.Command("deno", {
+        args: ["check", "**/*.ts"],
+      });
+      const checkResult = await checkCmd.output();
+      if (!checkResult.success) {
+        throw new Error("Type check failed");
+      }
+
+      // Run tests
+      const testCmd = new Deno.Command("deno", {
+        args: ["test", "--allow-all"],
+      });
+      const testResult = await testCmd.output();
+      if (!testResult.success) {
+        throw new Error("Tests failed");
+      }
+
+      console.log("✅ All pre-release checks passed");
+    },
+  ];
+}
+```
+
+### Example: Building and Uploading Binaries
+
+Here's a comprehensive example of using `postRelease` hooks to compile binaries for multiple
+platforms and upload them to GitHub releases. This pattern is particularly useful for projects that
+want to distribute compiled executables alongside their source code:
+
+```typescript
+hooks: {
+  postRelease: [
+    async () => {
+      console.log("🔨 Building and uploading binaries...");
+
+      // Build binaries and upload them to the GitHub release
+      const buildCmd = new Deno.Command("deno", {
+        args: ["run", "-A", "./scripts/build-binaries.ts", "--upload"],
+        stdout: "inherit",
+        stderr: "inherit",
+      });
+
+      const result = await buildCmd.output();
+      if (!result.success) {
+        console.error("⚠️  Binary build/upload failed - continuing anyway");
+        // Don't throw in postRelease - the release already succeeded
+      } else {
+        console.log("✅ Binaries uploaded to GitHub release");
+      }
+    },
+  ];
+}
+```
+
+#### Binary Build Script Example
+
+Here's an example `scripts/build-binaries.ts` that the hook above might call:
+
+```typescript
+#!/usr/bin/env -S deno run --allow-read --allow-write --allow-run --allow-env
+
+import { VERSION } from "../version.ts";
+import { ensureDir } from "@std/fs";
+
+interface Platform {
+  os: string;
+  arch: string;
+  target: string;
+  name: string;
+}
+
+const PLATFORMS: Platform[] = [
+  {
+    os: "darwin",
+    arch: "aarch64",
+    target: "aarch64-apple-darwin",
+    name: "macos-arm64",
+  },
+  {
+    os: "darwin",
+    arch: "x86_64",
+    target: "x86_64-apple-darwin",
+    name: "macos-x64",
+  },
+  {
+    os: "linux",
+    arch: "x86_64",
+    target: "x86_64-unknown-linux-gnu",
+    name: "linux-x64",
+  },
+  {
+    os: "windows",
+    arch: "x86_64",
+    target: "x86_64-pc-windows-msvc",
+    name: "windows-x64",
+  },
+];
+
+async function compileBinaries() {
+  await ensureDir("./dist");
+
+  for (const platform of PLATFORMS) {
+    const ext = platform.os === "windows" ? ".exe" : "";
+    const output = `./dist/myapp-${VERSION}-${platform.name}${ext}`;
+
+    console.log(`📦 Building for ${platform.name}...`);
+
+    // Deno's cross-platform compilation allows building for any target
+    // from any host platform, making CI/CD very straightforward
+    const cmd = new Deno.Command("deno", {
+      args: [
+        "compile",
+        "--allow-read",
+        "--allow-write",
+        "--allow-net",
+        "--target",
+        platform.target,
+        "--output",
+        output,
+        "cli.ts",
+      ],
+    });
+
+    const result = await cmd.output();
+    if (!result.success) {
+      throw new Error(`Failed to compile for ${platform.target}`);
+    }
+  }
+}
+
+async function uploadBinaries() {
+  const tag = `v${VERSION}`;
+  const binaries = await Array.fromAsync(Deno.readDir("./dist"));
+
+  for (const binary of binaries) {
+    if (binary.isFile && binary.name.includes(VERSION)) {
+      console.log(`📦 Uploading ${binary.name}...`);
+
+      const cmd = new Deno.Command("gh", {
+        args: [
+          "release",
+          "upload",
+          tag,
+          `./dist/${binary.name}`,
+          "--clobber", // Overwrite if exists
+        ],
+      });
+
+      await cmd.output();
+    }
+  }
+}
+
+// Create checksums for binary integrity verification
+async function createChecksums() {
+  console.log("🔐 Creating checksums...");
+
+  const entries = [];
+  const binaries = await Array.fromAsync(Deno.readDir("./dist"));
+
+  for (const binary of binaries) {
+    if (binary.isFile && binary.name.includes(VERSION)) {
+      const path = `./dist/${binary.name}`;
+      const data = await Deno.readFile(path);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+
+      entries.push(`${hashHex}  ${binary.name}`);
+    }
+  }
+
+  const checksumContent = entries.join("\n") + "\n";
+  await Deno.writeTextFile(`./dist/checksums-${VERSION}.txt`, checksumContent);
+  console.log("✅ Checksums created");
+}
+
+// Main execution
+if (import.meta.main) {
+  const shouldUpload = Deno.args.includes("--upload");
+
+  await compileBinaries();
+  await createChecksums(); // Generate checksums for integrity verification
+
+  if (shouldUpload) {
+    await uploadBinaries();
+
+    // Also upload the checksum file
+    const tag = `v${VERSION}`;
+    const cmd = new Deno.Command("gh", {
+      args: [
+        "release",
+        "upload",
+        tag,
+        `./dist/checksums-${VERSION}.txt`,
+        "--clobber",
+      ],
+    });
+    await cmd.output();
+  }
+
+  console.log("✅ Build complete!");
+}
+```
+
+### Example: Multiple Hooks
+
+You can define multiple hooks that run in sequence:
+
+```typescript
+hooks: {
+  preRelease: [
+    // First: Clean up
+    async () => {
+      console.log("🧹 Cleaning dist directory...");
+      await Deno.remove("./dist", { recursive: true }).catch(() => {});
+    },
+    
+    // Second: Validate
+    async () => {
+      console.log("✅ Running validation...");
+      // validation logic
+    },
+    
+    // Third: Build
+    async () => {
+      console.log("🏗️  Building project...");
+      // build logic
+    }
+  ],
+  
+  postRelease: [
+    // First: Upload artifacts
+    async () => {
+      console.log("📤 Uploading artifacts...");
+      // upload logic
+    },
+    
+    // Second: Send notifications
+    async () => {
+      console.log("📧 Sending release notifications...");
+      // notification logic
+    },
+    
+    // Third: Update documentation
+    async () => {
+      console.log("📚 Updating documentation site...");
+      // docs update logic
+    }
+  ]
+}
+```
+
+### Key Implementation Patterns
+
+1. **Non-Blocking Post-Release Hooks**:
+   ```typescript
+   postRelease: [
+     async () => {
+       const result = await someOperation();
+       if (!result.success) {
+         console.error("⚠️  Operation failed - continuing anyway");
+         // Don't throw - the release already succeeded
+       }
+     },
+   ];
+   ```
+
+2. **Cross-Platform Compilation with Deno**:
+   - Deno can compile for any target platform from any host
+   - No need for platform-specific CI runners
+   - Single build machine can create all platform binaries
+
+3. **Binary Integrity Verification**:
+   - Generate SHA-256 checksums for all binaries
+   - Upload checksums file alongside binaries
+   - Users can verify: `sha256sum -c checksums-${VERSION}.txt`
+
+### Best Practices for Hooks
+
+1. **Error Handling**:
+   - `preRelease` hooks should throw errors to prevent the release
+   - `postRelease` hooks should log warnings but not throw (release already succeeded)
+
+2. **Logging**:
+   - Always provide clear console output about what's happening
+   - Use emoji prefixes for better visibility
+
+3. **Idempotency**:
+   - Design hooks to be safe if run multiple times
+   - Check for existing state before making changes
+
+4. **Performance**:
+   - Keep hooks focused and fast
+   - Run time-consuming operations in parallel when possible
+
+5. **Testing**:
+   - Test hooks independently before adding to release process
+   - Consider adding a `--dry-run` mode to your scripts
+
+### Common Use Cases
+
+- **Quality Checks**: Format, lint, type-check, test execution
+- **Binary Compilation**: Build executables for multiple platforms
+- **Documentation**: Generate and deploy documentation
+- **Notifications**: Send emails, Slack messages, or webhooks
+- **Artifact Management**: Upload binaries, create checksums, sign releases
+- **Dependency Updates**: Update lock files, check for vulnerabilities
+- **Deployment**: Deploy to staging/production environments
+- **Metrics**: Track release metrics, update dashboards
 
 ---
 

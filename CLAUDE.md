@@ -609,5 +609,3 @@ Methodologies: Shape Up, Scrum, Kanban, Lean, XP, Scrumban Learn more:
 https://github.com/RickCogley/aichaku
 
 <!-- AICHAKU:END -->
-
-
