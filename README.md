@@ -291,7 +291,7 @@ export default {
 
   docs: {
     enabled: true,
-    outputDir: "./documentation",
+    outputDir: "./docs",
   },
 } as NagareConfig;
 ```

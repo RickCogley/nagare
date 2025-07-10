@@ -50,11 +50,11 @@
     "nagare:dry": "deno task nagare --dry-run",
     "nagare:rollback": "deno task nagare rollback",
 
-    "docs": "deno doc --html --name=\"Nagare (流れ) - Deno Release Management Library\" --output=./docs ./mod.ts",
+    "docs": "deno doc --html --name=\"Nagare (流れ) - Deno Release Management Library\" --output=./docs/api ./mod.ts",
     "docs:enhance": "deno run --allow-read --allow-write scripts/enhance-docs.ts",
     "docs:fix-urls": "deno run --allow-read --allow-write scripts/fix-docs-urls.ts",
     "docs:build": "deno task docs && deno task docs:enhance && deno task docs:fix-urls",
-    "docs:serve": "deno run --allow-net --allow-read jsr:@std/http/file-server --host 0.0.0.0 --port 8080 ./docs",
+    "docs:serve": "deno run --allow-net --allow-read jsr:@std/http/file-server --host 0.0.0.0 --port 8080 ./docs/api",
 
     "security:check-sarif": "deno run --allow-read scripts/check-sarif.ts",
     "security:check-patterns": "deno run --allow-read scripts/check-patterns.ts",

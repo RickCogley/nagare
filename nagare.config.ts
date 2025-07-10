@@ -166,7 +166,7 @@ const config: NagareConfig = {
    */
   docs: {
     enabled: true,
-    outputDir: "./docs",
+    outputDir: "./docs/api",
     includePrivate: false,
   },
 

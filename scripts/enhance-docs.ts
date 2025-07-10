@@ -12,7 +12,7 @@
 import { ensureDir } from "@std/fs";
 import { join } from "@std/path";
 
-const DOCS_DIR = "./docs";
+const DOCS_DIR = "./docs/api";
 
 const CUSTOM_HEADER = `
 <div class="quick-links">

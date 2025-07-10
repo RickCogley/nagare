@@ -10,7 +10,7 @@
 import { walk } from "@std/fs";
 import { join, relative, resolve } from "@std/path";
 
-const DOCS_DIR = "./docs";
+const DOCS_DIR = "./docs/api";
 const TILDE_REPLACEMENT = "__SYMBOLS__"; // URL-friendly replacement for ~
 
 /**

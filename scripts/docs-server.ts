@@ -24,7 +24,7 @@ const DOCS_CONFIG = {
     500: "./docs/500.html",
   },
   /** Path to redirect mapping file */
-  redirectMapPath: "./docs/redirects.json",
+  redirectMapPath: "./docs/api/redirects.json",
 } as const;
 
 /**
@@ -85,8 +85,8 @@ const DEFAULT_404_PAGE = `
         
         <div class="nav-links">
             <a href="/" class="nav-link">🏠 Home</a>
-            <a href="/API.html" class="nav-link">📖 API Reference</a>
-            <a href="/FAQ.html" class="nav-link">❓ FAQ</a>
+            <a href="/api/" class="nav-link">📖 API Reference</a>
+            <a href="/api/FAQ.html" class="nav-link">❓ FAQ</a>
             <a href="https://jsr.io/@rick/nagare" class="nav-link">📦 JSR Package</a>
             <a href="https://github.com/rick/nagare" class="nav-link">🐙 GitHub</a>
         </div>
