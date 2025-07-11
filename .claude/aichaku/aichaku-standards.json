@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "selected": [
+    "owasp-web",
+    "nist-csf",
+    "conventional-commits",
+    "solid",
+    "tdd",
+    "dora",
+    "clean-arch"
+  ]
+}
