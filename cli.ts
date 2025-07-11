@@ -129,6 +129,12 @@ function parseArgs(args: string[]): {
     const arg = validatedArgs[i];
     if (!arg) continue; // Skip undefined args
 
+    // Handle the -- separator (everything after it should be treated as arguments)
+    if (arg === "--") {
+      // Skip the -- and continue processing remaining args
+      continue;
+    }
+
     switch (arg) {
       case "--help":
       case "-h":
@@ -601,10 +607,10 @@ export async function cli(args: string[]): Promise<void> {
 
   // Initialize i18n early with language preference
   try {
-    // Resolve locales directory based on whether we're running from source or package
+    // Resolve locales directory based on whether we're running from source or JSR package
     const localesDir = import.meta.url.startsWith("file://")
       ? new URL("./locales", import.meta.url).pathname
-      : "./locales";
+      : new URL("./locales", import.meta.url).pathname;
 
     // Determine language preference:
     // 1. CLI flag takes highest priority
