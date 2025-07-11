@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.0] - 2025-07-11
+
+### Added
+
+- add workflow_dispatch to all GitHub workflows (9c04658)
+
+### Changed
+
+- update CLAUDE.md to reflect new /docs structure (53d67c2)
+- migrate documentation structure to /docs with API docs in /docs/api (1781458)
+- reorganize documentation structure with Aichaku methodology (93520ed)
+- add comprehensive lifecycle hooks documentation to API.md (6339390)
+- upgrade to latest and clean up (ef91074)
+- add session checkpoint 2025-07-09-193706 (b77cf20)
+- add session checkpoint 2025-07-09-113741 (7e53d07)
+- add session checkpoint 2025-07-09 (b713b98)
+- add session checkpoint for 2025-07-09 (cf94e6e)
+
 ## [2.8.1] - 2025-07-08
 
 ### Changed
