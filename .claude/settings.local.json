@@ -38,7 +38,8 @@
       "Bash(mv:*)",
       "Bash(jq:*)",
       "WebFetch(domain:docs.anthropic.com)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(aichaku docs:lint:*)"
     ],
     "deny": []
   }
