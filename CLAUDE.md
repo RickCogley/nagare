@@ -448,11 +448,11 @@ DO NOT create any documents yet
 
 **Phase 3: CREATE NAMED PROJECT (After user signals readiness)** ✅ Confirm name: "🪴 Aichaku: Based
 on our discussion, creating project: [descriptive-name]" ✅ Create ALL documents in:
-`.claude/output/active-YYYY-MM-DD-{descriptive-name}/` ✅ Create STATUS.md FIRST ✅ Create
+`docs/projects/active/YYYY-MM-DD-{descriptive-name}/` ✅ Create STATUS.md FIRST ✅ Create
 methodology-specific documents ✅ Read guides from `~/.claude/methodologies/`
 
 **YOU MUST NEVER:** ❌ Create documents in the project root directory ❌ Create documents in
-.claude/user/ (that's for customizations) ❌ Ask where to put files (always use .claude/output/) ❌
+.claude/user/ (that's for customizations) ❌ Ask where to put files (always use docs/projects/) ❌
 Create folders before user is ready to formalize
 
 ### 2. CRITICAL: DISCUSSION FIRST, THEN CREATE WITHOUT ASKING
@@ -473,7 +473,7 @@ asking. This provides thoughtful structure while respecting user autonomy.
 
 When you hear these keywords, ENTER DISCUSSION MODE:
 
-**Planning Keywords** → Will create in `.claude/output/active-*/` (when ready):
+**Planning Keywords** → Will create in `docs/projects/active/*/` (when ready):
 
 - "shape"/"pitch" → Discuss Shape Up approach → Later: pitch.md
 - "sprint"/"scrum" → Discuss Scrum planning → Later: sprint-planning.md
@@ -562,7 +562,7 @@ to update diagrams with status changes
 **Starting Work:**
 
 1. ⚠️ **CHECK TODAY'S DATE**: Look for "Today's date:" in the environment info
-2. Create: `.claude/output/active-YYYY-MM-DD-{descriptive-name}/`
+2. Create: `docs/projects/active/YYYY-MM-DD-{descriptive-name}/`
    - YYYY-MM-DD must be TODAY'S actual date from environment
    - Common mistake: Using 01 instead of current month
    - Example if today is 2025-07-10: `active-2025-07-10-project-name/`
@@ -594,7 +594,7 @@ to update diagrams with status changes
 When work is confirmed complete:
 
 ```bash
-git add .claude/output/[current-project]/
+git add docs/projects/active/[current-project]/
 git commit -m "[type]: [description]
 
 - [what was done]
@@ -606,7 +606,7 @@ git push origin [current-branch]
 
 If you accidentally create a file in the wrong location:
 
-1. Move it immediately: `mv [file] .claude/output/active-*/`
+1. Move it immediately: `mv [file] docs/projects/active/*/`
 2. Update STATUS.md noting the correction
 3. Continue without asking
 

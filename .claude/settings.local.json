@@ -39,7 +39,10 @@
       "Bash(jq:*)",
       "WebFetch(domain:docs.anthropic.com)",
       "Bash(tree:*)",
-      "Bash(aichaku docs:lint:*)"
+      "Bash(aichaku docs:lint:*)",
+      "Bash(git --git-dir=/Users/rcogley/.dotfiles/.git log --oneline -5)",
+      "Bash(git --git-dir=/Users/rcogley/.dotfiles/.git tag -l)",
+      "Bash(gh issue create:*)"
     ],
     "deny": []
   }
