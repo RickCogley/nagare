@@ -42,7 +42,8 @@
       "Bash(aichaku docs:lint:*)",
       "Bash(git --git-dir=/Users/rcogley/.dotfiles/.git log --oneline -5)",
       "Bash(git --git-dir=/Users/rcogley/.dotfiles/.git tag -l)",
-      "Bash(gh issue create:*)"
+      "Bash(gh issue create:*)",
+      "Bash(cd:*)"
     ],
     "deny": []
   }
