@@ -243,9 +243,9 @@ Embedding version in source code:
   fileUpdates: {
     templateFiles: [{
       path: "src/version.ts",
-      template: `export const VERSION = "{{ version }}";
-export const BUILD_DATE = "{{ now |> date }}";
-export const COMMIT = "{{ gitCommit }}";`
+      template: `export const VERSION = "&#123;&#123; version &#125;&#125;";
+export const BUILD_DATE = "&#123;&#123; now |> date &#125;&#125;";
+export const COMMIT = "&#123;&#123; gitCommit &#125;&#125;";`
     }]
   }
 }
