@@ -63,8 +63,18 @@ Before you start using Nagare:
 - [**Design Principles**](explanation/design-principles.md) - Core design philosophy and decisions
 - [**Security Model**](explanation/security-model.md) - Comprehensive security architecture
 - [**Branding System**](explanation/branding-system.md) - Consistent CLI messaging and brand identity
+- [**File Update System**](explanation/file-update-system.md) - How intelligent file handlers work
 - [**Release Workflow**](explanation/release-workflow.md) - How releases work internally
 - [**Version Management**](explanation/version-management.md) - Semantic versioning implementation
+
+### 📊 Visual Diagrams & Architecture
+
+For the best experience viewing interactive Mermaid diagrams, visit these pages directly on GitHub:
+
+- [**🏗️ Architecture Overview**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/architecture.md) - Complete system architecture with component diagrams
+- [**🔄 Release Workflow**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/release-workflow.md) - Visual release process flow with decision trees
+- [**🔒 Security Model**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/security-model.md) - Security layers and threat analysis diagrams
+- [**📁 File Update System**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/file-update-system.md) - File handler architecture and flow diagrams
 
 ## 🚀 Where to Start?
 

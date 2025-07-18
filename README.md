@@ -45,21 +45,24 @@ maintaining professional changelogs and GitHub releases.
 
 ## 📚 Documentation & Resources
 
-### 🎯 Interactive Release Workflows (with Mermaid Diagrams)
+### 🎯 Interactive Release Workflows (with Visual Diagrams)
 
-- [**Release Workflow Guide**](https://rickcogley.github.io/nagare/docs/explanation/release-workflow.html) -
+- [**Release Workflow Guide**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/release-workflow.md) -
   Complete release process with visual flow diagrams
-- [**File Update System**](https://rickcogley.github.io/nagare/docs/explanation/file-update-system.html) -
+- [**File Update System**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/file-update-system.md) -
   How intelligent file handlers work
-- [**Security Model**](https://rickcogley.github.io/nagare/docs/explanation/security-model.html) -
+- [**Security Model**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/security-model.md) -
   Security architecture with threat analysis
 
 ### 📖 Complete Documentation
 
-- [**Full Documentation Hub**](docs/) - Comprehensive guides, tutorials, and reference materials
+- [**Full Documentation Hub**](https://github.com/RickCogley/nagare/blob/main/docs/) - Comprehensive
+  guides, tutorials, and reference materials
 - [**API Documentation**](https://nagare.esolia.deno.net/) - Complete TypeScript API reference
-- [**How-to Guides**](docs/how-to/) - Task-specific instructions and workflows
-- [**Reference Materials**](docs/reference/) - Technical specifications and configuration options
+- [**How-to Guides**](https://github.com/RickCogley/nagare/tree/main/docs/how-to) - Task-specific
+  instructions and workflows
+- [**Reference Materials**](https://github.com/RickCogley/nagare/tree/main/docs/reference) -
+  Technical specifications and configuration options
 
 ### 🔗 Quick Links
 
@@ -123,33 +126,6 @@ export default {
     { path: "./jsr.json" },
   ],
 } as NagareConfig;
-```
-
-## 🌊 Release Flow Architecture
-
-```mermaid
-graph TD
-    A[Commit with Conventional Format] --> B[Nagare Analyzes Commits]
-    B --> C{Determine Version Bump}
-    C -->|feat:| D[Minor Version]
-    C -->|fix:| E[Patch Version]
-    C -->|BREAKING:| F[Major Version]
-    
-    D --> G[Update Version Files]
-    E --> G
-    F --> G
-    
-    G --> H[Generate Changelog]
-    H --> I[Create Git Tag]
-    I --> J[Push to GitHub]
-    J --> K[Create GitHub Release]
-    K --> L[🎉 Release Complete]
-    
-    style A fill:#e1f5fe
-    style L fill:#e8f5e8
-    style G fill:#fff3e0
-    style H fill:#fff3e0
-    style K fill:#f3e5f5
 ```
 
 ## How It Works
@@ -277,27 +253,19 @@ deno task nagare
 
 ## Architecture
 
-### Core Components
+Nagare uses a modular architecture with specialized components:
 
-```mermaid
-graph LR
-    A[CLI Interface] --> B[Release Manager]
-    B --> C[Git Operations]
-    B --> D[File Handlers]
-    B --> E[Template Processor]
-    B --> F[GitHub Integration]
-    
-    C --> G[Version Analysis]
-    D --> H[Intelligent Updates]
-    E --> I[Version Files]
-    F --> J[Release Creation]
-    
-    style B fill:#e3f2fd
-    style G fill:#e8f5e8
-    style H fill:#fff3e0
-    style I fill:#fff3e0
-    style J fill:#f3e5f5
-```
+- **CLI Interface** - Command-line entry point and user interaction
+- **Release Manager** - Orchestrates the entire release process
+- **Git Operations** - Handles version analysis and git commands
+- **File Handlers** - Intelligent file updates across multiple formats
+- **Template Processor** - Generates version files using Vento templates
+- **GitHub Integration** - Creates releases and manages GitHub interactions
+
+For detailed architecture diagrams and visual workflows, see the
+[Architecture Overview](https://github.com/RickCogley/nagare/blob/main/docs/explanation/architecture.md)
+and
+[Release Workflow Guide](https://github.com/RickCogley/nagare/blob/main/docs/explanation/release-workflow.md).
 
 ### Template System
 
