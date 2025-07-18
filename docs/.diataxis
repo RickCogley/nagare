@@ -1,0 +1,54 @@
+# Diátaxis Documentation Framework
+
+This directory follows the Diátaxis framework combined with Google Developer Documentation Style guidelines.
+
+## Structure
+
+- **tutorials/** - Learning-oriented documentation for beginners
+- **how-to/** - Task-oriented guides for specific problems
+- **reference/** - Information-oriented technical documentation
+- **explanation/** - Understanding-oriented conceptual content
+
+## Existing Directories
+
+- **api/** - Auto-generated API documentation (preserved)
+- **projects/** - Project management and Shape Up methodology (preserved)
+- **checkpoints/** - Session checkpoints and notes (preserved)
+
+## Framework Implementation
+
+Each directory follows specific guidelines:
+
+### 🎓 Tutorials (Learning-oriented)
+- Take users through complete workflows
+- Provide step-by-step instructions
+- Include working examples
+- Focus on getting users started
+
+### 🔧 How-to Guides (Task-oriented)
+- Solve specific problems
+- Assume some knowledge
+- Show multiple approaches when relevant
+- Include troubleshooting
+
+### 📖 Reference (Information-oriented)
+- Comprehensive technical details
+- Complete API documentation
+- Configuration options
+- Command-line interfaces
+
+### 💡 Explanation (Understanding-oriented)
+- Discuss concepts and design decisions
+- Provide background and context
+- Explain "why" not just "how"
+- Compare alternatives
+
+## Style Guidelines
+
+Following Google Developer Documentation Style:
+- Use second person ("you")
+- Write in active voice
+- Use present tense
+- Be conversational but professional
+- Include code examples
+- Use consistent formatting
