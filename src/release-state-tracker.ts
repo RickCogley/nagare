@@ -298,6 +298,11 @@ export class ReleaseStateTracker {
    */
   private async performBuiltInRollback(operation: TrackedOperation): Promise<void> {
     switch (operation.type) {
+      case OperationType.FILE_BACKUP:
+        // File backups don't need rollback - they ARE the rollback mechanism
+        this.logger.debug(`📝 File backup operation ${operation.id} - no rollback needed`);
+        break;
+
       case OperationType.GIT_TAG:
         await this.rollbackGitTag(operation);
         break;
@@ -442,9 +447,12 @@ export class ReleaseStateTracker {
       throw new Error("No previous commit found in operation metadata");
     }
 
-    // Reset to previous commit (soft reset to preserve working directory)
+    this.logger.debug(`🔄 Rolling back git commit to ${previousCommit}`);
+
+    // CRITICAL: Use hard reset to actually remove the commit from history
+    // This will discard the release commit and restore the repository to the previous state
     const resetCmd = new Deno.Command("git", {
-      args: ["reset", "--soft", previousCommit as string],
+      args: ["reset", "--hard", previousCommit as string],
       stdout: "piped",
       stderr: "piped",
     });
@@ -455,7 +463,7 @@ export class ReleaseStateTracker {
       throw new Error(`Failed to reset to previous commit: ${error}`);
     }
 
-    this.logger.debug(`↩️  Reset to previous commit: ${previousCommit}`);
+    this.logger.debug(`↩️  Hard reset to previous commit: ${previousCommit}`);
   }
 
   /**

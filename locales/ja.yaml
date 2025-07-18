@@ -277,6 +277,7 @@ prompts:
   no: "n"
   proceedRelease: "リリースを続行しますか？"
   releaseCancelled: "リリースがキャンセルされました"
+  rollbackConfirm: "すべてのリリース操作をロールバックしてリポジトリの状態を復元しますか？"
   undoRollback: "リリースの変更を元に戻します。続行しますか？"
   rollbackCancelled: "ロールバックがキャンセルされました"
   deleteRemoteTag: "リモートタグ {tag} が存在します。削除しますか？"

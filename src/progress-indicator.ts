@@ -248,44 +248,34 @@ export class ProgressIndicator {
   private renderDetailed(): string {
     const lines: string[] = [];
 
-    // Header
-    lines.push(bold("┌─────────────────────── Release Pipeline ───────────────────────┐"));
+    // Simple horizontal progress line
+    const stageStates = Array.from(this.stages.values()).map((stage) =>
+      this.formatStatus(stage.status)
+    );
+    const progressLine = stageStates.join(" ");
 
-    // Stage boxes
-    const stageBoxes: string[] = [];
-    const statusLines: string[] = [];
+    lines.push(bold("Release Progress:"));
+    lines.push(progressLine);
 
-    for (const [_, stage] of this.stages) {
-      const box = this.formatStageBox(stage);
-      stageBoxes.push(box);
-      statusLines.push(this.formatStatus(stage.status));
-    }
-
-    lines.push("│ " + stageBoxes.join(" │ ") + " │");
-    lines.push("└────────────────────────────────────────────────────────────────┘");
-    lines.push("  " + statusLines.join("     "));
-
-    // Active stage substeps
+    // Current stage info
     if (this.currentStage) {
       const stage = this.stages.get(this.currentStage);
-      if (stage?.substeps && stage.substeps.length > 0) {
-        lines.push("");
-        lines.push(this.renderSubsteps(stage));
-      }
-    }
+      if (stage) {
+        lines.push(`Current: ${stage.displayName}`);
 
-    // Status message and elapsed time
-    if (this.currentStage) {
-      const stage = this.stages.get(this.currentStage);
-      if (stage?.message) {
-        lines.push("");
-        lines.push(dim(stage.message));
+        if (stage.message) {
+          lines.push(dim(stage.message));
+        }
+
+        // Show substeps if available
+        if (stage.substeps && stage.substeps.length > 0) {
+          lines.push(this.renderSubsteps(stage));
+        }
       }
     }
 
     if (this.options.showElapsedTime) {
       const elapsed = this.formatElapsedTime();
-      lines.push("");
       lines.push(dim(`⏱️  ${elapsed} elapsed`));
     }
 

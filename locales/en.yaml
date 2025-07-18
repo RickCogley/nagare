@@ -264,6 +264,7 @@ prompts:
   no: "n"
   proceedRelease: "Proceed with release?"
   releaseCancelled: "Release cancelled"
+  rollbackConfirm: "Roll back all release operations to restore repository state?"
   undoRollback: "This will undo release changes. Continue?"
   rollbackCancelled: "Rollback cancelled"
   deleteRemoteTag: "Remote tag {tag} exists. Delete it?"
