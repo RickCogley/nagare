@@ -42,6 +42,7 @@ import { LogParser } from "./log-parser.ts";
 import { AutoFixer } from "./auto-fixer.ts";
 import { ProgressIndicator } from "./progress-indicator.ts";
 import { BackupManager } from "./backup-manager.ts";
+import { OperationType, ReleaseStateTracker } from "./release-state-tracker.ts";
 
 /**
  * Main ReleaseManager class - coordinates the entire release process
@@ -155,6 +156,7 @@ export class ReleaseManager {
   private logger: Logger;
   private fileHandlerManager: FileHandlerManager;
   private backupManager: BackupManager;
+  private stateTracker: ReleaseStateTracker;
 
   /**
    * Create a new ReleaseManager instance
@@ -181,6 +183,7 @@ export class ReleaseManager {
     this.logger = new Logger(this.config.options?.logLevel || LogLevel.INFO);
     this.fileHandlerManager = new FileHandlerManager();
     this.backupManager = new BackupManager(this.logger);
+    this.stateTracker = new ReleaseStateTracker(this.logger);
   }
 
   /**
@@ -578,12 +581,22 @@ export class ReleaseManager {
         };
       }
 
-      // CRITICAL: Create backup before modifying any files
+      // CRITICAL: Initialize state tracking and create backup before modifying any files
+      this.stateTracker = new ReleaseStateTracker(this.logger, `release-${newVersion}`);
+
       const filesToBackup = this.getFilesToBackup(newVersion, releaseNotes);
       this.logger.info(
         `🔒 Creating backup of ${filesToBackup.length} files before modification...`,
       );
       const backupId = await this.backupManager.createBackup(filesToBackup);
+
+      // Track backup operation
+      const backupOpId = this.stateTracker.trackOperation(
+        OperationType.FILE_BACKUP,
+        `Backup ${filesToBackup.length} files`,
+        { backupId, fileCount: filesToBackup.length },
+      );
+      this.stateTracker.markCompleted(backupOpId);
 
       try {
         // Update files
@@ -651,11 +664,73 @@ export class ReleaseManager {
           this.logger.infoI18n("log.release.generatingDocs");
         }
 
-        // Git operations
-        await this.git.commitAndTag(newVersion);
+        // Git operations with state tracking
+        const currentCommit = await this.git.getCurrentCommitHash();
+        const tagName = `${this.config.options?.tagPrefix || "v"}${newVersion}`;
 
-        // Push to remote (including the new tag)
-        await this.git.pushToRemote();
+        // Track git commit
+        const commitOpId = this.stateTracker.trackOperation(
+          OperationType.GIT_COMMIT,
+          `Create commit for version ${newVersion}`,
+          { version: newVersion, previousCommit: currentCommit },
+        );
+
+        await this.git.commitAndTag(newVersion);
+        this.stateTracker.markCompleted(commitOpId, {
+          commitHash: await this.git.getCurrentCommitHash(),
+        });
+
+        // Track git tag creation (local only at this point)
+        const tagOpId = this.stateTracker.trackOperation(
+          OperationType.GIT_TAG,
+          `Create tag ${tagName}`,
+          {
+            tagName,
+            version: newVersion,
+            remote: this.config.options?.gitRemote || "origin",
+          },
+        );
+        this.stateTracker.markCompleted(tagOpId);
+
+        // Track git push (including the new tag)
+        const pushOpId = this.stateTracker.trackOperation(
+          OperationType.GIT_PUSH,
+          `Push to ${this.config.options?.gitRemote || "origin"}`,
+          {
+            remote: this.config.options?.gitRemote || "origin",
+            branch: "main", // TODO: get actual branch
+            previousCommit: currentCommit,
+            tagName,
+          },
+        );
+
+        // CRITICAL: Push and verify success before marking completed
+        try {
+          await this.git.pushToRemote();
+
+          // Verify the tag was actually pushed
+          const verifyTagCmd = new Deno.Command("git", {
+            args: ["ls-remote", "--tags", this.config.options?.gitRemote || "origin", tagName],
+            stdout: "piped",
+            stderr: "piped",
+          });
+
+          const verifyResult = await verifyTagCmd.output();
+          const tagOutput = new TextDecoder().decode(verifyResult.stdout);
+          const tagPushed = verifyResult.success && tagOutput.trim().length > 0;
+
+          this.stateTracker.markCompleted(pushOpId, {
+            tagPushed,
+            pushVerified: true,
+          });
+
+          if (!tagPushed) {
+            this.logger.warn(`⚠️  Tag ${tagName} may not have been pushed successfully`);
+          }
+        } catch (pushError) {
+          this.stateTracker.markFailed(pushOpId, `Push failed: ${pushError}`);
+          throw pushError;
+        }
 
         // Log security audit event for git operations
         this.logger.audit("git_operations_completed", {
@@ -667,7 +742,16 @@ export class ReleaseManager {
         // GitHub release (now that tag exists on remote)
         let githubReleaseUrl: string | undefined;
         if (this.config.github?.createRelease) {
+          const githubOpId = this.stateTracker.trackOperation(
+            OperationType.GITHUB_RELEASE,
+            `Create GitHub release for ${newVersion}`,
+            { version: newVersion, tagName },
+          );
+
           githubReleaseUrl = await this.github.createRelease(releaseNotes);
+          this.stateTracker.markCompleted(githubOpId, {
+            releaseUrl: githubReleaseUrl,
+          });
         }
 
         // JSR verification and CI/CD monitoring for JSR-enabled projects
@@ -730,27 +814,97 @@ export class ReleaseManager {
           githubReleaseUrl,
         };
       } catch (error) {
-        // CRITICAL: Restore files from backup before propagating error
-        this.logger.error("❌ Release failed, restoring files from backup...", error as Error);
-        try {
-          await this.backupManager.restoreBackup(backupId);
-          this.logger.info(`🔄 Successfully restored files from backup ${backupId}`);
+        // CRITICAL: Comprehensive rollback with user confirmation
+        this.logger.error("❌ Release failed:", error as Error);
 
-          // Clean up backup after restoration
-          await this.backupManager.cleanupBackup(backupId);
-          this.logger.info(`🧹 Cleaned up backup ${backupId} after restoration`);
-        } catch (restoreError) {
-          this.logger.error("💥 CRITICAL: Failed to restore backup:", restoreError as Error);
-          this.logger.error(
-            "💥 Repository may be in inconsistent state - manual intervention required",
+        // Show rollback prompt to user
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        this.logger.error(`\n💥 Release failed: ${errorMessage}`);
+        this.logger.error(
+          "\n🔄 The release process has failed and may have left your repository in an inconsistent state.",
+        );
+
+        let shouldRollback = true;
+        if (!this.config.options?.skipConfirmation) {
+          shouldRollback = confirmI18n("prompts.rollbackConfirm") !== false;
+        }
+
+        if (shouldRollback) {
+          this.logger.info("\n🔄 Rolling back all release operations...");
+          try {
+            // Use comprehensive rollback system
+            const rollbackResult = await this.stateTracker.performRollback();
+
+            if (rollbackResult.success) {
+              this.logger.info(
+                `✅ Successfully rolled back ${rollbackResult.rolledBackOperations.length} operations`,
+              );
+
+              // Also restore files from backup as final safety net
+              try {
+                await this.backupManager.restoreBackup(backupId);
+                await this.backupManager.cleanupBackup(backupId);
+                this.logger.info(`✅ Files restored from backup ${backupId}`);
+              } catch (backupError) {
+                this.logger.warn(`⚠️  File backup restoration failed: ${backupError}`);
+              }
+
+              this.logger.info("\n✅ Repository has been restored to its previous state.");
+              this.logger.info("🚀 You can safely retry the release after fixing any issues.");
+            } else {
+              // Partial rollback failure
+              this.logger.error(
+                `\n❌ Rollback partially failed - ${rollbackResult.failedRollbacks.length} operations could not be reversed:`,
+              );
+              for (const failure of rollbackResult.failedRollbacks) {
+                this.logger.error(`   ❌ ${failure.operation.description}: ${failure.error}`);
+              }
+
+              // Try file restore as fallback
+              try {
+                await this.backupManager.restoreBackup(backupId);
+                await this.backupManager.cleanupBackup(backupId);
+                this.logger.info(`✅ Files restored from backup as fallback`);
+              } catch (backupError) {
+                this.logger.error(
+                  `💥 CRITICAL: File backup restoration also failed: ${backupError}`,
+                );
+                this.logger.error(
+                  "💥 Repository may be in inconsistent state - manual intervention required",
+                );
+              }
+            }
+          } catch (rollbackError) {
+            this.logger.error(`💥 CRITICAL: Rollback system failed: ${rollbackError}`);
+
+            // Fallback to old backup system
+            try {
+              await this.backupManager.restoreBackup(backupId);
+              await this.backupManager.cleanupBackup(backupId);
+              this.logger.info(`✅ Files restored using backup system`);
+              this.logger.warn(
+                `⚠️  Note: Only files were restored. You may need to manually clean up git tags/commits.`,
+              );
+            } catch (backupError) {
+              this.logger.error(`💥 CRITICAL: Backup restoration failed: ${backupError}`);
+              this.logger.error(
+                "💥 Repository may be in inconsistent state - manual intervention required",
+              );
+
+              // Log critical security event
+              this.logger.audit("rollback_system_failed", {
+                backupId,
+                originalError: sanitizeErrorMessage(error, false),
+                rollbackError: sanitizeErrorMessage(rollbackError, false),
+                backupError: sanitizeErrorMessage(backupError, false),
+              });
+            }
+          }
+        } else {
+          this.logger.info(
+            "\n⚠️  Rollback skipped by user. Repository may be in inconsistent state.",
           );
-
-          // Log critical security event
-          this.logger.audit("backup_restore_failed", {
-            backupId,
-            originalError: sanitizeErrorMessage(error, false),
-            restoreError: sanitizeErrorMessage(restoreError, false),
-          });
+          this.logger.info("💡 You can manually run 'nagare rollback' later if needed.");
         }
 
         // Log security audit event for failed release
@@ -758,6 +912,7 @@ export class ReleaseManager {
           error: sanitizeErrorMessage(error, false),
           stage: "unknown",
           backupId,
+          rollbackAttempted: shouldRollback,
         });
 
         return {
