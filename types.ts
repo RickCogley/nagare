@@ -798,6 +798,8 @@ export interface JsrVerificationConfig {
   pollInterval?: number;
   /** Total timeout in milliseconds (default: 600000) */
   timeout?: number;
+  /** Grace period before starting verification in milliseconds (default: 30000) */
+  gracePeriod?: number;
 }
 
 /**

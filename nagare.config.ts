@@ -198,8 +198,14 @@ const config: NagareConfig = {
    * for ensuring releases complete successfully
    */
   release: {
-    // Verify package appears on JSR after release
-    verifyJsrPublish: true,
+    // Verify package appears on JSR after release with improved configuration
+    verifyJsrPublish: {
+      enabled: true,
+      maxAttempts: 20, // Reduced from 30 for faster feedback
+      pollInterval: 8000, // 8 seconds between checks
+      timeout: 300000, // 5 minutes total timeout
+      gracePeriod: 45000, // 45 second grace period for JSR processing
+    },
 
     // Auto-fix configuration for CI/CD errors
     autoFix: {

@@ -38,6 +38,9 @@ export class ProgressIndicator {
   private spinnerFrames = ["⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷"];
   private spinnerIndex = 0;
   private lastRender = "";
+  private supportsAnsi: boolean;
+  private isTTY: boolean;
+  private lastSimpleOutput = "";
 
   constructor(
     private options: {
@@ -48,6 +51,67 @@ export class ProgressIndicator {
   ) {
     this.startTime = Date.now();
     this.stages = this.initializeStages();
+    this.isTTY = Deno.stdout.isTerminal();
+    this.supportsAnsi = this.detectAnsiSupport();
+
+    // Auto-adjust style based on terminal capabilities
+    if (!this.isTTY || !this.supportsAnsi) {
+      // Fall back to minimal style in non-TTY environments
+      if (this.options.style === "detailed") {
+        this.options.style = "minimal";
+      }
+    }
+
+    // Debug info for troubleshooting (only in debug mode)
+    if (Deno.env.get("NAGARE_DEBUG") === "true") {
+      console.debug("Progress indicator initialized:", {
+        isTTY: this.isTTY,
+        supportsAnsi: this.supportsAnsi,
+        style: this.options.style,
+        term: Deno.env.get("TERM"),
+        colorTerm: Deno.env.get("COLORTERM"),
+      });
+    }
+  }
+
+  /**
+   * Detect if the terminal supports ANSI escape sequences
+   */
+  private detectAnsiSupport(): boolean {
+    try {
+      // Check if we're in a TTY first
+      if (!this.isTTY) {
+        return false;
+      }
+
+      // Check environment variables that indicate ANSI support
+      const term = Deno.env.get("TERM");
+      const colorTerm = Deno.env.get("COLORTERM");
+      const noColor = Deno.env.get("NO_COLOR");
+      const ci = Deno.env.get("CI");
+
+      // NO_COLOR takes precedence
+      if (noColor) {
+        return false;
+      }
+
+      // In CI environments, be more conservative
+      if (ci === "true") {
+        return term !== "dumb" && term !== undefined;
+      }
+
+      // Check for common terminals that support ANSI
+      return term !== "dumb" && term !== undefined && (
+        term.includes("xterm") ||
+        term.includes("screen") ||
+        term.includes("tmux") ||
+        term.includes("color") ||
+        colorTerm !== undefined
+      );
+    } catch {
+      // If we can't access environment variables, assume no ANSI support
+      return false;
+    }
   }
 
   private initializeStages(): Map<ProgressStage, StageInfo> {
@@ -159,8 +223,15 @@ export class ProgressIndicator {
       return;
     }
 
-    // Clear previous render
-    if (this.lastRender) {
+    // In non-TTY environments, use simple append-only output
+    if (!this.isTTY || !this.supportsAnsi) {
+      const output = this.renderSimple();
+      await Deno.stdout.write(new TextEncoder().encode(output));
+      return;
+    }
+
+    // Clear previous render only if we have ANSI support
+    if (this.lastRender && this.supportsAnsi) {
       const lines = this.lastRender.split("\n").length;
       await Deno.stdout.write(new TextEncoder().encode(`\x1b[${lines}A\x1b[0J`));
     }
@@ -219,6 +290,52 @@ export class ProgressIndicator {
     }
 
     return lines.join("\n") + "\n";
+  }
+
+  /**
+   * Render simple append-only output for non-TTY environments
+   */
+  private renderSimple(): string {
+    // Only output on stage changes to avoid spam
+    if (!this.currentStage) {
+      return "";
+    }
+
+    const stage = this.stages.get(this.currentStage);
+    if (!stage) {
+      return "";
+    }
+
+    const statusSymbol = this.getSimpleStatusSymbol(stage.status);
+    const timestamp = new Date().toISOString().split("T")[1].split(".")[0];
+    const message = stage.message || `${stage.displayName} stage`;
+    const output = `[${timestamp}] ${statusSymbol} ${message}\n`;
+
+    // Only output if it's different from last time
+    if (output === this.lastSimpleOutput) {
+      return "";
+    }
+
+    this.lastSimpleOutput = output;
+    return output;
+  }
+
+  /**
+   * Get simple status symbol for non-TTY environments
+   */
+  private getSimpleStatusSymbol(status: StageStatus): string {
+    switch (status) {
+      case "success":
+        return "✓";
+      case "error":
+        return "✗";
+      case "active":
+        return "→";
+      case "fixing":
+        return "🔧";
+      default:
+        return "•";
+    }
   }
 
   /**
@@ -338,11 +455,14 @@ export class ProgressIndicator {
    * Clear the progress display
    */
   async clear() {
-    if (this.lastRender) {
+    // Only clear if we have ANSI support and are in TTY
+    if (this.isTTY && this.supportsAnsi && this.lastRender) {
       const lines = this.lastRender.split("\n").length;
       await Deno.stdout.write(new TextEncoder().encode(`\x1b[${lines}A\x1b[0J`));
       this.lastRender = "";
     }
+    // In non-TTY environments, just reset the internal state
+    this.lastRender = "";
   }
 
   /**

@@ -41,6 +41,7 @@ import { GitHubActionsMonitor } from "./github-actions-monitor.ts";
 import { LogParser } from "./log-parser.ts";
 import { AutoFixer } from "./auto-fixer.ts";
 import { ProgressIndicator } from "./progress-indicator.ts";
+import { BackupManager } from "./backup-manager.ts";
 
 /**
  * Main ReleaseManager class - coordinates the entire release process
@@ -153,6 +154,7 @@ export class ReleaseManager {
   private docGenerator: DocGenerator;
   private logger: Logger;
   private fileHandlerManager: FileHandlerManager;
+  private backupManager: BackupManager;
 
   /**
    * Create a new ReleaseManager instance
@@ -178,6 +180,7 @@ export class ReleaseManager {
     this.docGenerator = new DocGenerator(this.config);
     this.logger = new Logger(this.config.options?.logLevel || LogLevel.INFO);
     this.fileHandlerManager = new FileHandlerManager();
+    this.backupManager = new BackupManager(this.logger);
   }
 
   /**
@@ -575,38 +578,57 @@ export class ReleaseManager {
         };
       }
 
-      // Update files
-      const updatedFiles = await this.updateFiles(newVersion, releaseNotes);
+      // CRITICAL: Create backup before modifying any files
+      const filesToBackup = this.getFilesToBackup(newVersion, releaseNotes);
+      this.logger.info(
+        `🔒 Creating backup of ${filesToBackup.length} files before modification...`,
+      );
+      const backupId = await this.backupManager.createBackup(filesToBackup);
 
-      // Log security audit event for file updates
-      this.logger.audit("files_updated", {
-        version: newVersion,
-        filesCount: updatedFiles.length,
-        files: updatedFiles,
-      });
+      try {
+        // Update files
+        const updatedFiles = await this.updateFiles(newVersion, releaseNotes);
 
-      // CRITICAL: Format all files BEFORE committing
-      await this.formatChangedFiles();
+        // Log security audit event for file updates
+        this.logger.audit("files_updated", {
+          version: newVersion,
+          filesCount: updatedFiles.length,
+          files: updatedFiles,
+        });
 
-      // CRITICAL: Run pre-flight validation BEFORE creating tags
-      const preflightResult = await this.performPreflightChecks();
-      if (!preflightResult.success) {
-        // Try auto-fix if available
-        if (preflightResult.fixable && this.config.release?.autoFix?.basic) {
-          this.logger.info(`🔧 Attempting to auto-fix ${preflightResult.failedCheck}...`);
-          const fixResult = await this.attemptPreflightAutoFix(preflightResult);
+        // CRITICAL: Format all files BEFORE committing
+        await this.formatChangedFiles();
 
-          if (fixResult.success) {
-            // Re-run pre-flight checks after fix
-            const retryResult = await this.performPreflightChecks();
-            if (!retryResult.success) {
+        // CRITICAL: Run pre-flight validation BEFORE creating tags
+        const preflightResult = await this.performPreflightChecks();
+        if (!preflightResult.success) {
+          // Try auto-fix if available
+          if (preflightResult.fixable && this.config.release?.autoFix?.basic) {
+            this.logger.info(`🔧 Attempting to auto-fix ${preflightResult.failedCheck}...`);
+            const fixResult = await this.attemptPreflightAutoFix(preflightResult);
+
+            if (fixResult.success) {
+              // Re-run pre-flight checks after fix
+              const retryResult = await this.performPreflightChecks();
+              if (!retryResult.success) {
+                throw new NagareError(
+                  `Pre-flight check failed after auto-fix: ${retryResult.failedCheck}`,
+                  ErrorCodes.RELEASE_FAILED,
+                  [retryResult.suggestion || "Fix the issues manually and try again"],
+                  {
+                    check: retryResult.failedCheck,
+                    error: retryResult.error,
+                  },
+                );
+              }
+            } else {
               throw new NagareError(
-                `Pre-flight check failed after auto-fix: ${retryResult.failedCheck}`,
+                `Pre-flight check failed: ${preflightResult.failedCheck}`,
                 ErrorCodes.RELEASE_FAILED,
-                [retryResult.suggestion || "Fix the issues manually and try again"],
+                [preflightResult.suggestion || "Run the command manually to see detailed output"],
                 {
-                  check: retryResult.failedCheck,
-                  error: retryResult.error,
+                  check: preflightResult.failedCheck,
+                  error: preflightResult.error,
                 },
               );
             }
@@ -614,118 +636,141 @@ export class ReleaseManager {
             throw new NagareError(
               `Pre-flight check failed: ${preflightResult.failedCheck}`,
               ErrorCodes.RELEASE_FAILED,
-              [preflightResult.suggestion || "Run the command manually to see detailed output"],
+              [preflightResult.suggestion || "Fix the issues and try again"],
               {
                 check: preflightResult.failedCheck,
                 error: preflightResult.error,
               },
             );
           }
-        } else {
-          throw new NagareError(
-            `Pre-flight check failed: ${preflightResult.failedCheck}`,
-            ErrorCodes.RELEASE_FAILED,
-            [preflightResult.suggestion || "Fix the issues and try again"],
-            {
-              check: preflightResult.failedCheck,
-              error: preflightResult.error,
-            },
+        }
+
+        // Generate documentation if enabled
+        if (this.config.docs?.enabled) {
+          await this.docGenerator.generateDocs();
+          this.logger.infoI18n("log.release.generatingDocs");
+        }
+
+        // Git operations
+        await this.git.commitAndTag(newVersion);
+
+        // Push to remote (including the new tag)
+        await this.git.pushToRemote();
+
+        // Log security audit event for git operations
+        this.logger.audit("git_operations_completed", {
+          version: newVersion,
+          tag: `${this.config.options?.tagPrefix || "v"}${newVersion}`,
+          remote: this.config.options?.gitRemote || "origin",
+        });
+
+        // GitHub release (now that tag exists on remote)
+        let githubReleaseUrl: string | undefined;
+        if (this.config.github?.createRelease) {
+          githubReleaseUrl = await this.github.createRelease(releaseNotes);
+        }
+
+        // JSR verification and CI/CD monitoring for JSR-enabled projects
+        if (this.shouldVerifyJsrPublish()) {
+          this.logger.info("\n🔍 Verifying JSR publication...");
+
+          // Initialize progress indicator if configured
+          const progress = this.createProgressIndicator();
+          await progress?.startStage("jsr", "Waiting for JSR publication");
+
+          const jsrResult = await this.verifyJsrPublication(newVersion, progress);
+
+          if (!jsrResult.success) {
+            await progress?.errorStage("jsr", jsrResult.error || "JSR verification failed");
+
+            // Log security audit event for JSR failure
+            this.logger.audit("jsr_verification_failed", {
+              version: newVersion,
+              error: jsrResult.error,
+              attempts: jsrResult.attempts,
+            });
+
+            throw new Error(jsrResult.error || "JSR publication verification failed");
+          }
+
+          await progress?.completeStage("jsr");
+          this.logger.info(`✅ Package published to JSR: ${jsrResult.jsrUrl}`);
+        }
+
+        // Run post-release hooks
+        if (this.config.hooks?.postRelease) {
+          for (const hook of this.config.hooks.postRelease) {
+            await hook();
+          }
+        }
+
+        this.logger.infoI18n("log.release.releaseSuccess", { version: newVersion });
+
+        // Log security audit event for successful release
+        this.logger.audit("release_completed", {
+          version: newVersion,
+          previousVersion: currentVersion,
+          commitCount: commits.length,
+          githubRelease: !!githubReleaseUrl,
+          jsrPublished: this.shouldVerifyJsrPublish(),
+          duration: Date.now() - startTime,
+        });
+
+        // CRITICAL: Clean up backup after successful release
+        await this.backupManager.cleanupBackup(backupId);
+        this.logger.info(`🧹 Cleaned up backup ${backupId} after successful release`);
+
+        return {
+          success: true,
+          version: newVersion,
+          previousVersion: currentVersion,
+          commitCount: commits.length,
+          releaseNotes,
+          updatedFiles,
+          githubReleaseUrl,
+        };
+      } catch (error) {
+        // CRITICAL: Restore files from backup before propagating error
+        this.logger.error("❌ Release failed, restoring files from backup...", error as Error);
+        try {
+          await this.backupManager.restoreBackup(backupId);
+          this.logger.info(`🔄 Successfully restored files from backup ${backupId}`);
+
+          // Clean up backup after restoration
+          await this.backupManager.cleanupBackup(backupId);
+          this.logger.info(`🧹 Cleaned up backup ${backupId} after restoration`);
+        } catch (restoreError) {
+          this.logger.error("💥 CRITICAL: Failed to restore backup:", restoreError as Error);
+          this.logger.error(
+            "💥 Repository may be in inconsistent state - manual intervention required",
           );
-        }
-      }
 
-      // Generate documentation if enabled
-      if (this.config.docs?.enabled) {
-        await this.docGenerator.generateDocs();
-        this.logger.infoI18n("log.release.generatingDocs");
-      }
-
-      // Git operations
-      await this.git.commitAndTag(newVersion);
-
-      // Push to remote (including the new tag)
-      await this.git.pushToRemote();
-
-      // Log security audit event for git operations
-      this.logger.audit("git_operations_completed", {
-        version: newVersion,
-        tag: `${this.config.options?.tagPrefix || "v"}${newVersion}`,
-        remote: this.config.options?.gitRemote || "origin",
-      });
-
-      // GitHub release (now that tag exists on remote)
-      let githubReleaseUrl: string | undefined;
-      if (this.config.github?.createRelease) {
-        githubReleaseUrl = await this.github.createRelease(releaseNotes);
-      }
-
-      // JSR verification and CI/CD monitoring for JSR-enabled projects
-      if (this.shouldVerifyJsrPublish()) {
-        this.logger.info("\n🔍 Verifying JSR publication...");
-
-        // Initialize progress indicator if configured
-        const progress = this.createProgressIndicator();
-        await progress?.startStage("jsr", "Waiting for JSR publication");
-
-        const jsrResult = await this.verifyJsrPublication(newVersion, progress);
-
-        if (!jsrResult.success) {
-          await progress?.errorStage("jsr", jsrResult.error || "JSR verification failed");
-
-          // Log security audit event for JSR failure
-          this.logger.audit("jsr_verification_failed", {
-            version: newVersion,
-            error: jsrResult.error,
-            attempts: jsrResult.attempts,
+          // Log critical security event
+          this.logger.audit("backup_restore_failed", {
+            backupId,
+            originalError: sanitizeErrorMessage(error, false),
+            restoreError: sanitizeErrorMessage(restoreError, false),
           });
-
-          throw new Error(jsrResult.error || "JSR publication verification failed");
         }
 
-        await progress?.completeStage("jsr");
-        this.logger.info(`✅ Package published to JSR: ${jsrResult.jsrUrl}`);
+        // Log security audit event for failed release
+        this.logger.audit("release_failed", {
+          error: sanitizeErrorMessage(error, false),
+          stage: "unknown",
+          backupId,
+        });
+
+        return {
+          success: false,
+          error: sanitizeErrorMessage(error, false),
+        };
       }
-
-      // Run post-release hooks
-      if (this.config.hooks?.postRelease) {
-        for (const hook of this.config.hooks.postRelease) {
-          await hook();
-        }
-      }
-
-      this.logger.infoI18n("log.release.releaseSuccess", { version: newVersion });
-
-      // Log security audit event for successful release
-      this.logger.audit("release_completed", {
-        version: newVersion,
-        previousVersion: currentVersion,
-        commitCount: commits.length,
-        githubRelease: !!githubReleaseUrl,
-        jsrPublished: this.shouldVerifyJsrPublish(),
-        duration: Date.now() - startTime,
-      });
-
-      return {
-        success: true,
-        version: newVersion,
-        previousVersion: currentVersion,
-        commitCount: commits.length,
-        releaseNotes,
-        updatedFiles,
-        githubReleaseUrl,
-      };
-    } catch (error) {
-      this.logger.error("❌ Release failed:", error as Error);
-
-      // Log security audit event for failed release
-      this.logger.audit("release_failed", {
-        error: sanitizeErrorMessage(error, false),
-        stage: "unknown",
-      });
-
+    } catch (outerError) {
+      // Handle any errors from the outer try block (validation, etc.)
+      this.logger.error("❌ Release failed during initialization:", outerError as Error);
       return {
         success: false,
-        error: sanitizeErrorMessage(error, false),
+        error: sanitizeErrorMessage(outerError, false),
       };
     }
   }
@@ -1352,6 +1397,44 @@ export class ReleaseManager {
     }
 
     return { valid: errors.length === 0, warnings, errors, suggestions };
+  }
+
+  /**
+   * Get list of files to backup before modification
+   *
+   * @private
+   * @param {string} newVersion - New version string
+   * @param {ReleaseNotes} releaseNotes - Generated release notes
+   * @returns {string[]} Array of file paths to backup
+   *
+   * @description
+   * Identifies all files that will be modified during the release process
+   * so they can be backed up before any changes are made.
+   */
+  private getFilesToBackup(_newVersion: string, _releaseNotes: ReleaseNotes): string[] {
+    const filesToBackup: string[] = [];
+
+    // Version file (always modified)
+    filesToBackup.push(this.config.versionFile.path);
+
+    // CHANGELOG.md (always modified)
+    filesToBackup.push("./CHANGELOG.md");
+
+    // Additional configured files
+    if (this.config.updateFiles) {
+      for (const filePattern of this.config.updateFiles) {
+        filesToBackup.push(filePattern.path);
+      }
+    }
+
+    // Documentation files if enabled
+    if (this.config.docs?.enabled) {
+      const docsDir = this.config.docs.outputDir || "./docs";
+      filesToBackup.push(docsDir);
+    }
+
+    // Remove duplicates
+    return [...new Set(filesToBackup)];
   }
 
   /**
