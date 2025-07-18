@@ -5,38 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.10.0] - 2025-07-18
-
-### Added
-
-- implement comprehensive branding system for consistent CLI messaging (3501e0f)
-- implement three critical reliability fixes for nagare release process (3c9d64d)
-
-### Changed
-
-- pre-release checkpoint (42878ac)
-- reorganize and clean up documentation structure (c10e16a)
-- optimize GitHub Pages compatibility (c4824fe)
-- add checkpoint documentation for reliability fixes (3b9fa17)
-- add comprehensive explanation documentation with Mermaid diagrams (c2b4a89)
-- add comprehensive reference documentation (54adf55)
-- add comprehensive how-to guides for common tasks (9bb7229)
-- add comprehensive tutorial documentation with visual guides (0bccc8c)
-- create comprehensive documentation hub with Diátaxis framework (70aad33)
-- tidy up CLAUDE.md (78f6806)
-- cleanup with new aichaku (61c0070)
-- upgrade aichaku to v0.28.0 and migrate to new structure (2f9f27f)
-- add comprehensive project documentation (762896b)
-- add comprehensive standards including documentation (3e481fd)
-
-### Fixed
-
-- remove unused Brand import from release-manager (6211980)
-- disable docs generation to avoid backup directory issue (f8edf85)
-- escape Liquid template syntax in version-management.md for Jekyll compatibility (f984868)
-- escape Liquid template syntax in documentation for Jekyll compatibility (96dd03e)
-- simplify because checks covered elsewhere (7858ad0)
-
 ## [2.9.1] - 2025-07-11
 
 ### Fixed
