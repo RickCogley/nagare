@@ -36,6 +36,7 @@ import { APP_INFO, BUILD_INFO, RELEASE_NOTES, VERSION } from "./version.ts";
 import { sanitizeErrorMessage, validateCliArgs, validateFilePath } from "./src/security-utils.ts";
 import { ErrorFactory } from "./src/enhanced-error.ts";
 import { initI18n, t } from "./src/i18n.ts";
+import { NagareBrand as Brand } from "./src/branded-messages.ts";
 
 /**
  * CLI configuration options interface
@@ -407,7 +408,7 @@ ${tryT("cli.help.moreInfo", { url: APP_INFO.repository })}
  * ```
  */
 function showVersion(): void {
-  console.log(`Nagare v${VERSION}`);
+  console.log(`${Brand.EMOJI} ${Brand.NAME} v${VERSION}`);
 }
 
 /**
@@ -436,7 +437,7 @@ function showDetailedVersion(): void {
     }
   };
 
-  console.log(`🌊 ${APP_INFO.name} v${VERSION}`);
+  console.log(`${Brand.EMOJI} ${Brand.NAME} (${Brand.MEANING}) v${VERSION}`);
   console.log(`📝 ${tryT("cli.version.description")}: ${APP_INFO.description}`);
   console.log(`📦 ${tryT("cli.version.repository")}: ${APP_INFO.repository}`);
   console.log(`📄 ${tryT("cli.version.license")}: ${APP_INFO.license}`);
@@ -601,7 +602,7 @@ export async function cli(args: string[]): Promise<void> {
     bumpType = parsed.bumpType;
     options = parsed.options;
   } catch (error) {
-    console.error(formatError(`Invalid arguments: ${sanitizeErrorMessage(error, false)}`));
+    Brand.error(`Invalid arguments: ${sanitizeErrorMessage(error, false)}`);
     Deno.exit(1);
   }
 
@@ -623,7 +624,7 @@ export async function cli(args: string[]): Promise<void> {
       language: lang,
     });
   } catch (error) {
-    console.error(formatError(`Failed to initialize i18n: ${sanitizeErrorMessage(error, false)}`));
+    Brand.error(`Failed to initialize i18n: ${sanitizeErrorMessage(error, false)}`);
     // Continue without i18n - English will be used as fallback
   }
 
@@ -659,7 +660,7 @@ export async function cli(args: string[]): Promise<void> {
 
   // Handle init command separately (doesn't need config)
   if (command === "init") {
-    console.log(formatInfo(tryT("cli.init.initializing")));
+    Brand.log(tryT("cli.init.initializing"));
 
     // Create nagare-launcher.ts
     const launcherContent = `#!/usr/bin/env deno run -A
@@ -702,14 +703,12 @@ await cli(Deno.args);
 
     try {
       await Deno.writeTextFile("./nagare-launcher.ts", launcherContent);
-      console.log(formatSuccess(tryT("cli.init.createdLauncher")));
+      Brand.success(tryT("cli.init.createdLauncher"));
     } catch (error) {
-      console.error(
-        formatError(
-          tryT("cli.init.failedLauncher", {
-            error: error instanceof Error ? error.message : String(error),
-          }),
-        ),
+      Brand.error(
+        tryT("cli.init.failedLauncher", {
+          error: error instanceof Error ? error.message : String(error),
+        }),
       );
       Deno.exit(1);
     }

@@ -3,6 +3,7 @@
  */
 
 import type { NagareConfig, ReleaseNotes } from "../types.ts";
+import { NagareBrand as Brand } from "./branded-messages.ts";
 
 /**
  * ChangelogGenerator - CHANGELOG.md management
@@ -36,7 +37,7 @@ export class ChangelogGenerator {
       const newContent = this.insertNewEntry(existingContent, newEntry);
 
       await Deno.writeTextFile(changelogPath, newContent);
-      console.log("✅ Updated CHANGELOG.md");
+      Brand.success("Updated CHANGELOG.md");
     } catch (error) {
       console.error(
         "❌ Error updating CHANGELOG.md:",

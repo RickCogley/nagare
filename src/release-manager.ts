@@ -42,6 +42,7 @@ import { LogParser } from "./log-parser.ts";
 import { AutoFixer } from "./auto-fixer.ts";
 import { ProgressIndicator } from "./progress-indicator.ts";
 import { BackupManager } from "./backup-manager.ts";
+import { NagareBrand as Brand } from "./branded-messages.ts";
 
 /**
  * Main ReleaseManager class - coordinates the entire release process

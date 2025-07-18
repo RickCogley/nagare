@@ -5,6 +5,7 @@
 import type { NagareConfig, ReleaseNotes } from "../types.ts";
 import type { TranslationKey } from "../locales/schema.ts";
 import { ErrorCodes, ErrorFactory, NagareError } from "./enhanced-error.ts";
+import { NagareBrand as Brand } from "./branded-messages.ts";
 
 /**
  * GitHubIntegration - GitHub release management
@@ -28,8 +29,8 @@ export class GitHubIntegration {
     try {
       await this.runCommand(["gh", "--version"]);
     } catch {
-      console.log("⚠️  GitHub CLI (gh) not found. Skipping GitHub release creation.");
-      console.log("   Install gh CLI to enable automatic GitHub releases.");
+      Brand.warning("GitHub CLI (gh) not found. Skipping GitHub release creation.");
+      Brand.info("Install gh CLI to enable automatic GitHub releases.");
       return undefined;
     }
 
@@ -56,7 +57,7 @@ export class GitHubIntegration {
         ]);
 
         const releaseUrl = `${this.config.project.repository}/releases/tag/${tagName}`;
-        console.log(`✅ Created GitHub release: ${releaseUrl}`);
+        Brand.success(`Created GitHub release: ${releaseUrl}`);
         return releaseUrl;
       } finally {
         // Clean up temp file
@@ -71,7 +72,7 @@ export class GitHubIntegration {
         "❌ Error creating GitHub release:",
         error instanceof Error ? error.message : String(error),
       );
-      console.log("ℹ️  You can create it manually at your repository releases page");
+      Brand.info("You can create it manually at your repository releases page");
       return undefined;
     }
   }

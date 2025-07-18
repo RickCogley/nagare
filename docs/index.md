@@ -1,98 +1,176 @@
-# Nagare documentation
+# Nagare Documentation
 
-Welcome to the Nagare (流れ) documentation! Nagare is a Deno-based release management library that automates semantic versioning, changelog generation, and GitHub releases.
+Welcome to the comprehensive documentation for Nagare, a Deno-native release management library that automates version bumping, changelog generation, and GitHub releases.
 
-## 📚 Documentation overview
+## Documentation Structure
 
-Our documentation is organized following the Diátaxis framework to help you find exactly what you need:
+This documentation follows the [Diátaxis framework](https://diataxis.fr/) combined with Google Developer Documentation Style guidelines to provide clear, user-focused content organized by your specific needs.
 
-```mermaid
-graph TD
-    A[Nagare Documentation] --> B[🎓 Tutorials]
-    A --> C[🔧 How-to Guides]
-    A --> D[📖 Reference]
-    A --> E[💡 Explanations]
-    
-    B --> B1[Getting Started]
-    
-    C --> C1[Configure Nagare]
-    C --> C2[Use Hooks]
-    C --> C3[Rollback Releases]
-    C --> C4[Customize Templates]
-    
-    D --> D1[Configuration Reference]
-    D --> D2[CLI Reference]
-    D --> D3[Templates Reference]
-    
-    E --> E1[Release Workflow]
-    E --> E2[Version Management]
-    E --> E3[Architecture]
-    
-    style A fill:#f9f,stroke:#333,stroke-width:4px
-    style B fill:#9cf,stroke:#333,stroke-width:2px
-    style C fill:#9fc,stroke:#333,stroke-width:2px
-    style D fill:#fc9,stroke:#333,stroke-width:2px
-    style E fill:#f9c,stroke:#333,stroke-width:2px
+### 🎓 Tutorials (Learning-oriented)
+
+Start here if you're new to Nagare or want to learn step-by-step.
+
+- **[Getting Started](./tutorials/getting-started.md)** - Your first automated release with Nagare
+
+### 🔧 How-to Guides (Task-oriented)
+
+Practical guides for solving specific problems.
+
+- **[Configure File Updates](./how-to/configure-file-updates.md)** - Set up automatic version updates across multiple files
+- **[Use Custom Templates](./how-to/use-custom-templates.md)** - Create custom version file templates
+- **[Set Up CI/CD Integration](./how-to/setup-ci-cd.md)** - Integrate Nagare with GitHub Actions, GitLab CI, and more
+- **[Use Hooks](./how-to/use-hooks.md)** - Customize release workflows with lifecycle hooks
+- **[Rollback Releases](./how-to/rollback-releases.md)** - Safely rollback failed or incorrect releases
+
+### 📖 Reference (Information-oriented)
+
+Complete technical documentation for all features.
+
+- **[CLI Reference](./reference/cli.md)** - Command-line interface documentation
+- **[Configuration Reference](./reference/configuration.md)** - Complete configuration options
+- **[Template Reference](./reference/templates.md)** - Template system and built-in templates
+- **[Environment Variables](./reference/environment-variables.md)** - All environment variables and their effects
+- **[API Documentation](https://nagare.esolia.deno.net/)** - Complete TypeScript API reference
+
+### 💡 Explanation (Understanding-oriented)
+
+Deep dives into concepts and design decisions.
+
+- **[Architecture Overview](./explanation/architecture.md)** - System architecture and design
+- **[Design Principles](./explanation/design-principles.md)** - Core design philosophy and decisions
+- **[Security Model](./explanation/security-model.md)** - Comprehensive security architecture
+- **[Branding System](./explanation/branding-system.md)** - Consistent CLI messaging and brand identity
+- **[File Update System](./explanation/file-update-system.md)** - How intelligent file handlers work
+- **[Release Workflow](./explanation/release-workflow.md)** - How releases work internally
+- **[Version Management](./explanation/version-management.md)** - Semantic versioning implementation
+
+## Quick Start
+
+New to Nagare? Start with our **[Getting Started Tutorial](./tutorials/getting-started.md)** for a hands-on introduction.
+
+```bash
+# Initialize Nagare in your project
+deno run -A jsr:@rick/nagare/cli init
+
+# Create your first release
+deno task nagare
 ```
 
-## 🗺️ Where to start
+## Common Tasks
 
-### New to Nagare?
-Start with our **[Getting Started Tutorial](tutorial-getting-started.md)** to learn the basics through a hands-on example.
+### First Time Setup
+1. **[Getting Started](./tutorials/getting-started.md)** - Complete walkthrough
+2. **[Configure File Updates](./how-to/configure-file-updates.md)** - Set up version synchronization
+3. **[Set Up CI/CD](./how-to/setup-ci-cd.md)** - Automate releases
 
-### Need to solve a specific problem?
-Browse our **[How-to Guides](#how-to-guides)** for step-by-step solutions to common tasks.
+### Daily Usage
+- **[CLI Reference](./reference/cli.md)** - Command reference
+- **[Configuration Reference](./reference/configuration.md)** - Config options
+- **[Rollback Releases](./how-to/rollback-releases.md)** - Fix mistakes
 
-### Looking for technical details?
-Check our **[Reference Documentation](#reference)** for comprehensive specifications.
+### Advanced Configuration
+- **[Use Custom Templates](./how-to/use-custom-templates.md)** - Custom version files
+- **[Use Hooks](./how-to/use-hooks.md)** - Extend release workflow
+- **[Security Model](./explanation/security-model.md)** - Security best practices
 
-### Want to understand the concepts?
-Read our **[Explanations](#explanations)** for in-depth discussions of how Nagare works.
+## Key Features
 
-## 🎓 Tutorials
+### 🚀 Automated Releases
+- **Semantic Versioning**: Automatic version bumping based on conventional commits
+- **Changelog Generation**: Professional changelogs following Keep a Changelog format
+- **GitHub Integration**: Automatic GitHub release creation with release notes
 
-Learn by doing with step-by-step lessons.
+### 🔧 Intelligent File Updates
+- **Built-in Handlers**: Automatic detection and updating of common file types
+- **Custom Patterns**: Flexible regex-based file updating for special cases
+- **Template System**: Powerful Vento templates for complex version files
 
-- **[Getting started with Nagare](tutorial-getting-started.md)** - Your first release with Nagare
+### 🛡️ Security & Reliability
+- **Deno Security**: Leverages Deno's permission-based security model
+- **Atomic Operations**: Backup and rollback system prevents inconsistent states
+- **Comprehensive Validation**: Input validation and security checks at every layer
 
-## 🔧 How-to guides
+### ⚙️ Highly Configurable
+- **Convention over Configuration**: Sensible defaults with customization options
+- **Extensible Architecture**: Hooks and plugins for custom workflows
+- **TypeScript Support**: Full type safety and excellent developer experience
 
-Practical recipes for specific tasks.
+## Example Configuration
 
-- **[How to configure Nagare](how-to-configure-nagare.md)** - Set up Nagare for your project
-- **[How to use hooks](how-to-use-hooks.md)** - Add custom logic to your release process
-- **[How to rollback releases](how-to-rollback.md)** - Safely revert to previous versions
-- **[How to customize templates](how-to-customize-templates.md)** - Create custom version file formats
+```typescript
+import type { NagareConfig } from "jsr:@rick/nagare/types";
 
-## 📖 Reference
+export default {
+  project: {
+    name: "My Awesome App",
+    repository: "https://github.com/user/my-awesome-app",
+    description: "A fantastic Deno application",
+  },
 
-Technical specifications and detailed documentation.
+  versionFile: {
+    path: "./version.ts",
+    template: "typescript",
+  },
 
-- **[Configuration reference](reference-configuration.md)** - All configuration options
-- **[CLI reference](reference-cli.md)** - Command-line interface documentation
-- **[Templates reference](reference-templates.md)** - Template syntax and variables
-- **[API reference](./api/)** - Auto-generated API documentation
+  github: {
+    owner: "user",
+    repo: "my-awesome-app",
+    createRelease: true,
+  },
 
-## 💡 Explanations
+  // Automatic file updates
+  updateFiles: [
+    { path: "./deno.json" },
+    { path: "./package.json" },
+    { path: "./README.md" },
+    { path: "./jsr.json" },
+  ],
 
-Understanding Nagare's design and concepts.
+  // Custom hooks
+  hooks: {
+    preRelease: [
+      async () => {
+        console.log("Running tests...");
+        const result = await new Deno.Command("deno", {
+          args: ["test"],
+        }).output();
+        if (!result.success) throw new Error("Tests failed");
+      },
+    ],
+  },
+} as NagareConfig;
+```
 
-- **[Understanding the release workflow](concepts-release-workflow.md)** - How releases work end-to-end
-- **[Understanding version management](concepts-version-management.md)** - Semantic versioning in Nagare
-- **[Understanding the architecture](concepts-architecture.md)** - System design and components
+## Community & Support
 
-## 🔗 Quick links
+### Getting Help
+- **[GitHub Issues](https://github.com/RickCogley/nagare/issues)** - Bug reports and feature requests
+- **[GitHub Discussions](https://github.com/RickCogley/nagare/discussions)** - Questions and community support
+- **[JSR Package](https://jsr.io/@rick/nagare)** - Package documentation
+- **[API Documentation](https://nagare.esolia.deno.net/)** - Complete TypeScript API reference
 
-- **[GitHub repository](https://github.com/RickCogley/nagare)**
-- **[JSR package](https://jsr.io/@rick/nagare)**
-- **[Changelog](../CHANGELOG.md)**
-- **[Contributing guide](../CONTRIBUTING.md)**
+### Contributing
+- **[Contributing Guide](../CONTRIBUTING.md)** - How to contribute to Nagare
+- **[Code of Conduct](../CODE_OF_CONDUCT.md)** - Community guidelines
+- **[Security Policy](../SECURITY.md)** - Responsible disclosure process
 
-## 🤝 Getting help
+## Additional Resources
 
-- **Issues**: [GitHub issues](https://github.com/RickCogley/nagare/issues)
-- **Discussions**: [GitHub discussions](https://github.com/RickCogley/nagare/discussions)
+### Project Documentation
+- **[API Documentation](./api/)** - Auto-generated API reference
+- **[Project Management](./projects/)** - Shape Up methodology documentation
+- **[Session Checkpoints](./checkpoints/)** - Development session notes
 
-## 📄 License
+### External Resources
+- **[Conventional Commits](https://www.conventionalcommits.org/)** - Commit message format
+- **[Keep a Changelog](https://keepachangelog.com/)** - Changelog format
+- **[Semantic Versioning](https://semver.org/)** - Version numbering specification
+- **[Deno Documentation](https://docs.deno.com/)** - Deno runtime documentation
 
-Nagare is released under the MIT License. See the [LICENSE](../LICENSE) file for details.
+## License
+
+Nagare is released under the [MIT License](../LICENSE).
+
+---
+
+**Made with ❤️ by eSolia for the Deno community**

@@ -5,6 +5,7 @@
 import type { NagareConfig } from "../types.ts";
 import type { TranslationKey } from "../locales/schema.ts";
 import { ErrorCodes, NagareError } from "./enhanced-error.ts";
+import { NagareBrand as Brand } from "./branded-messages.ts";
 
 /**
  * DocGenerator - Documentation generation using deno doc
@@ -54,7 +55,7 @@ export class DocGenerator {
       cmd.push("./mod.ts", "./src/");
 
       await this.runCommand(cmd);
-      console.log(`✅ Generated documentation in ${outputDir}`);
+      Brand.success(`Generated documentation in ${outputDir}`);
 
       // Run enhancement script if it exists
       try {
@@ -62,10 +63,10 @@ export class DocGenerator {
         const fileInfo = await Deno.stat(enhanceScriptPath);
 
         if (fileInfo.isFile) {
-          console.log("🎨 Enhancing documentation with custom styles...");
+          Brand.progress("Enhancing documentation with custom styles...");
           const enhanceCmd = ["deno", "run", "--allow-read", "--allow-write", enhanceScriptPath];
           await this.runCommand(enhanceCmd);
-          console.log("✅ Documentation enhanced successfully");
+          Brand.success("Documentation enhanced successfully");
         }
       } catch (enhanceError) {
         // Enhancement script doesn't exist or failed - not critical
