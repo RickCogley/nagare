@@ -163,9 +163,12 @@ const config: NagareConfig = {
 
   /**
    * Documentation generation configuration
+   *
+   * Note: Disabled for now due to backup system trying to backup directory
+   * API docs are auto-generated during build process instead
    */
   docs: {
-    enabled: true,
+    enabled: false,
     outputDir: "./docs/api",
     includePrivate: false,
   },
