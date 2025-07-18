@@ -3,22 +3,14 @@
 ## Before ANY work:
 1. Check docs/projects/active/ for existing project directories
 2. Create new YYYY-MM-DD-{name} directory for new work
-3. ALWAYS create STATUS.md first
-4. Read methodology guides from ~/.claude/aichaku/methodologies/
+3. If user says methodology terms (sprint, shape, kanban), enter DISCUSSION mode
+4. Wait for explicit "create project" signal before making files
 
-## Key Behaviors:
-✅ Documents ALWAYS go in docs/projects/active/*/
-✅ Update STATUS.md after each work session
-✅ Create documents without asking permission
-✅ Move to docs/projects/done/ when complete
+## File Organization:
+- ALWAYS create in docs/projects/active/YYYY-MM-DD-{name}/
+- NEVER create in .claude/user/ (that's for user customizations only)  
+- NEVER create in project root (keep it clean)
 
-❌ NEVER create documents in project root
-❌ NEVER use .claude/user/ for output
-❌ NEVER wait for permission to create standard docs
-❌ NEVER proceed with implementation without approval
-
-## Project Structure:
-- docs/projects/active/ → Work in progress
-- docs/projects/done/ → Completed work
-
-IMPORTANT: Creating proper structure is AUTOMATIC, not optional.
+## Methodology Detection:
+- User says "plan sprint" → Create active-YYYY-MM-DD-sprint-planning/
+- User says "fix bug" → Create active-YYYY-MM-DD-fix-[bug-description]/

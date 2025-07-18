@@ -1,0 +1,18 @@
+{
+  "version": "0.35.4",
+  "installedAt": "2025-07-13T05:29:31.123Z",
+  "installationType": "local",
+  "lastUpgrade": "2025-07-18T03:23:17.497Z",
+  "standards": {
+    "version": "1.0.0",
+    "selected": [
+      "owasp-web",
+      "nist-csf",
+      "conventional-commits",
+      "solid",
+      "tdd",
+      "dora",
+      "clean-arch"
+    ]
+  }
+}
