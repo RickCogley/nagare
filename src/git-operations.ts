@@ -133,6 +133,19 @@ export class GitOperations {
   }
 
   /**
+   * Get current branch name
+   */
+  async getCurrentBranch(): Promise<string> {
+    try {
+      const result = await this.runCommand(["git", "branch", "--show-current"]);
+      const branch = result.trim();
+      return branch || "main"; // fallback to main if branch detection fails
+    } catch {
+      return "main"; // fallback to main if command fails
+    }
+  }
+
+  /**
    * Get the last release tag
    */
   async getLastReleaseTag(): Promise<string> {

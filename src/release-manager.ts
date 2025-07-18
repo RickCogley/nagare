@@ -693,12 +693,13 @@ export class ReleaseManager {
         this.stateTracker.markCompleted(tagOpId);
 
         // Track git push (including the new tag)
+        const currentBranch = await this.git.getCurrentBranch();
         const pushOpId = this.stateTracker.trackOperation(
           OperationType.GIT_PUSH,
           `Push to ${this.config.options?.gitRemote || "origin"}`,
           {
             remote: this.config.options?.gitRemote || "origin",
-            branch: "main", // TODO: get actual branch
+            branch: currentBranch,
             previousCommit: currentCommit,
             tagName,
           },

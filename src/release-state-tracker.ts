@@ -413,7 +413,7 @@ export class ReleaseStateTracker {
    */
   private async rollbackGitPush(operation: TrackedOperation): Promise<void> {
     const remote = operation.metadata.remote || "origin";
-    const branch = operation.metadata.branch || "main";
+    const branch = operation.metadata.branch || "main"; // Uses branch from metadata or defaults to main
     const previousCommit = operation.metadata.previousCommit;
 
     if (!previousCommit) {
@@ -606,7 +606,7 @@ export class ReleaseStateTracker {
     error?: string;
   }> {
     const remote = operation.metadata.remote || "origin";
-    const branch = operation.metadata.branch || "main";
+    const branch = operation.metadata.branch || "main"; // Uses branch from metadata or defaults to main
     const previousCommit = operation.metadata.previousCommit;
 
     if (!previousCommit) {
