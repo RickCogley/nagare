@@ -176,6 +176,8 @@ export class ProgressIndicator {
         this.stopSpinnerAnimation();
         // Force render to show checkmark before starting new stage
         await this.render();
+        // Small delay to ensure render completes before other output
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
     }
 
@@ -211,6 +213,8 @@ export class ProgressIndicator {
           }
         }
         await this.render();
+        // Small delay to ensure render completes before other output
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
     }
   }
