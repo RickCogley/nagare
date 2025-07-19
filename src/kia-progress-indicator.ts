@@ -1,9 +1,9 @@
 /**
- * Professional progress indicator using Kia library
+ * Professional progress indicator using Deno std Spinner (JSR compatible)
  * Provides reliable spinner animation and clean stage management
  */
 
-import Kia from "https://deno.land/x/kia@0.4.1/mod.ts";
+import { Spinner } from "jsr:@std/cli/unstable-spinner";
 import { blue, bold, cyan, dim, green, red, yellow } from "@std/fmt/colors";
 
 export type ProgressStage =
@@ -35,7 +35,7 @@ export interface SubStep {
 export class KiaProgressIndicator {
   private stages: Map<ProgressStage, StageInfo>;
   private currentStage: ProgressStage | null = null;
-  private currentSpinner: Kia | null = null;
+  private currentSpinner: Spinner | null = null;
   private startTime: number;
   private isTTY: boolean;
 
@@ -88,12 +88,11 @@ export class KiaProgressIndicator {
       // Show progress overview first
       this.renderProgress();
 
-      // Start Kia spinner for this stage with marine theme
+      // Start Deno std spinner for this stage with marine theme
       if (this.isTTY && this.options.style !== "quiet") {
         const spinnerText = message || `${stageInfo.displayName} stage`;
-        this.currentSpinner = new Kia({
-          text: spinnerText,
-          color: "cyan", // Marine/ocean color theme
+        this.currentSpinner = new Spinner({
+          message: cyan(spinnerText), // Marine/ocean color theme
         });
         this.currentSpinner.start();
       }
@@ -113,9 +112,11 @@ export class KiaProgressIndicator {
         if (targetStage === this.currentStage && this.currentSpinner) {
           // Stop the current spinner with appropriate message
           if (status === "success") {
-            this.currentSpinner.succeed(`${stageInfo.displayName} stage complete`);
+            this.currentSpinner.stop();
+            console.log(`✅ ${stageInfo.displayName} stage complete`);
           } else {
-            this.currentSpinner.fail(`${stageInfo.displayName} stage failed`);
+            this.currentSpinner.stop();
+            console.log(`❌ ${stageInfo.displayName} stage failed`);
           }
           this.currentSpinner = null;
           this.currentStage = null;
@@ -134,7 +135,8 @@ export class KiaProgressIndicator {
       stageInfo.message = message;
 
       if (stage === this.currentStage && this.currentSpinner) {
-        this.currentSpinner.fail(message);
+        this.currentSpinner.stop();
+        console.log(`❌ ${message}`);
         this.currentSpinner = null;
         this.currentStage = null;
       }
@@ -153,11 +155,14 @@ export class KiaProgressIndicator {
 
       // Update spinner text if it's running
       if (this.currentSpinner) {
-        this.currentSpinner.set({ text: message });
+        this.currentSpinner.stop();
+        this.currentSpinner = new Spinner({
+          message: yellow(message), // Warning/fixing color
+        });
+        this.currentSpinner.start();
       } else if (this.isTTY && this.options.style !== "quiet") {
-        this.currentSpinner = new Kia({
-          text: message,
-          color: "yellow", // Warning/fixing color
+        this.currentSpinner = new Spinner({
+          message: yellow(message), // Warning/fixing color
         });
         this.currentSpinner.start();
       }
@@ -181,10 +186,9 @@ export class KiaProgressIndicator {
       const stage = this.stages.get(this.currentStage);
       if (stage && (stage.status === "active" || stage.status === "fixing")) {
         const spinnerText = stage.message || `${stage.displayName} stage`;
-        const color = stage.status === "fixing" ? "yellow" : "cyan";
-        this.currentSpinner = new Kia({
-          text: spinnerText,
-          color: color,
+        const coloredText = stage.status === "fixing" ? yellow(spinnerText) : cyan(spinnerText);
+        this.currentSpinner = new Spinner({
+          message: coloredText,
         });
         this.currentSpinner.start();
       }
@@ -254,11 +258,15 @@ export class KiaProgressIndicator {
     const stageInfo = this.stages.get(stage);
     if (stageInfo) {
       stageInfo.substeps = substeps;
-      // For Kia, we just update the spinner text if it's the current stage
+      // For Deno std spinner, we update the spinner text if it's the current stage
       if (stage === this.currentStage && this.currentSpinner && substeps.length > 0) {
         const activeSubsteps = substeps.filter((s) => s.status === "active");
         if (activeSubsteps.length > 0) {
-          this.currentSpinner.set({ text: `${stageInfo.displayName} - ${activeSubsteps[0].name}` });
+          this.currentSpinner.stop();
+          this.currentSpinner = new Spinner({
+            message: cyan(`${stageInfo.displayName} - ${activeSubsteps[0].name}`),
+          });
+          this.currentSpinner.start();
         }
       }
     }
@@ -278,7 +286,11 @@ export class KiaProgressIndicator {
           const displayText = status === "active"
             ? `${stageInfo.displayName} - ${substepName}`
             : stageInfo.message || `${stageInfo.displayName} stage`;
-          this.currentSpinner.set({ text: displayText });
+          this.currentSpinner.stop();
+          this.currentSpinner = new Spinner({
+            message: cyan(displayText),
+          });
+          this.currentSpinner.start();
         }
       }
     }
