@@ -784,7 +784,9 @@ export class ReleaseManager {
             { version: newVersion, tagName },
           );
 
+          await progress?.pause();
           githubReleaseUrl = await this.github.createRelease(releaseNotes);
+          await progress?.resume();
           this.stateTracker.markCompleted(githubOpId, {
             releaseUrl: githubReleaseUrl,
           });
@@ -803,7 +805,9 @@ export class ReleaseManager {
 
           await progress?.startStage("jsr", "Waiting for JSR publication");
 
+          await progress?.pause();
           const jsrResult = await this.verifyJsrPublication(newVersion, progress);
+          await progress?.resume();
 
           if (!jsrResult.success) {
             await progress?.errorStage("jsr", jsrResult.error || "JSR verification failed");

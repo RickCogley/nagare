@@ -202,7 +202,17 @@ export class ProgressIndicator {
           // Stop spinner animation first
           this.stopSpinnerAnimation();
 
-          // Render one final time to show the checkmark before clearing
+          // Ensure the spinner is completely stopped before proceeding
+          await new Promise((resolve) => setTimeout(resolve, 50));
+
+          // Clear the current progress line completely
+          if (this.reservedLines > 0 && this.isTTY && this.supportsAnsi) {
+            // Clear entire line and return to beginning
+            await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[2K`));
+            this.reservedLines = 0;
+          }
+
+          // Render one final time to show the checkmark
           await this.render();
 
           // Brief pause to let user see the checkmark
@@ -210,9 +220,9 @@ export class ProgressIndicator {
 
           this.currentStage = null;
 
-          // Clear progress line before stage completion message
-          if (this.reservedLines > 0) {
-            await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[K`));
+          // Clear progress line again before stage completion message
+          if (this.isTTY && this.supportsAnsi) {
+            await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[2K`));
             this.reservedLines = 0;
           }
 
@@ -307,7 +317,8 @@ export class ProgressIndicator {
     if (this.isActive) {
       // Simple approach: overwrite current line without complex cursor positioning
       if (this.reservedLines > 0) {
-        await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[K`));
+        // Use \x1b[2K to clear entire line, not just to end of line
+        await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[2K`));
       }
 
       // Write progress indicator and stay on same line
@@ -317,7 +328,8 @@ export class ProgressIndicator {
     } else {
       // Clear progress line and show final summary
       if (this.reservedLines > 0) {
-        await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[K`));
+        // Use \x1b[2K to clear entire line, not just to end of line
+        await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[2K`));
         this.reservedLines = 0;
       }
 
@@ -583,7 +595,8 @@ export class ProgressIndicator {
    */
   async hide() {
     if (this.isActive && this.reservedLines > 0 && this.isTTY && this.supportsAnsi) {
-      await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[K`));
+      // Use \x1b[2K to clear entire line
+      await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[2K`));
     }
   }
 
@@ -604,9 +617,13 @@ export class ProgressIndicator {
       // Stop animation
       this.stopSpinnerAnimation();
 
+      // Ensure spinner is completely stopped
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
       // Hide current progress line
       if (this.reservedLines > 0 && this.isTTY && this.supportsAnsi) {
-        await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[K`));
+        // Use \x1b[2K to clear entire line
+        await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[2K`));
         this.reservedLines = 0;
       }
     }
