@@ -1658,6 +1658,11 @@ export class ReleaseManager {
       return null;
     }
 
+    // Disable progress indicator during dry runs to avoid conflicts with log output
+    if (this.config.options?.dryRun) {
+      return null;
+    }
+
     return new ProgressIndicator({
       style: progressConfig?.style || "detailed",
       showElapsedTime: progressConfig?.showElapsedTime ?? true,

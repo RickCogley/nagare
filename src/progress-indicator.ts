@@ -42,6 +42,8 @@ export class ProgressIndicator {
   private isTTY: boolean;
   private lastSimpleOutput = "";
   private animationTimer: number | null = null;
+  private isActive = false;
+  private reservedLines = 0;
 
   constructor(
     private options: {
@@ -146,6 +148,7 @@ export class ProgressIndicator {
       stageInfo.status = "active";
       stageInfo.message = message;
       this.currentStage = stage;
+      this.isActive = true;
       await this.render();
       this.startSpinnerAnimation();
     }
@@ -163,6 +166,13 @@ export class ProgressIndicator {
         if (targetStage === this.currentStage) {
           this.currentStage = null;
           this.stopSpinnerAnimation();
+          // Check if all stages are complete
+          const allComplete = Array.from(this.stages.values()).every(
+            (s) => s.status === "success" || s.status === "error",
+          );
+          if (allComplete) {
+            this.isActive = false;
+          }
         }
         await this.render();
       }
@@ -238,15 +248,24 @@ export class ProgressIndicator {
       return;
     }
 
-    // Clear previous render only if we have ANSI support
-    if (this.lastRender && this.supportsAnsi) {
-      const lines = this.lastRender.split("\n").length;
-      await Deno.stdout.write(new TextEncoder().encode(`\x1b[${lines}A\x1b[0J`));
+    const output = this.options.style === "minimal" ? this.renderMinimal() : this.renderDetailed();
+    const newLines = output.split("\n").length - 1; // -1 because output ends with \n
+    if (this.isActive) {
+      // For active progress, use a simpler approach - just clear current line and rewrite
+      if (this.reservedLines > 0) {
+        // Move up to start of our reserved area and clear it
+        await Deno.stdout.write(new TextEncoder().encode(`\x1b[${this.reservedLines}A\x1b[0J`));
+      }
+
+      // Write the new output
+      await Deno.stdout.write(new TextEncoder().encode(output));
+      this.reservedLines = newLines;
+    } else {
+      // Not active anymore, just output normally without clearing
+      await Deno.stdout.write(new TextEncoder().encode(output));
+      this.reservedLines = 0;
     }
 
-    const output = this.options.style === "minimal" ? this.renderMinimal() : this.renderDetailed();
-
-    await Deno.stdout.write(new TextEncoder().encode(output));
     this.lastRender = output;
   }
 
