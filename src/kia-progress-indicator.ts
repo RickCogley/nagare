@@ -24,6 +24,12 @@ export interface StageInfo {
   displayName: string;
   status: StageStatus;
   message?: string;
+  substeps?: SubStep[];
+}
+
+export interface SubStep {
+  name: string;
+  status: StageStatus;
 }
 
 export class KiaProgressIndicator {
@@ -239,6 +245,43 @@ export class KiaProgressIndicator {
       return `${minutes}m ${secs}s`;
     }
     return `${secs}s`;
+  }
+
+  /**
+   * Add substeps to current stage (simplified implementation for compatibility)
+   */
+  setSubsteps(stage: ProgressStage, substeps: SubStep[]) {
+    const stageInfo = this.stages.get(stage);
+    if (stageInfo) {
+      stageInfo.substeps = substeps;
+      // For Kia, we just update the spinner text if it's the current stage
+      if (stage === this.currentStage && this.currentSpinner && substeps.length > 0) {
+        const activeSubsteps = substeps.filter((s) => s.status === "active");
+        if (activeSubsteps.length > 0) {
+          this.currentSpinner.set({ text: `${stageInfo.displayName} - ${activeSubsteps[0].name}` });
+        }
+      }
+    }
+  }
+
+  /**
+   * Update substep status (simplified implementation for compatibility)
+   */
+  updateSubstep(stage: ProgressStage, substepName: string, status: StageStatus) {
+    const stageInfo = this.stages.get(stage);
+    if (stageInfo?.substeps) {
+      const substep = stageInfo.substeps.find((s) => s.name === substepName);
+      if (substep) {
+        substep.status = status;
+        // Update spinner text if this is the current stage and substep
+        if (stage === this.currentStage && this.currentSpinner) {
+          const displayText = status === "active"
+            ? `${stageInfo.displayName} - ${substepName}`
+            : stageInfo.message || `${stageInfo.displayName} stage`;
+          this.currentSpinner.set({ text: displayText });
+        }
+      }
+    }
   }
 
   /**

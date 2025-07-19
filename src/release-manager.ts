@@ -1719,9 +1719,9 @@ export class ReleaseManager {
         // Fallback to direct JSR verification without CI/CD monitoring
         const result = await jsrVerifier.verifyPublication(
           packageInfo,
-          async (attempt, max) => {
+          (attempt, max) => {
             this.logger.info(`Checking JSR... (attempt ${attempt}/${max})`);
-            await progress?.updateSubstep("jsr", "verification", "active");
+            progress?.updateSubstep("jsr", "verification", "active");
           },
         );
 
@@ -1753,7 +1753,7 @@ export class ReleaseManager {
       }
 
       // Monitor the workflow
-      await progress?.setSubsteps("ci-cd", [
+      progress?.setSubsteps("ci-cd", [
         { name: "workflow-trigger", status: "success" },
         { name: "workflow-running", status: "active" },
         { name: "jsr-publish", status: "pending" },
@@ -1762,9 +1762,9 @@ export class ReleaseManager {
       const monitorResult = await monitor.monitorRun(latestRun.id, {
         pollInterval: this.config.release?.monitoring?.pollInterval || 10000,
         timeout: this.config.release?.monitoring?.timeout || 600000,
-        onProgress: async (run, jobs) => {
+        onProgress: (run, jobs) => {
           if (run.status === "completed") {
-            await progress?.updateSubstep(
+            progress?.updateSubstep(
               "ci-cd",
               "workflow-running",
               run.conclusion === "success" ? "success" : "error",
@@ -1774,7 +1774,7 @@ export class ReleaseManager {
           // Update job status
           const publishJob = jobs.find((j) => j.name.toLowerCase().includes("publish"));
           if (publishJob) {
-            await progress?.updateSubstep(
+            progress?.updateSubstep(
               "ci-cd",
               "jsr-publish",
               publishJob.status === "completed"
