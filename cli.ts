@@ -539,35 +539,7 @@ function showVersionJson(): void {
   console.log(JSON.stringify(versionInfo, null, 2));
 }
 
-/**
- * Format success message with emoji
- *
- * @param message - Message to format
- * @returns Formatted success message with checkmark emoji
- */
-function formatSuccess(message: string): string {
-  return `✅ ${message}`;
-}
-
-/**
- * Format error message with emoji
- *
- * @param message - Message to format
- * @returns Formatted error message with X emoji
- */
-function formatError(message: string): string {
-  return `❌ ${message}`;
-}
-
-/**
- * Format info message with emoji
- *
- * @param message - Message to format
- * @returns Formatted info message with info emoji
- */
-function formatInfo(message: string): string {
-  return `ℹ️  ${message}`;
-}
+// Note: Formatting functions removed - now using Brand.* methods for consistent marine theming
 
 /**
  * Main CLI entry point
@@ -604,6 +576,11 @@ export async function cli(args: string[]): Promise<void> {
   } catch (error) {
     Brand.error(`Invalid arguments: ${sanitizeErrorMessage(error, false)}`);
     Deno.exit(1);
+  }
+
+  // Show wave animation for interactive commands (not version/help)
+  if (command && !["version", "help"].includes(command)) {
+    Brand.showWaveAnimation();
   }
 
   // Initialize i18n early with language preference
@@ -716,16 +693,16 @@ await cli(Deno.args);
     // Check for existing nagare.config.ts
     try {
       await Deno.stat("./nagare.config.ts");
-      console.log(formatInfo(tryT("cli.init.foundConfig")));
+      Brand.progress(tryT("cli.init.foundConfig"));
     } catch {
       // Ask about AI features
-      console.log(formatInfo("Would you like to enable AI-powered auto-fix features? (y/N)"));
+      Brand.log("Would you like to enable AI-powered auto-fix features? (y/N)");
       const enableAI = prompt("Enable AI features?")?.toLowerCase() === "y";
 
       let configTemplate = EXAMPLE_MINIMAL_CONFIG;
 
       if (enableAI) {
-        console.log(formatInfo("Detecting available AI tools..."));
+        Brand.progress("Detecting available AI tools...");
 
         // Check for available AI tools
         const availableTools: string[] = [];
@@ -740,7 +717,7 @@ await cli(Deno.args);
           const result = await claudeCheck.output();
           if (result.success) {
             availableTools.push("claude");
-            console.log(formatSuccess("Found Claude CLI"));
+            Brand.success("Found Claude CLI");
           }
         } catch {
           // Claude not available
@@ -756,24 +733,26 @@ await cli(Deno.args);
           const result = await ghCheck.output();
           if (result.success) {
             availableTools.push("gh-copilot");
-            console.log(formatSuccess("Found GitHub Copilot CLI"));
+            Brand.success("Found GitHub Copilot CLI");
           }
         } catch {
           // GitHub Copilot not available
         }
 
         if (availableTools.length === 0) {
-          console.log(formatInfo("No AI tools detected. You can install them later:"));
-          console.log("  - Claude CLI: https://claude.ai/cli");
-          console.log("  - GitHub Copilot: gh extension install github/gh-copilot");
+          Brand.progress("No AI tools detected. You can install them later:");
+          Brand.progress("  - Claude CLI: https://claude.ai/cli");
+          Brand.progress("  - GitHub Copilot: gh extension install github/gh-copilot");
         }
 
         // Ask about thinking level for Claude
         let thinkingLevel = "think";
         if (availableTools.includes("claude")) {
-          console.log(formatInfo("\nClaude Code thinking level affects token usage:"));
-          console.log("  1. think - Basic analysis (lowest token usage, good for limited plans)");
-          console.log("  2. megathink - Deeper analysis (medium token usage)");
+          Brand.progress("\nClaude Code thinking level affects token usage:");
+          Brand.progress(
+            "  1. think - Basic analysis (lowest token usage, good for limited plans)",
+          );
+          Brand.progress("  2. megathink - Deeper analysis (medium token usage)");
           console.log(
             "  3. ultrathink - Deepest analysis (highest token usage, best for complex issues)",
           );
@@ -829,14 +808,14 @@ export default {
       }
 
       // Create nagare.config.ts
-      console.log(formatInfo(tryT("cli.init.creatingConfig")));
+      Brand.progress(tryT("cli.init.creatingConfig"));
       try {
         await Deno.writeTextFile("./nagare.config.ts", configTemplate);
-        console.log(formatSuccess(tryT("cli.init.createdConfig")));
+        Brand.success(tryT("cli.init.createdConfig"));
 
         if (enableAI) {
           console.log();
-          console.log(formatInfo("AI auto-fix features have been configured!"));
+          Brand.progress("AI auto-fix features have been configured!");
           console.log("When CI checks fail, Nagare will automatically attempt to fix:");
           console.log("  - Formatting issues (deno fmt)");
           console.log("  - Linting issues (deno lint)");
@@ -848,18 +827,16 @@ export default {
           console.log("which can be automatically applied with your approval.");
         }
       } catch (error) {
-        console.error(
-          formatError(
-            tryT("cli.init.failedConfig", {
-              error: error instanceof Error ? error.message : String(error),
-            }),
-          ),
+        Brand.error(
+          tryT("cli.init.failedConfig", {
+            error: error instanceof Error ? error.message : String(error),
+          }),
         );
       }
     }
 
     // Check if deno.json exists and provide guidance
-    console.log(formatInfo(tryT("cli.init.checkingDeno")));
+    Brand.progress(tryT("cli.init.checkingDeno"));
     try {
       const denoJsonContent = await Deno.readTextFile("./deno.json");
       const denoJson = JSON.parse(denoJsonContent);
@@ -872,9 +849,9 @@ export default {
       const hasTasks = denoJson.tasks.nagare || denoJson.tasks.release;
 
       if (hasTasks) {
-        console.log(formatInfo(tryT("cli.init.foundTasks")));
+        Brand.progress(tryT("cli.init.foundTasks"));
       } else {
-        console.log(formatInfo(tryT("cli.init.addTasks")));
+        Brand.progress(tryT("cli.init.addTasks"));
         console.log(`
   "tasks": {
     "nagare": "deno run -A nagare-launcher.ts",
@@ -889,7 +866,7 @@ export default {
 `);
       }
     } catch {
-      console.log(formatInfo(tryT("cli.init.noDeno")));
+      Brand.progress(tryT("cli.init.noDeno"));
       console.log(`
 {
   "tasks": {
@@ -907,7 +884,7 @@ export default {
     }
 
     console.log();
-    console.log(formatSuccess(tryT("cli.init.complete")));
+    Brand.celebrate(tryT("cli.init.complete"));
     console.log();
     console.log(tryT("cli.init.nextSteps"));
     console.log(tryT("cli.init.nextStep1"));
@@ -920,7 +897,7 @@ export default {
 
   try {
     // Load configuration
-    console.log(formatInfo("Loading configuration..."));
+    Brand.log("Navigating configuration channels...");
     const config = await loadConfig(options.config);
 
     // Apply locale from config if specified
@@ -929,10 +906,8 @@ export default {
         const { setLocale } = await import("./src/i18n.ts");
         await setLocale(config.locale);
       } catch (error) {
-        console.warn(
-          formatInfo(
-            `Could not set locale to ${config.locale}: ${sanitizeErrorMessage(error, false)}`,
-          ),
+        Brand.warning(
+          `Could not set locale to ${config.locale}: ${sanitizeErrorMessage(error, false)}`,
         );
       }
     }
@@ -949,32 +924,32 @@ export default {
     }
 
     // Validate configuration
-    console.log(formatInfo("Validating configuration..."));
+    Brand.progress("Testing waters for configuration validity...");
     const validation = ReleaseManager.validateConfig(config);
     if (!validation.valid) {
-      console.error(formatError("Configuration validation failed:"));
-      validation.errors.forEach((error) => console.error(`   • ${error}`));
+      Brand.error("Configuration validation failed:");
+      validation.errors.forEach((error) => Brand.error(`   • ${error}`));
       Deno.exit(1);
     }
 
-    console.log(formatSuccess("Configuration validated successfully"));
+    Brand.success("Configuration flowing smoothly!");
 
     // Execute command
     switch (command) {
       case "rollback": {
-        console.log(formatInfo(`Starting rollback process...`));
+        Brand.log("Initiating rollback current...");
         const rollbackManager = new RollbackManager(config);
         const result = await rollbackManager.rollback(bumpType); // bumpType is version in this case
         if (!result.success) {
-          console.error(formatError(`Rollback failed: ${result.error}`));
+          Brand.error(`Rollback current blocked: ${result.error}`);
           Deno.exit(1);
         }
-        console.log(formatSuccess("Rollback completed successfully"));
+        Brand.success("Rollback current flowing smoothly!");
         break;
       }
 
       case "retry": {
-        console.log(formatInfo("Retrying failed release..."));
+        Brand.log("Retrying failed release current...");
 
         // Get the last failed version from git tags or ask user
         let version = bumpType; // User can provide version as argument
@@ -991,23 +966,23 @@ export default {
             const lastTag = new TextDecoder().decode(stdout).trim();
             if (lastTag && lastTag.startsWith("v")) {
               version = lastTag.substring(1);
-              console.log(formatInfo(`Found last tag: v${version}`));
+              Brand.progress(`Found last tag: v${version}`);
             }
           } catch {
             // Ignore errors, user will need to provide version
           }
 
           if (!version) {
-            console.error(formatError("No version specified. Usage: nagare retry <version>"));
-            console.log("Example: nagare retry 1.2.3");
+            Brand.error("No version specified. Usage: nagare retry <version>");
+            Brand.progress("Example: nagare retry 1.2.3");
             Deno.exit(1);
           }
         }
 
-        console.log(formatInfo(`Attempting to retry release for version ${version}`));
+        Brand.log(`Attempting to retry release current for version ${version}`);
 
         // Delete local and remote tags
-        console.log(formatInfo("Cleaning up existing tags..."));
+        Brand.progress("Clearing debris from previous attempt...");
 
         // Delete local tag
         try {
@@ -1016,9 +991,9 @@ export default {
             stdout: "piped",
             stderr: "piped",
           }).output();
-          console.log(formatSuccess(`Deleted local tag v${version}`));
+          Brand.success(`Cleared local tag v${version}`);
         } catch {
-          console.log(formatInfo(`Local tag v${version} not found (may already be deleted)`));
+          Brand.progress(`Local tag v${version} not found (already cleared)`);
         }
 
         // Delete remote tag
@@ -1028,13 +1003,13 @@ export default {
             stdout: "piped",
             stderr: "piped",
           }).output();
-          console.log(formatSuccess(`Deleted remote tag v${version}`));
+          Brand.success(`Cleared remote tag v${version}`);
         } catch {
-          console.log(formatInfo(`Remote tag v${version} not found (may already be deleted)`));
+          Brand.progress(`Remote tag v${version} not found (already cleared)`);
         }
 
         // Pull latest changes
-        console.log(formatInfo("Pulling latest changes..."));
+        Brand.progress("Drawing fresh current from upstream...");
         await new Deno.Command("git", {
           args: ["pull"],
           stdout: "piped",
@@ -1042,7 +1017,7 @@ export default {
         }).output();
 
         // Now run release with the specific version
-        console.log(formatInfo(`Running release for version ${version}...`));
+        Brand.log(`Channeling release current for version ${version}...`);
         const releaseManager = new ReleaseManager({
           ...config,
           options: {
@@ -1057,37 +1032,37 @@ export default {
         const result = await releaseManager.release();
 
         if (!result.success) {
-          console.error(formatError(`Release retry failed: ${result.error}`));
+          Brand.error(`Release retry current blocked: ${result.error}`);
           Deno.exit(1);
         }
 
-        console.log(formatSuccess(`Successfully retried release ${version}!`));
+        Brand.celebrate(`Successfully retried release ${version}!`);
         if (result.githubReleaseUrl) {
-          console.log(formatInfo(`GitHub Release: ${result.githubReleaseUrl}`));
+          Brand.progress(`GitHub Release: ${result.githubReleaseUrl}`);
         }
         break;
       }
 
       case "release":
       default: {
-        console.log(
-          formatInfo(`Starting release process${bumpType ? ` with ${bumpType} bump` : ""}...`),
+        Brand.log(
+          `Starting release current${bumpType ? ` with ${bumpType} flow` : ""}...`,
         );
         const releaseManager = new ReleaseManager(config);
         const result = await releaseManager.release(bumpType as BumpType);
         if (!result.success) {
-          console.error(formatError(`Release failed: ${result.error}`));
+          Brand.error(`Release current blocked: ${result.error}`);
           Deno.exit(1);
         }
-        console.log(formatSuccess("Release completed successfully"));
+        Brand.celebrate("Release completed successfully!");
         break;
       }
     }
   } catch (error) {
-    console.error(formatError(sanitizeErrorMessage(error, false)));
+    Brand.error(sanitizeErrorMessage(error, false));
     if (options.logLevel === LogLevel.DEBUG) {
-      console.error("\nDebug information:");
-      console.error(sanitizeErrorMessage(error, true));
+      Brand.debug("Debug information:");
+      Brand.debug(sanitizeErrorMessage(error, true));
     }
     Deno.exit(1);
   }

@@ -8,7 +8,7 @@
  *
  * Nagare (流れ) means "flow" in Japanese, reflecting the smooth, automated
  * flow from commits to releases. The branding emphasizes this continuous
- * flow concept with water/river metaphors.
+ * flow concept with water/river metaphors using marine-themed colors.
  *
  * @example
  * ```typescript
@@ -17,8 +17,11 @@
  * Brand.log("Analyzing your commits...");
  * Brand.success("Release v1.2.0 published!");
  * Brand.error("Can't find version file. Did you run 'init' first?");
+ * Brand.showWaveAnimation(); // Display wave startup animation
  * ```
  */
+
+import { blue, bold, brightBlue, brightCyan, cyan, dim, red, yellow } from "@std/fmt/colors";
 
 /**
  * Release flow phase indicators for progress visualization
@@ -26,13 +29,30 @@
 export type FlowPhase = "analyzing" | "building" | "publishing" | "complete";
 
 /**
+ * Marine color palette for consistent ocean theming
+ */
+export interface MarineColors {
+  deepBlue: (text: string) => string;
+  oceanCyan: (text: string) => string;
+  tealGreen: (text: string) => string;
+  waveBlue: (text: string) => string;
+  navyBlue: (text: string) => string;
+}
+
+/**
  * Centralized branding system for Nagare CLI commands.
  *
  * Ensures consistent messaging across all CLI interactions with proper
  * branding, tone, and user-focused language following established standards.
- * Emphasizes the "flow" concept with water/river metaphors.
+ * Emphasizes the "flow" concept with water/river metaphors and marine colors.
  */
 export class NagareBrand {
+  /** Terminal capability detection (cached) */
+  private static _terminalCapabilities: {
+    isTTY: boolean;
+    supportsAnsi: boolean;
+    supportsColors: boolean;
+  } | null = null;
   /** Primary brand emoji - represents flow/river */
   static readonly EMOJI = "🌊";
 
@@ -44,6 +64,91 @@ export class NagareBrand {
 
   /** Brand prefix for major operations */
   static readonly PREFIX = `${NagareBrand.EMOJI} ${NagareBrand.NAME}:`;
+
+  /** Wave animation frames for startup */
+  private static readonly WAVE_FRAMES = [
+    "🌊 nAgare",
+    "🌊 naGare",
+    "🌊 nagAre",
+    "🌊 nagaRe",
+    "🌊 nagarE",
+  ];
+
+  /**
+   * Detect terminal capabilities (with caching for performance)
+   */
+  private static getTerminalCapabilities() {
+    if (NagareBrand._terminalCapabilities) {
+      return NagareBrand._terminalCapabilities;
+    }
+
+    const isTTY = Deno.stdout.isTerminal();
+    let supportsAnsi = false;
+    let supportsColors = false;
+
+    if (isTTY) {
+      try {
+        const term = Deno.env.get("TERM");
+        const colorTerm = Deno.env.get("COLORTERM");
+        const noColor = Deno.env.get("NO_COLOR");
+        const ci = Deno.env.get("CI");
+
+        // NO_COLOR takes precedence
+        if (noColor) {
+          supportsAnsi = false;
+          supportsColors = false;
+        } else if (ci === "true") {
+          // In CI environments, be more conservative
+          supportsAnsi = term !== "dumb" && term !== undefined;
+          supportsColors = supportsAnsi;
+        } else {
+          // Check for common terminals that support ANSI
+          supportsAnsi = term !== "dumb" && term !== undefined && (
+            term.includes("xterm") ||
+            term.includes("screen") ||
+            term.includes("tmux") ||
+            term.includes("color") ||
+            colorTerm !== undefined
+          );
+          supportsColors = supportsAnsi;
+        }
+      } catch {
+        // If we can't access environment variables, assume no support
+        supportsAnsi = false;
+        supportsColors = false;
+      }
+    }
+
+    NagareBrand._terminalCapabilities = { isTTY, supportsAnsi, supportsColors };
+    return NagareBrand._terminalCapabilities;
+  }
+
+  /**
+   * Get marine color palette with fallbacks for non-color terminals
+   */
+  private static getMarineColors(): MarineColors {
+    const caps = NagareBrand.getTerminalCapabilities();
+
+    if (!caps.supportsColors) {
+      // Return identity functions for non-color terminals
+      const identity = (text: string) => text;
+      return {
+        deepBlue: identity,
+        oceanCyan: identity,
+        tealGreen: identity,
+        waveBlue: identity,
+        navyBlue: identity,
+      };
+    }
+
+    return {
+      deepBlue: (text: string) => blue(text),
+      oceanCyan: (text: string) => cyan(text),
+      tealGreen: (text: string) => brightCyan(text),
+      waveBlue: (text: string) => brightBlue(text),
+      navyBlue: (text: string) => dim(blue(text)),
+    };
+  }
 
   /**
    * Get flow phase emoji for progress indicators
@@ -61,11 +166,43 @@ export class NagareBrand {
   }
 
   /**
+   * Display wave animation startup sequence
+   * Non-blocking, lightweight text animation
+   */
+  static showWaveAnimation(): void {
+    const caps = NagareBrand.getTerminalCapabilities();
+
+    if (!caps.isTTY || !caps.supportsAnsi) {
+      // For non-interactive terminals, just show the final frame
+      console.log(NagareBrand.WAVE_FRAMES[NagareBrand.WAVE_FRAMES.length - 1]);
+      return;
+    }
+
+    const colors = NagareBrand.getMarineColors();
+
+    // Simple sequential display - no timing delays to avoid performance impact
+    for (const frame of NagareBrand.WAVE_FRAMES) {
+      // Use write + flush for smooth animation in TTY
+      const coloredFrame = colors.waveBlue(frame);
+      Deno.stdout.writeSync(new TextEncoder().encode(`\r${coloredFrame}${"".padEnd(20)}`));
+    }
+
+    // Final newline and branded message
+    console.log();
+    const message = colors.deepBlue(
+      `${NagareBrand.PREFIX} Automate your release flow with confidence`,
+    );
+    console.log(message);
+  }
+
+  /**
    * Standard branded log message - for major operations and status updates
    * @param message - User-focused message in present tense
    */
   static log(message: string): void {
-    console.log(`${NagareBrand.PREFIX} ${message}`);
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = colors.deepBlue(NagareBrand.PREFIX);
+    console.log(`${coloredPrefix} ${message}`);
   }
 
   /**
@@ -73,15 +210,21 @@ export class NagareBrand {
    * @param message - Helpful error message with next steps
    */
   static error(message: string): void {
-    console.error(`${NagareBrand.PREFIX} ${message}`);
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = colors.deepBlue(NagareBrand.PREFIX);
+    console.error(`${coloredPrefix} ${red(message)}`);
   }
 
   /**
    * Success message - positive confirmation of completed task
-   * @param message - Past tense confirmation message
+   * @param message - Past tense confirmation message with flow metaphor
    */
   static success(message: string): void {
-    console.log(`✅ ${message}`);
+    const colors = NagareBrand.getMarineColors();
+    const flowMessage = message.includes("complete") || message.includes("finished")
+      ? message.replace(/complete|finished/, "flowing smoothly")
+      : message;
+    console.log(`✅ ${colors.tealGreen(flowMessage)}`);
   }
 
   /**
@@ -89,7 +232,7 @@ export class NagareBrand {
    * @param message - Warning with suggested action
    */
   static warning(message: string): void {
-    console.log(`⚠️ ${message}`);
+    console.log(`⚠️ ${yellow(message)}`);
   }
 
   /**
@@ -98,8 +241,10 @@ export class NagareBrand {
    * @param phase - Optional flow phase for visual context
    */
   static progress(message: string, phase?: FlowPhase): void {
+    const colors = NagareBrand.getMarineColors();
     const emoji = phase ? NagareBrand.getPhaseEmoji(phase) : "🔄";
-    console.log(`${emoji} ${message}`);
+    const flowMessage = NagareBrand.enhanceWithFlowLanguage(message);
+    console.log(`${emoji} ${colors.oceanCyan(flowMessage)}`);
   }
 
   /**
@@ -125,7 +270,36 @@ export class NagareBrand {
    * @param message - Achievement to celebrate
    */
   static celebrate(message: string): void {
-    console.log(`🎉 ${message}`);
+    const colors = NagareBrand.getMarineColors();
+    const flowMessage = message.includes("complete")
+      ? `${message} 🌊 Flow reached destination successfully!`
+      : message;
+    console.log(`🎉 ${colors.tealGreen(bold(flowMessage))}`);
+  }
+
+  /**
+   * Enhance message with flow-focused language
+   * @param message - Original message
+   * @returns Message with flow metaphors where appropriate
+   */
+  private static enhanceWithFlowLanguage(message: string): string {
+    const flowMappings = {
+      "checking": "navigating",
+      "bumping": "flowing to",
+      "updating": "channeling",
+      "building": "preparing current",
+      "uploading": "streaming to",
+      "downloading": "drawing from",
+      "validating": "testing waters",
+      "analyzing": "reading currents",
+    };
+
+    let enhanced = message;
+    for (const [original, flow] of Object.entries(flowMappings)) {
+      enhanced = enhanced.replace(new RegExp(`\b${original}\b`, "gi"), flow);
+    }
+
+    return enhanced;
   }
 
   // Pre-built message templates for common scenarios
@@ -147,45 +321,64 @@ export class NagareBrand {
   }
 
   /**
-   * Version bump message
+   * Version bump message with marine theming
    * @param currentVersion - Current version
    * @param newVersion - New version
    * @param bumpType - Type of version bump
    */
   static versionBump(currentVersion: string, newVersion: string, bumpType: string): string {
-    return `${NagareBrand.PREFIX} Flowing from v${currentVersion} to v${newVersion} (${bumpType})...`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = colors.deepBlue(NagareBrand.PREFIX);
+    const flowType = bumpType === "major"
+      ? "surging"
+      : bumpType === "minor"
+      ? "flowing"
+      : "rippling";
+    return `${coloredPrefix} ${
+      colors.oceanCyan(`${flowType} from v${currentVersion} to v${newVersion} (${bumpType})`)
+    }...`;
   }
 
   /**
-   * Release creation message
+   * Release creation message with flow theming
    * @param version - Version being released
    */
   static creatingRelease(version: string): string {
-    return `${NagareBrand.PREFIX} Creating release v${version}...`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = colors.deepBlue(NagareBrand.PREFIX);
+    return `${coloredPrefix} ${
+      colors.oceanCyan(`Channeling release v${version} into the stream`)
+    }...`;
   }
 
   /**
-   * GitHub release message
+   * GitHub release message with upstream metaphor
    * @param version - Version being published
    */
   static publishingToGitHub(version: string): string {
-    return `${NagareBrand.PREFIX} Publishing v${version} to GitHub...`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = colors.deepBlue(NagareBrand.PREFIX);
+    return `${coloredPrefix} ${colors.oceanCyan(`Streaming v${version} to GitHub upstream`)}...`;
   }
 
   /**
-   * JSR publishing message
+   * JSR publishing message with registry metaphor
    * @param version - Version being published
    */
   static publishingToJSR(version: string): string {
-    return `${NagareBrand.PREFIX} Publishing v${version} to JSR...`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = colors.deepBlue(NagareBrand.PREFIX);
+    return `${coloredPrefix} ${colors.oceanCyan(`Flowing v${version} into JSR channels`)}...`;
   }
 
   /**
-   * Rollback message
+   * Rollback message with tide metaphor
    * @param version - Version being rolled back
    */
   static rollingBack(version: string): string {
-    return `${NagareBrand.PREFIX} Rolling back to v${version}...`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = colors.deepBlue(NagareBrand.PREFIX);
+    return `${coloredPrefix} ${colors.navyBlue(`Reversing current back to v${version}`)}...`;
   }
 
   /**
