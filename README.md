@@ -75,6 +75,7 @@ maintaining professional changelogs and GitHub releases.
 - 🤖 **Intelligent file handlers** - Automatic updates for deno.json, package.json, README.md
 - 📝 **Professional changelogs** - Following Keep a Changelog format
 - 🐙 **GitHub integration** - Automatic release creation with release notes
+- 🌊 **Visual progress indicators** - Reliable spinner animations using Deno standard library
 - 🛡️ **Security-first design** - OWASP-compliant with comprehensive input validation
 - 🔧 **Highly configurable** - Flexible templates and custom patterns
 - 📄 **Template system** - Powerful Vento-based version file generation
