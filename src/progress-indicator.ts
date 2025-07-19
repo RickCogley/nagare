@@ -281,7 +281,6 @@ export class ProgressIndicator {
     }
 
     const output = this.options.style === "minimal" ? this.renderMinimal() : this.renderDetailed();
-    const newLines = output.split("\n").length - 1; // -1 because output ends with \n
 
     if (this.isActive) {
       // For active progress, use simple line updating like npm/yarn
