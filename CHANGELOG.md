@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.11.1] - 2025-07-19
+
+### Fixed
+
+- prevent duplicate progress headers by disabling ANSI clearing (20b25d0)
+- correct spinner animation frame sequence (91a558f)
+- disable progress indicator during dry runs and improve animation (d85cefe)
+- improve progress indicator functionality (9bbe2eb)
+
 ## [2.11.0] - 2025-07-19
 
 ### Added
