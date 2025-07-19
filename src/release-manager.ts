@@ -1662,15 +1662,7 @@ export class ReleaseManager {
       return null;
     }
 
-    // Temporarily disable progress indicator to avoid log interference issues
-    // TODO: Re-enable when we have a better solution for concurrent terminal output
-    return null;
-
-    // Disable progress indicator during dry runs to avoid conflicts with log output
-    if (this.config.options?.dryRun) {
-      return null;
-    }
-
+    // Progress indicator is now stable - re-enabled after fixing animation and stage tracking issues
     return new ProgressIndicator({
       style: progressConfig?.style || "detailed",
       showElapsedTime: progressConfig?.showElapsedTime ?? true,
