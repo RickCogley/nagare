@@ -169,14 +169,12 @@ export class ProgressIndicator {
    * Start a new stage
    */
   async startStage(stage: ProgressStage, message?: string) {
+    // Complete any currently active stage first
     if (this.currentStage) {
       const current = this.stages.get(this.currentStage);
       if (current && current.status === "active") {
-        current.status = "success";
-        // Stop animation for the previous stage
-        this.stopSpinnerAnimation();
-        // Force render to show checkmark before starting new stage
-        await this.render();
+        // This will properly complete the current stage with checkmark display
+        await this.completeStage(this.currentStage);
       }
     }
 
@@ -201,8 +199,16 @@ export class ProgressIndicator {
       if (stageInfo) {
         stageInfo.status = status;
         if (targetStage === this.currentStage) {
-          this.currentStage = null;
+          // Stop spinner animation first
           this.stopSpinnerAnimation();
+
+          // Render one final time to show the checkmark before clearing
+          await this.render();
+
+          // Brief pause to let user see the checkmark
+          await new Promise((resolve) => setTimeout(resolve, 100));
+
+          this.currentStage = null;
 
           // Clear progress line before stage completion message
           if (this.reservedLines > 0) {
