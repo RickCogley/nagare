@@ -502,7 +502,10 @@ export class ProgressIndicator {
    */
   private getSpinner(): string {
     const frame = this.spinnerFrames[this.spinnerIndex];
-    this.spinnerIndex = (this.spinnerIndex + 1) % this.spinnerFrames.length;
+    // Only advance the spinner if animation timer is running
+    if (this.animationTimer !== null) {
+      this.spinnerIndex = (this.spinnerIndex + 1) % this.spinnerFrames.length;
+    }
     return frame;
   }
 

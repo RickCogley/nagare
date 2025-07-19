@@ -783,8 +783,11 @@ export class ReleaseManager {
 
         // Note: Progress indicator already initialized at start of release
 
-        // JSR verification and CI/CD monitoring for JSR-enabled projects
+        // CI/CD and JSR verification for JSR-enabled projects
         if (this.shouldVerifyJsrPublish()) {
+          // Start CI/CD stage for monitoring workflows
+          await progress?.startStage("ci-cd", "Monitoring CI/CD workflows");
+
           this.logger.info("\n🔍 Verifying JSR publication...");
 
           await progress?.startStage("jsr", "Waiting for JSR publication");
@@ -804,6 +807,7 @@ export class ReleaseManager {
             throw new Error(jsrResult.error || "JSR publication verification failed");
           }
 
+          await progress?.completeStage("ci-cd");
           await progress?.completeStage("jsr");
           this.logger.info(`✅ Package published to JSR: ${jsrResult.jsrUrl}`);
         }
