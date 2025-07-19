@@ -327,9 +327,13 @@ export class ProgressIndicator {
    */
   private renderDetailed(): string {
     // Build a single line with progress indicators and current stage
-    const stageStates = Array.from(this.stages.values()).map((stage) =>
-      this.formatStatus(stage.status)
-    );
+    const stageStates = Array.from(this.stages.values()).map((stage) => {
+      // Debug: log unexpected status values
+      if (Deno.env.get("NAGARE_DEBUG") === "true") {
+        console.debug(`Stage ${stage.name}: status=${stage.status}`);
+      }
+      return this.formatStatus(stage.status);
+    });
     const progressLine = stageStates.join(" ");
 
     let output = bold("Release Progress: ") + progressLine;
