@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.12.3] - 2025-07-19
+
+### Changed
+
+- temp: disable progress indicator to resolve log interference (44fa015)
+
+### Fixed
+
+- re-enable progress indicator after fixing animation issues (6e1578c)
+- resolve spinner animation stuck static issue (5227472)
+
 ## [2.12.2] - 2025-07-19
 
 ### Changed
