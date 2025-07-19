@@ -3,7 +3,7 @@
  * @module security-utils_test
  */
 
-import { assertEquals, assertThrows } from "jsr:@std/assert";
+import { assertEquals, assertThrows } from "@std/assert";
 import {
   createSecurityLog,
   sanitizeCommitMessage,

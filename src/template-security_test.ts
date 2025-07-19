@@ -3,7 +3,7 @@
  * @module template-security_test
  */
 
-import { assertEquals, assertRejects } from "jsr:@std/assert";
+import { assertEquals, assertRejects } from "@std/assert";
 import { TemplateProcessor } from "./template-processor.ts";
 import type { NagareConfig, TemplateData } from "../types.ts";
 import { LogLevel, TemplateFormat } from "../types.ts";

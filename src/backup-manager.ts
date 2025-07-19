@@ -1,5 +1,5 @@
-import { join } from "jsr:@std/path";
-import { ensureDir, exists } from "jsr:@std/fs";
+import { join } from "@std/path";
+import { ensureDir, exists } from "@std/fs";
 // Simple UUID generator alternative
 function generateBackupId(): string {
   return "backup-" + Date.now().toString(36) + "-" + Math.random().toString(36).substr(2, 9);
