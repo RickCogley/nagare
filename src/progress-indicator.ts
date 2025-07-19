@@ -41,6 +41,7 @@ export class ProgressIndicator {
   private supportsAnsi: boolean;
   private isTTY: boolean;
   private lastSimpleOutput = "";
+  private animationTimer: number | null = null;
 
   constructor(
     private options: {
@@ -146,6 +147,7 @@ export class ProgressIndicator {
       stageInfo.message = message;
       this.currentStage = stage;
       await this.render();
+      this.startSpinnerAnimation();
     }
   }
 
@@ -160,6 +162,7 @@ export class ProgressIndicator {
         stageInfo.status = status;
         if (targetStage === this.currentStage) {
           this.currentStage = null;
+          this.stopSpinnerAnimation();
         }
         await this.render();
       }
@@ -174,6 +177,9 @@ export class ProgressIndicator {
     if (stageInfo) {
       stageInfo.status = "error";
       stageInfo.message = message;
+      if (stage === this.currentStage) {
+        this.stopSpinnerAnimation();
+      }
       await this.render();
     }
   }
@@ -186,7 +192,9 @@ export class ProgressIndicator {
     if (stageInfo) {
       stageInfo.status = "fixing";
       stageInfo.message = message;
+      this.currentStage = stage;
       await this.render();
+      this.startSpinnerAnimation();
     }
   }
 
@@ -442,9 +450,49 @@ export class ProgressIndicator {
   }
 
   /**
+   * Start spinner animation for active stages
+   */
+  private startSpinnerAnimation() {
+    // Only animate in TTY environments with ANSI support
+    if (!this.isTTY || !this.supportsAnsi || this.options.style === "quiet") {
+      return;
+    }
+
+    // Clear any existing timer
+    this.stopSpinnerAnimation();
+
+    // Start animation timer - update every 150ms for smooth animation
+    this.animationTimer = setInterval(async () => {
+      if (this.currentStage) {
+        const stage = this.stages.get(this.currentStage);
+        if (stage && (stage.status === "active" || stage.status === "fixing")) {
+          await this.render();
+        } else {
+          this.stopSpinnerAnimation();
+        }
+      } else {
+        this.stopSpinnerAnimation();
+      }
+    }, 150);
+  }
+
+  /**
+   * Stop spinner animation
+   */
+  private stopSpinnerAnimation() {
+    if (this.animationTimer !== null) {
+      clearInterval(this.animationTimer);
+      this.animationTimer = null;
+    }
+  }
+
+  /**
    * Clear the progress display
    */
   async clear() {
+    // Stop any running animation
+    this.stopSpinnerAnimation();
+
     // Only clear if we have ANSI support and are in TTY
     if (this.isTTY && this.supportsAnsi && this.lastRender) {
       const lines = this.lastRender.split("\n").length;

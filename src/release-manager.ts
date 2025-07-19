@@ -504,6 +504,10 @@ export class ReleaseManager {
     try {
       this.logger.infoI18n("log.release.starting");
 
+      // Create progress indicator early to track all stages
+      const progress = this.createProgressIndicator();
+      await progress?.startStage("init", "Initializing release process");
+
       // Log security audit event for release start
       this.logger.audit("release_started", {
         bumpType: bumpType || "auto",
@@ -519,9 +523,15 @@ export class ReleaseManager {
       }
 
       // Validate environment and configuration
+      await progress?.startStage("checks", "Validating environment and configuration");
       await this.validateEnvironment();
+      await progress?.completeStage("checks");
 
-      // Get current version
+      // Complete init stage
+      await progress?.completeStage("init");
+
+      // Version calculation stage
+      await progress?.startStage("version", "Calculating new version");
       const currentVersion = await this.versionUtils.getCurrentVersion();
       this.logger.infoI18n("log.release.currentVersion", { version: currentVersion });
 
@@ -537,6 +547,7 @@ export class ReleaseManager {
       // Calculate new version
       const newVersion = this.versionUtils.calculateNewVersion(currentVersion, commits, bumpType);
       this.logger.infoI18n("log.release.newVersion", { version: newVersion });
+      await progress?.completeStage("version");
 
       // Generate release notes
       const releaseNotes = this.generateReleaseNotes(newVersion, commits);
@@ -599,8 +610,13 @@ export class ReleaseManager {
       this.stateTracker.markCompleted(backupOpId);
 
       try {
+        // Changelog generation stage
+        await progress?.startStage("changelog", "Generating release notes and updating files");
+
         // Update files
         const updatedFiles = await this.updateFiles(newVersion, releaseNotes);
+
+        await progress?.completeStage("changelog");
 
         // Log security audit event for file updates
         this.logger.audit("files_updated", {
@@ -668,6 +684,9 @@ export class ReleaseManager {
         const currentCommit = await this.git.getCurrentCommitHash();
         const tagName = `${this.config.options?.tagPrefix || "v"}${newVersion}`;
 
+        // Git operations stage
+        await progress?.startStage("git", "Committing changes and creating tag");
+
         // Track git commit
         const commitOpId = this.stateTracker.trackOperation(
           OperationType.GIT_COMMIT,
@@ -725,6 +744,8 @@ export class ReleaseManager {
             pushVerified: true,
           });
 
+          await progress?.completeStage("git");
+
           if (!tagPushed) {
             this.logger.warn(`⚠️  Tag ${tagName} may not have been pushed successfully`);
           }
@@ -739,6 +760,9 @@ export class ReleaseManager {
           tag: `${this.config.options?.tagPrefix || "v"}${newVersion}`,
           remote: this.config.options?.gitRemote || "origin",
         });
+
+        // GitHub operations stage
+        await progress?.startStage("github", "Creating GitHub release");
 
         // GitHub release (now that tag exists on remote)
         let githubReleaseUrl: string | undefined;
@@ -755,8 +779,9 @@ export class ReleaseManager {
           });
         }
 
-        // Initialize progress indicator for final stages if configured
-        const progress = this.createProgressIndicator();
+        await progress?.completeStage("github");
+
+        // Note: Progress indicator already initialized at start of release
 
         // JSR verification and CI/CD monitoring for JSR-enabled projects
         if (this.shouldVerifyJsrPublish()) {
