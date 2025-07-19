@@ -345,7 +345,7 @@ export class ProgressIndicator {
    */
   private renderFinalState(): string {
     const stageStates = Array.from(this.stages.values()).map((stage) =>
-      this.formatStatus(stage.status)
+      this.formatStageStatus(stage, false) // No current stage in final state
     );
     return stageStates.join(" ") + "\n";
   }
@@ -355,9 +355,10 @@ export class ProgressIndicator {
    */
   private renderDetailed(): string {
     // Build a single line with progress indicators and current stage
-    const stageStates = Array.from(this.stages.values()).map((stage) =>
-      this.formatStatus(stage.status)
-    );
+    const stageStates = Array.from(this.stages.entries()).map(([stageName, stage]) => {
+      const isCurrentStage = stageName === this.currentStage;
+      return this.formatStageStatus(stage, isCurrentStage);
+    });
     const progressLine = stageStates.join(" ");
 
     let output = bold("Release Progress: ") + progressLine;
@@ -471,16 +472,23 @@ export class ProgressIndicator {
   }
 
   /**
-   * Format status indicator
+   * Format status indicator for a specific stage
    */
-  private formatStatus(status: StageStatus): string {
-    switch (status) {
+  private formatStageStatus(stage: StageInfo, isCurrentStage: boolean): string {
+    // If this is the current active stage, always show spinner
+    if (isCurrentStage && (stage.status === "active" || stage.status === "fixing")) {
+      return stage.status === "fixing" ? yellow("🔧") : cyan(this.getSpinner());
+    }
+
+    // For completed or other stages, show static indicators
+    switch (stage.status) {
       case "success":
         return green("✓");
       case "error":
         return red("✗");
       case "active":
-        return cyan(this.getSpinner());
+        // Non-current active stages show static indicator
+        return cyan("○");
       case "fixing":
         return yellow("🔧");
       default:
@@ -519,7 +527,9 @@ export class ProgressIndicator {
     lines.push(indent + `├─── ${stage.displayName} Progress ───┐`);
 
     for (const substep of stage.substeps) {
-      const status = this.formatStatus(substep.status);
+      // Create a temporary stage info for formatting
+      const tempStage = { ...stage, status: substep.status };
+      const status = this.formatStageStatus(tempStage, false);
       const name = substep.name.padEnd(20);
       lines.push(indent + `│ ${status} ${name} │`);
     }
@@ -560,14 +570,26 @@ export class ProgressIndicator {
       return;
     }
 
-    // Clear any existing timer
+    // Clear any existing timer first
     this.stopSpinnerAnimation();
+
+    // Verify we have an active stage before starting
+    if (!this.currentStage || !this.isActive) {
+      return;
+    }
+
+    const stage = this.stages.get(this.currentStage);
+    if (!stage || (stage.status !== "active" && stage.status !== "fixing")) {
+      return;
+    }
 
     // Start animation timer - update every 150ms for smooth animation
     this.animationTimer = setInterval(async () => {
-      if (this.currentStage) {
-        const stage = this.stages.get(this.currentStage);
-        if (stage && (stage.status === "active" || stage.status === "fixing")) {
+      if (this.currentStage && this.isActive) {
+        const currentStage = this.stages.get(this.currentStage);
+        if (
+          currentStage && (currentStage.status === "active" || currentStage.status === "fixing")
+        ) {
           // Advance spinner frame for animation
           this.spinnerIndex = (this.spinnerIndex + 1) % this.spinnerFrames.length;
           await this.render();
@@ -634,14 +656,14 @@ export class ProgressIndicator {
    */
   async resume() {
     if (this.isActive && this.currentStage) {
-      // Restore progress display
-      await this.render();
-
-      // Restart animation if stage is active
+      // Restart animation first if stage is active
       const stage = this.stages.get(this.currentStage);
       if (stage && (stage.status === "active" || stage.status === "fixing")) {
         this.startSpinnerAnimation();
       }
+
+      // Restore progress display
+      await this.render();
     }
   }
 
