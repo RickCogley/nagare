@@ -580,7 +580,9 @@ export async function cli(args: string[]): Promise<void> {
 
   // Show wave animation for interactive commands (not version/help)
   if (command && !["version", "help"].includes(command)) {
-    Brand.showWaveAnimation();
+    await Brand.showWaveAnimation();
+    // Brief pause after animation so user can see it before operations begin
+    await new Promise((resolve) => setTimeout(resolve, 800));
   }
 
   // Initialize i18n early with language preference

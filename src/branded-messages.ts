@@ -167,32 +167,35 @@ export class NagareBrand {
 
   /**
    * Display wave animation startup sequence
-   * Non-blocking, lightweight text animation
+   * Visible loading animation with proper timing and marine colors
    */
-  static showWaveAnimation(): void {
+  static async showWaveAnimation(): Promise<void> {
     const caps = NagareBrand.getTerminalCapabilities();
+    const colors = NagareBrand.getMarineColors();
 
     if (!caps.isTTY || !caps.supportsAnsi) {
-      // For non-interactive terminals, just show the final frame
-      console.log(NagareBrand.WAVE_FRAMES[NagareBrand.WAVE_FRAMES.length - 1]);
+      // For non-interactive terminals, just show clean branded message
+      const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
+      console.log(`${coloredPrefix} Automate your release flow with confidence`);
       return;
     }
 
-    const colors = NagareBrand.getMarineColors();
-
-    // Simple sequential display - no timing delays to avoid performance impact
-    for (const frame of NagareBrand.WAVE_FRAMES) {
-      // Use write + flush for smooth animation in TTY
+    // Show animation with brief delays to make it visible
+    for (let i = 0; i < NagareBrand.WAVE_FRAMES.length; i++) {
+      const frame = NagareBrand.WAVE_FRAMES[i];
       const coloredFrame = colors.waveBlue(frame);
+
+      // Clear line and show current frame
       Deno.stdout.writeSync(new TextEncoder().encode(`\r${coloredFrame}${"".padEnd(20)}`));
+
+      // Brief delay to make animation visible (only for TTY)
+      await new Promise((resolve) => setTimeout(resolve, 120));
     }
 
-    // Final newline and branded message
-    console.log();
-    const message = colors.deepBlue(
-      `${NagareBrand.PREFIX} Automate your release flow with confidence`,
-    );
-    console.log(message);
+    // Clear the animation line and show final clean branded message
+    Deno.stdout.writeSync(new TextEncoder().encode("\r" + " ".repeat(30) + "\r"));
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
+    console.log(`${coloredPrefix} Automate your release flow with confidence`);
   }
 
   /**
@@ -201,7 +204,8 @@ export class NagareBrand {
    */
   static log(message: string): void {
     const colors = NagareBrand.getMarineColors();
-    const coloredPrefix = colors.deepBlue(NagareBrand.PREFIX);
+    // Apply marine color to the text part, keep emoji natural
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
     console.log(`${coloredPrefix} ${message}`);
   }
 
@@ -211,7 +215,8 @@ export class NagareBrand {
    */
   static error(message: string): void {
     const colors = NagareBrand.getMarineColors();
-    const coloredPrefix = colors.deepBlue(NagareBrand.PREFIX);
+    // Apply marine color to the text part, keep emoji natural
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
     console.error(`${coloredPrefix} ${red(message)}`);
   }
 
@@ -309,15 +314,19 @@ export class NagareBrand {
    * @param version - Current version being set up
    */
   static welcome(version?: string): string {
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
     const versionText = version ? ` (v${version})` : "";
-    return `${NagareBrand.PREFIX} Setting up automated release flow${versionText}...`;
+    return `${coloredPrefix} Setting up automated release flow${versionText}...`;
   }
 
   /**
    * Release analysis message
    */
   static analyzingCommits(): string {
-    return `${NagareBrand.PREFIX} Analyzing your commits since last release...`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
+    return `${coloredPrefix} Analyzing your commits since last release...`;
   }
 
   /**
@@ -328,7 +337,7 @@ export class NagareBrand {
    */
   static versionBump(currentVersion: string, newVersion: string, bumpType: string): string {
     const colors = NagareBrand.getMarineColors();
-    const coloredPrefix = colors.deepBlue(NagareBrand.PREFIX);
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
     const flowType = bumpType === "major"
       ? "surging"
       : bumpType === "minor"
@@ -345,7 +354,7 @@ export class NagareBrand {
    */
   static creatingRelease(version: string): string {
     const colors = NagareBrand.getMarineColors();
-    const coloredPrefix = colors.deepBlue(NagareBrand.PREFIX);
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
     return `${coloredPrefix} ${
       colors.oceanCyan(`Channeling release v${version} into the stream`)
     }...`;
@@ -357,7 +366,7 @@ export class NagareBrand {
    */
   static publishingToGitHub(version: string): string {
     const colors = NagareBrand.getMarineColors();
-    const coloredPrefix = colors.deepBlue(NagareBrand.PREFIX);
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
     return `${coloredPrefix} ${colors.oceanCyan(`Streaming v${version} to GitHub upstream`)}...`;
   }
 
@@ -367,7 +376,7 @@ export class NagareBrand {
    */
   static publishingToJSR(version: string): string {
     const colors = NagareBrand.getMarineColors();
-    const coloredPrefix = colors.deepBlue(NagareBrand.PREFIX);
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
     return `${coloredPrefix} ${colors.oceanCyan(`Flowing v${version} into JSR channels`)}...`;
   }
 
@@ -377,7 +386,7 @@ export class NagareBrand {
    */
   static rollingBack(version: string): string {
     const colors = NagareBrand.getMarineColors();
-    const coloredPrefix = colors.deepBlue(NagareBrand.PREFIX);
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
     return `${coloredPrefix} ${colors.navyBlue(`Reversing current back to v${version}`)}...`;
   }
 
@@ -385,7 +394,9 @@ export class NagareBrand {
    * Help introduction message
    */
   static helpIntro(): string {
-    return `${NagareBrand.PREFIX} Automate your release flow with confidence...`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
+    return `${coloredPrefix} Automate your release flow with confidence...`;
   }
 
   /**
@@ -409,21 +420,27 @@ export class NagareBrand {
    * Dry run message
    */
   static dryRunMode(): string {
-    return `${NagareBrand.PREFIX} Preview mode - no changes will be made`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
+    return `${coloredPrefix} Preview mode - no changes will be made`;
   }
 
   /**
    * Backup creation message
    */
   static creatingBackup(): string {
-    return `${NagareBrand.PREFIX} Creating backup before modification...`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
+    return `${coloredPrefix} Creating backup before modification...`;
   }
 
   /**
    * Backup restoration message
    */
   static restoringBackup(): string {
-    return `${NagareBrand.PREFIX} Restoring from backup due to error...`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
+    return `${coloredPrefix} Restoring from backup due to error...`;
   }
 
   /**
@@ -468,28 +485,36 @@ export class NagareBrand {
    * @param solution - Suggested fix
    */
   static errorWithSolution(problem: string, solution: string): string {
-    return `${NagareBrand.PREFIX} ${problem}\n\n💡 Try: ${solution}`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
+    return `${coloredPrefix} ${problem}\n\n💡 Try: ${solution}`;
   }
 
   /**
    * Configuration validation message
    */
   static validatingConfig(): string {
-    return `${NagareBrand.PREFIX} Validating configuration...`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
+    return `${coloredPrefix} Validating configuration...`;
   }
 
   /**
    * Environment check message
    */
   static checkingEnvironment(): string {
-    return `${NagareBrand.PREFIX} Checking environment...`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
+    return `${coloredPrefix} Checking environment...`;
   }
 
   /**
    * Dependencies check message
    */
   static checkingDependencies(): string {
-    return `${NagareBrand.PREFIX} Checking dependencies...`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
+    return `${coloredPrefix} Checking dependencies...`;
   }
 
   /**
@@ -519,7 +544,9 @@ export class NagareBrand {
    * Pre-flight checks message
    */
   static runningPreflightChecks(): string {
-    return `${NagareBrand.PREFIX} Running pre-flight checks...`;
+    const colors = NagareBrand.getMarineColors();
+    const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
+    return `${coloredPrefix} Running pre-flight checks...`;
   }
 
   /**
