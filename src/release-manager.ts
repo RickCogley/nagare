@@ -506,6 +506,7 @@ export class ReleaseManager {
 
       // Create progress indicator early to track all stages
       const progress = this.createProgressIndicator();
+
       await progress?.startStage("init", "Initializing release process");
 
       // Log security audit event for release start
@@ -626,10 +627,14 @@ export class ReleaseManager {
         });
 
         // CRITICAL: Format all files BEFORE committing
+        await progress?.pause();
         await this.formatChangedFiles();
+        await progress?.resume();
 
         // CRITICAL: Run pre-flight validation BEFORE creating tags
+        await progress?.pause();
         const preflightResult = await this.performPreflightChecks();
+        await progress?.resume();
         if (!preflightResult.success) {
           // Try auto-fix if available
           if (preflightResult.fixable && this.config.release?.autoFix?.basic) {
@@ -638,7 +643,9 @@ export class ReleaseManager {
 
             if (fixResult.success) {
               // Re-run pre-flight checks after fix
+              await progress?.pause();
               const retryResult = await this.performPreflightChecks();
+              await progress?.resume();
               if (!retryResult.success) {
                 throw new NagareError(
                   `Pre-flight check failed after auto-fix: ${retryResult.failedCheck}`,
@@ -694,7 +701,9 @@ export class ReleaseManager {
           { version: newVersion, previousCommit: currentCommit },
         );
 
+        await progress?.pause();
         await this.git.commitAndTag(newVersion);
+        await progress?.resume();
         this.stateTracker.markCompleted(commitOpId, {
           commitHash: await this.git.getCurrentCommitHash(),
         });
@@ -726,7 +735,9 @@ export class ReleaseManager {
 
         // CRITICAL: Push and verify success before marking completed
         try {
+          await progress?.pause();
           await this.git.pushToRemote();
+          await progress?.resume();
 
           // Verify the tag was actually pushed
           const verifyTagCmd = new Deno.Command("git", {

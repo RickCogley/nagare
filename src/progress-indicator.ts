@@ -579,6 +579,56 @@ export class ProgressIndicator {
   }
 
   /**
+   * Temporarily hide the progress indicator for other output
+   */
+  async hide() {
+    if (this.isActive && this.reservedLines > 0 && this.isTTY && this.supportsAnsi) {
+      await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[K`));
+    }
+  }
+
+  /**
+   * Restore the progress indicator after other output
+   */
+  async restore() {
+    if (this.isActive && this.isTTY && this.supportsAnsi) {
+      await this.render();
+    }
+  }
+
+  /**
+   * Pause the progress indicator (hide display, stop animation)
+   */
+  async pause() {
+    if (this.isActive) {
+      // Stop animation
+      this.stopSpinnerAnimation();
+
+      // Hide current progress line
+      if (this.reservedLines > 0 && this.isTTY && this.supportsAnsi) {
+        await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[K`));
+        this.reservedLines = 0;
+      }
+    }
+  }
+
+  /**
+   * Resume the progress indicator (restore display, restart animation)
+   */
+  async resume() {
+    if (this.isActive && this.currentStage) {
+      // Restore progress display
+      await this.render();
+
+      // Restart animation if stage is active
+      const stage = this.stages.get(this.currentStage);
+      if (stage && (stage.status === "active" || stage.status === "fixing")) {
+        this.startSpinnerAnimation();
+      }
+    }
+  }
+
+  /**
    * Clear the progress display
    */
   async clear() {
