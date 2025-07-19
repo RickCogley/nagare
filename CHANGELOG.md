@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.11.0] - 2025-07-19
+
+### Added
+
+- comprehensive marine-themed branding with wave animation (c92ace6)
+
+### Changed
+
+- update project status to reflect completed implementation (91c30e3)
+- complete nagare branding flow experience project (adbb288)
+- update project status with progress indicator fix (2d4ae47)
+
+### Fixed
+
+- improve wave animation visibility and marine color accuracy (d185ea0)
+- progress indicator scope to complete on final stage (a5968b9)
+
 ## [2.10.0] - 2025-07-19
 
 ### Added
