@@ -168,9 +168,16 @@ export class ProgressIndicator {
    * Start a new stage
    */
   async startStage(stage: ProgressStage, message?: string) {
+    if (Deno.env.get("NAGARE_DEBUG") === "true") {
+      console.debug(`startStage: ${stage}, currentStage: ${this.currentStage}`);
+    }
+
     if (this.currentStage) {
       const current = this.stages.get(this.currentStage);
       if (current && current.status === "active") {
+        if (Deno.env.get("NAGARE_DEBUG") === "true") {
+          console.debug(`Marking ${this.currentStage} as success`);
+        }
         current.status = "success";
         // Stop animation for the previous stage
         this.stopSpinnerAnimation();
@@ -181,6 +188,9 @@ export class ProgressIndicator {
 
     const stageInfo = this.stages.get(stage);
     if (stageInfo) {
+      if (Deno.env.get("NAGARE_DEBUG") === "true") {
+        console.debug(`Setting ${stage} as active`);
+      }
       stageInfo.status = "active";
       stageInfo.message = message;
       this.currentStage = stage;
@@ -446,6 +456,11 @@ export class ProgressIndicator {
    * Format status indicator
    */
   private formatStatus(status: StageStatus): string {
+    // Debug logging to understand what's happening
+    if (Deno.env.get("NAGARE_DEBUG") === "true") {
+      console.debug(`formatStatus called with: ${status}`);
+    }
+
     switch (status) {
       case "success":
         return green("✓");
