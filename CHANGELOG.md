@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.13.0] - 2025-07-19
+
+### Added
+
+- replace custom progress indicator with Kia library for reliable spinner animation (fec845a)
+
+### Fixed
+
+- pin @std/cli to exact version 1.0.20 for JSR compatibility (610ca89)
+- use JSR-compatible @std/cli/unstable-spinner for reliable animation (a812348)
+- replace Kia with JSR-compatible Deno std Spinner (e30c9e8)
+- improve JSR verification error handling and restore Kia spinner (d970ca9)
+- add missing substep methods to KiaProgressIndicator for TypeScript compatibility (e88a08b)
+- remove unnecessary async keywords from KiaProgressIndicator methods (ab43d0b)
+
 ## [2.12.7] - 2025-07-19
 
 ### Fixed
