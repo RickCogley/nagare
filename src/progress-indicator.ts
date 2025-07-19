@@ -284,26 +284,23 @@ export class ProgressIndicator {
     const newLines = output.split("\n").length - 1; // -1 because output ends with \n
 
     if (this.isActive) {
-      // For active progress, clear previous output and write new
+      // For active progress, use simple line updating like npm/yarn
       if (this.reservedLines > 0) {
-        // Move cursor up to start of reserved area, then clear from cursor to end of screen
-        const moveUp = `\x1b[${this.reservedLines}A`;
-        const clearToEnd = `\x1b[0J`;
-        await Deno.stdout.write(new TextEncoder().encode(moveUp + clearToEnd));
+        // Clear the current line and move cursor to beginning
+        await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[K`));
       }
 
-      // Write the new output
-      await Deno.stdout.write(new TextEncoder().encode(output));
-      this.reservedLines = newLines;
+      // Write the new output without newline, so cursor stays at end
+      const outputWithoutNewline = output.trimEnd();
+      await Deno.stdout.write(new TextEncoder().encode(outputWithoutNewline));
+      this.reservedLines = 1; // Always just one line
     } else {
-      // Stage completed - clear the progress display and show final state
+      // Stage completed - clear current line and show final state
       if (this.reservedLines > 0) {
-        const moveUp = `\x1b[${this.reservedLines}A`;
-        const clearToEnd = `\x1b[0J`;
-        await Deno.stdout.write(new TextEncoder().encode(moveUp + clearToEnd));
+        await Deno.stdout.write(new TextEncoder().encode(`\r\x1b[K`));
       }
 
-      // Show final simplified output without the header
+      // Show final simplified output
       const finalOutput = this.renderFinalState();
       await Deno.stdout.write(new TextEncoder().encode(finalOutput));
       this.reservedLines = 0;
@@ -323,43 +320,34 @@ export class ProgressIndicator {
   }
 
   /**
-   * Render detailed horizontal flow
+   * Render detailed horizontal flow - single line for better terminal compatibility
    */
   private renderDetailed(): string {
-    const lines: string[] = [];
-
-    // Simple horizontal progress line
+    // Build a single line with progress indicators and current stage
     const stageStates = Array.from(this.stages.values()).map((stage) =>
       this.formatStatus(stage.status)
     );
     const progressLine = stageStates.join(" ");
 
-    lines.push(bold("Release Progress:"));
-    lines.push(progressLine);
+    let output = bold("Release Progress: ") + progressLine;
 
-    // Current stage info
+    // Add current stage info inline
     if (this.currentStage) {
       const stage = this.stages.get(this.currentStage);
       if (stage) {
-        lines.push(`Current: ${stage.displayName}`);
-
+        output += ` | ${stage.displayName}`;
         if (stage.message) {
-          lines.push(dim(stage.message));
-        }
-
-        // Show substeps if available
-        if (stage.substeps && stage.substeps.length > 0) {
-          lines.push(this.renderSubsteps(stage));
+          output += ` - ${dim(stage.message)}`;
         }
       }
     }
 
     if (this.options.showElapsedTime) {
       const elapsed = this.formatElapsedTime();
-      lines.push(dim(`⏱️  ${elapsed} elapsed`));
+      output += ` | ${dim(`⏱️ ${elapsed}`)}`;
     }
 
-    return lines.join("\n") + "\n";
+    return output + "\n";
   }
 
   /**
