@@ -755,12 +755,13 @@ export class ReleaseManager {
           });
         }
 
+        // Initialize progress indicator for final stages if configured
+        const progress = this.createProgressIndicator();
+
         // JSR verification and CI/CD monitoring for JSR-enabled projects
         if (this.shouldVerifyJsrPublish()) {
           this.logger.info("\n🔍 Verifying JSR publication...");
 
-          // Initialize progress indicator if configured
-          const progress = this.createProgressIndicator();
           await progress?.startStage("jsr", "Waiting for JSR publication");
 
           const jsrResult = await this.verifyJsrPublication(newVersion, progress);
@@ -788,6 +789,9 @@ export class ReleaseManager {
             await hook();
           }
         }
+
+        // Mark final stage as complete
+        await progress?.completeStage("complete");
 
         this.logger.infoI18n("log.release.releaseSuccess", { version: newVersion });
 
