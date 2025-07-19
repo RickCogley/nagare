@@ -96,3 +96,6 @@ dev/
 
 scratch/ 
 scratch/*
+
+# Nagare backup files
+.nagare-backups/
