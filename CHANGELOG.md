@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.12.2] - 2025-07-19
+
+### Changed
+
+- gitignore: exclude nagare backup files (2d209be)
+- clean: remove backup files that were accidentally committed (987e5c7)
+
+### Fixed
+
+- restore progress indicator with simple line-by-line updates (041fe22)
+
 ## [2.12.1] - 2025-07-19
 
 ### Fixed
