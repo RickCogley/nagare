@@ -43,7 +43,8 @@
       "Bash(git --git-dir=/Users/rcogley/.dotfiles/.git log --oneline -5)",
       "Bash(git --git-dir=/Users/rcogley/.dotfiles/.git tag -l)",
       "Bash(gh issue create:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(NAGARE_DEBUG=true deno task nagare release --dry-run)"
     ],
     "deny": []
   }

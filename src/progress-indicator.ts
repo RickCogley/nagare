@@ -73,6 +73,12 @@ export class ProgressIndicator {
         style: this.options.style,
         term: Deno.env.get("TERM"),
         colorTerm: Deno.env.get("COLORTERM"),
+        termDetection: {
+          isXtermGhostty: Deno.env.get("TERM")?.includes("ghostty"),
+          isModernTerminal: ["ghostty", "alacritty", "wezterm", "kitty", "iterm", "hyper"].some(
+            (t) => Deno.env.get("TERM")?.toLowerCase().includes(t),
+          ),
+        },
       });
     }
   }
@@ -98,10 +104,29 @@ export class ProgressIndicator {
         return false;
       }
 
-      // For now, be very conservative with ANSI clearing - disable it to avoid duplicates
-      // TODO: Investigate proper terminal cursor control
-      const enableAnsiClearing = Deno.env.get("NAGARE_ENABLE_ANSI_CLEARING") === "true";
-      if (!enableAnsiClearing) {
+      // Enable ANSI for modern terminals, but be conservative for older ones
+      const modernTerminals = [
+        "ghostty",
+        "alacritty",
+        "wezterm",
+        "kitty",
+        "iterm",
+        "hyper",
+      ];
+      const isModernTerminal = modernTerminals.some((t) => term?.toLowerCase().includes(t));
+
+      // Allow override with environment variable
+      const forceEnable = Deno.env.get("NAGARE_ENABLE_ANSI_CLEARING") === "true";
+      const forceDisable = Deno.env.get("NAGARE_DISABLE_ANSI_CLEARING") === "true";
+
+      if (forceDisable) {
+        return false;
+      }
+
+      if (forceEnable || isModernTerminal) {
+        // Modern terminals should handle ANSI well
+      } else {
+        // Be conservative with older terminals
         return false;
       }
 
@@ -261,9 +286,10 @@ export class ProgressIndicator {
     if (this.isActive) {
       // For active progress, clear previous output and write new
       if (this.reservedLines > 0) {
-        // Clear from current position up to the start of our reserved area
-        const clearSequence = `\x1b[${this.reservedLines}A\x1b[0J`;
-        await Deno.stdout.write(new TextEncoder().encode(clearSequence));
+        // Move cursor up to start of reserved area, then clear from cursor to end of screen
+        const moveUp = `\x1b[${this.reservedLines}A`;
+        const clearToEnd = `\x1b[0J`;
+        await Deno.stdout.write(new TextEncoder().encode(moveUp + clearToEnd));
       }
 
       // Write the new output
@@ -272,8 +298,9 @@ export class ProgressIndicator {
     } else {
       // Stage completed - clear the progress display and show final state
       if (this.reservedLines > 0) {
-        const clearSequence = `\x1b[${this.reservedLines}A\x1b[0J`;
-        await Deno.stdout.write(new TextEncoder().encode(clearSequence));
+        const moveUp = `\x1b[${this.reservedLines}A`;
+        const clearToEnd = `\x1b[0J`;
+        await Deno.stdout.write(new TextEncoder().encode(moveUp + clearToEnd));
       }
 
       // Show final simplified output without the header
