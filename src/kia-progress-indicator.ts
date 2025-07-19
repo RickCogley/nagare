@@ -97,7 +97,7 @@ export class KiaProgressIndicator {
   /**
    * Mark current stage as complete
    */
-  async completeStage(stage?: ProgressStage, status: "success" | "error" = "success") {
+  completeStage(stage?: ProgressStage, status: "success" | "error" = "success") {
     const targetStage = stage || this.currentStage;
     if (targetStage) {
       const stageInfo = this.stages.get(targetStage);
@@ -121,7 +121,7 @@ export class KiaProgressIndicator {
   /**
    * Update stage with error
    */
-  async errorStage(stage: ProgressStage, message: string) {
+  errorStage(stage: ProgressStage, message: string) {
     const stageInfo = this.stages.get(stage);
     if (stageInfo) {
       stageInfo.status = "error";
@@ -138,7 +138,7 @@ export class KiaProgressIndicator {
   /**
    * Set stage to fixing status
    */
-  async fixingStage(stage: ProgressStage, message: string) {
+  fixingStage(stage: ProgressStage, message: string) {
     const stageInfo = this.stages.get(stage);
     if (stageInfo) {
       stageInfo.status = "fixing";
@@ -161,7 +161,7 @@ export class KiaProgressIndicator {
   /**
    * Pause spinner for other output
    */
-  async pause() {
+  pause() {
     if (this.currentSpinner) {
       this.currentSpinner.stop();
     }
@@ -170,7 +170,7 @@ export class KiaProgressIndicator {
   /**
    * Resume spinner after other output
    */
-  async resume() {
+  resume() {
     if (this.currentStage && !this.currentSpinner && this.isTTY && this.options.style !== "quiet") {
       const stage = this.stages.get(this.currentStage);
       if (stage && (stage.status === "active" || stage.status === "fixing")) {
@@ -244,7 +244,7 @@ export class KiaProgressIndicator {
   /**
    * Clear any active spinner
    */
-  async clear() {
+  clear() {
     if (this.currentSpinner) {
       this.currentSpinner.stop();
       this.currentSpinner = null;

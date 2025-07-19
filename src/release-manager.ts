@@ -526,10 +526,10 @@ export class ReleaseManager {
       // Validate environment and configuration
       await progress?.startStage("checks", "Validating environment and configuration");
       await this.validateEnvironment();
-      await progress?.completeStage("checks");
+      progress?.completeStage("checks");
 
       // Complete init stage
-      await progress?.completeStage("init");
+      progress?.completeStage("init");
 
       // Version calculation stage
       await progress?.startStage("version", "Calculating new version");
@@ -548,7 +548,7 @@ export class ReleaseManager {
       // Calculate new version
       const newVersion = this.versionUtils.calculateNewVersion(currentVersion, commits, bumpType);
       this.logger.infoI18n("log.release.newVersion", { version: newVersion });
-      await progress?.completeStage("version");
+      progress?.completeStage("version");
 
       // Generate release notes
       const releaseNotes = this.generateReleaseNotes(newVersion, commits);
@@ -617,7 +617,7 @@ export class ReleaseManager {
         // Update files
         const updatedFiles = await this.updateFiles(newVersion, releaseNotes);
 
-        await progress?.completeStage("changelog");
+        progress?.completeStage("changelog");
 
         // Log security audit event for file updates
         this.logger.audit("files_updated", {
@@ -627,14 +627,14 @@ export class ReleaseManager {
         });
 
         // CRITICAL: Format all files BEFORE committing
-        await progress?.pause();
+        progress?.pause();
         await this.formatChangedFiles();
-        await progress?.resume();
+        progress?.resume();
 
         // CRITICAL: Run pre-flight validation BEFORE creating tags
-        await progress?.pause();
+        progress?.pause();
         const preflightResult = await this.performPreflightChecks();
-        await progress?.resume();
+        progress?.resume();
         if (!preflightResult.success) {
           // Try auto-fix if available
           if (preflightResult.fixable && this.config.release?.autoFix?.basic) {
@@ -643,9 +643,9 @@ export class ReleaseManager {
 
             if (fixResult.success) {
               // Re-run pre-flight checks after fix
-              await progress?.pause();
+              progress?.pause();
               const retryResult = await this.performPreflightChecks();
-              await progress?.resume();
+              progress?.resume();
               if (!retryResult.success) {
                 throw new NagareError(
                   `Pre-flight check failed after auto-fix: ${retryResult.failedCheck}`,
@@ -735,9 +735,9 @@ export class ReleaseManager {
 
         // CRITICAL: Push and verify success before marking completed
         try {
-          await progress?.pause();
+          progress?.pause();
           await this.git.pushToRemote();
-          await progress?.resume();
+          progress?.resume();
 
           // Verify the tag was actually pushed
           const verifyTagCmd = new Deno.Command("git", {
@@ -755,7 +755,7 @@ export class ReleaseManager {
             pushVerified: true,
           });
 
-          await progress?.completeStage("git");
+          progress?.completeStage("git");
 
           if (!tagPushed) {
             this.logger.warn(`⚠️  Tag ${tagName} may not have been pushed successfully`);
@@ -784,15 +784,15 @@ export class ReleaseManager {
             { version: newVersion, tagName },
           );
 
-          await progress?.pause();
+          progress?.pause();
           githubReleaseUrl = await this.github.createRelease(releaseNotes);
-          await progress?.resume();
+          progress?.resume();
           this.stateTracker.markCompleted(githubOpId, {
             releaseUrl: githubReleaseUrl,
           });
         }
 
-        await progress?.completeStage("github");
+        progress?.completeStage("github");
 
         // Note: Progress indicator already initialized at start of release
 
@@ -805,12 +805,12 @@ export class ReleaseManager {
 
           await progress?.startStage("jsr", "Waiting for JSR publication");
 
-          await progress?.pause();
+          progress?.pause();
           const jsrResult = await this.verifyJsrPublication(newVersion, progress);
-          await progress?.resume();
+          progress?.resume();
 
           if (!jsrResult.success) {
-            await progress?.errorStage("jsr", jsrResult.error || "JSR verification failed");
+            progress?.errorStage("jsr", jsrResult.error || "JSR verification failed");
 
             // Log security audit event for JSR failure
             this.logger.audit("jsr_verification_failed", {
@@ -822,8 +822,8 @@ export class ReleaseManager {
             throw new Error(jsrResult.error || "JSR publication verification failed");
           }
 
-          await progress?.completeStage("ci-cd");
-          await progress?.completeStage("jsr");
+          progress?.completeStage("ci-cd");
+          progress?.completeStage("jsr");
           this.logger.info(`✅ Package published to JSR: ${jsrResult.jsrUrl}`);
         }
 
@@ -835,7 +835,7 @@ export class ReleaseManager {
         }
 
         // Mark final stage as complete
-        await progress?.completeStage("complete");
+        progress?.completeStage("complete");
 
         this.logger.infoI18n("log.release.releaseSuccess", { version: newVersion });
 
@@ -1873,7 +1873,7 @@ export class ReleaseManager {
       };
     }
 
-    await progress?.fixingStage("ci-cd", "Attempting to fix CI/CD errors...");
+    progress?.fixingStage("ci-cd", "Attempting to fix CI/CD errors...");
 
     // Parse the logs
     const parser = new LogParser();
