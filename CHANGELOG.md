@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.13.1] - 2025-07-19
+
+### Changed
+
+- add visual progress indicators to key features (12f0aa5)
+- rename KiaProgressIndicator to StdProgressIndicator for accuracy (5738b72)
+
 ## [2.13.0] - 2025-07-19
 
 ### Added
