@@ -98,6 +98,13 @@ export class ProgressIndicator {
         return false;
       }
 
+      // For now, be very conservative with ANSI clearing - disable it to avoid duplicates
+      // TODO: Investigate proper terminal cursor control
+      const enableAnsiClearing = Deno.env.get("NAGARE_ENABLE_ANSI_CLEARING") === "true";
+      if (!enableAnsiClearing) {
+        return false;
+      }
+
       // In CI environments, be more conservative
       if (ci === "true") {
         return term !== "dumb" && term !== undefined;
@@ -250,23 +257,42 @@ export class ProgressIndicator {
 
     const output = this.options.style === "minimal" ? this.renderMinimal() : this.renderDetailed();
     const newLines = output.split("\n").length - 1; // -1 because output ends with \n
+
     if (this.isActive) {
-      // For active progress, use a simpler approach - just clear current line and rewrite
+      // For active progress, clear previous output and write new
       if (this.reservedLines > 0) {
-        // Move up to start of our reserved area and clear it
-        await Deno.stdout.write(new TextEncoder().encode(`\x1b[${this.reservedLines}A\x1b[0J`));
+        // Clear from current position up to the start of our reserved area
+        const clearSequence = `\x1b[${this.reservedLines}A\x1b[0J`;
+        await Deno.stdout.write(new TextEncoder().encode(clearSequence));
       }
 
       // Write the new output
       await Deno.stdout.write(new TextEncoder().encode(output));
       this.reservedLines = newLines;
     } else {
-      // Not active anymore, just output normally without clearing
-      await Deno.stdout.write(new TextEncoder().encode(output));
+      // Stage completed - clear the progress display and show final state
+      if (this.reservedLines > 0) {
+        const clearSequence = `\x1b[${this.reservedLines}A\x1b[0J`;
+        await Deno.stdout.write(new TextEncoder().encode(clearSequence));
+      }
+
+      // Show final simplified output without the header
+      const finalOutput = this.renderFinalState();
+      await Deno.stdout.write(new TextEncoder().encode(finalOutput));
       this.reservedLines = 0;
     }
 
     this.lastRender = output;
+  }
+
+  /**
+   * Render final state without progress header
+   */
+  private renderFinalState(): string {
+    const stageStates = Array.from(this.stages.values()).map((stage) =>
+      this.formatStatus(stage.status)
+    );
+    return stageStates.join(" ") + "\n";
   }
 
   /**
@@ -313,28 +339,40 @@ export class ProgressIndicator {
    * Render simple append-only output for non-TTY environments
    */
   private renderSimple(): string {
-    // Only output on stage changes to avoid spam
-    if (!this.currentStage) {
-      return "";
+    // Show a single line progress indicator when possible
+    if (this.currentStage) {
+      const stage = this.stages.get(this.currentStage);
+      if (stage && stage.status === "active") {
+        const statusSymbol = this.getSimpleStatusSymbol(stage.status);
+        const message = stage.message || `${stage.displayName} stage`;
+        const output = `[${
+          new Date().toISOString().split("T")[1].split(".")[0]
+        }] ${statusSymbol} ${message}\n`;
+
+        // Only output if it's different from last time
+        if (output === this.lastSimpleOutput) {
+          return "";
+        }
+
+        this.lastSimpleOutput = output;
+        return output;
+      }
     }
 
-    const stage = this.stages.get(this.currentStage);
-    if (!stage) {
-      return "";
+    // For stage completions, show a summary line
+    const completedStages =
+      Array.from(this.stages.values()).filter((s) => s.status === "success").length;
+    const totalStages = this.stages.size;
+
+    if (completedStages > 0) {
+      const output = `Progress: ${completedStages}/${totalStages} stages complete\n`;
+      if (output !== this.lastSimpleOutput) {
+        this.lastSimpleOutput = output;
+        return output;
+      }
     }
 
-    const statusSymbol = this.getSimpleStatusSymbol(stage.status);
-    const timestamp = new Date().toISOString().split("T")[1].split(".")[0];
-    const message = stage.message || `${stage.displayName} stage`;
-    const output = `[${timestamp}] ${statusSymbol} ${message}\n`;
-
-    // Only output if it's different from last time
-    if (output === this.lastSimpleOutput) {
-      return "";
-    }
-
-    this.lastSimpleOutput = output;
-    return output;
+    return "";
   }
 
   /**
