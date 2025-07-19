@@ -40,7 +40,7 @@ import { JsrVerifier } from "./jsr-verifier.ts";
 import { GitHubActionsMonitor } from "./github-actions-monitor.ts";
 import { LogParser } from "./log-parser.ts";
 import { AutoFixer } from "./auto-fixer.ts";
-import { KiaProgressIndicator } from "./kia-progress-indicator.ts";
+import { StdProgressIndicator } from "./std-progress-indicator.ts";
 import { BackupManager } from "./backup-manager.ts";
 import { OperationType, ReleaseStateTracker } from "./release-state-tracker.ts";
 
@@ -1671,14 +1671,14 @@ export class ReleaseManager {
    * @private
    * @returns {ProgressIndicator | null} Progress indicator or null if disabled
    */
-  private createProgressIndicator(): KiaProgressIndicator | null {
+  private createProgressIndicator(): StdProgressIndicator | null {
     const progressConfig = this.config.release?.progress;
     if (progressConfig?.enabled === false) {
       return null;
     }
 
-    // Using Kia library for reliable spinner animation
-    return new KiaProgressIndicator({
+    // Using Deno standard library for reliable spinner animation
+    return new StdProgressIndicator({
       style: progressConfig?.style || "detailed",
       showElapsedTime: progressConfig?.showElapsedTime ?? true,
     });
@@ -1689,12 +1689,12 @@ export class ReleaseManager {
    *
    * @private
    * @param {string} version - Version to verify
-   * @param {KiaProgressIndicator | null} progress - Progress indicator instance
+   * @param {StdProgressIndicator | null} progress - Progress indicator instance
    * @returns {Promise<Object>} Verification result
    */
   private async verifyJsrPublication(
     version: string,
-    progress: KiaProgressIndicator | null,
+    progress: StdProgressIndicator | null,
   ): Promise<{
     success: boolean;
     jsrUrl?: string;
@@ -1828,7 +1828,7 @@ export class ReleaseManager {
   private async directJsrVerification(
     verifier: JsrVerifier,
     packageInfo: { scope: string; name: string; version: string },
-    _progress: KiaProgressIndicator | null,
+    _progress: StdProgressIndicator | null,
   ): Promise<{ success: boolean; jsrUrl?: string; error?: string; attempts?: number }> {
     const result = await verifier.verifyPublication(
       packageInfo,
@@ -1861,7 +1861,7 @@ export class ReleaseManager {
     logs: string,
     _version: string,
     monitor: GitHubActionsMonitor,
-    progress: KiaProgressIndicator | null,
+    progress: StdProgressIndicator | null,
   ): Promise<{ success: boolean; jsrUrl?: string; error?: string }> {
     if (!this.config.release?.autoFix?.basic && !this.config.release?.autoFix?.ai?.enabled) {
       // Auto-fix not enabled, return the error

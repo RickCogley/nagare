@@ -1,6 +1,6 @@
 /**
- * Professional progress indicator using Deno std CLI Spinner (JSR compatible)
- * Provides reliable spinner animation and clean stage management
+ * Professional progress indicator using Deno Standard Library CLI Spinner
+ * Provides reliable spinner animation and clean stage management with JSR compatibility
  */
 
 import { Spinner } from "@std/cli/unstable-spinner";
@@ -32,7 +32,7 @@ export interface SubStep {
   status: StageStatus;
 }
 
-export class KiaProgressIndicator {
+export class StdProgressIndicator {
   private stages: Map<ProgressStage, StageInfo>;
   private currentStage: ProgressStage | null = null;
   private currentSpinner: Spinner | null = null;
