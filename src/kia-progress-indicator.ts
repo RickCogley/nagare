@@ -3,7 +3,7 @@
  * Provides reliable spinner animation and clean stage management
  */
 
-import { Spinner } from "jsr:@std/cli/unstable-spinner";
+import { Spinner } from "@std/cli/unstable-spinner";
 import { blue, bold, cyan, dim, green, red, yellow } from "@std/fmt/colors";
 
 export type ProgressStage =
