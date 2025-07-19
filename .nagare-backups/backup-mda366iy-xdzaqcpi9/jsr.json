@@ -1,0 +1,86 @@
+{
+  "name": "@rick/nagare",
+  "version": "2.12.0",
+  "description": "Nagare (流れ) is a comprehensive release management library for Deno with conventional commits and semantic versioning support",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RickCogley/nagare.git"
+  },
+  "homepage": "https://github.com/RickCogley/nagare",
+  "bugs": {
+    "url": "https://github.com/RickCogley/nagare/issues"
+  },
+  "author": {
+    "name": "Rick Cogley",
+    "email": "rick.cogley@esolia.co.jp",
+    "url": "https://cogley.jp"
+  },
+  "keywords": [
+    "release-management",
+    "versioning",
+    "semver",
+    "conventional-commits",
+    "changelog",
+    "git",
+    "deno",
+    "typescript",
+    "automation",
+    "ci-cd",
+    "github-releases",
+    "keep-a-changelog",
+    "nagare",
+    "流れ",
+    "リリース管理"
+  ],
+  "exports": {
+    ".": "./mod.ts",
+    "./cli": "./cli.ts",
+    "./cli.ts": "./cli.ts",
+    "./types": "./types.ts",
+    "./config": "./config.ts",
+    "./version": "./version.ts"
+  },
+  "runtimeCompatibility": {
+    "deno": ">=1.40.0",
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0",
+    "browser": false
+  },
+  "unstable": [],
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true
+  },
+  "imports": {
+    "@std/semver": "jsr:@std/semver@^1.0.0"
+  },
+  "publish": {
+    "include": [
+      "mod.ts",
+      "cli.ts",
+      "version.ts",
+      "types.ts",
+      "config.ts",
+      "src/",
+      "locales/",
+      "README.md",
+      "LICENSE",
+      "CHANGELOG.md"
+    ],
+    "exclude": [
+      "**/*_test.ts",
+      "**/*.test.ts",
+      "examples/**",
+      "docs/**",
+      "coverage/**",
+      ".github/**",
+      "deno.lock",
+      "nagare.config.ts"
+    ]
+  }
+}
