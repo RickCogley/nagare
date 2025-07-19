@@ -449,8 +449,9 @@ export class ProgressIndicator {
    * Get spinner frame
    */
   private getSpinner(): string {
+    const frame = this.spinnerFrames[this.spinnerIndex];
     this.spinnerIndex = (this.spinnerIndex + 1) % this.spinnerFrames.length;
-    return this.spinnerFrames[this.spinnerIndex];
+    return frame;
   }
 
   /**
