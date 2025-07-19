@@ -44,6 +44,7 @@ export class ProgressIndicator {
   private animationTimer: number | null = null;
   private isActive = false;
   private reservedLines = 0;
+  private lastRenderTime = 0;
 
   constructor(
     private options: {
@@ -202,15 +203,20 @@ export class ProgressIndicator {
         if (targetStage === this.currentStage) {
           this.currentStage = null;
           this.stopSpinnerAnimation();
+
+          // Show brief stage completion in log flow
+          const statusIcon = status === "success" ? "✅" : "❌";
+          console.log(`${statusIcon} ${stageInfo.displayName} stage complete`);
+
           // Check if all stages are complete
           const allComplete = Array.from(this.stages.values()).every(
             (s) => s.status === "success" || s.status === "error",
           );
           if (allComplete) {
             this.isActive = false;
+            await this.render(); // Show final summary
           }
         }
-        await this.render();
       }
     }
   }
@@ -286,32 +292,14 @@ export class ProgressIndicator {
 
     const output = this.options.style === "minimal" ? this.renderMinimal() : this.renderDetailed();
 
-    if (this.isActive) {
-      // Save cursor position, move to bottom, render progress, restore cursor
-      await Deno.stdout.write(new TextEncoder().encode(`\x1b7`)); // Save cursor
-      await Deno.stdout.write(new TextEncoder().encode(`\x1b[999;1H`)); // Move to bottom left
-      await Deno.stdout.write(new TextEncoder().encode(`\x1b[K`)); // Clear line
-
-      // Write progress indicator
-      const outputWithoutNewline = output.trimEnd();
-      await Deno.stdout.write(new TextEncoder().encode(outputWithoutNewline));
-
-      await Deno.stdout.write(new TextEncoder().encode(`\x1b8`)); // Restore cursor
-      this.reservedLines = 1;
-    } else {
-      // Final render - show completed state and clear reserved space
-      if (this.reservedLines > 0) {
-        await Deno.stdout.write(new TextEncoder().encode(`\x1b7`)); // Save cursor
-        await Deno.stdout.write(new TextEncoder().encode(`\x1b[999;1H`)); // Move to bottom
-        await Deno.stdout.write(new TextEncoder().encode(`\x1b[K`)); // Clear progress line
-        await Deno.stdout.write(new TextEncoder().encode(`\x1b8`)); // Restore cursor
-        this.reservedLines = 0;
-      }
-
-      // Show final summary in normal log flow
+    // Simplified approach: only show stage completions, not continuous updates
+    // This eliminates interference with log output
+    if (!this.isActive) {
+      // Only show final summary when all stages complete
       const finalOutput = this.renderFinalState();
       await Deno.stdout.write(new TextEncoder().encode(finalOutput));
     }
+    // Skip active progress rendering to avoid log interference
 
     this.lastRender = output;
   }
