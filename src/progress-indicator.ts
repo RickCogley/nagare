@@ -172,6 +172,10 @@ export class ProgressIndicator {
       const current = this.stages.get(this.currentStage);
       if (current && current.status === "active") {
         current.status = "success";
+        // Stop animation for the previous stage
+        this.stopSpinnerAnimation();
+        // Force render to show checkmark before starting new stage
+        await this.render();
       }
     }
 
