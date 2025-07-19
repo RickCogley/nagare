@@ -515,12 +515,7 @@ export class ProgressIndicator {
    * Get spinner frame
    */
   private getSpinner(): string {
-    const frame = this.spinnerFrames[this.spinnerIndex];
-    // Only advance the spinner if animation timer is running
-    if (this.animationTimer !== null) {
-      this.spinnerIndex = (this.spinnerIndex + 1) % this.spinnerFrames.length;
-    }
-    return frame;
+    return this.spinnerFrames[this.spinnerIndex];
   }
 
   /**
@@ -555,6 +550,8 @@ export class ProgressIndicator {
       if (this.currentStage) {
         const stage = this.stages.get(this.currentStage);
         if (stage && (stage.status === "active" || stage.status === "fixing")) {
+          // Advance spinner frame for animation
+          this.spinnerIndex = (this.spinnerIndex + 1) % this.spinnerFrames.length;
           await this.render();
         } else {
           this.stopSpinnerAnimation();
