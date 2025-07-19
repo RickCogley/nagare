@@ -1669,7 +1669,7 @@ export class ReleaseManager {
    * Create progress indicator instance
    *
    * @private
-   * @returns {KiaProgressIndicator | null} Progress indicator or null if disabled
+   * @returns {ProgressIndicator | null} Progress indicator or null if disabled
    */
   private createProgressIndicator(): KiaProgressIndicator | null {
     const progressConfig = this.config.release?.progress;
@@ -1880,9 +1880,27 @@ export class ReleaseManager {
     const parseResult = parser.parseLog(logs);
 
     if (parseResult.errors.length === 0) {
+      // If no specific errors found, JSR publication likely succeeded but workflow reported failure
+      // Let's verify JSR directly before failing
+      this.logger.info("No specific errors found in logs, checking JSR directly...");
+
+      const jsrVerifier = new JsrVerifier(this.config);
+      const packageInfo = await jsrVerifier.getPackageInfo();
+      if (packageInfo) {
+        const directResult = await jsrVerifier.verifyPublication(packageInfo);
+        if (directResult.success) {
+          return {
+            success: true,
+            jsrUrl: jsrVerifier.getPackageUrl(packageInfo),
+          };
+        }
+      }
+
       return {
         success: false,
-        error: "CI/CD failed but no specific errors found in logs",
+        error: `CI/CD workflow failed but JSR publication may have succeeded. Check manually: ${
+          packageInfo ? jsrVerifier.getPackageUrl(packageInfo) : "JSR"
+        }`,
       };
     }
 
