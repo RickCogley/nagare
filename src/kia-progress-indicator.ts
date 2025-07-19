@@ -1,5 +1,5 @@
 /**
- * Professional progress indicator using Deno std Spinner (JSR compatible)
+ * Professional progress indicator using Deno std CLI Spinner (JSR compatible)
  * Provides reliable spinner animation and clean stage management
  */
 
@@ -92,7 +92,8 @@ export class KiaProgressIndicator {
       if (this.isTTY && this.options.style !== "quiet") {
         const spinnerText = message || `${stageInfo.displayName} stage`;
         this.currentSpinner = new Spinner({
-          message: cyan(spinnerText), // Marine/ocean color theme
+          message: spinnerText,
+          color: "cyan", // Marine/ocean color theme
         });
         this.currentSpinner.start();
       }
@@ -157,12 +158,14 @@ export class KiaProgressIndicator {
       if (this.currentSpinner) {
         this.currentSpinner.stop();
         this.currentSpinner = new Spinner({
-          message: yellow(message), // Warning/fixing color
+          message: message,
+          color: "yellow", // Warning/fixing color
         });
         this.currentSpinner.start();
       } else if (this.isTTY && this.options.style !== "quiet") {
         this.currentSpinner = new Spinner({
-          message: yellow(message), // Warning/fixing color
+          message: message,
+          color: "yellow", // Warning/fixing color
         });
         this.currentSpinner.start();
       }
@@ -186,9 +189,10 @@ export class KiaProgressIndicator {
       const stage = this.stages.get(this.currentStage);
       if (stage && (stage.status === "active" || stage.status === "fixing")) {
         const spinnerText = stage.message || `${stage.displayName} stage`;
-        const coloredText = stage.status === "fixing" ? yellow(spinnerText) : cyan(spinnerText);
+        const color = stage.status === "fixing" ? "yellow" : "cyan";
         this.currentSpinner = new Spinner({
-          message: coloredText,
+          message: spinnerText,
+          color: color,
         });
         this.currentSpinner.start();
       }
@@ -264,7 +268,8 @@ export class KiaProgressIndicator {
         if (activeSubsteps.length > 0) {
           this.currentSpinner.stop();
           this.currentSpinner = new Spinner({
-            message: cyan(`${stageInfo.displayName} - ${activeSubsteps[0].name}`),
+            message: `${stageInfo.displayName} - ${activeSubsteps[0].name}`,
+            color: "cyan",
           });
           this.currentSpinner.start();
         }
@@ -288,7 +293,8 @@ export class KiaProgressIndicator {
             : stageInfo.message || `${stageInfo.displayName} stage`;
           this.currentSpinner.stop();
           this.currentSpinner = new Spinner({
-            message: cyan(displayText),
+            message: displayText,
+            color: "cyan",
           });
           this.currentSpinner.start();
         }
