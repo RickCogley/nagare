@@ -1056,7 +1056,7 @@ export default {
           Brand.error(`Release current blocked: ${result.error}`);
           Deno.exit(1);
         }
-        Brand.celebrate("Release completed successfully!");
+        Brand.celebrate(`🌊 Nagare: Release ${result.version} flow complete! 🎉`);
         break;
       }
     }

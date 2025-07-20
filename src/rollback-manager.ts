@@ -9,6 +9,7 @@ import { Logger, LogLevel } from "./logger.ts";
 import { sanitizeErrorMessage, validateVersion } from "./security-utils.ts";
 import { ErrorFactory } from "./enhanced-error.ts";
 import { confirmI18n } from "./cli-utils.ts";
+import { t } from "./i18n.ts";
 
 /**
  * Result of a rollback operation
@@ -140,7 +141,7 @@ export class RollbackManager {
         }
       }
 
-      this.logger.infoI18n("log.rollback.success", { version: versionToRollback });
+      this.logger.info(t("log.rollback.success", { version: versionToRollback }));
       this.logger.info("\n📋 Actions taken:");
       rollbackActions.forEach((action) => this.logger.info(`   ✓ ${action}`));
 

@@ -837,7 +837,7 @@ export class ReleaseManager {
         // Mark final stage as complete
         progress?.completeStage("complete");
 
-        this.logger.infoI18n("log.release.releaseSuccess", { version: newVersion });
+        this.logger.info(t("log.release.releaseSuccess", { version: newVersion }));
 
         // Log security audit event for successful release
         this.logger.audit("release_completed", {
