@@ -276,7 +276,8 @@ export class NagareBrand {
    */
   static celebrate(message: string): void {
     const colors = NagareBrand.getMarineColors();
-    const flowMessage = message.includes("complete")
+    // Don't add extra flow message if message already contains flow theming (starts with 🌊)
+    const flowMessage = message.includes("complete") && !message.startsWith("🌊")
       ? `${message} 🌊 Flow reached destination successfully!`
       : message;
     console.log(`🎉 ${colors.tealGreen(bold(flowMessage))}`);
