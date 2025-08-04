@@ -94,7 +94,10 @@ dev/
 *.rar
 *.7z
 
-scratch/ 
+# Claude and Aichaku
+.claude/agents/
+.claude/settings.local.json
+scratch/
 scratch/*
 
 # Nagare backup files

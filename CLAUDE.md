@@ -5,155 +5,312 @@
 This configuration is dynamically assembled from YAML files in your ~/.claude/aichaku installation.
 
 ```yaml
-aichaku:
-  version: 0.35.4
-  source: configuration-as-code
+application:
+  name: Nagare
+  type: cli-tool
+  description: >-
+    Deno-native release management library that automates version bumping, changelog generation, and
+    GitHub releases using conventional commits and semantic versioning
+  version: 2.13.2
+  stack:
+    language: typescript
+    runtime: deno
+    framework: custom
+    shell_integration: true
+    config_format: typescript
+    database: none
+    external_apis:
+      - github
+      - jsr
+      - npm
+    package_manager: deno
+    distribution:
+      - jsr
+      - npm
+      - direct-script
+  architecture:
+    pattern: multi-command
+    components:
+      - name: cli
+        description: Command-line interface entry point
+        location: /cli.ts
+      - name: release-manager
+        description: Orchestrates the entire release process
+        location: /src/release-manager.ts
+      - name: file-handlers
+        description: Intelligent file update system with type detection
+        location: /src/file-handlers.ts
+      - name: git-operations
+        description: Version analysis and git command execution
+        location: /src/git-operations.ts
+      - name: template-processor
+        description: Vento template engine integration
+        location: /src/template-processor.ts
+      - name: github-integration
+        description: GitHub release creation via gh CLI
+        location: /src/github-integration.ts
+      - name: i18n
+        description: Multi-language support (English/Japanese)
+        location: /src/i18n.ts
+      - name: security-utils
+        description: OWASP-compliant input validation and sanitization
+        location: /src/security-utils.ts
+      - name: auto-fixer
+        description: AI-powered error resolution integration
+        location: /src/auto-fixer.ts
+  commands:
+    structure:
+      - name: init
+        description: Initialize Nagare in a project
+        flags: []
+        interactive: true
+      - name: release
+        description: Create a new release (default command)
+        flags:
+          - "--dry-run"
+          - "--skip-confirmation, -y"
+          - "--config, -c"
+          - "--log-level"
+          - "--lang"
+        subcommands:
+          - patch
+          - minor
+          - major
+        default: true
+      - name: rollback
+        description: Rollback a release to a previous version
+        flags:
+          - "--dry-run"
+          - "--skip-confirmation, -y"
+          - "--config, -c"
+          - "--log-level"
+          - "--lang"
+        requires_arg: version
+      - name: retry
+        description: Retry a failed release after cleaning up
+        flags:
+          - "--dry-run"
+          - "--skip-confirmation, -y"
+          - "--config, -c"
+          - "--log-level"
+          - "--lang"
+    global_flags:
+      - "--help, -h: Show help"
+      - "--version, -v: Show version"
+      - "--version-detailed: Show detailed version info"
+      - "--version-json: Output version as JSON"
+      - "--config, -c: Custom config file path"
+      - "--log-level: Set logging verbosity (DEBUG, INFO, WARN, ERROR)"
+      - "--lang: Language (en/ja)"
+      - "--dry-run: Preview changes without applying"
+      - "--skip-confirmation, -y: Skip all confirmation prompts"
+    interactive:
+      prompts: true
+      progress_bars: true
+      spinners: true
+      colors: true
+  ui:
+    output:
+      format: pretty
+      colors: auto
+      unicode: true
+    errors:
+      format: friendly
+      suggestions: true
+      exit_codes: true
+    help:
+      auto_generated: true
+      examples: true
+      man_pages: false
+  configuration:
+    storage:
+      location: ./nagare.config.ts
+      format: typescript
+    options:
+      project: object
+      versionFile: object
+      updateFiles: array
+      github: object
+      release: object
+      hooks: object
+    env_vars:
+      prefix: NAGARE_
+      dotenv: false
+      ci_detection: true
+  plugins:
+    enabled: false
+  distribution:
+    packages:
+      - type: jsr
+        registry: "https://jsr.io"
+        scope: "@rick/nagare"
+        primary: true
+      - type: npm
+        registry: "https://registry.npmjs.org"
+        scope: "@rick"
+        status: planned
+      - type: direct
+        method: deno run
+        url: "jsr:@rick/nagare/cli"
+    installation:
+      init: "deno run -A jsr:@rick/nagare/cli init"
+      deno_task: deno task nagare
+      direct: deno run -A nagare-launcher.ts
+    updates:
+      check: false
+      method: jsr upgrade
+  integrations:
+    services:
+      - name: GitHub API
+        purpose: "Create releases, manage tags"
+        authentication: gh CLI tool
+        required: true
+      - name: JSR Registry
+        purpose: Package publishing verification
+        authentication: automatic
+        required: true
+      - name: Claude Code
+        purpose: AI-powered error auto-fix
+        authentication: system
+        optional: true
+      - name: GitHub Copilot
+        purpose: AI-powered error auto-fix
+        authentication: system
+        optional: true
+    shell:
+      completions: []
+      aliases: false
+      launcher_script: true
+  security:
+    credentials:
+      storage: system
+      encryption: true
+    operations:
+      confirm_destructive: true
+      audit_log: false
+      input_validation: true
+      template_sandboxing: true
+  testing:
+    frameworks:
+      - deno-test
+    types:
+      unit: true
+      integration: true
+      security: true
+      template: true
+    cli_testing:
+      mock_fs: true
+      mock_git: true
+      capture_output: true
+  development:
+    tools:
+      repl: true
+      debug_mode: true
+      dev_commands: false
+    docs:
+      readme: true
+      cli_reference: true
+      api_docs: true
+      changelog: true
+  performance:
+    startup:
+      target: < 100ms
+      lazy_loading: true
+    runtime:
+      async: true
+      streaming: true
+      parallel: true
+    resources:
+      memory_limit: 256MB
+      cpu_cores: 1
+  unique_features:
+    - name: Intelligent File Handlers
+      description: Auto-detects file types and applies appropriate update patterns
+    - name: Marine-themed UX
+      description: "Wave animations (\U0001F30A) and ocean metaphors throughout"
+    - name: Bilingual Support
+      description: Full English/Japanese interface with i18n system
+    - name: AI-Powered Auto-Fix
+      description: Optional Claude/Copilot integration for CI/CD error resolution
+    - name: JSR-First Design
+      description: Built specifically for Deno's JSR registry ecosystem
+    - name: Vento Templates
+      description: "Powerful, secure template engine for changelogs and version files"
+    - name: OWASP Compliance
+      description: Security-first design with input validation and sandboxing
+    - name: Smart Version Detection
+      description: Analyzes conventional commits to auto-determine version bumps
 behavioral_directives:
-  discussion_first:
-    name: Discussion-First Document Creation
-    description: A three-phase approach to thoughtful project creation
-    phases:
-      - name: DISCUSSION MODE
-        description: Default when methodology keywords detected
-        triggers:
-          - shape
-          - pitch
-          - appetite
-          - sprint
-          - scrum
-          - kanban
-          - board
-          - mvp
-          - lean
-          - experiment
-        actions:
-          required:
-            - "Acknowledge the methodology context: '\U0001FAB4 Aichaku: I see you're thinking about [topic]'"
-            - Ask clarifying questions to understand the goal
-            - Help shape and refine the idea
-            - Read appropriate guide SILENTLY from ~/.claude/aichaku/methodologies/
-          forbidden:
-            - DO NOT create any project folders yet
-            - DO NOT create any documents yet
-            - 'NEVER say: ''Would you like me to create documents for this?'''
-      - name: WAIT FOR READINESS
-        description: Only create documents when user signals explicit readiness
-        triggers:
-          - Let's create a project for this
-          - I'm ready to start
-          - Set up the project
-          - Create the documentation
-          - Any direct request for project creation
-        actions:
-          required:
-            - Wait for explicit readiness signal from user
-          forbidden:
-            - Do not create anything before user signals readiness
-      - name: CREATE PROJECT
-        description: "After user signals readiness, create immediately without asking"
-        actions:
-          required:
-            - "Confirm name: '\U0001FAB4 Aichaku: Based on our discussion, creating project: [descriptive-name]'"
-            - "Create ALL documents in: docs/projects/active/YYYY-MM-DD-{descriptive-name}/"
-            - Create STATUS.md FIRST
-            - Create methodology-specific documents
-            - Read guides from ~/.claude/aichaku/methodologies/
-          forbidden:
-            - NEVER create documents in the project root directory
-            - NEVER create documents in .claude/user/
-            - NEVER ask where to put files
-            - NEVER ask for permission after readiness signal
-  critical_behavior:
-    name: Critical Behavioral Rules
-    rules:
-      - name: No asking after readiness
-        description: "Once user signals readiness, CREATE IMMEDIATELY without asking"
-        examples:
-          do:
-            - "\U0001FAB4 Aichaku: Creating project: [descriptive-name]"
-            - Setting up Shape Up documentation...
-            - Generating sprint planning templates...
-          dont:
-            - Would you like me to...
-            - Shall I create...
-            - Should I go ahead and...
-      - name: Discussion mode responses
-        description: "During discussion phase, focus on understanding and refinement"
-        examples:
-          do:
-            - "\U0001FAB4 Aichaku: I understand you're exploring [topic]. Let me help you think through this..."
-            - What specific challenges are you looking to address?
-          dont:
-            - Would you like me to create documents for this?
-  methodology_detection:
-    name: Methodology Detection & Discussion
-    description: How to respond when methodology keywords are detected
-    planning_keywords:
-      shape_up:
-        triggers:
-          - shape
-          - pitch
-          - appetite
-          - betting
-          - cool-down
-        discussion_approach: Discuss Shape Up approach
-        creates: pitch.md
-      scrum:
-        triggers:
-          - sprint
-          - scrum
-          - backlog
-          - velocity
-          - standup
-        discussion_approach: Discuss Scrum planning
-        creates: sprint-planning.md
-      kanban:
-        triggers:
-          - kanban
-          - board
-          - WIP
-          - flow
-          - continuous
-        discussion_approach: Discuss Kanban flow
-        creates: kanban-board.md
-      lean:
-        triggers:
-          - mvp
-          - lean
-          - experiment
-          - validate
-          - pivot
-        discussion_approach: Discuss Lean experiments
-        creates: experiment-plan.md
-    discussion_mode_actions:
-      - "Acknowledge: '\U0001FAB4 Aichaku: I see you're interested in [methodology]'"
-      - Read the appropriate guide SILENTLY
-      - Ask clarifying questions based on the methodology
-      - Help refine the approach
-      - WAIT for explicit 'create project' signal
-  error_recovery:
-    name: Error Recovery
-    description: How to handle mistakes in file placement
-    steps:
-      - "Move file immediately: mv [file] docs/projects/active/*/"
-      - Update STATUS.md noting the correction
-      - Continue without asking
-    principle: >-
-      This is AUTOMATIC behavior. Users expect documents to appear in the right place without
-      asking.
-  git_automation:
-    name: Git Automation
-    description: How to handle git operations when work is complete
-    when: Work is confirmed complete
-    commands:
-      - "git add docs/projects/active/[current-project]/"
-      - 'git commit -m ''[type]: [description]\n\n- [what was done]\n- [key changes]'''
-      - "git push origin [current-branch]"
-    commit_types:
-      - feat
-      - fix
-      - docs
-      - refactor
+  context_awareness:
+    name: Context-First Development
+    priority: HIGHEST
+    mandatory: true
+    description: Always read and understand all available context before any action
+    implementation:
+      - Read the main CLAUDE.md immediately to understand project configuration
+      - Use Glob tool with pattern '**/CLAUDE.md' to find all context files
+      - Read subfolder CLAUDE.md files before working in those areas
+      - Prioritize local context over general patterns
+    why: >-
+      Context determines everything - the app type, selected methodologies, standards, and
+      project-specific patterns
+  respect_user_selection:
+    name: Respect User Selections
+    priority: CRITICAL
+    description: "Users have explicitly chosen their methodologies, standards, and principles"
+    implementation:
+      - Check 'application' section first - understand what kind of app this is
+      - Check 'methodologies' section - work within the selected approach
+      - Check 'standards' section - follow the selected guidelines
+      - Check 'principles' section - respect the chosen philosophies
+      - NEVER suggest alternatives or try to detect different approaches
+    triggers:
+      - "When user mentions methodology concepts, respond within their selection"
+      - Reference the methodology's specific triggers and templates
+      - 'Guide using the patterns they''ve chosen, not what you think is best'
+  project_creation:
+    name: Project Creation Workflow
+    description: "Simple two-step process: Discuss then Create"
+    workflow:
+      discuss:
+        when: User mentions project ideas or methodology concepts
+        do:
+          - "Acknowledge their selected methodology: '\U0001FAB4 Aichaku: I see you're working with [methodology]'"
+          - Ask clarifying questions to understand their goal
+          - Help refine ideas using their methodology's principles
+        dont:
+          - Create any files or folders
+          - Ask 'Would you like me to create...?'
+          - Suggest different methodologies
+      create:
+        when: 'User explicitly says: ''create project'', ''let''s start'', ''set it up'''
+        do:
+          - "State what you're doing: '\U0001FAB4 Aichaku: Creating project: [descriptive-name]'"
+          - "Create in: docs/projects/active/YYYY-MM-DD-{descriptive-name}/"
+          - "Create STATUS.md first, then methodology-specific documents"
+          - Use the templates from their selected methodology
+        dont:
+          - Ask for confirmation after they've signaled readiness
+          - Create files in the root directory
+          - Deviate from the selected methodology's structure
+  automation:
+    name: Automatic Behaviors
+    description: Things that happen without asking
+    behaviors:
+      error_recovery:
+        when: File created in wrong location
+        do: Move it immediately to docs/projects/active/*/ and update STATUS.md
+      git_operations:
+        when: Work confirmed complete
+        do: |
+          git add docs/projects/active/[current-project]/
+          git commit -m '[type]: [description]
+
+          - [what was done]
+          - [key changes]'
+      progress_tracking:
+        when: Working on any task
+        do: Update STATUS.md with progress automatically
 visual_identity:
   prefix:
     mandatory: true
@@ -197,65 +354,14 @@ file_organization:
       example: done-2025-07-14-consistent-branding
       transition: Rename from active-* to done-* when complete
 methodologies:
-  scrum:
-    name: Scrum
-    triggers: []
-    best_for: Predictable delivery
-    templates:
-      sprint_planning: templates/sprint-planning.md
-      sprint_retrospective: templates/sprint-retrospective.md
-      user_story: templates/user-story.md
-    phases: {}
-    integration_url: "aichaku://methodology/scrum/guide"
-  lean:
-    name: Lean Startup
-    triggers: []
-    best_for: New products
-    templates: {}
-    phases: {}
-    integration_url: "aichaku://methodology/lean/guide"
-  shape_up:
-    key_concepts:
-      - "Fixed time, variable scope"
-      - 6-week cycles with 2-week cooldown
-      - Betting table for project selection
-      - Shaping work before betting
-      - No backlogs or sprints
-    cycle_length: 6 weeks
-    best_for: Complex features
-    templates:
-      - pitch.md
-      - cycle-plan.md
-      - execution-plan.md
-      - hill-chart.md
-      - change-summary.md
-  scrumban:
-    name: Scrumban
-    triggers: []
-    best_for: Hybrid teams
-    templates:
-      planning_trigger: templates/planning-trigger.md
-    phases: {}
-    integration_url: "aichaku://methodology/scrumban/guide"
-  kanban:
-    name: Kanban
-    triggers: []
-    best_for: Ongoing support
-    templates:
-      kanban_board: templates/kanban-board.md
-      flow_metrics: templates/flow-metrics.md
-    phases: {}
-    integration_url: "aichaku://methodology/kanban/guide"
-  xp:
-    name: Extreme Programming
-    triggers: []
-    best_for: Code quality
-    templates: {}
-    phases: {}
-    integration_url: "aichaku://methodology/xp/guide"
   shape-up:
     name: Shape Up
-    triggers: []
+    triggers:
+      - shape
+      - pitch
+      - appetite
+      - betting
+      - cool-down
     best_for: Complex features
     templates:
       pitch: templates/pitch.md
@@ -343,7 +449,7 @@ standards:
       test_naming_patterns: "should [behavior] when [condition], returns [result] for [scenario]"
     integration_url: "aichaku://standard/development/tdd"
   dora:
-    name: DORA Metrics
+    name: DORA Metrics (DevOps Research and Assessment)
     category: devops
     summary:
       critical: |
@@ -369,15 +475,44 @@ standards:
       testability: Business rules testable in isolation
       dependency_direction: Always inward toward business logic
     integration_url: "aichaku://standard/architecture/clean-arch"
+principles:
+  agile-manifesto:
+    name: Agile Manifesto
+    category: organizational
+    summary:
+      tagline: Individuals and interactions over processes and tools
+      core_tenets:
+        - text: Individuals and interactions over processes and tools
+        - text: Working software over comprehensive documentation
+        - text: Customer collaboration over contract negotiation
+    integration_url: "aichaku://principle/organizational/agile-manifesto"
+  dry:
+    name: DRY (Don't Repeat Yourself)
+    category: software-development
+    summary:
+      tagline: "Every piece of knowledge should have a single, authoritative representation"
+      core_tenets:
+        - text: Avoid code duplication
+        - text: Single source of truth
+        - text: Eliminate redundancy
+    integration_url: "aichaku://principle/software-development/dry"
+  solid:
+    name: SOLID Principles
+    category: software-development
+    summary:
+      tagline: "Five principles that make software designs more understandable, flexible, and maintainable"
+      core_tenets:
+        - text: Single Responsibility Principle
+        - text: Open/Closed Principle
+        - text: Liskov Substitution Principle
+    integration_url: "aichaku://principle/software-development/solid"
+aichaku:
+  version: 0.43.1
+  source: configuration-as-code
 included:
   core: true
   methodologies:
-    - scrum
-    - lean
     - shape-up
-    - scrumban
-    - kanban
-    - xp
   standards:
     - owasp-web
     - nist-csf
@@ -386,6 +521,9 @@ included:
     - tdd
     - dora
     - clean-arch
-  doc_standards: []
-  has_user_customizations: false
+  principles:
+    - agile-manifesto
+    - dry
+    - solid
+  has_user_customizations: true
 ```

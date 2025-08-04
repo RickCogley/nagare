@@ -44,7 +44,8 @@
       "Bash(git --git-dir=/Users/rcogley/.dotfiles/.git tag -l)",
       "Bash(gh issue create:*)",
       "Bash(cd:*)",
-      "Bash(NAGARE_DEBUG=true deno task nagare release --dry-run)"
+      "Bash(NAGARE_DEBUG=true deno task nagare release --dry-run)",
+      "mcp__aichaku-reviewer__analyze_project"
     ],
     "deny": []
   }

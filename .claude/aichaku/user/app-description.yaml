@@ -1,0 +1,316 @@
+# Nagare - Deno-native Release Management Tool
+# A comprehensive release automation library with marine-themed UX
+
+application:
+  # === BASIC INFORMATION (Required) ===
+  name: "Nagare"
+  type: "cli-tool"
+  description: "Deno-native release management library that automates version bumping, changelog generation, and GitHub releases using conventional commits and semantic versioning"
+  version: "2.13.2"
+
+  # === TECHNOLOGY STACK ===
+  stack:
+    # Core Technologies
+    language: "typescript"
+    runtime: "deno" # Primary runtime, also supports node and bun
+    framework: "custom" # Custom CLI implementation using Deno std library
+
+    # CLI-specific
+    shell_integration: true # Via launcher script
+    config_format: "typescript" # nagare.config.ts
+
+    # Dependencies
+    database: "none"
+    external_apis: ["github", "jsr", "npm"] # GitHub API via gh CLI, JSR Registry
+
+    # Distribution
+    package_manager: "deno" # Built-in package management
+    distribution: ["jsr", "npm", "direct-script"]
+
+  # === CLI ARCHITECTURE ===
+  architecture:
+    # Command Structure
+    pattern: "multi-command" # init, release (default), rollback, retry
+
+    # Core Components
+    components:
+      - name: "cli"
+        description: "Command-line interface entry point"
+        location: "/cli.ts"
+
+      - name: "release-manager"
+        description: "Orchestrates the entire release process"
+        location: "/src/release-manager.ts"
+
+      - name: "file-handlers"
+        description: "Intelligent file update system with type detection"
+        location: "/src/file-handlers.ts"
+
+      - name: "git-operations"
+        description: "Version analysis and git command execution"
+        location: "/src/git-operations.ts"
+
+      - name: "template-processor"
+        description: "Vento template engine integration"
+        location: "/src/template-processor.ts"
+
+      - name: "github-integration"
+        description: "GitHub release creation via gh CLI"
+        location: "/src/github-integration.ts"
+
+      - name: "i18n"
+        description: "Multi-language support (English/Japanese)"
+        location: "/src/i18n.ts"
+
+      - name: "security-utils"
+        description: "OWASP-compliant input validation and sanitization"
+        location: "/src/security-utils.ts"
+
+      - name: "auto-fixer"
+        description: "AI-powered error resolution integration"
+        location: "/src/auto-fixer.ts"
+
+  # === COMMAND STRUCTURE ===
+  commands:
+    # Main Commands
+    structure:
+      - name: "init"
+        description: "Initialize Nagare in a project"
+        flags: []
+        interactive: true # Asks about AI features
+
+      - name: "release"
+        description: "Create a new release (default command)"
+        flags: ["--dry-run", "--skip-confirmation, -y", "--config, -c", "--log-level", "--lang"]
+        subcommands: ["patch", "minor", "major"]
+        default: true
+
+      - name: "rollback"
+        description: "Rollback a release to a previous version"
+        flags: ["--dry-run", "--skip-confirmation, -y", "--config, -c", "--log-level", "--lang"]
+        requires_arg: "version"
+
+      - name: "retry"
+        description: "Retry a failed release after cleaning up"
+        flags: ["--dry-run", "--skip-confirmation, -y", "--config, -c", "--log-level", "--lang"]
+
+    # Global Flags
+    global_flags:
+      - "--help, -h: Show help"
+      - "--version, -v: Show version"
+      - "--version-detailed: Show detailed version info"
+      - "--version-json: Output version as JSON"
+      - "--config, -c: Custom config file path"
+      - "--log-level: Set logging verbosity (DEBUG, INFO, WARN, ERROR)"
+      - "--lang: Language (en/ja)"
+      - "--dry-run: Preview changes without applying"
+      - "--skip-confirmation, -y: Skip all confirmation prompts"
+
+    # Interactive Features
+    interactive:
+      prompts: true # Confirmation dialogs
+      progress_bars: true # Release progress indicators
+      spinners: true # Wave animations 🌊
+      colors: true # ANSI color support
+
+  # === USER INTERFACE ===
+  ui:
+    # Output Formatting
+    output:
+      format: "pretty" # Marine-themed with emojis 🌊
+      colors: "auto" # Auto-detect terminal capability
+      unicode: true # Wave animations and Japanese support
+
+    # Error Handling
+    errors:
+      format: "friendly" # User-friendly with suggestions
+      suggestions: true # Helpful error recovery tips
+      exit_codes: true # CI/CD compatible exit codes
+
+    # Help System
+    help:
+      auto_generated: true
+      examples: true
+      man_pages: false # Not currently generated
+
+  # === CONFIGURATION ===
+  configuration:
+    # Config Management
+    storage:
+      location: "./nagare.config.ts" # Project-local config
+      format: "typescript" # Type-safe configuration
+
+    # Config Options
+    options:
+      project: "object" # name, repo, description, maintainers
+      versionFile: "object" # enable, file, template
+      updateFiles: "array" # Files to update during release
+      github: "object" # createRelease, draft, useGeneratedNotes
+      release: "object" # autoFix, jsrVerify, excludeCommitTypes
+      hooks: "object" # pre/post release commands
+
+    # Environment Variables
+    env_vars:
+      prefix: "NAGARE_" # NAGARE_LANG, NAGARE_DEBUG
+      dotenv: false # Not supported
+      ci_detection: true # Detects CI environment
+
+  # === PLUGIN SYSTEM ===
+  plugins:
+    enabled: false # No formal plugin system yet
+
+  # Extensibility via:
+  # - Custom Vento templates
+  # - Hook system (pre/post release)
+  # - Custom file handlers
+  # - AI integration points
+
+  # === DISTRIBUTION ===
+  distribution:
+    # Package Formats
+    packages:
+      - type: "jsr"
+        registry: "https://jsr.io"
+        scope: "@rick/nagare"
+        primary: true
+
+      - type: "npm"
+        registry: "https://registry.npmjs.org"
+        scope: "@rick"
+        status: "planned"
+
+      - type: "direct"
+        method: "deno run"
+        url: "jsr:@rick/nagare/cli"
+
+    # Installation Methods
+    installation:
+      init: "deno run -A jsr:@rick/nagare/cli init"
+      deno_task: "deno task nagare"
+      direct: "deno run -A nagare-launcher.ts"
+
+    # Auto-update
+    updates:
+      check: false # Manual updates via JSR
+      method: "jsr upgrade"
+
+  # === INTEGRATIONS ===
+  integrations:
+    # External Services
+    services:
+      - name: "GitHub API"
+        purpose: "Create releases, manage tags"
+        authentication: "gh CLI tool"
+        required: true
+
+      - name: "JSR Registry"
+        purpose: "Package publishing verification"
+        authentication: "automatic"
+        required: true
+
+      - name: "Claude Code"
+        purpose: "AI-powered error auto-fix"
+        authentication: "system"
+        optional: true
+
+      - name: "GitHub Copilot"
+        purpose: "AI-powered error auto-fix"
+        authentication: "system"
+        optional: true
+
+    # Shell Integration
+    shell:
+      completions: [] # Not implemented yet
+      aliases: false
+      launcher_script: true # nagare-launcher.ts
+
+  # === SECURITY ===
+  security:
+    # Credential Storage
+    credentials:
+      storage: "system" # Via gh CLI and system tools
+      encryption: true
+
+    # Secure Operations
+    operations:
+      confirm_destructive: true # Rollback confirmations
+      audit_log: false # Not implemented
+      input_validation: true # OWASP-compliant
+      template_sandboxing: true # Vento security
+
+  # === TESTING ===
+  testing:
+    # Test Strategy
+    frameworks: ["deno-test"] # Built-in Deno test runner
+
+    # Test Types
+    types:
+      unit: true
+      integration: true
+      security: true # OWASP validation tests
+      template: true # Vento template tests
+
+    # CLI Testing
+    cli_testing:
+      mock_fs: true # Mock file operations
+      mock_git: true # Mock git commands
+      capture_output: true # Test output formatting
+
+  # === DEVELOPMENT ===
+  development:
+    # Development Tools
+    tools:
+      repl: true # Via Deno REPL
+      debug_mode: true # --log-level DEBUG
+      dev_commands: false # No dev-specific commands
+
+    # Documentation
+    docs:
+      readme: true # Comprehensive README
+      cli_reference: true # Built-in help system
+      api_docs: true # JSDoc annotations
+      changelog: true # Auto-generated via templates
+
+  # === PERFORMANCE ===
+  performance:
+    # Startup Performance
+    startup:
+      target: "< 100ms" # Achieved via Deno
+      lazy_loading: true # Module imports on demand
+
+    # Runtime Performance
+    runtime:
+      async: true # Fully async/await based
+      streaming: true # Efficient file processing
+      parallel: true # Concurrent git operations
+
+    # Resource Usage
+    resources:
+      memory_limit: "256MB" # Minimal memory footprint
+      cpu_cores: 1 # Single-threaded
+
+  # === UNIQUE FEATURES ===
+  unique_features:
+    - name: "Intelligent File Handlers"
+      description: "Auto-detects file types and applies appropriate update patterns"
+
+    - name: "Marine-themed UX"
+      description: "Wave animations (🌊) and ocean metaphors throughout"
+
+    - name: "Bilingual Support"
+      description: "Full English/Japanese interface with i18n system"
+
+    - name: "AI-Powered Auto-Fix"
+      description: "Optional Claude/Copilot integration for CI/CD error resolution"
+
+    - name: "JSR-First Design"
+      description: "Built specifically for Deno's JSR registry ecosystem"
+
+    - name: "Vento Templates"
+      description: "Powerful, secure template engine for changelogs and version files"
+
+    - name: "OWASP Compliance"
+      description: "Security-first design with input validation and sandboxing"
+
+    - name: "Smart Version Detection"
+      description: "Analyzes conventional commits to auto-determine version bumps"

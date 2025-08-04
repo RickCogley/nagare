@@ -159,6 +159,20 @@ const config: NagareConfig = {
         );
       },
     },
+
+    // ✅ Update version in aichaku app description
+    {
+      path: "./.claude/aichaku/user/app-description.yaml",
+      patterns: {
+        version: /(version:\s*")([^"]+)(")/,
+      },
+      updateFn: (content: string, data: TemplateData) => {
+        return content.replace(
+          /(version:\s*")([^"]+)(")/,
+          `$1${data.version}$3`,
+        );
+      },
+    },
   ],
 
   /**
