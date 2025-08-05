@@ -2,8 +2,8 @@
 
 ## Overview
 
-Nagare is **primarily object-oriented** with functional programming elements mixed in. This hybrid
-approach is typical of modern TypeScript applications.
+Nagare is **primarily object-oriented** with functional programming elements mixed in. This hybrid approach is typical
+of modern TypeScript applications.
 
 ## Object-Oriented Characteristics
 
@@ -32,8 +32,8 @@ class ReleaseManager {
 
 ### 3. Dependency Injection
 
-Classes receive dependencies through constructors rather than creating them internally, promoting
-loose coupling and testability.
+Classes receive dependencies through constructors rather than creating them internally, promoting loose coupling and
+testability.
 
 ## Functional Programming Elements
 

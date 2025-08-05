@@ -59,7 +59,11 @@
     "security:check-sarif": "deno run --allow-read scripts/check-sarif.ts",
     "security:check-patterns": "deno run --allow-read scripts/check-patterns.ts",
 
-    "i18n:types": "deno run --allow-read --allow-write scripts/generate-i18n-types.ts"
+    "i18n:types": "deno run --allow-read --allow-write scripts/generate-i18n-types.ts",
+
+    "fmt:check": "deno fmt --check",
+    "fmt:md": "markdownlint-cli2 --fix \"**/*.md\"",
+    "lint:markdown": "markdownlint-cli2 --fix \"**/*.md\""
   },
 
   "imports": {
@@ -87,19 +91,41 @@
 
   "lint": {
     "rules": {
-      "tags": ["recommended"],
+      "tags": [
+        "recommended",
+        "eqeqeq",
+        "no-await-in-loop",
+        "camelcase",
+        "default-param-last",
+        "no-eval"
+      ],
       "exclude": ["no-inferrable-types"]
     },
-    "exclude": ["docs/", "coverage/"]
+    "exclude": [
+      "docs/",
+      "coverage/",
+      ".claude/",
+      "scratch/",
+      ".githooks/"
+    ]
   },
 
   "fmt": {
     "useTabs": false,
-    "lineWidth": 100,
+    "lineWidth": 120,
     "indentWidth": 2,
     "semiColons": true,
     "singleQuote": false,
-    "exclude": ["docs/", "coverage/"]
+    "proseWrap": "always",
+    "singleBodyPosition": "maintain",
+    "typeLiteral.separatorKind": "semiColon",
+    "exclude": [
+      "docs/",
+      "coverage/",
+      ".claude/",
+      "scratch/",
+      ".githooks/"
+    ]
   },
 
   "test": {
@@ -132,5 +158,13 @@
       "nagare.config.ts",
       "nagare-launcher.ts"
     ]
-  }
+  },
+
+  "exclude": [
+    ".claude/",
+    "scratch/",
+    "coverage/",
+    ".githooks/",
+    "docs/api/"
+  ]
 }

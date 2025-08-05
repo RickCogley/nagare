@@ -222,8 +222,7 @@ export class JsrVerifier {
       // If not the latest, check all versions
       if (!hasVersion) {
         try {
-          const versionsUrl =
-            `https://jsr.io/api/scopes/${info.scope}/packages/${info.name}/versions`;
+          const versionsUrl = `https://jsr.io/api/scopes/${info.scope}/packages/${info.name}/versions`;
           const versionsResponse = await fetch(versionsUrl, {
             method: "GET",
             headers: {

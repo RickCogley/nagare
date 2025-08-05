@@ -66,11 +66,9 @@ All dependencies are:
 
 ### GitHub Security Features
 
-Nagare leverages GitHub's comprehensive security platform to maintain code quality and prevent
-vulnerabilities:
+Nagare leverages GitHub's comprehensive security platform to maintain code quality and prevent vulnerabilities:
 
-1. **CodeQL Analysis**: Advanced semantic code analysis that automatically scans for security
-   vulnerabilities
+1. **CodeQL Analysis**: Advanced semantic code analysis that automatically scans for security vulnerabilities
    - Detects: SQL injection, XSS, path traversal, insecure data flow, and more
    - Runs: On every push, pull request, and weekly deep scans
    - Results: Appear in GitHub Security tab with detailed remediation guidance
@@ -98,23 +96,20 @@ vulnerabilities:
    - Push Protection: Can block commits containing secrets (optional)
    - Partners: Works with service providers to revoke exposed credentials
 
-All these features are **free for public repositories** and provide enterprise-grade security
-monitoring.
+All these features are **free for public repositories** and provide enterprise-grade security monitoring.
 
 ### Known Security Considerations
 
-1. **Custom Templates**: Custom Vento templates can execute code. Review all custom templates before
-   use. Key security notes:
+1. **Custom Templates**: Custom Vento templates can execute code. Review all custom templates before use. Key security
+   notes:
    - Templates with `autoescape: true` (default) automatically escape HTML entities
    - Use `|> safe` filter only when you trust the content source
    - Always validate template data before processing
    - See [CLAUDE.md](./CLAUDE.md#vento-template-engine-guidelines) for proper Vento usage
 
-2. **Command Execution**: While we use Deno's secure Command API, always validate configuration
-   inputs.
+2. **Command Execution**: While we use Deno's secure Command API, always validate configuration inputs.
 
-3. **File Patterns**: Custom file update patterns should be carefully reviewed to prevent unintended
-   matches.
+3. **File Patterns**: Custom file update patterns should be carefully reviewed to prevent unintended matches.
 
 ## Security Best Practices
 

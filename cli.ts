@@ -253,9 +253,7 @@ async function loadConfig(configPath?: string): Promise<NagareConfig> {
         resolvedPath = `file://${path}`;
       } else {
         // Relative path - resolve from current working directory
-        const absolutePath = path.startsWith("./")
-          ? `${Deno.cwd()}/${path.slice(2)}`
-          : `${Deno.cwd()}/${path}`;
+        const absolutePath = path.startsWith("./") ? `${Deno.cwd()}/${path.slice(2)}` : `${Deno.cwd()}/${path}`;
         resolvedPath = `file://${absolutePath}`;
       }
 
@@ -511,9 +509,7 @@ function showDetailedVersion(): void {
  */
 function showVersionJson(): void {
   // Type guard for RELEASE_NOTES to ensure safe access
-  const releaseNotes = isValidReleaseNotes(RELEASE_NOTES) && RELEASE_NOTES.version === VERSION
-    ? RELEASE_NOTES
-    : null;
+  const releaseNotes = isValidReleaseNotes(RELEASE_NOTES) && RELEASE_NOTES.version === VERSION ? RELEASE_NOTES : null;
 
   const versionInfo = {
     nagare: {

@@ -5,8 +5,8 @@ Nagare has i18n support built-in. Currently available:
 - English (en) - Default
 - Japanese (ja)
 
-**Note**: The i18n system is currently being integrated. Some messages may still show translation
-keys instead of the actual translated text. The help text is not yet internationalized.
+**Note**: The i18n system is currently being integrated. Some messages may still show translation keys instead of the
+actual translated text. The help text is not yet internationalized.
 
 ## Setting the Language
 

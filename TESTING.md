@@ -468,5 +468,4 @@ Future: GitHub Actions for automated testing on PRs and releases.
 
 **Happy Testing! 🧪**
 
-Remember: Thorough testing now prevents headaches later. Each phase builds confidence in Nagare's
-reliability.
+Remember: Thorough testing now prevents headaches later. Each phase builds confidence in Nagare's reliability.

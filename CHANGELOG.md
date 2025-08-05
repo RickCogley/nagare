@@ -2,8 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
-adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [2.14.0] - 2025-08-04
 
@@ -246,8 +246,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [2.8.0] - 2025-07-08
 
-This version includes critical fixes for the release process, including pre-flight validation and
-proper version detection.
+This version includes critical fixes for the release process, including pre-flight validation and proper version
+detection.
 
 ### Added
 
@@ -260,8 +260,8 @@ proper version detection.
 
 ### Fixed
 
-- **CRITICAL**: read current version from git tags instead of version file (3c34320) - prevents
-  version jumps when releases fail
+- **CRITICAL**: read current version from git tags instead of version file (3c34320) - prevents version jumps when
+  releases fail
 - resolve linting error in test mock (e184855)
 - add unstable-raw-imports flag to pre-flight test command (e9117e6)
 - add unstable-raw-imports flag to type check (1280491)

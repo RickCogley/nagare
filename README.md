@@ -7,9 +7,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![API Documentation](https://img.shields.io/badge/API_docs-deno.net-blue)](https://nagare.esolia.deno.net/)
 
-A comprehensive, [Deno](https://deno.com/)-native release management library that automates version
-bumping, changelog generation, and GitHub releases using
-[conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) and
+A comprehensive, [Deno](https://deno.com/)-native release management library that automates version bumping, changelog
+generation, and GitHub releases using [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) and
 [semantic versioning](https://semver.org/).
 
 ## 🚀 Quick Start (for the impatient)
@@ -33,15 +32,14 @@ deno run -A jsr:@rick/nagare/cli init
 deno task nagare
 ```
 
-That's it! Nagare will analyze your conventional commits and create a release automatically. Read on
-for details, or jump to [full documentation](docs/).
+That's it! Nagare will analyze your conventional commits and create a release automatically. Read on for details, or
+jump to [full documentation](docs/).
 
 ## What is Nagare?
 
-Nagare (流れ - "flow") provides intelligent release management for Deno projects. Install once, use
-everywhere. Rather than forcing you to manage versions manually, Nagare analyzes your git history
-and automatically determines the right version bump based on conventional commits - all while
-maintaining professional changelogs and GitHub releases.
+Nagare (流れ - "flow") provides intelligent release management for Deno projects. Install once, use everywhere. Rather
+than forcing you to manage versions manually, Nagare analyzes your git history and automatically determines the right
+version bump based on conventional commits - all while maintaining professional changelogs and GitHub releases.
 
 ## 📚 Documentation & Resources
 
@@ -49,25 +47,24 @@ maintaining professional changelogs and GitHub releases.
 
 - [**Release Workflow Guide**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/release-workflow.md) -
   Complete release process with visual flow diagrams
-- [**File Update System**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/file-update-system.md) -
-  How intelligent file handlers work
-- [**Security Model**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/security-model.md) -
-  Security architecture with threat analysis
+- [**File Update System**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/file-update-system.md) - How
+  intelligent file handlers work
+- [**Security Model**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/security-model.md) - Security
+  architecture with threat analysis
 
 ### 📖 Complete Documentation
 
-- [**Full Documentation Hub**](https://github.com/RickCogley/nagare/blob/main/docs/) - Comprehensive
-  guides, tutorials, and reference materials
+- [**Full Documentation Hub**](https://github.com/RickCogley/nagare/blob/main/docs/) - Comprehensive guides, tutorials,
+  and reference materials
 - [**API Documentation**](https://nagare.esolia.deno.net/) - Complete TypeScript API reference
-- [**How-to Guides**](https://github.com/RickCogley/nagare/tree/main/docs/how-to) - Task-specific
-  instructions and workflows
-- [**Reference Materials**](https://github.com/RickCogley/nagare/tree/main/docs/reference) -
-  Technical specifications and configuration options
+- [**How-to Guides**](https://github.com/RickCogley/nagare/tree/main/docs/how-to) - Task-specific instructions and
+  workflows
+- [**Reference Materials**](https://github.com/RickCogley/nagare/tree/main/docs/reference) - Technical specifications
+  and configuration options
 
 ### 🔗 Quick Links
 
-📦 **[JSR Package](https://jsr.io/@rick/nagare)** | 🐙
-**[GitHub Repository](https://github.com/RickCogley/nagare)**
+📦 **[JSR Package](https://jsr.io/@rick/nagare)** | 🐙 **[GitHub Repository](https://github.com/RickCogley/nagare)**
 
 **✨ Key Features:**
 
@@ -135,18 +132,18 @@ Nagare uses a **3-phase release system** that ensures reliable, professional rel
 
 ### 🔍 Analysis Phase
 
-When you run `deno task nagare`, Nagare analyzes your git history since the last release, parsing
-conventional commits to determine the appropriate version bump.
+When you run `deno task nagare`, Nagare analyzes your git history since the last release, parsing conventional commits
+to determine the appropriate version bump.
 
 ### 🔧 Build Phase
 
-Nagare updates all configured files using intelligent handlers, generates professional changelogs,
-and creates git tags with proper metadata.
+Nagare updates all configured files using intelligent handlers, generates professional changelogs, and creates git tags
+with proper metadata.
 
 ### 📤 Publish Phase
 
-Finally, Nagare pushes changes to GitHub and creates releases with detailed release notes, ensuring
-your users always know what's new.
+Finally, Nagare pushes changes to GitHub and creates releases with detailed release notes, ensuring your users always
+know what's new.
 
 ## Usage Examples
 
@@ -264,8 +261,7 @@ Nagare uses a modular architecture with specialized components:
 - **GitHub Integration** - Creates releases and manages GitHub interactions
 
 For detailed architecture diagrams and visual workflows, see the
-[Architecture Overview](https://github.com/RickCogley/nagare/blob/main/docs/explanation/architecture.md)
-and
+[Architecture Overview](https://github.com/RickCogley/nagare/blob/main/docs/explanation/architecture.md) and
 [Release Workflow Guide](https://github.com/RickCogley/nagare/blob/main/docs/explanation/release-workflow.md).
 
 ### Template System
@@ -293,10 +289,8 @@ export const CHANGELOG = {{releaseNotes}};
 
 ### Getting Help
 
-- **[GitHub Issues](https://github.com/RickCogley/nagare/issues)** - Bug reports and feature
-  requests
-- **[GitHub Discussions](https://github.com/RickCogley/nagare/discussions)** - Questions and
-  community support
+- **[GitHub Issues](https://github.com/RickCogley/nagare/issues)** - Bug reports and feature requests
+- **[GitHub Discussions](https://github.com/RickCogley/nagare/discussions)** - Questions and community support
 - **[JSR Package](https://jsr.io/@rick/nagare)** - Package documentation
 
 ### Contributing
@@ -326,9 +320,8 @@ Nagare is released under the [MIT License](LICENSE).
 
 ## 🙏 Acknowledgments
 
-Nagare was extracted and generalized from the [Salty](https://github.com/esolia/salty.esolia.pro)
-project's sophisticated release automation system. Special thanks to the Deno team for creating an
-excellent TypeScript runtime.
+Nagare was extracted and generalized from the [Salty](https://github.com/esolia/salty.esolia.pro) project's
+sophisticated release automation system. Special thanks to the Deno team for creating an excellent TypeScript runtime.
 
 ---
 

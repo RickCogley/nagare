@@ -207,9 +207,7 @@ export class StdProgressIndicator {
       return;
     }
 
-    const stageStates = Array.from(this.stages.values()).map((stage) =>
-      this.formatStageStatus(stage)
-    );
+    const stageStates = Array.from(this.stages.values()).map((stage) => this.formatStageStatus(stage));
     const progressLine = stageStates.join(" ");
 
     let output = bold(cyan("🌊 Release Progress: ")) + progressLine;

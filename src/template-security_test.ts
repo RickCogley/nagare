@@ -280,8 +280,7 @@ Deno.test("template security - prototype pollution prevention", async () => {
   );
 
   await assertRejects(
-    () =>
-      processor.processTemplate("{{ {}.constructor.prototype.polluted = true }}", mockTemplateData),
+    () => processor.processTemplate("{{ {}.constructor.prototype.polluted = true }}", mockTemplateData),
     Error,
   );
 });

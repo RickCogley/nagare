@@ -2,8 +2,8 @@
 
 ## Purpose
 
-This directory contains the core implementation of Nagare's release management functionality. Each
-module follows SOLID principles and maintains clear separation of concerns.
+This directory contains the core implementation of Nagare's release management functionality. Each module follows SOLID
+principles and maintains clear separation of concerns.
 
 ## Key Components
 
@@ -32,7 +32,7 @@ module follows SOLID principles and maintains clear separation of concerns.
 
 ### GitHub Integration
 
-- **github-integration.ts** - GitHub release creation via gh CLI
+- **GitHub-integration.ts** - GitHub release creation via gh CLI
   - Creates GitHub releases with generated changelogs
   - Manages draft/prerelease states
   - Handles authentication through gh CLI

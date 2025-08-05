@@ -288,8 +288,7 @@ import { TemplateProcessor } from "jsr:@rick/nagare";
 
 Nagare uses Vento templates with auto-escaping for security. Important notes:
 
-1. **Built-in templates** generate code files (TypeScript, JSON, YAML) and use `|> safe` to output
-   raw values
+1. **Built-in templates** generate code files (TypeScript, JSON, YAML) and use `|> safe` to output raw values
 2. **Custom HTML templates** MUST escape JSON data in attributes to prevent XSS:
    ```html
    <!-- ✅ SAFE in HTML -->
@@ -558,8 +557,7 @@ interface FileUpdatePattern {
 }
 ```
 
-**Note:** As of v1.1.0, if a file has a built-in handler, you can omit both `patterns` and
-`updateFn`.
+**Note:** As of v1.1.0, if a file has a built-in handler, you can omit both `patterns` and `updateFn`.
 
 ## Constants
 
@@ -785,8 +783,7 @@ updateFiles: [
 
 ### Pattern Validation
 
-Nagare automatically validates your file update patterns and will warn you about potentially
-dangerous configurations:
+Nagare automatically validates your file update patterns and will warn you about potentially dangerous configurations:
 
 ```
 ⚠️  Dangerous pattern detected in ./deno.json for key "version"
@@ -938,9 +935,8 @@ async function customRelease() {
 
 ## Lifecycle Hooks
 
-Nagare supports lifecycle hooks that allow you to run custom operations at specific points in the
-release process. This is useful for tasks like validation, building binaries, notifications, or any
-other custom operations you need.
+Nagare supports lifecycle hooks that allow you to run custom operations at specific points in the release process. This
+is useful for tasks like validation, building binaries, notifications, or any other custom operations you need.
 
 ### Available Hooks
 
@@ -1024,9 +1020,9 @@ hooks: {
 
 ### Example: Building and Uploading Binaries
 
-Here's a comprehensive example of using `postRelease` hooks to compile binaries for multiple
-platforms and upload them to GitHub releases. This pattern is particularly useful for projects that
-want to distribute compiled executables alongside their source code:
+Here's a comprehensive example of using `postRelease` hooks to compile binaries for multiple platforms and upload them
+to GitHub releases. This pattern is particularly useful for projects that want to distribute compiled executables
+alongside their source code:
 
 ```typescript
 hooks: {
@@ -1313,5 +1309,4 @@ hooks: {
 
 ---
 
-For more examples and guides, see the [FAQ](./FAQ.md) and
-[GitHub repository](https://github.com/rick/nagare).
+For more examples and guides, see the [FAQ](./FAQ.md) and [GitHub repository](https://github.com/rick/nagare).

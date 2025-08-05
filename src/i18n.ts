@@ -185,9 +185,7 @@ let globalI18n: I18n | null = null;
  * @param configOrLanguage - Either a full I18nConfig object or a language string
  */
 export async function initI18n(configOrLanguage?: I18nConfig | string): Promise<I18n> {
-  const config = typeof configOrLanguage === "string"
-    ? { language: configOrLanguage }
-    : configOrLanguage;
+  const config = typeof configOrLanguage === "string" ? { language: configOrLanguage } : configOrLanguage;
 
   globalI18n = new I18n(config);
   await globalI18n.init();

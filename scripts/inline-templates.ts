@@ -20,8 +20,7 @@ const BUILD_DIR = "./build";
 const TEMPLATE_DIR = "./templates";
 
 // Regex to match text imports
-const TEXT_IMPORT_REGEX =
-  /import\s+(\w+)\s+from\s+["']([^"']+)["']\s+with\s+\{\s*type:\s*["']text["']\s*\}/g;
+const TEXT_IMPORT_REGEX = /import\s+(\w+)\s+from\s+["']([^"']+)["']\s+with\s+\{\s*type:\s*["']text["']\s*\}/g;
 
 async function readTemplate(templatePath: string): Promise<string> {
   try {
@@ -83,8 +82,7 @@ async function transformFile(filePath: string, outputPath: string): Promise<bool
     );
 
     // Create the replacement constant
-    const constantDeclaration =
-      `// Inlined from ${imp.path}\nconst ${imp.varName} = \`${imp.content}\`;`;
+    const constantDeclaration = `// Inlined from ${imp.path}\nconst ${imp.varName} = \`${imp.content}\`;`;
 
     transformed = transformed.replace(importRegex, constantDeclaration);
   }

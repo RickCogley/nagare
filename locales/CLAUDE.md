@@ -2,8 +2,8 @@
 
 ## Purpose
 
-This directory contains translation files for Nagare's multi-language support. Currently supports
-English and Japanese, with a structure that allows easy addition of new languages.
+This directory contains translation files for Nagare's multi-language support. Currently supports English and Japanese,
+with a structure that allows easy addition of new languages.
 
 ## Language Files
 

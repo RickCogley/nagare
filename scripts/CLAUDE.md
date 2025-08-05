@@ -2,9 +2,8 @@
 
 ## Purpose
 
-This directory contains development scripts, build tools, and utilities that support Nagare
-development but are not part of the distributed package. These scripts automate common development
-tasks and maintain code quality.
+This directory contains development scripts, build tools, and utilities that support Nagare development but are not part
+of the distributed package. These scripts automate common development tasks and maintain code quality.
 
 ## Key Scripts
 

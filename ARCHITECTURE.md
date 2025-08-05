@@ -1,7 +1,7 @@
 # Nagare Architecture & Technical Specification
 
-This document provides a technical overview of Nagare's architecture, design decisions, and
-implementation details for developers who want to understand, contribute to, or extend the library.
+This document provides a technical overview of Nagare's architecture, design decisions, and implementation details for
+developers who want to understand, contribute to, or extend the library.
 
 ## 🏗️ System Architecture
 
@@ -533,5 +533,5 @@ For commit message standards and contribution guidelines, see [CONTRIBUTING.md](
 
 ---
 
-This architecture provides a solid foundation for reliable, extensible release automation while
-maintaining simplicity for basic use cases.
+This architecture provides a solid foundation for reliable, extensible release automation while maintaining simplicity
+for basic use cases.

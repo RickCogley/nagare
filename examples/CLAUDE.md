@@ -2,8 +2,8 @@
 
 ## Purpose
 
-This directory contains practical examples demonstrating how to use Nagare in various scenarios.
-Each example is a working project that showcases different features and configuration options.
+This directory contains practical examples demonstrating how to use Nagare in various scenarios. Each example is a
+working project that showcases different features and configuration options.
 
 ## Example Projects
 

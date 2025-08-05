@@ -105,9 +105,7 @@ export class BackupManager {
       this.logger.info(`Restoring backup ${backupId}...`);
 
       // Restore each file
-      const restorePromises = backupInfo.files.map((filePath) =>
-        this.restoreFile(filePath, backupInfo.backupDir)
-      );
+      const restorePromises = backupInfo.files.map((filePath) => this.restoreFile(filePath, backupInfo.backupDir));
 
       await Promise.all(restorePromises);
 
@@ -116,9 +114,7 @@ export class BackupManager {
       );
     } catch (error) {
       throw new NagareError(
-        `Failed to restore backup ${backupId}: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
+        `Failed to restore backup ${backupId}: ${error instanceof Error ? error.message : String(error)}`,
         ErrorCodes.FILE_UPDATE_FAILED,
       );
     }
@@ -199,9 +195,7 @@ export class BackupManager {
       this.logger.debug(`Backed up ${filePath} to ${backupPath}`);
     } catch (error) {
       throw new NagareError(
-        `Failed to backup file ${filePath}: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
+        `Failed to backup file ${filePath}: ${error instanceof Error ? error.message : String(error)}`,
         ErrorCodes.FILE_UPDATE_FAILED,
       );
     }
@@ -232,9 +226,7 @@ export class BackupManager {
       this.logger.debug(`Restored ${filePath} from ${backupPath}`);
     } catch (error) {
       throw new NagareError(
-        `Failed to restore file ${filePath}: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
+        `Failed to restore file ${filePath}: ${error instanceof Error ? error.message : String(error)}`,
         ErrorCodes.FILE_UPDATE_FAILED,
       );
     }

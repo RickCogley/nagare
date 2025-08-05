@@ -76,9 +76,7 @@ export class DocGenerator {
       }
     } catch (error) {
       console.warn(
-        `⚠️  Failed to generate documentation: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
+        `⚠️  Failed to generate documentation: ${error instanceof Error ? error.message : String(error)}`,
       );
       // Don't throw - docs generation is optional
     }

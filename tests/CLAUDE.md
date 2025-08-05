@@ -2,9 +2,8 @@
 
 ## Purpose
 
-This directory contains comprehensive test coverage for Nagare, following Test-Driven Development
-(TDD) principles. Tests ensure reliability, security, and maintainability of the release management
-system.
+This directory contains comprehensive test coverage for Nagare, following Test-Driven Development (TDD) principles.
+Tests ensure reliability, security, and maintainability of the release management system.
 
 ## Test Organization
 

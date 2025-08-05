@@ -339,11 +339,7 @@ export class NagareBrand {
   static versionBump(currentVersion: string, newVersion: string, bumpType: string): string {
     const colors = NagareBrand.getMarineColors();
     const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
-    const flowType = bumpType === "major"
-      ? "surging"
-      : bumpType === "minor"
-      ? "flowing"
-      : "rippling";
+    const flowType = bumpType === "major" ? "surging" : bumpType === "minor" ? "flowing" : "rippling";
     return `${coloredPrefix} ${
       colors.oceanCyan(`${flowType} from v${currentVersion} to v${newVersion} (${bumpType})`)
     }...`;
@@ -356,9 +352,7 @@ export class NagareBrand {
   static creatingRelease(version: string): string {
     const colors = NagareBrand.getMarineColors();
     const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
-    return `${coloredPrefix} ${
-      colors.oceanCyan(`Channeling release v${version} into the stream`)
-    }...`;
+    return `${coloredPrefix} ${colors.oceanCyan(`Channeling release v${version} into the stream`)}...`;
   }
 
   /**

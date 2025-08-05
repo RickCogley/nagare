@@ -214,9 +214,7 @@ export class VersionUtils {
       major: semver.major,
       minor: semver.minor,
       patch: semver.patch,
-      prerelease: semver.prerelease && semver.prerelease.length > 0
-        ? semver.prerelease.join(".")
-        : null,
+      prerelease: semver.prerelease && semver.prerelease.length > 0 ? semver.prerelease.join(".") : null,
     };
   }
 }

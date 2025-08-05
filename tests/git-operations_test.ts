@@ -24,13 +24,7 @@
  * See GitHub issue: https://github.com/RickCogley/nagare/issues/[TODO: create issue for git i18n test failures] // DevSkim: ignore DS176209
  */
 
-import {
-  assertEquals,
-  assertExists,
-  assertInstanceOf,
-  assertRejects,
-  assertStringIncludes,
-} from "@std/assert";
+import { assertEquals, assertExists, assertInstanceOf, assertRejects, assertStringIncludes } from "@std/assert";
 import { GitOperations } from "../src/git-operations.ts";
 import { ErrorCodes, NagareError } from "../src/enhanced-error.ts";
 import type { NagareConfig } from "../types.ts";

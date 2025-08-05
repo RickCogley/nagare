@@ -1,7 +1,7 @@
 # Contributing to Nagare
 
-Thank you for your interest in contributing to Nagare! This document provides guidelines for
-contributing to the project.
+Thank you for your interest in contributing to Nagare! This document provides guidelines for contributing to the
+project.
 
 ## 🚀 Getting Started
 
@@ -21,8 +21,8 @@ contributing to the project.
 
 ## 📝 Commit Message Guidelines
 
-Nagare follows [Conventional Commits](https://www.conventionalcommits.org/) specification. This
-helps with automated changelog generation and semantic versioning.
+Nagare follows [Conventional Commits](https://www.conventionalcommits.org/) specification. This helps with automated
+changelog generation and semantic versioning.
 
 ### Commit Message Format
 
@@ -305,8 +305,7 @@ Brief description of what this PR does.
 
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as
-      expected)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
 - [ ] Documentation update
 
 ## Testing
@@ -356,8 +355,7 @@ If you discover a security vulnerability, please **do not** open a public issue.
 
 ## 📄 License
 
-By contributing to Nagare, you agree that your contributions will be licensed under the
-[MIT License](LICENSE).
+By contributing to Nagare, you agree that your contributions will be licensed under the [MIT License](LICENSE).
 
 ## ❓ Questions
 

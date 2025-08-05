@@ -4,9 +4,9 @@
 
 ### What is Nagare?
 
-Nagare (流れ - "flow" in Japanese) is a comprehensive release management library for
-JavaScript/TypeScript projects. It automates versioning, changelog generation, and GitHub releases
-using conventional commits and semantic versioning principles.
+Nagare (流れ - "flow" in Japanese) is a comprehensive release management library for JavaScript/TypeScript projects. It
+automates versioning, changelog generation, and GitHub releases using conventional commits and semantic versioning
+principles.
 
 ### Why choose Nagare over other release tools?
 
@@ -134,8 +134,8 @@ commitTypes: {
 
 ### What if my commits don't follow conventional format?
 
-Non-conventional commits are included in the "Changed" section. However, for best results, we
-recommend adopting conventional commits:
+Non-conventional commits are included in the "Changed" section. However, for best results, we recommend adopting
+conventional commits:
 
 ```bash
 # Good
@@ -291,8 +291,8 @@ Nagare will:
 
 ### How do I know if my patterns are safe?
 
-**For v1.1.0+ users:** If you're using built-in handlers (just specifying the file path), your
-patterns are automatically safe!
+**For v1.1.0+ users:** If you're using built-in handlers (just specifying the file path), your patterns are
+automatically safe!
 
 **For custom patterns:** Nagare validates them automatically:
 
@@ -433,8 +433,7 @@ git merge hotfix/critical-bug
 
 ### Should I commit the generated CHANGELOG.md?
 
-**Yes!** Nagare automatically commits the updated changelog as part of the release process. This
-ensures:
+**Yes!** Nagare automatically commits the updated changelog as part of the release process. This ensures:
 
 - Version history is preserved in git
 - Users can see changes without running Nagare
@@ -555,8 +554,8 @@ While not recommended, pattern validation cannot be disabled as it's a safety fe
 
 ### What's new in v1.1.0?
 
-**Intelligent File Handlers**: Nagare now automatically detects and updates common file types
-without requiring custom patterns:
+**Intelligent File Handlers**: Nagare now automatically detects and updates common file types without requiring custom
+patterns:
 
 - Just specify `{ path: "./deno.json" }` - no patterns needed!
 - Built-in support for JSON, TypeScript, Markdown, YAML, and more
@@ -565,8 +564,8 @@ without requiring custom patterns:
 
 ### What was fixed in v1.1.1?
 
-Fixed a critical issue where the config file couldn't be resolved when Nagare was imported from JSR.
-This affected users who installed Nagare via JSR and tried to use a `nagare.config.ts` file.
+Fixed a critical issue where the config file couldn't be resolved when Nagare was imported from JSR. This affected users
+who installed Nagare via JSR and tried to use a `nagare.config.ts` file.
 
 ### Are there any known limitations?
 
@@ -602,5 +601,5 @@ This affected users who installed Nagare via JSR and tried to use a `nagare.conf
 
 ---
 
-**Still have questions?** Open an issue on [GitHub](https://github.com/RickCogley/nagare/issues) or
-check the [API documentation](./API.md).
+**Still have questions?** Open an issue on [GitHub](https://github.com/RickCogley/nagare/issues) or check the
+[API documentation](./API.md).

@@ -2,9 +2,8 @@
 
 ## Purpose
 
-This directory contains Vento template files used by Nagare to generate dynamic content such as
-changelogs, version files, and release notes. Templates provide flexible, customizable output while
-maintaining security through sandboxing.
+This directory contains Vento template files used by Nagare to generate dynamic content such as changelogs, version
+files, and release notes. Templates provide flexible, customizable output while maintaining security through sandboxing.
 
 ## Key Templates
 

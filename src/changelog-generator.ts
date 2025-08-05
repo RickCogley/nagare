@@ -74,9 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       entry += `### Changed\n${releaseNotes.changed.map((item) => `- ${item}`).join("\n")}\n\n`;
     }
     if (releaseNotes.deprecated.length > 0) {
-      entry += `### Deprecated\n${
-        releaseNotes.deprecated.map((item) => `- ${item}`).join("\n")
-      }\n\n`;
+      entry += `### Deprecated\n${releaseNotes.deprecated.map((item) => `- ${item}`).join("\n")}\n\n`;
     }
     if (releaseNotes.removed.length > 0) {
       entry += `### Removed\n${releaseNotes.removed.map((item) => `- ${item}`).join("\n")}\n\n`;

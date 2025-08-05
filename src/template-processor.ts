@@ -397,9 +397,7 @@ export class TemplateProcessor {
               },
             );
           }
-          const valueStr = typeof exp.value === "string"
-            ? `"${exp.value}"`
-            : JSON.stringify(exp.value, null, 2);
+          const valueStr = typeof exp.value === "string" ? `"${exp.value}"` : JSON.stringify(exp.value, null, 2);
           const asConst = exp.asConst ? " as const" : "";
           const defaultExport = exp.isDefault ? "default " : "";
           lines.push(`export ${defaultExport}${exp.type} ${exp.name} = ${valueStr}${asConst};`);

@@ -399,8 +399,7 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
   "cargo.toml": {
     id: "cargo.toml",
     name: "Rust Cargo Configuration",
-    detector: (path: string): boolean =>
-      path.toLowerCase() === "cargo.toml" || path.endsWith("/cargo.toml"),
+    detector: (path: string): boolean => path.toLowerCase() === "cargo.toml" || path.endsWith("/cargo.toml"),
     patterns: {
       version: /^(\s*version\s*=\s*)"([^"]+)"/m,
     },
