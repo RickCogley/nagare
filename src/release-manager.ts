@@ -36,6 +36,8 @@ import { sanitizeErrorMessage } from "./security-utils.ts";
 import { ErrorCodes, ErrorFactory, NagareError } from "./enhanced-error.ts";
 import { t } from "./i18n.ts";
 import { confirmI18n } from "./cli-utils.ts";
+import { showAppCompletion, showAppProgress, showReleaseHeader, showReleaseSummary } from "./ui/release-header.ts";
+import { getAppDisplayName } from "./ui/app-context.ts";
 import { JsrVerifier } from "./jsr-verifier.ts";
 import { GitHubActionsMonitor } from "./github-actions-monitor.ts";
 import { LogParser } from "./log-parser.ts";
@@ -531,13 +533,15 @@ export class ReleaseManager {
       // Complete init stage
       progress?.completeStage("init");
 
+      // Show release header with application context
+      const currentVersion = await this.versionUtils.getCurrentVersion();
+
       // Version calculation stage
       await progress?.startStage("version", "Calculating new version");
-      const currentVersion = await this.versionUtils.getCurrentVersion();
-      this.logger.infoI18n("log.release.currentVersion", { version: currentVersion });
 
       // Get commits since last release
       const commits = await this.git.getCommitsSinceLastRelease();
+      showAppProgress(this.config, "Analyzing", "commit flow");
       this.logger.infoI18n("log.release.commitsFound", { count: commits.length });
 
       if (commits.length === 0 && !bumpType) {
@@ -547,6 +551,11 @@ export class ReleaseManager {
 
       // Calculate new version
       const newVersion = this.versionUtils.calculateNewVersion(currentVersion, commits, bumpType);
+
+      // Show branded release header now that we have versions
+      showReleaseHeader(this.config, currentVersion, newVersion);
+
+      this.logger.infoI18n("log.release.currentVersion", { version: currentVersion });
       this.logger.infoI18n("log.release.newVersion", { version: newVersion });
       progress?.completeStage("version");
 
@@ -613,6 +622,7 @@ export class ReleaseManager {
       try {
         // Changelog generation stage
         await progress?.startStage("changelog", "Generating release notes and updating files");
+        showAppProgress(this.config, "Updating", "version streams");
 
         // Update files
         const updatedFiles = await this.updateFiles(newVersion, releaseNotes);
@@ -838,6 +848,12 @@ export class ReleaseManager {
         progress?.completeStage("complete");
 
         this.logger.info(t("log.release.releaseSuccess", { version: newVersion }));
+
+        // Show application completion message
+        showAppCompletion(this.config, newVersion);
+
+        // Show release summary
+        showReleaseSummary(this.config, newVersion, commits.length, updatedFiles.length);
 
         // Log security audit event for successful release
         this.logger.audit("release_completed", {
@@ -1209,9 +1225,11 @@ export class ReleaseManager {
         updatedFiles.push(filePattern.path);
       }
 
+      showAppProgress(this.config, "Updated", `${this.config.updateFiles.length} files`);
       this.logger.infoI18n("log.release.updatingFiles", { count: this.config.updateFiles.length });
     }
 
+    showAppProgress(this.config, "Completed", `${updatedFiles.length} file updates`);
     this.logger.infoI18n("log.release.updatingFiles", { count: updatedFiles.length });
     return updatedFiles;
   }
