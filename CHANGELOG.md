@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.17.1] - 2025-08-05
+
+### Changed
+
+- update local claude settings with revert permission (0a470b1)
+- Revert "chore(release): bump version to 2.17.0" (ce93d98)
+
+### Fixed
+
+- handle excluded files gracefully in format-code hook (7680ccd)
+
 ## [2.16.0] - 2025-08-05
 
 ### Added
