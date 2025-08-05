@@ -26,7 +26,7 @@ While it's clear that Nagare is doing the work, it's not clear **what applicatio
 Add a clear header showing which application is being released:
 
 ```
-🌊 Nagare: Preparing release for Aichaku
+🌊 Nagare: Starting release current for Aichaku...
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Project: Aichaku Code Reviewer
 Version: 0.43.2 → 0.44.0 (minor)
@@ -58,12 +58,12 @@ export const config: NagareConfig = {
 Show the application name throughout the release process:
 
 ```
-🌊 Nagare: Analyzing commits for Aichaku...
-🌊 Nagare: Found 5 commits for Aichaku since v0.43.2
-🌊 Nagare: Bumping Aichaku version: minor (0.44.0)
-🌊 Nagare: Updating version files for Aichaku...
-🌊 Nagare: Generating changelog for Aichaku...
-🌊 Nagare: Creating GitHub release for Aichaku...
+🌊 Nagare: Analyzing Aichaku commit flow...
+🌊 Nagare: Found 5 commits in Aichaku current since v0.43.2
+🌊 Nagare: Flowing Aichaku version forward: minor (0.44.0)
+🌊 Nagare: Updating Aichaku version streams...
+🌊 Nagare: Generating Aichaku changelog flow...
+🌊 Nagare: Releasing Aichaku into GitHub current...
 ```
 
 ### 4. **Success Summary**
@@ -72,11 +72,11 @@ Clear completion message showing what was released:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Nagare successfully released Aichaku v0.44.0
+✅ Aichaku v0.44.0 release flow complete!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • Type:     Minor Release
-• Files:    4 updated
-• Commits:  5 included
+• Files:    4 updated in the current
+• Commits:  5 merged into the flow
 • Time:     12.4s
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```

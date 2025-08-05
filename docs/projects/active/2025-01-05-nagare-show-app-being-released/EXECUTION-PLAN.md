@@ -30,10 +30,10 @@
 - File: `/src/i18n.ts`
 - Add application-context messages:
   ```typescript
-  "release.preparingFor": "Preparing release for {appName}",
-  "release.analyzingFor": "Analyzing commits for {appName}",
-  "release.updatingFor": "Updating version files for {appName}",
-  "release.completedFor": "Successfully released {appName} v{version}"
+  "release.startingFor": "Starting release current for {appName}...",
+  "release.analyzingFor": "Analyzing {appName} commit flow...",
+  "release.updatingFor": "Updating {appName} version streams...",
+  "release.completedFor": "{appName} v{version} release flow complete!"
   ```
 
 ### Phase 2: UI Components (Day 3-5)
@@ -45,7 +45,7 @@
   ```typescript
   export function showReleaseHeader(config: NagareConfig, fromVersion: string, toVersion: string) {
     const appName = config.project.name;
-    console.log(`🌊 Nagare: Preparing release for ${appName}`);
+    console.log(`🌊 Nagare: Starting release current for ${appName}...`);
     console.log("━".repeat(50));
     console.log(`Project: ${appName}`);
     console.log(`Version: ${fromVersion} → ${toVersion}`);
@@ -58,9 +58,9 @@
 - Update all progress messages to include app name
 - Use consistent format: `🌊 Nagare: [Action] for [AppName]...`
 - Examples:
-  - In Aichaku: "🌊 Nagare: Analyzing commits for Aichaku..."
-  - In Aichaku: "🌊 Nagare: Updating 4 files for Aichaku..."
-  - In Nagare itself: "🌊 Nagare: Creating GitHub release for Nagare (流れ)..."
+  - In Aichaku: "🌊 Nagare: Analyzing Aichaku commit flow..."
+  - In Aichaku: "🌊 Nagare: Updating 4 files in Aichaku current..."
+  - In Nagare itself: "🌊 Nagare: Releasing Nagare (流れ) into GitHub current..."
 
 ### Phase 3: Integration (Day 6-8)
 

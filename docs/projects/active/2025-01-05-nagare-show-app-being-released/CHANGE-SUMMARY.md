@@ -18,15 +18,15 @@ that "Nagare is preparing a release for [Application Name]".
 
 **After:**
 ```
-🌊 Nagare: Preparing release for Aichaku
+🌊 Nagare: Starting release current for Aichaku...
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Project: Aichaku Code Reviewer
 Version: 0.43.2 → 0.44.0 (minor)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🌊 Nagare: Analyzing commits for Aichaku...
-🌊 Nagare: Found 5 commits for Aichaku since v0.43.2
-🌊 Nagare: Bumping Aichaku version: minor (0.44.0)
+🌊 Nagare: Analyzing Aichaku commit flow...
+🌊 Nagare: Found 5 commits in Aichaku current since v0.43.2
+🌊 Nagare: Flowing Aichaku version forward: minor (0.44.0)
 ```
 
 ### 2. Configuration Enhancement
