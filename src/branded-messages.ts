@@ -168,15 +168,20 @@ export class NagareBrand {
   /**
    * Display wave animation startup sequence
    * Visible loading animation with proper timing and marine colors
+   * @param appContext - Optional application name to include in the message
    */
-  static async showWaveAnimation(): Promise<void> {
+  static async showWaveAnimation(appContext?: string): Promise<void> {
     const caps = NagareBrand.getTerminalCapabilities();
     const colors = NagareBrand.getMarineColors();
+
+    // Create context-aware message
+    const baseMessage = "Automate your release flow with confidence";
+    const contextMessage = appContext ? `Working with ${appContext} - ${baseMessage.toLowerCase()}` : baseMessage;
 
     if (!caps.isTTY || !caps.supportsAnsi) {
       // For non-interactive terminals, just show clean branded message
       const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
-      console.log(`${coloredPrefix} Automate your release flow with confidence`);
+      console.log(`${coloredPrefix} ${contextMessage}`);
       return;
     }
 
@@ -193,9 +198,9 @@ export class NagareBrand {
     }
 
     // Clear the animation line and show final clean branded message
-    Deno.stdout.writeSync(new TextEncoder().encode("\r" + " ".repeat(30) + "\r"));
+    Deno.stdout.writeSync(new TextEncoder().encode("\r" + " ".repeat(50) + "\r"));
     const coloredPrefix = `${NagareBrand.EMOJI} ${colors.deepBlue(NagareBrand.NAME)}:`;
-    console.log(`${coloredPrefix} Automate your release flow with confidence`);
+    console.log(`${coloredPrefix} ${contextMessage}`);
   }
 
   /**

@@ -37,6 +37,7 @@ import { sanitizeErrorMessage, validateCliArgs, validateFilePath } from "./src/s
 import { ErrorFactory } from "./src/enhanced-error.ts";
 import { initI18n, t } from "./src/i18n.ts";
 import { NagareBrand as Brand } from "./src/branded-messages.ts";
+import { getAppDisplayName, hasAppName } from "./src/ui/app-context.ts";
 
 /**
  * CLI configuration options interface
@@ -574,13 +575,6 @@ export async function cli(args: string[]): Promise<void> {
     Deno.exit(1);
   }
 
-  // Show wave animation for interactive commands (not version/help)
-  if (command && !["version", "help"].includes(command)) {
-    await Brand.showWaveAnimation();
-    // Brief pause after animation so user can see it before operations begin
-    await new Promise((resolve) => setTimeout(resolve, 800));
-  }
-
   // Initialize i18n early with language preference
   try {
     // Resolve locales directory based on whether we're running from source or JSR package
@@ -599,6 +593,26 @@ export async function cli(args: string[]): Promise<void> {
   } catch (error) {
     Brand.error(`Failed to initialize i18n: ${sanitizeErrorMessage(error, false)}`);
     // Continue without i18n - English will be used as fallback
+  }
+
+  // Show wave animation for interactive commands, with app context if we can load config
+  if (command && !["version", "help"].includes(command)) {
+    let appContext: string | undefined;
+
+    // Try to load config early for app context in animation
+    try {
+      const config = await loadConfig(options.config);
+      if (hasAppName(config)) {
+        appContext = getAppDisplayName(config);
+      }
+    } catch {
+      // If config can't be loaded, continue without app context
+      // The error will be handled later in the main try-catch
+    }
+
+    await Brand.showWaveAnimation(appContext);
+    // Brief pause after animation so user can see it before operations begin
+    await new Promise((resolve) => setTimeout(resolve, 800));
   }
 
   // Helper to try translating with fallback
@@ -892,7 +906,7 @@ export default {
   }
 
   try {
-    // Load configuration
+    // Load configuration (may have been loaded earlier for animation context)
     Brand.log("Navigating configuration channels...");
     const config = await loadConfig(options.config);
 
@@ -1041,16 +1055,28 @@ export default {
 
       case "release":
       default: {
-        Brand.log(
-          `Starting release current${bumpType ? ` with ${bumpType} flow` : ""}...`,
-        );
+        if (hasAppName(config)) {
+          const appName = getAppDisplayName(config);
+          Brand.log(
+            `Starting ${appName} release current${bumpType ? ` with ${bumpType} flow` : ""}...`,
+          );
+        } else {
+          Brand.log(
+            `Starting release current${bumpType ? ` with ${bumpType} flow` : ""}...`,
+          );
+        }
         const releaseManager = new ReleaseManager(config);
         const result = await releaseManager.release(bumpType as BumpType);
         if (!result.success) {
           Brand.error(`Release current blocked: ${result.error}`);
           Deno.exit(1);
         }
-        Brand.celebrate(`🌊 Nagare: Release ${result.version} flow complete! 🎉`);
+        if (hasAppName(config)) {
+          const appName = getAppDisplayName(config);
+          Brand.celebrate(`${appName} v${result.version} release flow complete! 🎉`);
+        } else {
+          Brand.celebrate(`🌊 Nagare: Release ${result.version} flow complete! 🎉`);
+        }
         break;
       }
     }
