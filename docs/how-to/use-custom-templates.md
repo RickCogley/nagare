@@ -5,6 +5,7 @@ This guide shows you how to create and customize version file templates using Na
 ## Before you begin
 
 Ensure you have:
+
 - Nagare configured in your project
 - Basic understanding of template syntax
 - Knowledge of the [Vento template engine](https://vento.js.org/)
@@ -22,7 +23,7 @@ Use this approach for standard version file formats.
      template: "typescript",
    }
    ```
-   
+
    Generates:
    ```typescript
    export const VERSION = "1.2.3";
@@ -39,7 +40,7 @@ Use this approach for standard version file formats.
      template: "json",
    }
    ```
-   
+
    Generates:
    ```json
    {

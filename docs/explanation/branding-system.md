@@ -96,14 +96,16 @@ Brand.releaseComplete("1.1.0", 5);  // "🎉 Release v1.1.0 complete! (5 commits
 
 ### When to Use Branded Messages
 
-✅ **Use Brand.* methods for:**
+✅ __Use Brand._ methods for:_*
+
 - Major operations and status updates
 - User-facing confirmations and errors
 - Progress indicators during long operations
 - Success/failure messages
 - Warnings and advisory messages
 
-❌ **Don't use Brand.* methods for:**
+❌ __Don't use Brand._ methods for:_*
+
 - Debug logging (use `Brand.debug()` instead)
 - Internal technical logs (use `logger` instead)
 - Simple informational displays without context

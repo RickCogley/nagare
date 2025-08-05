@@ -27,6 +27,7 @@ NagareConfig is the main configuration interface that controls all aspects of Na
 **Type**: `object`  
 **Required**: Yes  
 **Properties**:
+
 - `name` (string, required) - Project name
 - `description` (string, optional) - Project description
 - `repository` (string, required) - Repository URL
@@ -53,6 +54,7 @@ project: {
 **Type**: `VersionFile`  
 **Required**: Yes  
 **Properties**:
+
 - `path` (string, required) - Path to version file relative to project root
 - `template` (TemplateFormat, required) - Template format: `"typescript"`, `"json"`, `"yaml"`, or `"custom"`
 - `customTemplate` (string, optional) - Custom Vento template (required when template is `"custom"`)
@@ -88,6 +90,7 @@ versionFile: {
 **Required**: No  
 **Default**: `{ includeCommitHashes: true, maxDescriptionLength: 100 }`  
 **Properties**:
+
 - `template` (string, optional) - Custom Vento template for release notes section
 - `metadata` (Record<string, unknown>, optional) - App-specific metadata to include
 - `includeCommitHashes` (boolean, optional) - Include git commit hashes (default: true)
@@ -107,16 +110,17 @@ releaseNotes: {
 }
 ```
 
-### `github` {#github}
+### `github` {#GitHub}
 
 **Type**: `GitHubConfig`  
 **Required**: No  
 **Properties**:
+
 - `owner` (string, required) - Repository owner/organization
 - `repo` (string, required) - Repository name
 - `createRelease` (boolean, optional) - Create GitHub releases (default: true)
 - `releaseTemplate` (string, optional) - Custom release template
-- `tokenEnvVar` (string, optional) - Environment variable for token (default: "GITHUB_TOKEN")
+- `tokenEnvVar` (string, optional) - Environment variable for token (default: "GitHub_TOKEN")
 
 GitHub integration settings for creating releases.
 
@@ -135,6 +139,7 @@ github: {
 **Type**: `FileUpdatePattern[]`  
 **Required**: No  
 **Properties per pattern**:
+
 - `path` (string, required) - File path relative to project root
 - `patterns` (object, optional) - Key-value regex patterns for find/replace
 - `updateFn` (function, optional) - Custom update function
@@ -188,6 +193,7 @@ commitTypes: {
 **Type**: `TemplateConfig`  
 **Required**: No  
 **Properties**:
+
 - `templatesDir` (string, optional) - Directory for external template files
 - `dataProviders` (Record<string, () => Promise<unknown>>, optional) - Dynamic data providers
 
@@ -211,6 +217,7 @@ templates: {
 **Type**: `DocsConfig`  
 **Required**: No  
 **Properties**:
+
 - `enabled` (boolean, required) - Enable documentation generation
 - `outputDir` (string, optional) - Output directory (default: "./docs")
 - `includePrivate` (boolean, optional) - Include private API (default: false)
@@ -233,6 +240,7 @@ docs: {
 **Type**: `ReleaseOptions`  
 **Required**: No  
 **Properties**:
+
 - `dryRun` (boolean, optional) - Preview changes without applying
 - `skipConfirmation` (boolean, optional) - Skip confirmation prompts
 - `gitRemote` (string, optional) - Git remote name (default: "origin")
@@ -256,6 +264,7 @@ options: {
 **Required**: No  
 **Since**: 1.6.0  
 **Properties**:
+
 - `templateSandbox` ("strict" | "moderate" | "disabled", optional) - Template sandboxing level (default: "strict")
 - `validateFilePaths` (boolean, optional) - Enable path validation (default: true)
 - `auditLog` (boolean, optional) - Enable security audit logging (default: false)
@@ -280,6 +289,7 @@ security: {
 **Required**: No  
 **Since**: 3.0.0  
 **Properties**:
+
 - `verifyJsrPublish` (boolean | JsrVerificationConfig, optional) - JSR publish verification
 - `autoFix` (AutoFixConfig, optional) - Automatic error fixing
 - `progress` (ProgressConfig, optional) - Progress visualization
@@ -321,6 +331,7 @@ release: {
 **Required**: No  
 **Since**: 1.1.0  
 **Properties**:
+
 - `preRelease` (Array<() => Promise<void>>, optional) - Functions to run before release
 - `postRelease` (Array<() => Promise<void>>, optional) - Functions to run after release
 
@@ -460,7 +471,7 @@ export default {
 Nagare validates configuration at startup. Common validation errors:
 
 1. **Missing required fields**: `project.name` and `project.repository` are required
-2. **Invalid template format**: Must be one of: typescript, json, yaml, custom
+2. **Invalid template format**: Must be one of: TypeScript, json, yaml, custom
 3. **Missing custom template**: When using `template: 'custom'`, `customTemplate` is required
 4. **Invalid regex patterns**: Patterns that could cause file corruption are rejected
 5. **Invalid export names**: Additional export names must be valid JavaScript identifiers

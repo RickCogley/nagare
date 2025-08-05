@@ -8,7 +8,7 @@ Nagare uses environment variables for configuration that should not be committed
 
 ## Authentication Variables
 
-### `GITHUB_TOKEN` {#github-token}
+### `GITHUB_TOKEN` {#GitHub-token}
 
 **Type**: `string`  
 **Default**: None  
@@ -17,6 +17,7 @@ Nagare uses environment variables for configuration that should not be committed
 GitHub Personal Access Token or GitHub Actions token for API access.
 
 **Permissions required**:
+
 - `contents: write` (for creating releases)
 - `metadata: read` (for repository access)
 
@@ -278,7 +279,7 @@ export NAGARE_AI_THINKING_LEVEL="megathink"
 
 ## CI/CD Specific Variables
 
-### `GITHUB_ACTIONS` {#github-actions}
+### `GITHUB_ACTIONS` {#GitHub-actions}
 
 **Type**: `boolean`  
 **Default**: `false`  
@@ -292,7 +293,7 @@ Automatically set by GitHub Actions. Affects output formatting.
 echo "GITHUB_ACTIONS=true"
 ```
 
-### `GITLAB_CI` {#gitlab-ci}
+### `GITLAB_CI` {#GitLab-ci}
 
 **Type**: `boolean`  
 **Default**: `false`  

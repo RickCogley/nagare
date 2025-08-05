@@ -7,6 +7,7 @@ The release workflow is the heart of Nagare - it orchestrates the entire process
 ## Why Release Automation Matters
 
 Manual releases are error-prone and time-consuming. Common issues include:
+
 - Forgetting to update version numbers in multiple files
 - Inconsistent changelog entries
 - Missing git tags or GitHub releases
@@ -85,6 +86,7 @@ graph TD
 ```
 
 **Trade-offs**:
+
 - **Advantages**: Automatic versioning based on commit history, follows semantic versioning
 - **Limitations**: Requires disciplined commit messages, can't override version calculation without force flags
 
@@ -146,12 +148,14 @@ graph TD
 We chose conventional commits as the foundation because:
 
 **Advantages**:
+
 - Machine-readable format enables automation
 - Industry standard with wide tooling support
 - Clear intent in commit history
 - Enables automatic version calculation
 
 **Trade-offs**:
+
 - Requires team discipline
 - Learning curve for new contributors
 - Less flexible than manual versioning
@@ -176,7 +180,8 @@ graph TD
     G --> H
 ```
 
-**Design Rationale**: 
+**Design Rationale**:
+
 - Built-in handlers cover 80% of use cases
 - Custom handlers provide escape hatch for complex scenarios
 - Template support enables any file format
@@ -197,7 +202,8 @@ graph LR
     style G fill:#FFE4B5
 ```
 
-**Why gh CLI?**: 
+**Why gh CLI?**:
+
 - Avoids API token management complexity
 - Leverages existing GitHub authentication
 - Simpler than direct API integration

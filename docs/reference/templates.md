@@ -44,6 +44,7 @@ export const MAJOR = {{ versionComponents.major |> safe }};
 **IMPORTANT**: Vento uses `|>` (F# pipeline syntax), NOT single pipe `|`.
 
 **Built-in filters**:
+
 - `safe` - Output raw value without escaping
 - `escape` - Force HTML escaping (for HTML contexts)
 - `jsonStringify` - Convert to JSON with optional indentation
@@ -218,6 +219,7 @@ export const CHANGELOG = {
 **Description**: Custom metadata from configuration and data providers
 
 Metadata is merged from:
+
 1. `releaseNotes.metadata` in configuration
 2. Template data providers
 3. Direct metadata properties
@@ -255,7 +257,7 @@ export const API_ENDPOINTS = {{ apiEndpoints |> jsonStringify |> safe }};
 
 ## Built-in Templates
 
-### TypeScript Template {#typescript-template}
+### TypeScript Template {#TypeScript-template}
 
 **File**: `templates/typescript.vto`  
 **Usage**: `template: 'typescript'`
@@ -382,6 +384,7 @@ Nagare implements template sandboxing with three levels:
 3. **disabled**: No sandboxing (use only with trusted templates)
 
 **Blocked patterns in strict mode**:
+
 - File system access (`Deno.readFile`, `import()`, etc.)
 - Network access (`fetch`, `XMLHttpRequest`)
 - Process execution (`Deno.Command`, `Deno.run`)
@@ -504,6 +507,7 @@ export const VERSION = "{{ version }}";
 **Error**: "Template processing failed"  
 **Cause**: Invalid Vento syntax  
 **Solution**: Check for:
+
 - Using `|` instead of `|>` for filters
 - Unclosed tags (`{{ if }}` without `{{ /if }}`)
 - Undefined variables or properties

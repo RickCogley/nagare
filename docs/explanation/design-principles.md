@@ -11,6 +11,7 @@ Nagare is built on a foundation of carefully considered design principles that p
 **Principle**: Every feature is designed with security as the primary concern, not an afterthought.
 
 **Implementation**:
+
 - **Input validation**: All user inputs are validated and sanitized using OWASP guidelines
 - **Template sandboxing**: Vento templates execute in restricted environments
 - **File path validation**: Prevents directory traversal and path injection attacks
@@ -33,6 +34,7 @@ new Deno.Command("git", { args: [`tag ${version}`] });
 **Principle**: Detect problems early and provide actionable error messages that help developers fix issues quickly.
 
 **Implementation**:
+
 - **Comprehensive validation**: Configuration, file patterns, and environment are validated before any operations
 - **Enhanced error types**: Rich error objects with context, suggestions, and documentation links
 - **Early detection**: Problems are caught during dry-run mode or pre-flight checks
@@ -62,6 +64,7 @@ throw new NagareError(
 **Principle**: Release operations should be atomic - either completely succeed or completely fail, with no partial state.
 
 **Implementation**:
+
 - **Pre-commit backup system**: Files are backed up before modification
 - **Automatic rollback**: Failed operations restore original state
 - **UUID-based tracking**: Prevents backup collisions in concurrent environments
@@ -88,6 +91,7 @@ try {
 **Principle**: Provide sensible defaults that work for most projects, while allowing customization when needed.
 
 **Implementation**:
+
 - **Built-in file handlers**: Automatically detect and handle common file types
 - **Intelligent defaults**: Reasonable configuration values for most use cases
 - **Progressive enhancement**: Start simple, add complexity only when needed
@@ -121,6 +125,7 @@ export default {
 **Principle**: Leverage Deno's security model, modern JavaScript features, and excellent TypeScript support.
 
 **Implementation**:
+
 - **Permission-based security**: Uses Deno's permission system for fine-grained access control
 - **TypeScript by default**: Full type safety without configuration
 - **Modern JavaScript**: Uses latest ECMAScript features and Web APIs
@@ -141,11 +146,13 @@ deno run --allow-read=. --allow-write=. --allow-run=git,gh nagare-launcher.ts
 **Decision**: Use Vento templates instead of simple string replacement for version files.
 
 **Reasoning**:
+
 - **Flexibility**: Templates can generate complex version files with metadata
 - **Maintainability**: Template logic is separate from application code
 - **Security**: Sandboxed execution prevents template injection attacks
 
 **Trade-offs**:
+
 - **Complexity**: More complex than simple string replacement
 - **Performance**: Slight overhead from template processing
 - **Learning curve**: Developers need to understand Vento syntax
@@ -157,11 +164,13 @@ deno run --allow-read=. --allow-write=. --allow-run=git,gh nagare-launcher.ts
 **Decision**: Use JSR's official REST API endpoints for package verification.
 
 **Reasoning**:
+
 - **Reliability**: Official API provides consistent results
 - **Rich data**: API returns detailed package information
 - **Future-proofing**: API evolution is more predictable than scraping
 
 **Trade-offs**:
+
 - **Dependency**: Relies on JSR API availability
 - **Complexity**: More complex than simple HEAD requests
 - **Rate limiting**: Subject to API rate limits
@@ -173,11 +182,13 @@ deno run --allow-read=. --allow-write=. --allow-run=git,gh nagare-launcher.ts
 **Decision**: Use git commit analysis for version bump detection instead of manual version specification.
 
 **Reasoning**:
+
 - **Consistency**: Semantic versioning based on conventional commits
 - **Automation**: No manual version decision making required
 - **Traceability**: Version bumps are tied to specific commits
 
 **Trade-offs**:
+
 - **Commit discipline**: Requires consistent conventional commit usage
 - **Complexity**: More complex than manual version specification
 - **Git dependency**: Requires git repository with commit history
@@ -212,6 +223,7 @@ export class ErrorFactory {
 ```
 
 **Benefits**:
+
 - **Consistency**: All errors follow the same pattern
 - **Rich context**: Errors include actionable information
 - **Maintainability**: Centralized error creation and formatting
@@ -232,6 +244,7 @@ export class ReleaseManager {
 ```
 
 **Benefits**:
+
 - **Testability**: Easy to mock dependencies in tests
 - **Flexibility**: Can swap implementations without changing core logic
 - **Separation of concerns**: Each dependency has a single responsibility
@@ -260,6 +273,7 @@ export class UpdateVersionFileCommand extends Command {
 ```
 
 **Benefits**:
+
 - **Atomicity**: Operations can be rolled back on failure
 - **Composability**: Commands can be combined and orchestrated
 - **Testability**: Each command can be tested independently
@@ -271,6 +285,7 @@ export class UpdateVersionFileCommand extends Command {
 **Decision**: Use Promise.all() for independent operations like file updates.
 
 **Reasoning**:
+
 - **Speed**: Parallel execution reduces total operation time
 - **Efficiency**: Better resource utilization
 - **User experience**: Faster releases improve developer productivity
@@ -290,6 +305,7 @@ await Promise.all([
 **Decision**: Load expensive resources only when needed.
 
 **Reasoning**:
+
 - **Startup time**: Faster CLI startup for simple operations
 - **Memory usage**: Reduced memory footprint for unused features
 - **Modularity**: Clear separation between optional and core features
@@ -312,6 +328,7 @@ get autoFixer(): AutoFixer {
 **Strategy**: Multiple security layers to prevent and detect attacks.
 
 **Layers**:
+
 1. **Input validation**: Sanitize all user inputs
 2. **Template sandboxing**: Restrict template execution environment
 3. **File path validation**: Prevent directory traversal
@@ -323,6 +340,7 @@ get autoFixer(): AutoFixer {
 **Strategy**: Request minimal permissions and validate all operations.
 
 **Implementation**:
+
 - **Deno permissions**: Request only required permissions
 - **File access**: Validate all file operations
 - **Network access**: Limit to necessary endpoints
@@ -334,6 +352,7 @@ get autoFixer(): AutoFixer {
 **Design**: Plugin architecture for future extensibility.
 
 **Approach**:
+
 - **Well-defined interfaces**: Clear contracts for extensions
 - **Dependency injection**: Easy to add new implementations
 - **Configuration-driven**: Extensions configured rather than coded
@@ -343,6 +362,7 @@ get autoFixer(): AutoFixer {
 **Design**: Evolve APIs without breaking existing configurations.
 
 **Approach**:
+
 - **Versioned configuration**: Support multiple config versions
 - **Deprecation warnings**: Gradual migration path
 - **Semantic versioning**: Clear API stability guarantees
@@ -363,6 +383,7 @@ The recent reliability fixes demonstrate these principles in action:
 **Pattern**: Continuous improvement based on real-world usage.
 
 **Implementation**:
+
 - **Error telemetry**: Anonymous error reporting for improvement
 - **Usage analytics**: Understanding common patterns and pain points
 - **Community feedback**: GitHub issues and discussions

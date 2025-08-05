@@ -44,6 +44,7 @@ console.log(`Latest version: ${packageInfo.latest}`);
 ### When No Auth is Sufficient
 
 Use the unauthenticated Registry API for:
+
 - Version checking and monitoring
 - Package discovery and browsing
 - Downloading packages for consumption
@@ -92,6 +93,7 @@ async function publishPackage(token, packageData) {
 ### When Authentication is Required
 
 Use the authenticated Management API for:
+
 - Publishing new packages
 - Managing package permissions
 - User account operations
@@ -103,12 +105,14 @@ Use the authenticated Management API for:
 ### API Selection
 
 **Registry API (No Auth):**
+
 - Use for all read-only operations
 - Faster and simpler implementation
 - No rate limiting concerns
 - Preferred for public tools
 
 **Management API (Auth Required):**
+
 - Only for write operations and user management
 - Requires proper token management
 - Should include User-Agent header

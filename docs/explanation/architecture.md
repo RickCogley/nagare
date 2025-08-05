@@ -7,6 +7,7 @@ Nagare's architecture follows a manager-based design pattern where specialized c
 ## Why this architecture?
 
 Software release management involves multiple complex operations:
+
 - Git repository manipulation.
 - File system operations.
 - Version calculations.
@@ -142,6 +143,7 @@ sequenceDiagram
 ```
 
 **Trade-offs**:
+
 - **Advantages**: Clear abstraction over CLI tools, easy to mock for testing
 - **Limitations**: Depends on external tools being installed
 
@@ -254,12 +256,14 @@ sequenceDiagram
 ### Why Manager-Based Architecture?
 
 **Advantages**:
+
 - Clear separation of concerns
 - Easy to test individual components
 - Workflow logic separated from implementation details
 - Natural extension points
 
 **Trade-offs**:
+
 - More files and indirection
 - Requires understanding the component hierarchy
 - Potential for over-abstraction

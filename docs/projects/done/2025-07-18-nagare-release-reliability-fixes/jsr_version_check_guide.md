@@ -128,6 +128,7 @@ async function getLatestVersionSafe(scope, packageName) {
 ## Rate Limiting
 
 JSR doesn't publish specific rate limits, but follow these best practices:
+
 - Cache results when possible
 - Implement exponential backoff for retries
 - Avoid making excessive concurrent requests

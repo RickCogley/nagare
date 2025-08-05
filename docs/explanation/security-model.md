@@ -102,16 +102,19 @@ graph TD
 ### Core Security Principles
 
 **1. Secure by Default**
+
 - All features are designed with security as the primary concern
 - Safe defaults prevent common security mistakes
 - Explicit configuration required for potentially dangerous operations
 
 **2. Principle of Least Privilege**
+
 - Minimal permissions requested from Deno runtime
 - File access limited to necessary directories
 - Network access restricted to required endpoints
 
 **3. Defense in Depth**
+
 - Multiple security layers provide redundant protection
 - Each layer addresses different attack vectors
 - Comprehensive logging for security audit trails
@@ -121,12 +124,14 @@ graph TD
 ### Assets Protected
 
 **Primary Assets**:
+
 - Source code repository integrity
 - Version control history
 - GitHub API credentials
 - Release artifacts and metadata
 
 **Secondary Assets**:
+
 - Local development environment
 - CI/CD pipeline integrity
 - Team collaboration workflows
@@ -134,21 +139,25 @@ graph TD
 ### Attack Vectors
 
 **1. Template Injection**
+
 - Malicious templates executing arbitrary code
 - Unauthorized file system access
 - Information disclosure through template errors
 
 **2. Path Traversal**
+
 - Directory traversal attacks via file paths
 - Unauthorized access to system files
 - Escape from project sandbox
 
 **3. Command Injection**
+
 - Shell command injection via user inputs
 - Execution of arbitrary system commands
 - Privilege escalation through command chaining
 
 **4. Configuration Tampering**
+
 - Malicious configuration modifications
 - Unauthorized file pattern modifications
 - Bypass of security restrictions
@@ -164,11 +173,13 @@ deno run --allow-read=. --allow-write=. --allow-run=git,gh nagare-launcher.ts
 ```
 
 **Permitted Operations**:
+
 - `--allow-read=.`: Read files only within project directory
 - `--allow-write=.`: Write files only within project directory
 - `--allow-run=git,gh`: Execute only git and GitHub CLI commands
 
 **Restricted Operations**:
+
 - Network access (unless explicitly granted)
 - Environment variable access (unless explicitly granted)
 - System command execution (beyond git and gh)
@@ -395,6 +406,7 @@ export function validateFileUpdatePattern(pattern: RegExp): void {
 ### GitHub Token Security
 
 **Token Storage**:
+
 - Never stored in configuration files
 - Passed via environment variables only
 - Automatically cleared from memory after use
@@ -438,11 +450,13 @@ export async function validateGitHubToken(token: string): Promise<void> {
 ### Access Control
 
 **File System Access**:
+
 - Limited to project directory and subdirectories
 - Explicit validation for all file operations
 - Backup and restore operations are sandboxed
 
 **Network Access**:
+
 - GitHub API endpoints only
 - JSR API endpoints for verification
 - No arbitrary network requests
@@ -467,6 +481,7 @@ export interface SecurityAuditEvent {
 ```
 
 **Logged Events**:
+
 - File modifications with checksums
 - Template processing with validation results
 - Command executions with arguments
@@ -495,12 +510,14 @@ export interface SecurityAuditEvent {
 ### Anomaly Detection
 
 **Suspicious Activities**:
+
 - Unusual file modification patterns
 - Repeated authentication failures
 - Template validation failures
 - Command injection attempts
 
 **Response Actions**:
+
 - Automatic operation termination
 - Detailed error reporting
 - Audit trail preservation
@@ -572,25 +589,30 @@ export NAGARE_AUDIT_LOG="true"
 ### OWASP Compliance
 
 **A01 - Broken Access Control**: ✅ Implemented
+
 - Deno permission system
 - File path validation
 - Principle of least privilege
 
 **A02 - Cryptographic Failures**: ✅ N/A
+
 - No cryptographic operations
 - Secure token handling
 
 **A03 - Injection**: ✅ Implemented
+
 - Input validation
 - Command injection prevention
 - Template sandboxing
 
 **A04 - Insecure Design**: ✅ Implemented
+
 - Security-first architecture
 - Threat modeling
 - Defense in depth
 
 **A05 - Security Misconfiguration**: ✅ Implemented
+
 - Secure defaults
 - Configuration validation
 - Clear documentation
@@ -598,12 +620,14 @@ export NAGARE_AUDIT_LOG="true"
 ### ISO 27001 Considerations
 
 **Information Security Management**:
+
 - Documented security procedures
 - Regular security assessments
 - Audit trail maintenance
 - Incident response procedures
 
 **Access Control**:
+
 - Principle of least privilege
 - Regular access reviews
 - Automated access management
@@ -643,6 +667,7 @@ Deno.test("Path traversal prevention", async () => {
 ### Manual Security Testing
 
 **Penetration Testing Checklist**:
+
 - [ ] Template injection attempts
 - [ ] Path traversal attacks
 - [ ] Command injection tests
@@ -655,11 +680,13 @@ Deno.test("Path traversal prevention", async () => {
 ### Security Incident Handling
 
 **Detection**:
+
 - Automated monitoring alerts
 - Audit log analysis
 - User reports
 
 **Response**:
+
 1. Immediate containment
 2. Impact assessment
 3. Evidence preservation
@@ -668,6 +695,7 @@ Deno.test("Path traversal prevention", async () => {
 6. Lessons learned
 
 **Communication**:
+
 - Internal notification procedures
 - User communication protocols
 - Public disclosure guidelines

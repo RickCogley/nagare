@@ -27,6 +27,7 @@ Nagare's CLI interface manages semantic versioning releases following convention
 **Description**: Create a new release with automatic or manual version bump
 
 Performs a full release cycle including:
+
 - Analyzing commits to determine version bump (if not specified)
 - Updating version files and configured files
 - Generating changelog entries
@@ -54,6 +55,7 @@ nagare release patch --skip-confirmation
 **Description**: Rollback to a previous release by version or tag
 
 Reverses a release by:
+
 - Restoring previous file states from git history
 - Removing git tags (local and remote)
 - Optionally deleting GitHub release
@@ -80,6 +82,7 @@ nagare rollback 1.2.0 --dry-run
 **Description**: Retry a failed release
 
 Retries a release that failed during CI/CD by:
+
 - Cleaning up existing tags (local and remote)
 - Pulling latest changes
 - Re-running release process for specified version
@@ -102,6 +105,7 @@ nagare retry 1.2.3 --config ./custom-nagare.config.ts
 **Description**: Initialize Nagare in current directory
 
 Creates initial setup including:
+
 - `nagare-launcher.ts` for local execution.
 - `nagare.config.ts` with example configuration.
 - Optional AI auto-fix configuration.
@@ -147,6 +151,7 @@ nagare --version-detailed
 ```
 
 **Output includes**:
+
 - Application metadata (name, description, repository)
 - Build information (date, commit, environment)
 - Release notes for current version
@@ -336,6 +341,7 @@ chmod +x cli.ts
 ## Required Permissions
 
 Nagare requires these Deno permissions:
+
 - `--allow-read`: Read configuration and source files
 - `--allow-write`: Update version files and create commits
 - `--allow-run`: Execute git commands

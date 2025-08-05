@@ -5,6 +5,7 @@ This guide shows you how to integrate Nagare with continuous integration and dep
 ## Before you begin
 
 Ensure you have:
+
 - Nagare configured in your project
 - GitHub Actions, GitLab CI, or another CI/CD system
 - GitHub CLI (`gh`) authenticated in your CI environment

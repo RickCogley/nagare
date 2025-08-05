@@ -77,7 +77,7 @@ working on their projects.
 The Claude Code team is actively working on:
 
 - Support for global CLAUDE.md files in home directories
-- Ability to interlink CLAUDE.md with other markdown files
+- Ability to interlink CLAUDE.md with other Markdown files
 - Enhanced discovery mechanisms for better context management
 
 ## Conclusion

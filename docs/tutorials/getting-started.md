@@ -51,6 +51,7 @@ deno run -A jsr:@rick/nagare/cli init
 ```
 
 This command will:
+
 - Create a `nagare-launcher.ts` file for local configuration
 - Generate a minimal `nagare.config.ts` if one doesn't exist
 - Show you which tasks to add to your `deno.json`
@@ -280,6 +281,7 @@ You've successfully learned how to:
 - Publish GitHub releases with detailed release notes
 
 You now understand how Nagare:
+
 - Analyzes commit history to determine appropriate version bumps
 - Updates version strings across multiple files consistently
 - Generates Keep a Changelog format documentation

@@ -5,6 +5,7 @@ This guide shows you how to configure Nagare to update version strings in multip
 ## Before you begin
 
 Ensure you have:
+
 - Nagare initialized in your project (`deno task nagare init`)
 - A `nagare.config.ts` file in your project root
 - Basic understanding of regular expressions (for custom patterns)
@@ -214,7 +215,8 @@ deno run -A scripts/check-patterns.ts
 
 **Problem**: "No matches found for pattern"
 
-**Solution**: 
+**Solution**:
+
 1. Check that the pattern uses line anchors (`^` and `$`)
 2. Verify the file contains the expected content
 3. Test the regex with a tool like regex101.com
@@ -224,6 +226,7 @@ deno run -A scripts/check-patterns.ts
 **Problem**: "Pattern matches multiple locations"
 
 **Solution**:
+
 1. Make the pattern more specific
 2. Use line anchors to match only intended lines
 3. Consider using `updateFn` for complex logic
@@ -233,6 +236,7 @@ deno run -A scripts/check-patterns.ts
 **Problem**: "File content corrupted after update"
 
 **Solution**:
+
 1. Use built-in handlers when possible
 2. Test patterns with `--dry-run` first
 3. Ensure patterns have proper capture groups

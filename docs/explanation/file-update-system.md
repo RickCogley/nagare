@@ -7,6 +7,7 @@ Nagare's file update system is one of its most powerful features, automatically 
 ## Why Intelligent File Updates Matter
 
 Manual version updates are error-prone and time-consuming. Common issues include:
+
 - Forgetting to update version numbers in multiple files
 - Inconsistent version formatting across file types
 - Breaking JSON/YAML syntax with incorrect updates
@@ -133,6 +134,7 @@ graph LR
 ```
 
 **Key Features:**
+
 - **Line-anchored patterns** prevent matching nested versions
 - **Whitespace preservation** maintains JSON formatting
 - **Syntax validation** ensures valid JSON after updates

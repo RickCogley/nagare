@@ -18,7 +18,7 @@ Before you start using Nagare:
 - **📚 COMPREHENSIVE**: **Complete Diátaxis documentation** - Structured learning paths for all skill levels
 - **🎨 CONSISTENT**: **Unified branding system** - All CLI output uses consistent `🌊 Nagare:` messaging
 - **📊 VISUAL**: **Mermaid diagrams** - Interactive flow charts and architecture diagrams
-- **🔗 INTEGRATED**: **GitHub Pages ready** - Professional documentation hosted at rickcogley.github.io/nagare
+- **🔗 INTEGRATED**: **GitHub Pages ready** - Professional documentation hosted at rickcogley.GitHub.io/nagare
 - **🛡️ SECURITY**: **OWASP-compliant architecture** - Comprehensive security model documentation
 - **🤖 INTELLIGENT**: **Smart file handlers** - Automatic updates for common file types
 - **🌊 FLOW-FOCUSED**: **Release workflow visualization** - Clear understanding of the release process
@@ -181,17 +181,20 @@ graph TD
 ### By User Type
 
 **Solo Developer**
+
 - [Getting Started](tutorials/getting-started.md)
 - [Configure File Updates](how-to/configure-file-updates.md)
 - [Architecture Overview](explanation/architecture.md)
 
 **Team Lead**
+
 - [CI/CD Integration](tutorials/ci-cd-integration.md)
 - [Set Up CI/CD](how-to/setup-ci-cd.md)
 - [Use Hooks](how-to/use-hooks.md)
 - [Design Principles](explanation/design-principles.md)
 
 **Enterprise User**
+
 - [Security Model](explanation/security-model.md)
 - [Configuration Reference](reference/configuration.md)
 - [Architecture Overview](explanation/architecture.md)
@@ -199,21 +202,25 @@ graph TD
 ### By Task
 
 **Setting Up Nagare**
+
 - [Getting Started Tutorial](tutorials/getting-started.md)
 - [CLI Reference](reference/cli.md)
 - [Configuration Reference](reference/configuration.md)
 
 **Customizing Releases**
+
 - [Configure File Updates](how-to/configure-file-updates.md)
 - [Use Custom Templates](how-to/use-custom-templates.md)
 - [Template Reference](reference/templates.md)
 
 **Automation & CI/CD**
+
 - [Set Up CI/CD Integration](how-to/setup-ci-cd.md)
 - [Use Hooks](how-to/use-hooks.md)
 - [Environment Variables](reference/environment-variables.md)
 
 **Troubleshooting**
+
 - [Rollback Releases](how-to/rollback-releases.md)
 - [Security Model](explanation/security-model.md)
 - [CLI Reference](reference/cli.md)
@@ -221,21 +228,25 @@ graph TD
 ## 🔧 Key Features Overview
 
 ### 🚀 Automated Releases
+
 - **Smart version bumping** based on conventional commits
 - **Professional changelogs** following Keep a Changelog format
 - **GitHub integration** with automatic release creation
 
 ### 🤖 Intelligent File Updates
+
 - **Built-in handlers** for common file types (JSON, TypeScript, Markdown)
 - **Custom patterns** for special requirements
 - **Template system** using Vento for complex version files
 
 ### 🛡️ Security & Reliability
+
 - **OWASP-compliant** architecture with comprehensive input validation
 - **Atomic operations** with backup and rollback capabilities
 - **Security audit logging** for compliance requirements
 
 ### ⚙️ Highly Configurable
+
 - **Convention over configuration** with sensible defaults
 - **Extensible hooks** for custom workflows
 - **Full TypeScript support** with comprehensive type definitions

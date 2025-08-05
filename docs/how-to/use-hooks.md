@@ -5,6 +5,7 @@ This guide shows you how to use Nagare's lifecycle hooks to customize the releas
 ## Before you begin
 
 Ensure you have:
+
 - Nagare configured in your project
 - Understanding of async/await in TypeScript/JavaScript
 - Permissions for any external commands you plan to run

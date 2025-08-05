@@ -2,11 +2,12 @@
 
 ## Problem
 
-**Raw Idea**: "nagare branding could be improved" 
+**Raw Idea**: "nagare branding could be improved"
 
 **Current State**: Users run nagare commands and see inconsistent, generic-looking output that doesn't reflect the tool's distinctive "flow" concept. The console shows a mix of branded and unbranded messages, making nagare feel like any other CLI tool rather than the smooth, automated release flow it represents.
 
 **Evidence of the Problem**:
+
 - Users mentioned not seeing nagare branding "per se" in console output
 - Wave emoji (🌊) planned but not visible in actual usage
 - 50+ console statements in main CLI bypass branding system
@@ -20,30 +21,36 @@
 ## Solution
 
 ### Core Concept: "Flowing Brand Experience"
+
 Transform nagare into a distinctively ocean-themed CLI where every interaction reinforces the "flow" metaphor through consistent visual language.
 
 ### Key Elements
 
 #### 1. Wave Animation Startup
+
 ```
 🌊 nAgare -> naGare -> nagAre -> nagaRe -> nagarE
 ```
 Animated sequence showing the wave "flowing" through the name on CLI startup, establishing immediate brand recognition.
 
 #### 2. Marine Color Palette (CI/CD Safe)
+
 - **Deep Blue**: Primary brand messages and headers
 - **Cyan**: Progress states and active operations  
 - **Teal**: Success states and completions
 - **Navy**: Important warnings and structured info
 
 #### 3. Flow-Focused Language
+
 Replace generic tech terminology with flow metaphors:
+
 - "Flowing from v1.0 to v1.1" instead of "bumping version"
 - "Navigating release channels" instead of "checking repositories"  
 - "Current flowing smoothly" for progress states
 - "Upstream/downstream" for git operations
 
 #### 4. Systematic Brand Application
+
 - **Phase 1**: Fix the big wins - main CLI file and duplicate utilities
 - **Phase 2**: Standardize error handling across core components
 - **Phase 3**: Enhanced progress indicators with flow metaphors
@@ -73,6 +80,7 @@ Replace generic tech terminology with flow metaphors:
 ### Technical Approach
 
 #### Fat Marker Sketch
+
 The solution has **three main areas**:
 
 1. **Visual Identity Layer** (2 days)
@@ -91,13 +99,15 @@ The solution has **three main areas**:
    - Ensure log parsing isn't broken by new formatting
 
 #### Elements to Include
+
 - ✅ Ocean/marine color palette for all user messages
-- ✅ Wave animation on CLI startup 
+- ✅ Wave animation on CLI startup
 - ✅ Flow metaphors in all user-facing text
 - ✅ Consistent branding across error handling
 - ✅ Enhanced progress indicators with marine theming
 
 #### Elements to Exclude  
+
 - ❌ Configurable branding (adds complexity)
 - ❌ Major architectural changes to logging infrastructure
 - ❌ Changes to core release logic/functionality
@@ -106,6 +116,7 @@ The solution has **three main areas**:
 ## Rabbit Holes
 
 ### Avoid These Pitfalls
+
 1. **Over-engineering the animation system** - Keep it simple, just a basic sequence
 2. **Getting lost in color theory** - Use proven ANSI color combinations that work everywhere
 3. **Rebuilding the logging infrastructure** - Enhance existing Brand class, don't replace it
@@ -122,16 +133,18 @@ The solution has **three main areas**:
 ## Dependencies
 
 ### Technical Dependencies
+
 - Existing `branded-messages.ts` system (✅ exists)
 - ANSI color support detection (✅ available in Deno)
 - Terminal capability detection (✅ implemented in progress-indicator.ts)
 
 ### No External Dependencies Required
+
 This is purely enhancing existing code - no new libraries or major architectural changes needed.
 
 ## Target User Experience
 
-**Before**: 
+**Before**:
 ```
 Loading configuration...
 ✅ Configuration validated successfully  

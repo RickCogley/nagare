@@ -14,6 +14,7 @@ Semantic versioning (SemVer) provides a universal language for software changes:
 - Creates trust between maintainers and users
 
 Without semantic versioning:
+
 - Users don't know if updates will break their code
 - Dependency managers can't resolve versions safely
 - Change impact is unclear from version numbers alone
@@ -100,12 +101,14 @@ graph TD
 We chose conventional commits as the foundation for version management:
 
 **Advantages**:
+
 - Automatic version calculation from commit history
 - Self-documenting git log
 - Standardized format with tooling ecosystem
 - Clear communication of change intent
 
 **Trade-offs**:
+
 - Requires team discipline and training
 - Mistakes in commit messages affect versioning
 - Retroactive fixes require git history rewriting
@@ -152,6 +155,7 @@ stateDiagram-v2
 ```
 
 Example progression:
+
 - 1.2.3 → 1.3.0-alpha.0
 - 1.3.0-alpha.0 → 1.3.0-alpha.1
 - 1.3.0-alpha.1 → 1.3.0-beta.0

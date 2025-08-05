@@ -5,6 +5,7 @@ This guide shows you how to rollback releases when something goes wrong. Use rol
 ## Before you begin
 
 Ensure you have:
+
 - A release created with Nagare (tagged and committed)
 - Git push access to your repository
 - GitHub CLI configured (if using GitHub releases)
