@@ -46,7 +46,9 @@
       "Bash(cd:*)",
       "Bash(NAGARE_DEBUG=true deno task nagare release --dry-run)",
       "mcp__aichaku-reviewer__analyze_project",
-      "Bash(npx markdownlint-cli2:*)"
+      "Bash(npx markdownlint-cli2:*)",
+      "Bash(# Test with staged files\necho \"\"// Test\"\" >> version.ts\ngit add version.ts\n\necho \"\"Testing fixed security hook...\"\"\ntime bash .githooks/hooks.d/40-security-check\n\n# Clean up\ngit reset HEAD version.ts\ngit checkout -- version.ts)",
+      "Bash(~/.aichaku/mcp-servers/aichaku-code-reviewer scan-local:*)"
     ],
     "deny": []
   }
