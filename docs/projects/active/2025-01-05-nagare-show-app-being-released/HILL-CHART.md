@@ -21,13 +21,13 @@ Current Position: ▲
 
 ## Scopes & Progress
 
-### 1. Configuration Schema ⚫ (At peak - ready to descend)
+### 1. Application Name Detection ⚫ (At peak - ready to descend)
 
-**Problem solved**: How to make branding configurable without breaking changes
+**Problem solved**: Where to get the application name
 
-- ✅ Identified type extensions needed
-- ✅ Designed backward-compatible approach
-- ✅ Planned default behaviors for CI
+- ✅ Found it! Already in `config.project.name`
+- ✅ No schema changes needed - it's already there
+- ✅ Works for any project using Nagare
 
 ### 2. UI Components 🔵 (Climbing - 60% up)
 
@@ -56,10 +56,10 @@ Current Position: ▲
 
 ## Key Decisions Made
 
-1. **No External Dependencies**: Use built-in Unicode box drawing
-2. **Progressive Enhancement**: Basic → Branded based on environment
-3. **Configuration First**: All branding elements configurable
-4. **CI Auto-Detection**: Multiple detection methods for safety
+1. **Use Existing Config**: `config.project.name` already has what we need
+2. **Consistent Messaging**: "Nagare: [Action] for [AppName]" throughout
+3. **No Schema Changes**: Works with current Nagare configuration
+4. **Every Project Covered**: All Nagare users already have project.name set
 
 ## Remaining Unknowns
 
