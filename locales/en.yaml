@@ -80,15 +80,25 @@ cli:
   release:
     description: "Create a new release"
     calculating: "Calculating version bump from {count} commits..."
+    calculatingFor: "📊 Calculating {appName} version flow from {count} commits..."
     currentVersion: "Current version: {version}"
+    currentVersionFor: "📦 {appName} current: {version}"
     newVersion: "New version: {version}"
+    newVersionFor: "🆕 {appName} flowing to: {version}"
     updating: "Updating {count} files..."
+    updatingFor: "📝 Updating {count} {appName} files in current..."
     committing: "Creating release commit and tag..."
+    committingFor: "📦 Creating {appName} release commit and tag..."
     pushing: "Pushing to remote..."
+    pushingFor: "🚀 Pushing {appName} current to remote..."
     creatingGithub: "Creating GitHub release..."
+    creatingGithubFor: "🐙 Creating {appName} GitHub release..."
     success: "✅ Released version {version}"
+    successFor: "✅ {appName} v{version} released successfully!"
     dryRun: "🔍 DRY RUN: Would release version {version}"
+    dryRunFor: "🔍 DRY RUN: Would release {appName} v{version}"
     noChanges: "No changes to release"
+    noChangesFor: "No changes to release in {appName} current"
 
   rollback:
     description: "Rollback a release"
@@ -211,6 +221,10 @@ cli:
 log:
   release:
     starting: "🚀 Starting release process with Nagare..."
+    startingFor: "🌊 Starting release current for {appName}..."
+    analyzingFor: "📊 Analyzing {appName} commit flow..."
+    updatingFor: "📝 Updating {appName} version streams..."
+    completedFor: "🎉 {appName} v{version} release flow complete!"
     noFiles: "📄 No additional files configured for updates"
     fileUpdatePreview: "📄 File Update Preview:"
     filePreview: "File: {path}"
@@ -235,21 +249,33 @@ log:
     creatingGitHub: "🐙 Creating GitHub release..."
     gitHubSuccess: "✅ GitHub release created: {url}"
     generatingDocs: "📚 Generating documentation..."
+    generatingDocsFor: "📚 Generating {appName} documentation in current..."
     releaseSuccess: "✅ Successfully released version {version}"
+    releaseSuccessFor: "✅ Successfully released {appName} v{version}"
     releaseUrl: "🎉 View release at: {url}"
+    releaseUrlFor: "🎉 View {appName} release at: {url}"
     noFilesToUpdate: "ℹ️  No files configured for updates"
     processingFiles: "📄 Processing file updates..."
 
   rollback:
     starting: "🔄 Starting rollback to version {version}..."
+    startingFor: "🔄 Starting {appName} rollback to version {version}..."
     noReleaseTags: "No release tags found"
+    noReleaseTagsFor: "No {appName} release tags found"
     availableTags: "Available tags: {tags}"
+    availableTagsFor: "Available {appName} tags: {tags}"
     targetNotFound: "Target version {version} not found"
+    targetNotFoundFor: "Target {appName} version {version} not found"
     rollingBack: "Rolling back to {version}..."
+    rollingBackFor: "Rolling back {appName} to {version}..."
     restoringFiles: "📝 Restoring {count} files..."
+    restoringFilesFor: "📝 Restoring {count} {appName} files..."
     removingTag: "🏷️  Removing tag {tag}..."
+    removingTagFor: "🏷️  Removing {appName} tag {tag}..."
     removingGitHub: "🐙 Removing GitHub release..."
+    removingGitHubFor: "🐙 Removing {appName} GitHub release..."
     success: "✅ Successfully rolled back to {version}"
+    successFor: "✅ Successfully rolled back {appName} to {version}"
 
   # Logging levels
   error: "ERROR"
@@ -380,25 +406,39 @@ commitTypes:
 # File handler messages
 fileHandlers:
   updating: "Updating {path}"
+  updatingFor: "Updating {appName} file: {path}"
   skipping: "Skipping {path} (no changes needed)"
+  skippingFor: "Skipping {appName} file: {path} (no changes needed)"
   preview: "Would update {path}"
+  previewFor: "Would update {appName} file: {path}"
   pattern: "Using pattern: {pattern}"
+  patternFor: "Using pattern for {appName}: {pattern}"
   customHandler: "Using custom handler for {path}"
+  customHandlerFor: "Using custom handler for {appName} file: {path}"
 
 # Version info
 version:
   current: "Current version: {version}"
+  currentFor: "{appName} current version: {version}"
   previous: "Previous version: {version}"
+  previousFor: "{appName} previous version: {version}"
   bump: "Version bump: {from} → {to}"
+  bumpFor: "{appName} version flowing: {from} → {to}"
 
 # Git messages
 git:
   status: "Checking git status..."
+  statusFor: "Checking {appName} git status..."
   clean: "Working directory is clean"
+  cleanFor: "{appName} working directory is clean"
   uncommitted: "Found uncommitted changes"
+  uncommittedFor: "Found uncommitted changes in {appName}"
   tag: "Creating tag {tag}"
+  tagFor: "Creating {appName} tag {tag}"
   commit: "Creating commit: {message}"
+  commitFor: "Creating {appName} commit: {message}"
   push: "Pushing to {remote}"
+  pushFor: "Pushing {appName} to {remote}"
 
 # Time/Date
 time:

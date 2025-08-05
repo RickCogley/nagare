@@ -143,15 +143,25 @@ cli:
   release:
     description: "新しいリリースを作成"
     calculating: "{count}個のコミットからバージョンバンプを計算中..."
+    calculatingFor: "📊 {appName}のバージョン流れを{count}個のコミットから計算中..."
     currentVersion: "現在のバージョン: {version}"
+    currentVersionFor: "📦 {appName}現在: {version}"
     newVersion: "新しいバージョン: {version}"
+    newVersionFor: "🆕 {appName}流れ先: {version}"
     updating: "{count}個のファイルを更新中..."
+    updatingFor: "📝 {appName}の{count}個のファイルを現在流れで更新中..."
     committing: "リリースコミットとタグを作成中..."
+    committingFor: "📦 {appName}のリリースコミットとタグを作成中..."
     pushing: "リモートにプッシュ中..."
+    pushingFor: "🚀 {appName}の現在流れをリモートにプッシュ中..."
     creatingGithub: "GitHubリリースを作成中..."
+    creatingGithubFor: "🐙 {appName}のGitHubリリースを作成中..."
     success: "✅ バージョン {version} をリリースしました"
+    successFor: "✅ {appName} v{version}のリリースが成功しました！"
     dryRun: "🔍 ドライラン: バージョン {version} をリリースする予定"
+    dryRunFor: "🔍 ドライラン: {appName} v{version}をリリースする予定"
     noChanges: "リリースする変更がありません"
+    noChangesFor: "{appName}の現在流れにリリースする変更がありません"
 
   rollback:
     description: "リリースをロールバック"
@@ -402,6 +412,10 @@ commitTypes:
 log:
   release:
     starting: "🚀 Nagareでリリースプロセスを開始しています..."
+    startingFor: "🌊 {appName}のリリース流れを開始しています..."
+    analyzingFor: "📊 {appName}のコミット流れを分析中..."
+    updatingFor: "📝 {appName}のバージョン流れを更新中..."
+    completedFor: "🎉 {appName} v{version}のリリース流れが完了しました！"
     noFiles: "📄 更新用の追加ファイルは設定されていません"
     fileUpdatePreview: "📄 ファイル更新プレビュー:"
     filePreview: "ファイル: {path}"
@@ -426,21 +440,33 @@ log:
     creatingGitHub: "🐙 GitHubリリースを作成中..."
     gitHubSuccess: "✅ GitHubリリースが作成されました: {url}"
     generatingDocs: "📚 ドキュメントを生成中..."
+    generatingDocsFor: "📚 {appName}のドキュメントを現在流れで生成中..."
     releaseSuccess: "✅ バージョン{version}が正常にリリースされました"
+    releaseSuccessFor: "✅ {appName} v{version}が正常にリリースされました"
     releaseUrl: "🎉 リリースを確認: {url}"
+    releaseUrlFor: "🎉 {appName}のリリースを確認: {url}"
     noFilesToUpdate: "ℹ️  更新用のファイルが設定されていません"
     processingFiles: "📄 ファイル更新を処理中..."
 
   rollback:
     starting: "🔄 バージョン{version}へのロールバックを開始しています..."
+    startingFor: "🔄 {appName}のバージョン{version}へのロールバックを開始しています..."
     noReleaseTags: "リリースタグが見つかりません"
+    noReleaseTagsFor: "{appName}のリリースタグが見つかりません"
     availableTags: "利用可能なタグ: {tags}"
+    availableTagsFor: "利用可能な{appName}タグ: {tags}"
     targetNotFound: "ターゲットバージョン{version}が見つかりません"
+    targetNotFoundFor: "ターゲット{appName}バージョン{version}が見つかりません"
     rollingBack: "{version}にロールバック中..."
+    rollingBackFor: "{appName}を{version}にロールバック中..."
     restoringFiles: "📝 {count}個のファイルを復元中..."
+    restoringFilesFor: "📝 {appName}の{count}個のファイルを復元中..."
     removingTag: "🏷️  タグ{tag}を削除中..."
+    removingTagFor: "🏷️  {appName}のタグ{tag}を削除中..."
     removingGitHub: "🐙 GitHubリリースを削除中..."
+    removingGitHubFor: "🐙 {appName}のGitHubリリースを削除中..."
     success: "✅ バージョン{version}に正常にロールバックしました"
+    successFor: "✅ {appName}をバージョン{version}に正常にロールバックしました"
 
   error: "エラー"
   warn: "警告"
@@ -450,25 +476,39 @@ log:
 # ファイルハンドラーメッセージ
 fileHandlers:
   updating: "{path} を更新中"
+  updatingFor: "{appName}ファイルを更新中: {path}"
   skipping: "{path} をスキップ (変更不要)"
+  skippingFor: "{appName}ファイルをスキップ: {path} (変更不要)"
   preview: "{path} を更新予定"
+  previewFor: "{appName}ファイルを更新予定: {path}"
   pattern: "使用パターン: {pattern}"
+  patternFor: "{appName}の使用パターン: {pattern}"
   customHandler: "{path} にカスタムハンドラーを使用"
+  customHandlerFor: "{appName}ファイルにカスタムハンドラーを使用: {path}"
 
 # バージョン情報
 version:
   current: "現在のバージョン: {version}"
+  currentFor: "{appName}の現在バージョン: {version}"
   previous: "以前のバージョン: {version}"
+  previousFor: "{appName}の以前バージョン: {version}"
   bump: "バージョンバンプ: {from} → {to}"
+  bumpFor: "{appName}のバージョン流れ: {from} → {to}"
 
 # Gitメッセージ
 git:
   status: "Gitステータスを確認中..."
+  statusFor: "{appName}のGitステータスを確認中..."
   clean: "作業ディレクトリはクリーンです"
+  cleanFor: "{appName}の作業ディレクトリはクリーンです"
   uncommitted: "コミットされていない変更が見つかりました"
+  uncommittedFor: "{appName}にコミットされていない変更が見つかりました"
   tag: "タグ {tag} を作成中"
+  tagFor: "{appName}のタグ {tag} を作成中"
   commit: "コミットを作成中: {message}"
+  commitFor: "{appName}のコミットを作成中: {message}"
   push: "{remote} にプッシュ中"
+  pushFor: "{appName}を{remote}にプッシュ中"
 
 # 時間/日付
 time:

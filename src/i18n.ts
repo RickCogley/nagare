@@ -54,8 +54,24 @@ export class I18n {
    */
   async loadLocale(locale: string): Promise<void> {
     try {
-      const path = `${this.localesDir}/${locale}.yaml`;
-      const content = await Deno.readTextFile(path);
+      let content: string;
+
+      // Try different loading strategies
+      try {
+        // Strategy 1: Try to load from JSR package using import.meta.resolve
+        const localeUrl = new URL(`../locales/${locale}.yaml`, import.meta.url);
+        const response = await fetch(localeUrl);
+        if (response.ok) {
+          content = await response.text();
+        } else {
+          throw new Error(`HTTP ${response.status}`);
+        }
+      } catch {
+        // Strategy 2: Fall back to file system access
+        const path = `${this.localesDir}/${locale}.yaml`;
+        content = await Deno.readTextFile(path);
+      }
+
       const data = parseYAML(content) as Record<string, unknown>;
 
       const flatMap = new Map<string, string>();

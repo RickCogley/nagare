@@ -584,9 +584,7 @@ export async function cli(args: string[]): Promise<void> {
   // Initialize i18n early with language preference
   try {
     // Resolve locales directory based on whether we're running from source or JSR package
-    const localesDir = import.meta.url.startsWith("file://")
-      ? new URL("./locales", import.meta.url).pathname
-      : new URL("./locales", import.meta.url).pathname;
+    const localesDir = new URL("./locales", import.meta.url).pathname;
 
     // Determine language preference:
     // 1. CLI flag takes highest priority
