@@ -337,7 +337,11 @@ visual_identity:
       phase_indicator: "[Phase] → [**Current**] → [Next]"
       arrow_position: Place ▲ under current phase
       progress_bar: "Week X/Y ████████░░░░░░░░░░░░ XX% [emoji]"
-    example: "\U0001FAB4 Aichaku: Shape Up Progress\n[Shaping] → [**Betting**] → [Building] → [Cool-down]\n              ▲\nWeek 2/6 ████████░░░░░░░░░░░░ 33% \U0001F33F\n"
+    example: |
+      🪴 Aichaku: Shape Up Progress
+      [Shaping] → [**Betting**] → [Building] → [Cool-down]
+                    ▲
+      Week 2/6 ████████░░░░░░░░░░░░ 33% 🌿
 file_organization:
   root: docs/projects/
   description: All Aichaku projects live under this directory

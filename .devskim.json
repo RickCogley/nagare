@@ -1,0 +1,6 @@
+{
+  "Globs": [
+    "**/scratch/**",
+    "**/docs/api/**"
+  ]
+}
