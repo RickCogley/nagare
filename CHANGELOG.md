@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.15.0] - 2025-08-05
+
+### Added
+
+- enhance deno.json with aichaku-inspired configuration (e57cf0e)
+- add CLAUDE.md documentation to all critical subfolders (ac5aec3)
+- add git pre-commit hooks for code quality (2f503a9)
+
+### Changed
+
+- disable git hooks (aefffce)
+- disable tests githook (13c923e)
+- enable test and security pre-commit hooks (3390979)
+
+### Fixed
+
+- resolve all git-related test failures (4f770a6)
+- resolve markdown linting issue in CLAUDE.md (186feec)
+
 ## [2.14.0] - 2025-08-04
 
 ### Added
