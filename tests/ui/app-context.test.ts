@@ -97,12 +97,12 @@ Deno.test("getAppDisplayName - Fallback behavior", async (t) => {
   });
 
   await t.step("should handle undefined name gracefully", () => {
-    const config = createTestConfig({
-      project: {
-        name: undefined as any, // Force undefined for testing
-        repository: "https://github.com/user/repo",
-      },
-    });
+    const baseConfig = createTestConfig();
+    const config = {
+      ...baseConfig,
+      // deno-lint-ignore no-explicit-any
+      project: { ...baseConfig.project, name: undefined as any },
+    };
 
     assertEquals(getAppDisplayName(config), "Unknown Project");
   });
@@ -217,12 +217,12 @@ Deno.test("hasAppName - Name validation", async (t) => {
   });
 
   await t.step("should return false for undefined names", () => {
-    const config = createTestConfig({
-      project: {
-        name: undefined as any,
-        repository: "https://github.com/user/undefined",
-      },
-    });
+    const baseConfig = createTestConfig();
+    const config = {
+      ...baseConfig,
+      // deno-lint-ignore no-explicit-any
+      project: { ...baseConfig.project, name: undefined as any },
+    };
 
     assertEquals(hasAppName(config), false);
   });
@@ -309,12 +309,16 @@ Deno.test("getAppNameWithRepo - Repository context", async (t) => {
   });
 
   await t.step("should handle undefined repository gracefully", () => {
-    const config = createTestConfig({
+    const baseConfig = createTestConfig();
+    const config = {
+      ...baseConfig,
       project: {
+        ...baseConfig.project,
         name: "Undefined Repo App",
+        // deno-lint-ignore no-explicit-any
         repository: undefined as any,
       },
-    });
+    };
 
     assertEquals(getAppNameWithRepo(config, true), "Undefined Repo App");
   });

@@ -37,7 +37,7 @@ import { ErrorCodes, ErrorFactory, NagareError } from "./enhanced-error.ts";
 import { t } from "./i18n.ts";
 import { confirmI18n } from "./cli-utils.ts";
 import { showAppCompletion, showAppProgress, showReleaseHeader, showReleaseSummary } from "./ui/release-header.ts";
-import { getAppDisplayName } from "./ui/app-context.ts";
+import { getAppDisplayName as _getAppDisplayName } from "./ui/app-context.ts";
 import { JsrVerifier } from "./jsr-verifier.ts";
 import { GitHubActionsMonitor } from "./github-actions-monitor.ts";
 import { LogParser } from "./log-parser.ts";
