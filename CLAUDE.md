@@ -11,7 +11,7 @@ application:
   description: >-
     Deno-native release management library that automates version bumping, changelog generation, and
     GitHub releases using conventional commits and semantic versioning
-  version: 2.14.0
+  version: 2.17.1
   stack:
     language: typescript
     runtime: deno
@@ -337,11 +337,7 @@ visual_identity:
       phase_indicator: "[Phase] → [**Current**] → [Next]"
       arrow_position: Place ▲ under current phase
       progress_bar: "Week X/Y ████████░░░░░░░░░░░░ XX% [emoji]"
-    example: |
-      🪴 Aichaku: Shape Up Progress
-      [Shaping] → [**Betting**] → [Building] → [Cool-down]
-                    ▲
-      Week 2/6 ████████░░░░░░░░░░░░ 33% 🌿
+    example: "\U0001FAB4 Aichaku: Shape Up Progress\n[Shaping] → [**Betting**] → [Building] → [Cool-down]\n              ▲\nWeek 2/6 ████████░░░░░░░░░░░░ 33% \U0001F33F\n"
 file_organization:
   root: docs/projects/
   description: All Aichaku projects live under this directory
@@ -511,7 +507,7 @@ principles:
         - text: Liskov Substitution Principle
     integration_url: "aichaku://principle/software-development/solid"
 aichaku:
-  version: 0.43.2
+  version: 0.44.1
   source: configuration-as-code
 included:
   core: true
