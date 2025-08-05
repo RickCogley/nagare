@@ -5,28 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.17.0] - 2025-08-05
-
-### Added
-
-- show application name in CLI startup message (15c71da)
-- integrate app context display in release manager (10d02d2)
-
-### Changed
-
-- add comprehensive tests for app context display features (bd846f4)
-- maintain 'release current' linguistic style in Shape Up project (399aebf)
-- remove test file to verify hook handles deleted files (515f7f5)
-- add test file for hook verification (5117a30)
-- correct Shape Up project to focus on displaying app being released (97ef636)
-- create Shape Up project for Nagare release flow branding (dab7384)
-
-### Fixed
-
-- resolve linting issues for app context display features (556c57c)
-- resolve i18n initialization issue for JSR packages (a301000)
-- exclude deleted files from format-code git hook (8489f07)
-
 ## [2.16.0] - 2025-08-05
 
 ### Added
