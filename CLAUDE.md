@@ -507,7 +507,7 @@ principles:
         - text: Liskov Substitution Principle
     integration_url: "aichaku://principle/software-development/solid"
 aichaku:
-  version: 0.44.1
+  version: 0.45.1
   source: configuration-as-code
 included:
   core: true

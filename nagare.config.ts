@@ -211,8 +211,8 @@ const config: NagareConfig = {
    * Release workflow configuration
    *
    * @description
-   * Enables JSR verification and auto-fix capabilities
-   * for ensuring releases complete successfully
+   * Enables JSR verification, quality gates, and auto-fix capabilities
+   * for ensuring releases complete successfully with high quality standards
    */
   release: {
     // Verify package appears on JSR after release with improved configuration
@@ -257,6 +257,67 @@ const config: NagareConfig = {
     // Pre-flight checks configuration
     preflightChecks: {
       runTests: false, // Disable tests in pre-flight checks
+    },
+
+    // Quality gates configuration
+    qualityGates: {
+      enabled: true,
+      typeChecking: {
+        strict: true,
+        noAny: true,
+        noImplicitAny: true,
+        noImplicitReturns: true,
+        noUnusedLocals: true,
+        noUnusedParameters: true,
+      },
+      typeCoverage: {
+        enabled: true,
+        threshold: 95, // Minimum 95% type coverage required
+      },
+      performance: {
+        enabled: true,
+        benchmarks: true,
+        memoryLimit: 256, // MB
+        timeoutThresholds: {
+          fileHandler: 50, // ms
+          gitOperations: 100, // ms
+          releaseManager: 150, // ms
+        },
+      },
+      security: {
+        enabled: true,
+        owaspCompliance: true,
+        scanPatterns: true,
+        requireAnnotations: true, // Require InfoSec comments
+      },
+      testCoverage: {
+        enabled: true,
+        threshold: 80, // Minimum 80% test coverage
+      },
+    },
+
+    // Event-driven architecture configuration
+    events: {
+      enabled: true,
+      emitProgress: true,
+      emitWarnings: true,
+      emitMetrics: true,
+    },
+
+    // Permission manager configuration
+    permissions: {
+      enabled: true,
+      strict: true,
+      allowList: [
+        "read",
+        "write",
+        "run",
+        "env",
+      ],
+      denyList: [
+        "net", // Network access controlled per operation
+        "ffi", // Foreign function interface not needed
+      ],
     },
   },
 };

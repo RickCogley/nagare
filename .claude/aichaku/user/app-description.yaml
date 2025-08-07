@@ -238,6 +238,34 @@ application:
       input_validation: true # OWASP-compliant
       template_sandboxing: true # Vento security
 
+  # === TYPE SAFETY ===
+  type_safety:
+    # Runtime Validation Strategy
+    validation:
+      library: "zod" # npm:zod@3.22.4
+      strategy: "boundary" # Validate at system boundaries only
+      schemas_location: "/src/validators/" # Centralized validation schemas
+      
+    # TypeScript Configuration
+    compiler_options:
+      strict: true
+      no_implicit_any: true
+      no_unchecked_indexed_access: false # To be enabled
+      exact_optional_property_types: false # To be enabled
+      
+    # Type Patterns
+    patterns:
+      result_types: true # Result<T, E> for error handling
+      branded_types: true # Version, GitTag, FilePath brands
+      discriminated_unions: true # For command handling
+      type_guards: false # Being replaced with Zod
+      
+    # Quality Metrics
+    metrics:
+      any_types_allowed: 0 # Zero tolerance
+      non_null_assertions_allowed: 0 # Must validate first
+      type_coverage_target: "95%" # Via type coverage tools
+
   # === TESTING ===
   testing:
     # Test Strategy
@@ -314,3 +342,9 @@ application:
 
     - name: "Smart Version Detection"
       description: "Analyzes conventional commits to auto-determine version bumps"
+    
+    - name: "Runtime Validation with Zod"
+      description: "Type-safe runtime validation for all external inputs using Zod schemas"
+    
+    - name: "TypeScript Safety Enforced"
+      description: "Zero 'any' types, Result types for errors, branded types for domain safety"

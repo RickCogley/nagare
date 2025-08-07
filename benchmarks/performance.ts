@@ -3,11 +3,13 @@
  * @description Measures and validates performance of core components
  */
 
-// import { ReleaseManager } from "../src/release-manager.ts"; // TODO: Add release manager benchmarks
-import { FileHandlerRegistry } from "../src/file-handlers.ts";
-import { GitOperations } from "../src/git-operations.ts";
-import { TemplateProcessor } from "../src/template-processor.ts";
-import { validateInput } from "../src/security-utils.ts";
+// import { ReleaseManager } from "../src/release/release-manager.ts"; // TODO: Add release manager benchmarks
+import { FileHandlerManager } from "../src/release/file-handlers.ts";
+import { GitOperations } from "../src/git/git-operations.ts";
+import { TemplateProcessor } from "../src/templates/template-processor.ts";
+import { validateFilePath } from "../src/validation/security-utils.ts";
+import { TemplateFormat } from "../types.ts";
+import type { TemplateData } from "../types.ts";
 
 /**
  * Performance thresholds in milliseconds
@@ -114,7 +116,7 @@ async function runBenchmarks(): Promise<void> {
     await benchmark(
       "File Handler Init",
       () => {
-        new FileHandlerRegistry();
+        new FileHandlerManager();
       },
       THRESHOLDS.fileHandlerInit,
       true,
@@ -126,7 +128,7 @@ async function runBenchmarks(): Promise<void> {
     await benchmark(
       "File Handler Process",
       async () => {
-        const registry = new FileHandlerRegistry();
+        const registry = new FileHandlerManager();
         const handler = registry.getHandler("deno.json");
         if (handler) {
           const testContent = '{"name": "test", "version": "1.0.0"}';
@@ -148,7 +150,19 @@ async function runBenchmarks(): Promise<void> {
     await benchmark(
       "Git Operations Init",
       () => {
-        new GitOperations({ dryRun: true });
+        new GitOperations({
+          project: {
+            name: "Test",
+            repository: "https://github.com/test/test",
+          },
+          versionFile: {
+            path: "./version.ts",
+            template: TemplateFormat.TYPESCRIPT,
+          },
+          options: {
+            dryRun: true,
+          },
+        });
       },
       THRESHOLDS.gitOperations,
       true,
@@ -162,14 +176,28 @@ async function runBenchmarks(): Promise<void> {
       async () => {
         const processor = new TemplateProcessor();
         await processor.processTemplate(
-          "# Changelog\n\n## Version {{ version }}\n\nReleased on {{ date }}",
+          "# Changelog\n\n## Version {{ version }}\n\nReleased on {{ buildDate }}",
           {
             version: "1.0.0",
-            previousVersion: "0.9.0",
-            changelog: "- New feature",
-            date: new Date().toISOString(),
-            commits: [],
-          },
+            buildDate: new Date().toISOString(),
+            gitCommit: "abc123",
+            environment: "production",
+            releaseNotes: {
+              version: "1.0.0",
+              date: new Date().toISOString(),
+              added: ["New feature"],
+              changed: [],
+              deprecated: [],
+              removed: [],
+              fixed: [],
+              security: [],
+            },
+            metadata: {},
+            project: {
+              name: "Test Project",
+              repository: "https://github.com/test/test",
+            },
+          } as TemplateData,
         );
       },
       THRESHOLDS.templateProcessing,
@@ -182,11 +210,11 @@ async function runBenchmarks(): Promise<void> {
       "Security Validation",
       () => {
         // Test various input validations
-        validateInput("version", "1.2.3");
-        validateInput("tag", "v1.2.3");
-        validateInput("branch", "main");
-        validateInput("path", "./src/file.ts");
-        validateInput("message", "feat: add new feature");
+        validateFilePath("./src/file.ts", Deno.cwd());
+        validateFilePath("./tests/test.ts", Deno.cwd());
+        validateFilePath("./mod.ts", Deno.cwd());
+        validateFilePath("./version.ts", Deno.cwd());
+        validateFilePath("./cli.ts", Deno.cwd());
       },
       THRESHOLDS.securityValidation,
     ),
@@ -201,7 +229,7 @@ async function runBenchmarks(): Promise<void> {
 
   // Simulate multiple operations
   for (let i = 0; i < 10; i++) {
-    new FileHandlerRegistry();
+    new FileHandlerManager();
     new GitOperations({ dryRun: true });
     await new TemplateProcessor().processTemplate("Test {{ version }}", {
       version: `1.0.${i}`,

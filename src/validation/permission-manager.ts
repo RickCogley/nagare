@@ -21,7 +21,7 @@
  * @since 2.18.0
  */
 
-import type { AsyncResult, Result } from "../types.ts";
+import type { AsyncResult } from "../../types.ts";
 
 /**
  * Required permission descriptor
@@ -152,7 +152,7 @@ export class PermissionManager {
       };
     }
 
-    const suggestedCommand = this.buildSuggestedCommand(missing);
+    const _suggestedCommand = this.buildSuggestedCommand(missing);
     const errorMessage = this.buildErrorMessage(missing);
 
     return {
@@ -344,7 +344,7 @@ export class PermissionManager {
       return `✅ All ${result.data.granted.length} required permissions are granted`;
     }
 
-    const checkResult = await this.checkAllPermissions();
+    const _checkResult = await this.checkAllPermissions();
     let granted = 0;
     let missing = 0;
 

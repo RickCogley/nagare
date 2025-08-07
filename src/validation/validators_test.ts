@@ -63,7 +63,7 @@ Deno.test("validateReleaseType - invalid release types", () => {
   const numberResult = validateReleaseType(123);
   assertEquals(numberResult.success, false);
   if (!numberResult.success) {
-    assertEquals(invalidResult.error instanceof Error, true);
+    assertEquals(numberResult.error instanceof Error, true);
     assertEquals(numberResult.error.message.includes("must be a string"), true);
   }
 

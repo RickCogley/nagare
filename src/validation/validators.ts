@@ -21,7 +21,6 @@
  */
 
 import type { Result } from "../../types.ts";
-import { BumpType } from "../../types.ts";
 
 /**
  * Valid release types as a const array for runtime checking

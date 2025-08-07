@@ -153,5 +153,5 @@
 
 // This file exists primarily for documentation purposes
 // All exports are re-exported from enhanced-error.ts
-export { ErrorCodes, ErrorFactory, NagareError } from "./core/enhanced-error.ts";
-export type { ErrorCode } from "./core/enhanced-error.ts";
+export { ErrorCodes, ErrorFactory, NagareError } from "../core/enhanced-error.ts";
+export type { ErrorCode } from "../core/enhanced-error.ts";

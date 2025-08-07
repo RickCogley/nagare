@@ -43,6 +43,17 @@
     "check": "deno check --unstable-raw-imports **/*.ts",
     "build": "deno task check && deno task test && deno task lint && deno task fmt --check",
 
+    "preflight": "deno task fmt && deno task check && deno task lint && deno task test && deno task security:check && deno task type:coverage",
+    "ci:test": "deno test --unstable-raw-imports --allow-all --coverage=coverage --junit-path=test-results.xml",
+    "security:check": "deno task security:check-sarif && deno task security:check-patterns && deno run --allow-read scripts/check-owasp.ts",
+    "type:coverage": "deno run --allow-read --allow-write scripts/type-coverage.ts",
+    "type:strict": "deno check --unstable-raw-imports --config tsconfig.strict.json **/*.ts",
+    "benchmark": "deno run --allow-all benchmarks/performance.ts",
+    "benchmark:watch": "deno run --allow-all --watch benchmarks/performance.ts",
+    "quality:check": "deno task preflight && deno task benchmark",
+    "hooks:install": "git config core.hooksPath .githooks && echo '✅ Git hooks installed'",
+    "hooks:test": "for hook in .githooks/hooks.d/*; do echo \"Testing $(basename $hook)...\"; $hook || true; done",
+
     "nagare": "deno run --unstable-raw-imports -A nagare-launcher.ts",
     "nagare:patch": "deno task nagare patch",
     "nagare:minor": "deno task nagare minor",
@@ -170,6 +181,7 @@
     "scratch/",
     "coverage/",
     ".githooks/",
-    "docs/api/"
+    "docs/api/",
+    ".nagare-backups/"
   ]
 }

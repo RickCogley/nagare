@@ -13,14 +13,8 @@ import {
 import { assertSpyCall, assertSpyCalls, returnsNext, spy, stub } from "https://deno.land/std@0.208.0/testing/mock.ts";
 
 import { ReleaseManager } from "./release-manager.ts";
-import type {
-  BumpType,
-  ConventionalCommit,
-  NagareConfig,
-  ReleaseNotes,
-  ReleaseResult,
-  TemplateData,
-} from "../../types.ts";
+import { BumpType } from "../../types.ts";
+import type { ConventionalCommit, NagareConfig, ReleaseNotes, ReleaseResult, TemplateData } from "../../types.ts";
 import { LogLevel, TemplateFormat } from "../../types.ts";
 
 // =============================================================================
@@ -615,8 +609,8 @@ Deno.test("ReleaseManager - categorizes commits correctly", async () => {
       commitTypes: {
         feat: "added",
         fix: "fixed",
-        docs: "documented",
-        perf: "improved",
+        docs: "changed",
+        perf: "changed",
       },
     });
     const manager = new ReleaseManager(config);

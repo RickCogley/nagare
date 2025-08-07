@@ -128,13 +128,13 @@ export class EventBus {
     }
 
     const entry: HandlerEntry<T> = { handler, priority, once: false };
-    this.handlers.get(event)!.add(entry);
+    this.handlers.get(event)!.add(entry as HandlerEntry<EventName>);
 
     // Return unsubscribe function
     return () => {
       const handlers = this.handlers.get(event);
       if (handlers) {
-        handlers.delete(entry);
+        handlers.delete(entry as HandlerEntry<EventName>);
         if (handlers.size === 0) {
           this.handlers.delete(event);
         }
@@ -161,12 +161,12 @@ export class EventBus {
       this.handlers.set(event, new Set());
     }
 
-    this.handlers.get(event)!.add(entry);
+    this.handlers.get(event)!.add(entry as HandlerEntry<EventName>);
 
     return () => {
       const handlers = this.handlers.get(event);
       if (handlers) {
-        handlers.delete(entry);
+        handlers.delete(entry as HandlerEntry<EventName>);
       }
     };
   }
