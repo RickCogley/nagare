@@ -57,7 +57,8 @@
       "Bash(fi)",
       "Bash(done)",
       "Bash(git clean:*)",
-      "Bash(do echo \"=== $file ===\")"
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(gh release delete:*)"
     ],
     "deny": []
   }
