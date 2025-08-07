@@ -55,6 +55,38 @@ export enum LogLevel {
 }
 
 /**
+ * Result type for type-safe error handling
+ *
+ * @description A discriminated union type that represents either success with data
+ * or failure with an error. Used throughout the codebase for consistent error handling.
+ *
+ * @example
+ * ```typescript
+ * function parseVersion(input: string): Result<string, Error> {
+ *   if (!input) {
+ *     return { success: false, error: new Error("Input is empty") };
+ *   }
+ *   return { success: true, data: input.trim() };
+ * }
+ *
+ * const result = parseVersion("1.2.3");
+ * if (result.success) {
+ *   console.log(result.data); // Type-safe access to data
+ * } else {
+ *   console.error(result.error); // Type-safe access to error
+ * }
+ * ```
+ */
+export type Result<T, E = Error> =
+  | { success: true; data: T }
+  | { success: false; error: E };
+
+/**
+ * Async Result type for async operations
+ */
+export type AsyncResult<T, E = Error> = Promise<Result<T, E>>;
+
+/**
  * Main configuration interface for Nagare
  */
 export interface NagareConfig {

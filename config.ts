@@ -9,10 +9,54 @@
 import type { CommitTypeMapping, NagareConfig } from "./types.ts";
 import { BumpType, LogLevel, TemplateFormat } from "./types.ts";
 
-// Text imports for templates
-import typescriptTemplate from "./templates/typescript.vto" with { type: "text" };
-import jsonTemplate from "./templates/json.vto" with { type: "text" };
-import yamlTemplate from "./templates/yaml.vto" with { type: "text" };
+// Template content will be loaded at runtime to avoid import assertion issues
+// The templates are stored as constants for now until --unstable-raw-imports is stable
+const typescriptTemplate = `/**
+ * Auto-generated version file
+ * @module version
+ * @description Version information and metadata for {{ project.name }}
+ */
+
+export const VERSION = "{{ version }}";
+
+export const BUILD_INFO = {
+  buildDate: "{{ buildDate }}",
+  gitCommit: "{{ gitCommit }}",
+  environment: "{{ environment }}",
+} as const;
+
+export const APP_INFO = {
+  name: "{{ project.name }}",
+  description: "{{ project.description }}",
+  repository: "{{ project.repository }}",
+  homepage: "{{ project.homepage }}",
+  license: "{{ project.license }}",
+  author: "{{ project.author }}",
+} as const;
+
+export const RELEASE_NOTES = {{ releaseNotes | jsonStringify }};
+`;
+
+const jsonTemplate = `{
+  "version": "{{ version }}",
+  "buildDate": "{{ buildDate }}",
+  "gitCommit": "{{ gitCommit }}",
+  "project": {{ project | jsonStringify }},
+  "releaseNotes": {{ releaseNotes | jsonStringify }}
+}`;
+
+const yamlTemplate = `# Auto-generated version file
+version: "{{ version }}"
+buildDate: "{{ buildDate }}"
+gitCommit: "{{ gitCommit }}"
+project:
+  name: "{{ project.name }}"
+  description: "{{ project.description }}"
+  repository: "{{ project.repository }}"
+releaseNotes:
+  version: "{{ releaseNotes.version }}"
+  date: "{{ releaseNotes.date }}"
+`;
 
 /**
  * Default commit type mappings following conventional commits specification

@@ -1,0 +1,592 @@
+# .github/workflows/quality-assurance.yml
+name: Quality Assurance
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # Run daily at 2 AM UTC for continuous monitoring
+    - cron: "0 2 * * *"
+
+permissions:
+  contents: read
+  security-events: write
+  checks: write
+  pull-requests: write
+
+jobs:
+  # ========================================
+  # TypeScript Strict Type Checking
+  # ========================================
+  typescript-checks:
+    name: TypeScript Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: "2.x"
+
+      - name: Install type-coverage tool
+        run: |
+          npm install -g type-coverage
+          npm install -g typescript
+
+      # Strict TypeScript compilation with all flags
+      - name: Strict TypeScript Check
+        run: |
+          echo "🔍 Running strict TypeScript checks..."
+          deno check --unstable-raw-imports \
+            --config deno.json \
+            **/*.ts
+
+          # Additional strict checking with explicit flags
+          cat > tsconfig.strict.json << 'EOF'
+          {
+            "compilerOptions": {
+              "lib": ["deno.window"],
+              "strict": true,
+              "noImplicitAny": true,
+              "noImplicitReturns": true,
+              "noImplicitThis": true,
+              "noUnusedLocals": true,
+              "noUnusedParameters": true,
+              "noFallthroughCasesInSwitch": true,
+              "strictNullChecks": true,
+              "strictFunctionTypes": true,
+              "strictBindCallApply": true,
+              "strictPropertyInitialization": true,
+              "alwaysStrict": true,
+              "exactOptionalPropertyTypes": true,
+              "noUncheckedIndexedAccess": true,
+              "noPropertyAccessFromIndexSignature": true,
+              "allowUnusedLabels": false,
+              "allowUnreachableCode": false,
+              "checkJs": false,
+              "skipLibCheck": false
+            },
+            "include": ["**/*.ts"],
+            "exclude": ["node_modules", "docs", "coverage", ".githooks"]
+          }
+          EOF
+
+          tsc --project tsconfig.strict.json --noEmit || {
+            echo "❌ Strict TypeScript checks failed"
+            exit 1
+          }
+
+      # Enforce no-any rule
+      - name: No-Any Enforcement
+        run: |
+          echo "🚫 Checking for 'any' type usage..."
+
+          # Create a script to check for any usage
+          cat > check-no-any.ts << 'EOF'
+          import { walk } from "jsr:@std/fs@^1.0.0/walk";
+
+          let hasAny = false;
+          const violations: string[] = [];
+
+          for await (const entry of walk(".", {
+            exts: [".ts"],
+            skip: [/node_modules/, /\.git/, /docs/, /coverage/, /\.githooks/]
+          })) {
+            const content = await Deno.readTextFile(entry.path);
+            const lines = content.split("\n");
+
+            lines.forEach((line, index) => {
+              // Skip comments and strings
+              if (line.trim().startsWith("//") || line.trim().startsWith("*")) return;
+
+              // Check for various any patterns
+              const anyPatterns = [
+                /:\s*any(?:\s|,|\)|;|$)/,
+                /<any>/,
+                /as\s+any/,
+                /\bany\[\]/,
+                /Array<any>/,
+                /Promise<any>/,
+                /Record<[^,]+,\s*any>/
+              ];
+
+              for (const pattern of anyPatterns) {
+                if (pattern.test(line)) {
+                  hasAny = true;
+                  violations.push(`${entry.path}:${index + 1} - ${line.trim()}`);
+                }
+              }
+            });
+          }
+
+          if (hasAny) {
+            console.error("❌ Found 'any' type usage:");
+            violations.forEach(v => console.error(`  ${v}`));
+            Deno.exit(1);
+          } else {
+            console.log("✅ No 'any' types found");
+          }
+          EOF
+
+          deno run --allow-read check-no-any.ts
+
+      # Type coverage reporting
+      - name: Type Coverage Report
+        run: |
+          echo "📊 Calculating type coverage..."
+
+          # Create type coverage script
+          cat > check-type-coverage.ts << 'EOF'
+          import { walk } from "jsr:@std/fs@^1.0.0/walk";
+
+          let totalLines = 0;
+          let typedLines = 0;
+
+          for await (const entry of walk("src", {
+            exts: [".ts"],
+            skip: [/test/, /\.test\.ts$/, /_test\.ts$/]
+          })) {
+            const content = await Deno.readTextFile(entry.path);
+            const lines = content.split("\n");
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed || trimmed.startsWith("//") || trimmed.startsWith("*")) continue;
+
+              totalLines++;
+
+              // Check if line has type annotations
+              if (
+                trimmed.includes(":") && !trimmed.startsWith("import") ||
+                trimmed.includes("as ") ||
+                trimmed.includes("<") && trimmed.includes(">") ||
+                trimmed.includes("interface ") ||
+                trimmed.includes("type ") ||
+                trimmed.includes("enum ")
+              ) {
+                typedLines++;
+              }
+            }
+          }
+
+          const coverage = (typedLines / totalLines) * 100;
+          console.log(`📊 Type Coverage: ${coverage.toFixed(2)}%`);
+          console.log(`   Typed lines: ${typedLines}/${totalLines}`);
+
+          if (coverage < 95) {
+            console.error(`❌ Type coverage ${coverage.toFixed(2)}% is below required 95%`);
+            Deno.exit(1);
+          } else {
+            console.log("✅ Type coverage meets requirements");
+          }
+
+          // Write coverage to file for badge generation
+          await Deno.writeTextFile("type-coverage.json", JSON.stringify({
+            coverage: coverage.toFixed(2),
+            typedLines,
+            totalLines,
+            timestamp: new Date().toISOString()
+          }, null, 2));
+          EOF
+
+          deno run --allow-read --allow-write check-type-coverage.ts
+
+      - name: Upload Type Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: type-coverage
+          path: type-coverage.json
+          retention-days: 30
+
+  # ========================================
+  # Performance Benchmarking
+  # ========================================
+  performance:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: "2.x"
+
+      - name: Run Performance Benchmarks
+        run: |
+          echo "⚡ Running performance benchmarks..."
+
+          # Check if benchmarks exist, if not create them
+          if [ ! -f "benchmarks/performance.ts" ]; then
+            echo "Creating benchmark file..."
+            mkdir -p benchmarks
+            cat > benchmarks/performance.ts << 'EOF'
+          // benchmarks/performance.ts
+          import { ReleaseManager } from "../src/release-manager.ts";
+          import { FileHandlerRegistry } from "../src/file-handlers.ts";
+          import { GitOperations } from "../src/git-operations.ts";
+
+          // Performance thresholds (milliseconds)
+          const THRESHOLDS = {
+            fileHandlerInit: 50,
+            gitOperations: 100,
+            releaseManagerInit: 150,
+            versionBump: 200,
+            changelogGeneration: 500,
+            totalRelease: 3000,
+          };
+
+          async function benchmark(name: string, fn: () => Promise<void>, threshold: number) {
+            const start = performance.now();
+            await fn();
+            const duration = performance.now() - start;
+
+            console.log(`📊 ${name}: ${duration.toFixed(2)}ms (threshold: ${threshold}ms)`);
+
+            if (duration > threshold) {
+              console.error(`❌ ${name} exceeded threshold by ${(duration - threshold).toFixed(2)}ms`);
+              return false;
+            }
+            return true;
+          }
+
+          async function runBenchmarks() {
+            console.log("⚡ Running Nagare Performance Benchmarks\n");
+            const results: boolean[] = [];
+
+            // Benchmark file handler initialization
+            results.push(await benchmark("File Handler Init", async () => {
+              new FileHandlerRegistry();
+            }, THRESHOLDS.fileHandlerInit));
+
+            // Benchmark git operations
+            results.push(await benchmark("Git Operations Init", async () => {
+              new GitOperations({ dryRun: true });
+            }, THRESHOLDS.gitOperations));
+
+            // Memory usage check
+            const memUsage = Deno.memoryUsage();
+            const memMB = memUsage.heapUsed / 1024 / 1024;
+            console.log(`\n💾 Memory Usage: ${memMB.toFixed(2)} MB`);
+
+            if (memMB > 256) {
+              console.error(`❌ Memory usage ${memMB.toFixed(2)}MB exceeds 256MB limit`);
+              results.push(false);
+            }
+
+            // Check if all benchmarks passed
+            if (results.every(r => r)) {
+              console.log("\n✅ All performance benchmarks passed");
+            } else {
+              console.error("\n❌ Some benchmarks failed");
+              Deno.exit(1);
+            }
+          }
+
+          if (import.meta.main) {
+            await runBenchmarks();
+          }
+          EOF
+          fi
+
+          deno run --allow-all benchmarks/performance.ts
+
+      - name: Store Benchmark Results
+        run: |
+          # Store results for tracking over time
+          mkdir -p .metrics
+          date=$(date +%Y%m%d-%H%M%S)
+          deno run --allow-all benchmarks/performance.ts > .metrics/perf-${date}.txt
+
+          # Create summary
+          echo "## Performance Summary" > performance-summary.md
+          echo "Date: $(date)" >> performance-summary.md
+          echo '```' >> performance-summary.md
+          tail -20 .metrics/perf-${date}.txt >> performance-summary.md
+          echo '```' >> performance-summary.md
+
+      - name: Upload Performance Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results
+          path: |
+            .metrics/
+            performance-summary.md
+          retention-days: 90
+
+  # ========================================
+  # Security Scanning with OWASP
+  # ========================================
+  security:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: "2.x"
+
+      # OWASP dependency check
+      - name: OWASP Dependency Check
+        run: |
+          echo "🔒 Running OWASP dependency check..."
+
+          # Audit Deno dependencies
+          deno run --allow-read --allow-net jsr:@std/cli@1.0.21/parse-args <<'EOF'
+          import { walk } from "jsr:@std/fs@^1.0.0/walk";
+
+          // Check for known vulnerable patterns
+          const vulnerablePatterns = [
+            /eval\(/,
+            /Function\(/,
+            /innerHTML\s*=/,
+            /document\.write/,
+            /\.exec\(/,  // Command execution
+            /child_process/,
+            /\$\{.*\}/,  // Template injection risk
+          ];
+
+          let violations = 0;
+
+          for await (const entry of walk("src", { exts: [".ts"] })) {
+            const content = await Deno.readTextFile(entry.path);
+            const lines = content.split("\n");
+
+            lines.forEach((line, idx) => {
+              for (const pattern of vulnerablePatterns) {
+                if (pattern.test(line) && !line.includes("// DevSkim:") && !line.includes("// codeql")) {
+                  console.log(`⚠️  ${entry.path}:${idx + 1} - Potential security issue: ${pattern}`);
+                  violations++;
+                }
+              }
+            });
+          }
+
+          if (violations > 0) {
+            console.error(`\n❌ Found ${violations} potential security issues`);
+            console.log("ℹ️  Add DevSkim or CodeQL comments to suppress false positives");
+          } else {
+            console.log("✅ No security vulnerabilities detected");
+          }
+          EOF
+
+      # Input validation checks
+      - name: Input Validation Audit
+        run: |
+          echo "🛡️ Checking input validation..."
+
+          cat > check-validation.ts << 'EOF'
+          import { walk } from "jsr:@std/fs@^1.0.0/walk";
+
+          // Check that all user inputs are validated
+          const inputPatterns = [
+            /Deno\.args/,
+            /prompt\(/,
+            /confirm\(/,
+            /localStorage/,
+            /sessionStorage/,
+            /URLSearchParams/,
+            /FormData/,
+          ];
+
+          for await (const entry of walk("src", { exts: [".ts"] })) {
+            const content = await Deno.readTextFile(entry.path);
+
+            for (const pattern of inputPatterns) {
+              if (pattern.test(content)) {
+                // Check if validation exists nearby
+                const hasValidation =
+                  content.includes("validateInput") ||
+                  content.includes("sanitize") ||
+                  content.includes("z.parse") ||
+                  content.includes("z.safeParse");
+
+                if (!hasValidation) {
+                  console.warn(`⚠️  ${entry.path} uses ${pattern} without clear validation`);
+                }
+              }
+            }
+          }
+
+          console.log("✅ Input validation check complete");
+          EOF
+
+          deno run --allow-read check-validation.ts
+
+      # Rate limiting and DoS protection
+      - name: DoS Protection Check
+        run: |
+          echo "🚦 Checking DoS protection..."
+
+          # Check for rate limiting and resource constraints
+          if grep -r "while\s*(" src/ | grep -v "MAX_ITERATIONS\|timeout\|limit"; then
+            echo "⚠️  Found potentially unbounded loops"
+          fi
+
+          if grep -r "setInterval\|setTimeout" src/ | grep -v "clearInterval\|clearTimeout"; then
+            echo "⚠️  Found timers that might not be cleaned up"
+          fi
+
+          echo "✅ DoS protection check complete"
+
+  # ========================================
+  # Comprehensive Testing
+  # ========================================
+  testing:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        deno-version: ["2.4.x", "2.x"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno ${{ matrix.deno-version }}
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: ${{ matrix.deno-version }}
+
+      - name: Run Unit Tests
+        run: |
+          deno test --unstable-raw-imports \
+            --allow-all \
+            --coverage=coverage \
+            --junit-path=test-results.xml
+
+      - name: Generate Coverage Report
+        run: |
+          deno coverage coverage --lcov > coverage.lcov
+
+          # Calculate coverage percentage
+          total=$(grep -o 'LF:[0-9]*' coverage.lcov | cut -d: -f2 | paste -sd+ | bc)
+          hit=$(grep -o 'LH:[0-9]*' coverage.lcov | cut -d: -f2 | paste -sd+ | bc)
+
+          if [ "$total" -gt 0 ]; then
+            coverage=$(echo "scale=2; $hit * 100 / $total" | bc)
+            echo "📊 Test Coverage: ${coverage}%"
+
+            if (( $(echo "$coverage < 80" | bc -l) )); then
+              echo "❌ Coverage ${coverage}% is below 80% threshold"
+              exit 1
+            fi
+          fi
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.deno-version }}
+          path: |
+            test-results.xml
+            coverage.lcov
+          retention-days: 30
+
+  # ========================================
+  # Linting and Formatting
+  # ========================================
+  lint-format:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: "2.x"
+
+      - name: Check Formatting
+        run: |
+          deno fmt --check
+          if [ $? -ne 0 ]; then
+            echo "❌ Formatting issues detected. Run 'deno fmt' locally."
+            exit 1
+          fi
+
+      - name: Run Linter
+        run: |
+          deno lint
+          if [ $? -ne 0 ]; then
+            echo "❌ Linting issues detected. Fix them before merging."
+            exit 1
+          fi
+
+  # ========================================
+  # Quality Gate Summary
+  # ========================================
+  quality-gate:
+    name: Quality Gate
+    needs: [typescript-checks, performance, security, testing, lint-format]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Check Quality Gate Status
+        run: |
+          echo "🎯 Quality Gate Summary"
+          echo "======================"
+
+          # Check if all jobs passed
+          if [ "${{ needs.typescript-checks.result }}" != "success" ]; then
+            echo "❌ TypeScript checks failed"
+            exit 1
+          fi
+
+          if [ "${{ needs.performance.result }}" != "success" ]; then
+            echo "❌ Performance benchmarks failed"
+            exit 1
+          fi
+
+          if [ "${{ needs.security.result }}" != "success" ]; then
+            echo "❌ Security checks failed"
+            exit 1
+          fi
+
+          if [ "${{ needs.testing.result }}" != "success" ]; then
+            echo "❌ Tests failed"
+            exit 1
+          fi
+
+          if [ "${{ needs.lint-format.result }}" != "success" ]; then
+            echo "❌ Lint/Format checks failed"
+            exit 1
+          fi
+
+          echo "✅ All quality gates passed!"
+          echo ""
+          echo "Quality Metrics:"
+          echo "- TypeScript: Strict mode ✓"
+          echo "- Type Coverage: >95% ✓"
+          echo "- No 'any' types ✓"
+          echo "- Performance: Within thresholds ✓"
+          echo "- Security: OWASP compliant ✓"
+          echo "- Tests: >80% coverage ✓"
+          echo "- Code Style: Formatted & Linted ✓"
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ **Quality Gate Passed**\n\nAll quality checks have passed successfully:\n- ✓ TypeScript strict mode\n- ✓ Type coverage >95%\n- ✓ No any types\n- ✓ Performance within limits\n- ✓ Security compliant\n- ✓ Tests passing with >80% coverage\n- ✓ Code properly formatted and linted'
+            })

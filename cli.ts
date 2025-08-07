@@ -2,50 +2,84 @@
 
 /**
  * @module CLI
- * @fileoverview CLI interface for Nagare release management
- * @description Provides command-line access to release and rollback functionality.
- * Note: CLI functionality requires Deno runtime due to file system and process APIs.
+ * @description Command-line interface for Nagare release management.
  *
- * @example Basic usage:
+ * Provides comprehensive command-line access to release, rollback, and initialization
+ * functionality. This is the main entry point for Nagare when used as a CLI tool.
+ * Requires Deno runtime for file system and process APIs.
+ *
+ * @example Initialize Nagare in a project
  * ```bash
- * # Initialize Nagare in current directory
- * deno run --allow-all cli.ts init
+ * # Interactive initialization
+ * deno run --allow-all jsr:@rick/nagare/cli init
  *
+ * # Or with local installation
+ * deno task nagare init
+ * ```
+ *
+ * @example Create a release
+ * ```bash
  * # Auto-determine version bump from commits
- * deno run --allow-all cli.ts release
+ * deno task nagare release
  *
  * # Force specific version bump
- * deno run --allow-all cli.ts release minor
+ * deno task nagare release minor
  *
  * # Preview changes without making them
- * deno run --allow-all cli.ts --dry-run
+ * deno task nagare release --dry-run
  *
- * # Rollback a release
- * deno run --allow-all cli.ts rollback 1.2.0
+ * # Skip confirmation prompts (CI/CD)
+ * deno task nagare release --skip-confirmation
+ * ```
+ *
+ * @example Rollback a release
+ * ```bash
+ * # Rollback to specific version
+ * deno task nagare rollback 1.2.0
+ *
+ * # Preview rollback changes
+ * deno task nagare rollback 1.2.0 --dry-run
+ * ```
+ *
+ * @example Retry a failed release
+ * ```bash
+ * # Clean up and retry after failure
+ * deno task nagare retry
  * ```
  *
  * @since 0.1.0
  * @author Rick Cogley
  */
 
-import { ReleaseManager } from "./src/release-manager.ts";
-import { RollbackManager } from "./src/rollback-manager.ts";
+import { ReleaseManager } from "./src/release/release-manager.ts";
+import { RollbackManager } from "./src/release/rollback-manager.ts";
 import type { BumpType, NagareConfig, ReleaseNotes } from "./types.ts";
 import { LogLevel } from "./config.ts";
 import { APP_INFO, BUILD_INFO, RELEASE_NOTES, VERSION } from "./version.ts";
-import { sanitizeErrorMessage, validateCliArgs, validateFilePath } from "./src/security-utils.ts";
-import { ErrorFactory } from "./src/enhanced-error.ts";
-import { initI18n, t } from "./src/i18n.ts";
-import { NagareBrand as Brand } from "./src/branded-messages.ts";
+import { sanitizeErrorMessage, validateCliArgs, validateFilePath } from "./src/validation/security-utils.ts";
+import { ErrorFactory } from "./src/core/enhanced-error.ts";
+import { initI18n, t } from "./src/core/i18n.ts";
+import { NagareBrand as Brand } from "./src/core/branded-messages.ts";
 import { getAppDisplayName, hasAppName } from "./src/ui/app-context.ts";
 
 /**
- * CLI configuration options interface
+ * CLI configuration options interface.
  *
- * @description Configuration options that can be passed via command line arguments
+ * Configuration options that can be passed via command line arguments
  * to override default behavior and configuration file settings.
  *
  * @interface CLIOptions
+ * @since 0.1.0
+ *
+ * @example
+ * ```typescript
+ * const options: CLIOptions = {
+ *   dryRun: true,
+ *   skipConfirmation: false,
+ *   logLevel: LogLevel.DEBUG,
+ *   config: "./custom-nagare.config.ts"
+ * };
+ * ```
  */
 interface CLIOptions {
   /** Path to custom configuration file */
@@ -666,11 +700,11 @@ import { LogLevel } from "@rick/nagare/config";
 import config from "./nagare.config.ts";
 
 // Store original import function
-const g = globalThis as any;
+const g = globalThis as unknown as { import: (specifier: string) => Promise<unknown> };
 const originalImport = g.import;
 
 // Override the import function to intercept config loads
-g.import = function (specifier: string): Promise<any> {
+g.import = function (specifier: string): Promise<unknown> {
   // Intercept attempts to import config files
   if (
     specifier.includes("nagare.config") ||

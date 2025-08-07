@@ -228,7 +228,7 @@
  * const result = await releaseManager.release("minor");
  * ```
  */
-export { ReleaseManager } from "./src/release-manager.ts";
+export { ReleaseManager } from "./src/release/release-manager.ts";
 
 /**
  * Handles safe rollback of releases by reverting git tags, commits, and file changes.
@@ -240,44 +240,44 @@ export { ReleaseManager } from "./src/release-manager.ts";
  * await rollback.rollback("1.2.0");
  * ```
  */
-export { RollbackManager } from "./src/rollback-manager.ts";
+export { RollbackManager } from "./src/release/rollback-manager.ts";
 
 /**
  * Low-level git operations wrapper providing methods for commits, tags, and
  * conventional commit parsing. Used internally by managers but also available
  * for custom workflows.
  */
-export { GitOperations } from "./src/git-operations.ts";
+export { GitOperations } from "./src/git/git-operations.ts";
 
 /**
  * Utilities for semantic versioning calculations. Determines appropriate version
  * bumps based on conventional commits and provides version parsing capabilities.
  */
-export { VersionUtils } from "./src/version-utils.ts";
+export { VersionUtils } from "./src/release/version-utils.ts";
 
 /**
  * Generates and updates CHANGELOG.md files following the Keep a Changelog format.
  * Automatically categorizes commits into Added, Changed, Fixed, etc. sections.
  */
-export { ChangelogGenerator } from "./src/changelog-generator.ts";
+export { ChangelogGenerator } from "./src/templates/changelog-generator.ts";
 
 /**
  * Integration with GitHub CLI (`gh`) for creating releases. Handles authentication
  * and provides graceful fallback when GitHub CLI is not available.
  */
-export { GitHubIntegration } from "./src/github-integration.ts";
+export { GitHubIntegration } from "./src/git/github-integration.ts";
 
 /**
  * Vento-based template processing engine for generating version files with custom
  * formats. Supports variables, conditionals, and filters for flexible output.
  */
-export { TemplateProcessor } from "./src/template-processor.ts";
+export { TemplateProcessor } from "./src/templates/template-processor.ts";
 
 /**
  * Generates API documentation using Deno's built-in documentation generator.
  * Creates the static documentation site served at nagare.esolia.deno.net.
  */
-export { DocGenerator } from "./src/doc-generator.ts";
+export { DocGenerator } from "./src/templates/doc-generator.ts";
 
 /**
  * Enhanced error handling for better developer experience (v1.9.0+)
@@ -285,8 +285,8 @@ export { DocGenerator } from "./src/doc-generator.ts";
  *
  * @see {@link ./src/error-reference.ts} for comprehensive error documentation
  */
-export { ErrorCodes, ErrorFactory, NagareError } from "./src/enhanced-error.ts";
-export type { ErrorCode } from "./src/enhanced-error.ts";
+export { ErrorCodes, ErrorFactory, NagareError } from "./src/core/enhanced-error.ts";
+export type { ErrorCode } from "./src/core/enhanced-error.ts";
 
 // ==================================================================
 // File Handlers for Intelligent Updates (New in 1.1.0)
@@ -296,13 +296,13 @@ export type { ErrorCode } from "./src/enhanced-error.ts";
  * File handler system for automatic version updates
  * @since 1.1.0
  */
-export { FileHandlerManager, PatternBuilder } from "./src/file-handlers.ts";
+export { FileHandlerManager, PatternBuilder } from "./src/release/file-handlers.ts";
 
 /**
  * Built-in file handlers for common project files
  * @since 1.1.0
  */
-export { BUILT_IN_HANDLERS } from "./src/file-handlers.ts";
+export { BUILT_IN_HANDLERS } from "./src/release/file-handlers.ts";
 
 // ==================================================================
 // Type Definitions
@@ -351,7 +351,7 @@ export type {
   FileHandler,
   /** File update result */
   FileUpdateResult,
-} from "./src/file-handlers.ts";
+} from "./src/release/file-handlers.ts";
 
 // ==================================================================
 // Configuration and Constants

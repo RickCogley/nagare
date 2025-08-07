@@ -176,6 +176,40 @@ graph TD
 - [**Security model**](explanation/security-model.md) - OWASP-compliant architecture
 - [**Version management**](explanation/version-management.md) - Semantic versioning
 
+## 📝 Generating API Documentation
+
+**IMPORTANT**: Always use the predefined tasks to generate API documentation. This ensures docs are placed in the correct location (`docs/api/`).
+
+### Available Documentation Tasks
+
+```bash
+# Generate HTML API documentation (recommended)
+deno task docs:api
+
+# Generate JSON API documentation
+deno task docs:json
+
+# Check JSDoc syntax without generating files
+deno task docs:check
+
+# Clean and regenerate all API docs
+deno task docs:clean && deno task docs:api
+
+# Serve API documentation locally
+deno task docs:serve
+```
+
+### ⚠️ Never Run Directly
+
+**DO NOT** run `deno doc` without the `--output` flag as it will generate files in the wrong location:
+```bash
+# ❌ WRONG - Will generate in current directory
+deno doc --html cli.ts
+
+# ✅ CORRECT - Use the task instead
+deno task docs:api
+```
+
 ## 🎯 Finding What You Need
 
 ### By User Type

@@ -7,7 +7,7 @@
 
 import type { NagareConfig } from "../../types.ts";
 import { getAppDisplayName } from "./app-context.ts";
-import { NagareBrand } from "../branded-messages.ts";
+import { NagareBrand } from "../core/branded-messages.ts";
 
 /**
  * Display branded release header with application context

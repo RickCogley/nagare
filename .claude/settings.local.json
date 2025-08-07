@@ -50,7 +50,13 @@
       "Bash(# Test with staged files\necho \"\"// Test\"\" >> version.ts\ngit add version.ts\n\necho \"\"Testing fixed security hook...\"\"\ntime bash .githooks/hooks.d/40-security-check\n\n# Clean up\ngit reset HEAD version.ts\ngit checkout -- version.ts)",
       "Bash(~/.aichaku/mcp-servers/aichaku-code-reviewer scan-local:*)",
       "Bash(rm:*)",
-      "Bash(git revert:*)"
+      "Bash(git revert:*)",
+      "Bash(for:*)",
+      "Bash(do if [ -f \"$file\" ])",
+      "Bash(then mv \"$file\" /tmp/)",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(git clean:*)"
     ],
     "deny": []
   }
