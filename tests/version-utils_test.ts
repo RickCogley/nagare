@@ -8,7 +8,7 @@ import { VersionUtils } from "../src/release/version-utils.ts";
 import { NagareError } from "../src/core/enhanced-error.ts";
 import { BumpType, TemplateFormat } from "../types.ts";
 import type { ConventionalCommit, NagareConfig } from "../types.ts";
-import type { GitOperations } from "../src/git-operations.ts";
+import type { GitOperations } from "../src/git/git-operations.ts";
 
 // Helper function to create a test config
 function createTestConfig(overrides: Partial<NagareConfig> = {}): NagareConfig {

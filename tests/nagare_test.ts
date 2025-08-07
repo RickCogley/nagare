@@ -105,7 +105,7 @@ Deno.test("PatternBuilder should create safe patterns", async () => {
 
   // Test JSON pattern
   const jsonPattern = PatternBuilder.jsonVersion(true);
-  assertEquals(jsonPattern.source, '^(\\s*)"version":\\s*"([^"]+)"');
+  assertEquals(jsonPattern.source, '^(\\s{0,2})"version":\\s*"([^"]+)"');
   assertEquals(jsonPattern.flags, "m");
 
   // Test YAML patterns
