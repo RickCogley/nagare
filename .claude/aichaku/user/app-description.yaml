@@ -6,7 +6,7 @@ application:
   name: "Nagare"
   type: "cli-tool"
   description: "Deno-native release management library that automates version bumping, changelog generation, and GitHub releases using conventional commits and semantic versioning"
-  version: "2.17.1"
+  version: "2.18.0"
 
   # === TECHNOLOGY STACK ===
   stack:

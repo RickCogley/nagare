@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.18.0] - 2025-08-07
+
+### Added
+
+- implement comprehensive quality gates and fix TypeScript errors (058ddcb)
+
+### Changed
+
+- prepare for v2.18.0 release (aabce98)
+- re-enable test hook (dbbe249)
+- temporarily disable test hook for release (21270a8)
+- temporarily disable type check in preflight (ffc2f6e)
+- configure test exclusions for smoother development workflow (a4c98af)
+- close out three completed projects (3b7d085)
+- close out nagare-show-app-being-released project (af09381)
+
+### Fixed
+
+- resolve test import paths and re-enable CI tests (880728b)
+- temporarily skip tests in CI to unblock release (9157611)
+- ensure CI type check only runs on production files (77fa3cf)
+- resolve TypeScript errors and test failures (67a9405)
+- limit type check to production files only (53ce483)
+- handle unknown error type in test file (9950dbd)
+- correct Vento filter syntax in hardcoded templates (5009234)
+- update all test file import paths after folder migration (b03d765)
+- improve pre-commit hooks to exclude test files from strict checks (0088335)
+- resolve all TypeScript import path errors and remove 'any' types (4aa74aa)
+
 ## [2.17.1] - 2025-08-05
 
 ### Changed
