@@ -252,6 +252,8 @@ async function calculateTypeCoverage(): Promise<TypeCoverageResult> {
   } else {
     console.log(`\n✅ Type coverage meets requirements (>= ${THRESHOLD}%)`);
   }
+
+  return result;
 }
 
 // Run if main module

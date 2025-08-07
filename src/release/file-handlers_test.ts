@@ -555,20 +555,26 @@ Deno.test("PatternBuilder - tsConst", () => {
 });
 
 Deno.test("PatternBuilder - versionBadge", () => {
-  const shieldsOnly = PatternBuilder.versionBadge("shields.io");
-  const imgShieldsOnly = PatternBuilder.versionBadge("img.shields.io");
-  const anyBadge = PatternBuilder.versionBadge("any");
-
+  // Get fresh patterns for each test to avoid global flag state issues
   const shieldsBadge = "https://shields.io/badge/version-1.0.0-blue";
   const imgShieldsBadge = "https://img.shields.io/badge/version-1.0.0-green";
 
+  // Test shields.io only pattern
+  let shieldsOnly = PatternBuilder.versionBadge("shields.io");
   assertEquals(shieldsOnly.test(shieldsBadge), true);
+  shieldsOnly = PatternBuilder.versionBadge("shields.io"); // Fresh instance
   assertEquals(shieldsOnly.test(imgShieldsBadge), false);
 
+  // Test img.shields.io only pattern
+  let imgShieldsOnly = PatternBuilder.versionBadge("img.shields.io");
   assertEquals(imgShieldsOnly.test(imgShieldsBadge), true);
+  imgShieldsOnly = PatternBuilder.versionBadge("img.shields.io"); // Fresh instance
   assertEquals(imgShieldsOnly.test(shieldsBadge), false);
 
+  // Test any badge pattern
+  let anyBadge = PatternBuilder.versionBadge("any");
   assertEquals(anyBadge.test(shieldsBadge), true);
+  anyBadge = PatternBuilder.versionBadge("any"); // Fresh instance for next test
   assertEquals(anyBadge.test(imgShieldsBadge), true);
 });
 

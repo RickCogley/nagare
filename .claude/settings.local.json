@@ -56,7 +56,8 @@
       "Bash(then mv \"$file\" /tmp/)",
       "Bash(fi)",
       "Bash(done)",
-      "Bash(git clean:*)"
+      "Bash(git clean:*)",
+      "Bash(do echo \"=== $file ===\")"
     ],
     "deny": []
   }

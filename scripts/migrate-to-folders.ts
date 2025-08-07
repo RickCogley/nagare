@@ -94,7 +94,7 @@ async function moveFile(from: string, to: string): Promise<void> {
     await Deno.remove(from);
     console.log(`✅ Moved ${from} -> ${to}`);
   } catch (error) {
-    console.error(`❌ Failed to move ${from}: ${error.message}`);
+    console.error(`❌ Failed to move ${from}: ${error instanceof Error ? error.message : String(error)}`);
     throw error;
   }
 }
@@ -116,7 +116,9 @@ async function updateImports(filePath: string): Promise<void> {
       console.log(`📝 Updated imports in ${filePath}`);
     }
   } catch (error) {
-    console.error(`❌ Failed to update imports in ${filePath}: ${error.message}`);
+    console.error(
+      `❌ Failed to update imports in ${filePath}: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 

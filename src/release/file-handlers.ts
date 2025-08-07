@@ -165,10 +165,23 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
       if (key === "version") {
         // Simple, direct replacement without splitting lines to preserve exact formatting
         // This avoids any line ending issues
-        return content.replace(
-          /^(\s*"version":\s*)"[^"]+"/m,
-          `$1"${newValue}"`,
-        );
+        // Try each pattern in order and apply the first match
+        const patterns = [
+          /^(\s*"version":\s*)"[^"]+"/m, // Standard pattern for proper JSON
+          /("version":\s*)"[^"]*"/, // Fallback for any version field
+          /("version":\s*)"([^"]+)$/, // Malformed JSON missing closing quote
+        ];
+
+        for (const pattern of patterns) {
+          if (pattern.test(content)) {
+            // Reset lastIndex for global patterns and apply replacement
+            if (pattern.global) pattern.lastIndex = 0;
+            return content.replace(pattern, `$1"${newValue}"`);
+          }
+        }
+
+        // Return unchanged content to signal no match
+        return content;
       }
       return content;
     },
@@ -357,6 +370,12 @@ export const BUILT_IN_HANDLERS: Record<string, FileHandler> = {
       // Update version headers
       result = result.replace(
         /^(#+\s*(?:Version|Release|v\.?)\s*)(\d+\.\d+\.\d+[^\s]*)/gm,
+        `$1${newValue}`,
+      );
+
+      // Update inline version references like "Current version: X.X.X"
+      result = result.replace(
+        /(Current version:\s*)(\d+\.\d+\.\d+[^\s]*)/g,
         `$1${newValue}`,
       );
 
@@ -675,31 +694,51 @@ export class FileHandlerManager {
     try {
       const content = await Deno.readTextFile(validatedPath);
 
-      // Check if pattern exists
-      const pattern = handler.patterns[key];
-      if (!pattern) {
-        return {
-          success: false,
-          error: `No pattern defined for key "${key}" in handler "${handler.id}"`,
-        };
-      }
-
-      // Find current value
-      const match = content.match(pattern);
-      if (!match) {
-        return {
-          success: false,
-          error: `Pattern for "${key}" found no matches in ${validatedPath}`,
-        };
-      }
-
-      const oldValue = match[match.length === 3 ? 2 : 1] || match[1];
       let updated: string;
 
       // Use custom replacer if available
       if (handler.replacer) {
+        // For handlers with replacers, we don't need pattern matching
+        // The replacer handles all the updates
+        const oldValue = ""; // Replacer doesn't use oldValue for markdown
         updated = handler.replacer(content, key, oldValue, newValue);
+
+        // Check if the replacer actually changed anything
+        if (updated === content) {
+          // Check if there's a pattern we can test for better error message
+          const pattern = handler.patterns[key];
+          if (pattern && !pattern.test(content)) {
+            return {
+              success: false,
+              error: `Pattern for "${key}" found no matches in ${validatedPath}`,
+            };
+          }
+          return {
+            success: false,
+            error: `No pattern defined for key "${key}" in handler "${handler.id}"`,
+          };
+        }
       } else {
+        // Check if pattern exists for generic replacement
+        const pattern = handler.patterns[key];
+        if (!pattern) {
+          return {
+            success: false,
+            error: `No pattern defined for key "${key}" in handler "${handler.id}"`,
+          };
+        }
+
+        // Find current value
+        const match = content.match(pattern);
+        if (!match) {
+          return {
+            success: false,
+            error: `Pattern for "${key}" found no matches in ${validatedPath}`,
+          };
+        }
+
+        const oldValue = match[match.length === 3 ? 2 : 1] || match[1];
+
         // Generic replacement
         updated = content.replace(pattern, (fullMatch: string) => {
           return fullMatch.replace(oldValue, newValue);
@@ -776,33 +815,50 @@ export class FileHandlerManager {
     try {
       const content = await Deno.readTextFile(validatedPath);
       const lines = content.split("\n");
-      const pattern = handler.patterns[key];
-
-      if (!pattern) {
-        return { matches: [], error: `No pattern for key "${key}"` };
-      }
-
       const matches: Array<{ line: number; original: string; updated: string }> = [];
 
-      lines.forEach((line, index) => {
-        if (pattern.test(line)) {
-          const updated = handler.replacer
-            ? handler.replacer(line, key, "", newValue)
-            : line.replace(pattern, (match: string, ...groups: string[]) => {
-              // Try to intelligently replace the version part
-              if (groups.length >= 2) {
-                return match.replace(groups[1], newValue);
-              }
-              return match.replace(/\d+\.\d+\.\d+[^\s"']*/, newValue);
-            });
+      // Special handling for markdown handler which uses replacer without a single pattern
+      if (handler.id === "markdown" && handler.replacer) {
+        // Apply replacer to entire content and check what changed
+        const updatedContent = handler.replacer(content, key, "", newValue);
+        const updatedLines = updatedContent.split("\n");
 
-          matches.push({
-            line: index + 1,
-            original: line.trim(),
-            updated: updated.trim(),
-          });
+        lines.forEach((line, index) => {
+          if (line !== updatedLines[index]) {
+            matches.push({
+              line: index + 1,
+              original: line.trim(),
+              updated: updatedLines[index].trim(),
+            });
+          }
+        });
+      } else {
+        // Standard pattern-based preview
+        const pattern = handler.patterns[key];
+        if (!pattern) {
+          return { matches: [], error: `No pattern for key "${key}"` };
         }
-      });
+
+        lines.forEach((line, index) => {
+          if (pattern.test(line)) {
+            const updated = handler.replacer
+              ? handler.replacer(line, key, "", newValue)
+              : line.replace(pattern, (match: string, ...groups: string[]) => {
+                // Try to intelligently replace the version part
+                if (groups.length >= 2) {
+                  return match.replace(groups[1], newValue);
+                }
+                return match.replace(/\d+\.\d+\.\d+[^\s"']*/, newValue);
+              });
+
+            matches.push({
+              line: index + 1,
+              original: line.trim(),
+              updated: updated.trim(),
+            });
+          }
+        });
+      }
 
       return { matches };
     } catch (error) {
@@ -884,8 +940,9 @@ export class PatternBuilder {
    */
   static jsonVersion(indentAware = true): RegExp {
     if (indentAware) {
-      // Matches at start of line with optional indentation
-      return /^(\s*)"version":\s*"([^"]+)"/m;
+      // Matches at start of line with minimal indentation (2 spaces max for top-level)
+      // This prevents matching nested version fields
+      return /^(\s{0,2})"version":\s*"([^"]+)"/m;
     }
     // Matches anywhere (less safe)
     return /"version":\s*"([^"]+)"/;
@@ -911,7 +968,8 @@ export class PatternBuilder {
       case "double":
         return /^(\s*version:\s*)"([^"]+)"$/m;
       case "none":
-        return /^(\s*version:\s*)([^\s]+)$/m;
+        // Match version without quotes - excludes lines that start with quotes
+        return /^(\s*version:\s*)([^'"\s][^\s]*)$/m;
       case "both":
       default:
         return /^(\s*version:\s*)(['"]?)([^'"\n]+)(['"]?)$/m;
@@ -932,8 +990,12 @@ export class PatternBuilder {
    * ```
    */
   static tsConst(name: string, exported = true): RegExp {
-    const exportPart = exported ? "export\\s+" : "";
-    return new RegExp(`${exportPart}const\\s+${name}\\s*=\\s*["']([^"']+)["']`);
+    if (exported) {
+      return new RegExp(`export\\s+const\\s+${name}\\s*=\\s*["']([^"']+)["']`);
+    }
+    // For non-exported, we need to ensure it's NOT preceded by "export"
+    // Use a negative lookbehind to ensure "export" doesn't precede "const"
+    return new RegExp(`(?<!export\\s)const\\s+${name}\\s*=\\s*["']([^"']+)["']`);
   }
 
   /**
@@ -950,15 +1012,25 @@ export class PatternBuilder {
    * ```
    */
   static versionBadge(badgeService: "shields.io" | "img.shields.io" | "any" = "any"): RegExp {
+    // Return new RegExp instances to avoid global flag state issues in tests
     if (badgeService === "shields.io") {
       // codeql[js/regex/missing-regexp-anchor]
-      return /(?:https?:\/\/)?shields\.io\/badge\/version-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g;
+      return new RegExp(
+        "(?:https?://)?shields\\.io/badge/version-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)",
+        "g",
+      );
     }
     if (badgeService === "img.shields.io") {
       // codeql[js/regex/missing-regexp-anchor]
-      return /(?:https?:\/\/)?img\.shields\.io\/badge\/v(?:ersion)?-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g;
+      return new RegExp(
+        "(?:https?://)?img\\.shields\\.io/badge/v(?:ersion)?-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)",
+        "g",
+      );
     }
-    // Match any common badge pattern with color suffix
-    return /badge\/v(?:ersion)?[\-\/]([^\-\/\s]+)[\-\/](?:blue|green|red|yellow|orange|brightgreen|lightgrey)/g;
+    // Match any common badge pattern with color suffix - handle both "version-" and "v-" formats
+    return new RegExp(
+      "badge/(?:version|v)(?:ersion)?-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)",
+      "g",
+    );
   }
 }

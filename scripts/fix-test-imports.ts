@@ -131,7 +131,7 @@ async function fixImports() {
         totalFixes += fixCount;
       }
     } catch (error) {
-      console.error(`❌ Error processing ${fileConfig.file}:`, error.message);
+      console.error(`❌ Error processing ${fileConfig.file}:`, error instanceof Error ? error.message : String(error));
     }
   }
 

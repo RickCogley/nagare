@@ -212,7 +212,7 @@ async function fixImports() {
         await Deno.writeTextFile(fix.file, content);
       }
     } catch (error) {
-      console.error(`  ❌ Error fixing ${fix.file}: ${error.message}`);
+      console.error(`  ❌ Error fixing ${fix.file}: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 

@@ -457,6 +457,8 @@ async function runOWASPCheck(): Promise<OWASPCheckResult> {
       console.log("ℹ️  Consider addressing medium and low severity issues");
     }
   }
+
+  return result;
 }
 
 // Run if main module
