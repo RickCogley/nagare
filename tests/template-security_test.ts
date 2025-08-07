@@ -3,7 +3,7 @@
  */
 
 import { assertEquals } from "@std/assert";
-import { TemplateProcessor } from "../src/template-processor.ts";
+import { TemplateProcessor } from "../src/templates/template-processor.ts";
 import type { NagareConfig } from "../types.ts";
 import { TemplateFormat } from "../config.ts";
 

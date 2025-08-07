@@ -3,7 +3,7 @@
  */
 
 import { assertEquals, assertExists, assertThrows } from "@std/assert";
-import { getLocale, I18n, initI18n, setLocale, t as translate } from "../src/i18n.ts";
+import { getLocale, I18n, initI18n, setLocale, t as translate } from "../src/core/i18n.ts";
 
 // Helper to get test locales directory
 const testLocalesDir = new URL("../locales", import.meta.url).pathname;

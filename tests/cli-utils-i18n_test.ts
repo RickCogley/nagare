@@ -10,8 +10,8 @@ import {
   printStep,
   printSuccess,
   printWarning,
-} from "../src/cli-utils.ts";
-import { initI18n } from "../src/i18n.ts";
+} from "../src/utils/cli-utils.ts";
+import { initI18n } from "../src/core/i18n.ts";
 import type { TranslationKey } from "../locales/schema.ts";
 
 Deno.test("CLI Utils - i18n support", async (t) => {

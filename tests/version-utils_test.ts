@@ -4,7 +4,7 @@
  */
 
 import { assertEquals, assertRejects, assertThrows } from "@std/assert";
-import { VersionUtils } from "../src/version-utils.ts";
+import { VersionUtils } from "../src/release/version-utils.ts";
 import { NagareError } from "../src/enhanced-error.ts";
 import { BumpType, TemplateFormat } from "../types.ts";
 import type { ConventionalCommit, NagareConfig } from "../types.ts";

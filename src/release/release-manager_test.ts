@@ -20,8 +20,8 @@ import type {
   ReleaseNotes,
   ReleaseResult,
   TemplateData,
-} from "../types.ts";
-import { LogLevel, TemplateFormat } from "../types.ts";
+} from "../../types.ts";
+import { LogLevel, TemplateFormat } from "../../types.ts";
 
 // =============================================================================
 // Test Configuration

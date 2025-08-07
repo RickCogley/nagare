@@ -7,8 +7,8 @@
 
 import { assertEquals, assertStringIncludes } from "@std/assert";
 import { assertSpyCalls, spy } from "@std/testing/mock";
-import { Logger, LogLevel } from "../src/logger.ts";
-import { NagareError } from "../src/enhanced-error.ts";
+import { Logger, LogLevel } from "../src/core/logger.ts";
+import { NagareError } from "../src/core/enhanced-error.ts";
 
 Deno.test("Logger - Log level filtering", async (t) => {
   await t.step("should respect DEBUG log level", () => {

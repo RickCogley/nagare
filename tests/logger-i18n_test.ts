@@ -1,6 +1,6 @@
 import { assertEquals } from "jsr:@std/assert@1.0.8";
-import { Logger, LogLevel } from "../src/logger.ts";
-import { initI18n } from "../src/i18n.ts";
+import { Logger, LogLevel } from "../src/core/logger.ts";
+import { initI18n } from "../src/core/i18n.ts";
 import type { TranslationKey } from "../locales/schema.ts";
 
 Deno.test("Logger - i18n support", async (t) => {

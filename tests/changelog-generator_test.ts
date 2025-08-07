@@ -3,7 +3,7 @@
  */
 
 import { assertEquals, assertStringIncludes } from "@std/assert";
-import { ChangelogGenerator } from "../src/changelog-generator.ts";
+import { ChangelogGenerator } from "../src/templates/changelog-generator.ts";
 import type { NagareConfig, ReleaseNotes } from "../types.ts";
 import { TemplateFormat } from "../types.ts";
 

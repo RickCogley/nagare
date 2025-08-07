@@ -5,8 +5,8 @@
 
 import { assertEquals, assertRejects } from "@std/assert";
 import { TemplateProcessor } from "./template-processor.ts";
-import type { NagareConfig, TemplateData } from "../types.ts";
-import { LogLevel, TemplateFormat } from "../types.ts";
+import type { NagareConfig, TemplateData } from "../../types.ts";
+import { LogLevel, TemplateFormat } from "../../types.ts";
 
 // Mock configuration for testing
 const createMockConfig = (sandboxMode?: "strict" | "moderate" | "disabled"): NagareConfig => ({

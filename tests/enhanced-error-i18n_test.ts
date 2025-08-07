@@ -4,8 +4,8 @@
  */
 
 import { assertEquals, assertStringIncludes } from "@std/assert";
-import { ErrorCodes, ErrorFactory } from "../src/enhanced-error.ts";
-import { initI18n } from "../src/i18n.ts";
+import { ErrorCodes, ErrorFactory } from "../src/core/enhanced-error.ts";
+import { initI18n } from "../src/core/i18n.ts";
 
 // Helper to get test locales directory
 const testLocalesDir = new URL("../locales", import.meta.url).pathname;

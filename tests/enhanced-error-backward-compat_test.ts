@@ -1,5 +1,5 @@
 import { assertEquals } from "jsr:@std/assert@1.0.8";
-import { ErrorCodes, ErrorFactory, NagareError } from "../src/enhanced-error.ts";
+import { ErrorCodes, ErrorFactory, NagareError } from "../src/core/enhanced-error.ts";
 
 Deno.test("NagareError - backward compatibility", async (t) => {
   await t.step("supports legacy string-based constructor", () => {

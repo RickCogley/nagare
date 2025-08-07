@@ -25,8 +25,8 @@
  */
 
 import { assert, assertEquals, assertExists, assertInstanceOf, assertRejects, assertStringIncludes } from "@std/assert";
-import { GitOperations } from "../src/git-operations.ts";
-import { ErrorCodes, NagareError } from "../src/enhanced-error.ts";
+import { GitOperations } from "../src/git/git-operations.ts";
+import { ErrorCodes, NagareError } from "../src/core/enhanced-error.ts";
 import type { NagareConfig } from "../types.ts";
 import { TemplateFormat } from "../types.ts";
 import { DEFAULT_CONFIG } from "../config.ts";

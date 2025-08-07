@@ -4,7 +4,7 @@
  */
 
 import { assertEquals, assertStringIncludes } from "@std/assert";
-import { ErrorCodes, ErrorFactory, NagareError } from "../src/enhanced-error.ts";
+import { ErrorCodes, ErrorFactory, NagareError } from "../src/core/enhanced-error.ts";
 
 Deno.test("NagareError - Basic functionality", async (t) => {
   await t.step("should format error with suggestions", () => {
