@@ -175,7 +175,9 @@ Deno.test("FileHandlerManager - registerHandler prevents duplicates", () => {
     manager.registerHandler(handler);
   } catch (error) {
     errorThrown = true;
-    assertEquals(error.message.includes("already exists") || error.message.includes("configInvalid"), true);
+    if (error instanceof Error) {
+      assertEquals(error.message.includes("already exists") || error.message.includes("configInvalid"), true);
+    }
   }
 
   assertEquals(errorThrown, true);
