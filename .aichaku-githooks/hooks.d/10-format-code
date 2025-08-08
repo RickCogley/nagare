@@ -2,7 +2,7 @@
 # Code formatting hook - formats source code files
 # Uses appropriate formatter based on project type
 
-. .githooks/lib/common.sh
+. .aichaku-githooks/lib/common.sh
 
 echo "    🎨 Formatting code..."
 files_changed=false
@@ -19,7 +19,7 @@ log_info "Staged files: $(echo $staged_files | tr '\n' ' ')"
 # Format with Deno (includes TypeScript, JavaScript, Markdown, JSON)
 if command -v deno >/dev/null 2>&1; then
     log_info "Formatting with deno fmt..."
-    
+
     # Filter staged files for Deno-supported extensions and ensure they exist
     deno_files=""
     for file in $staged_files; do
@@ -28,7 +28,7 @@ if command -v deno >/dev/null 2>&1; then
         fi
     done
     deno_files=$(echo "$deno_files" | sed 's/^ //')  # trim leading space
-    
+
     if [ -n "$deno_files" ]; then
         # Format only the staged files
         # Capture both stdout and stderr, and the exit code
@@ -63,7 +63,7 @@ if command -v deno >/dev/null 2>&1; then
 elif [ -f "package.json" ] && command -v prettier >/dev/null 2>&1; then
     # Fallback: Node.js project without Deno - use prettier
     log_info "Formatting with prettier..."
-    
+
     # Filter staged files for Prettier-supported extensions and ensure they exist
     prettier_files=""
     for file in $staged_files; do
@@ -72,7 +72,7 @@ elif [ -f "package.json" ] && command -v prettier >/dev/null 2>&1; then
         fi
     done
     prettier_files=$(echo "$prettier_files" | sed 's/^ //')  # trim leading space
-    
+
     if [ -n "$prettier_files" ]; then
         if echo "$prettier_files" | xargs prettier --write --print-width=120 --prose-wrap=preserve; then
             for file in $prettier_files; do
@@ -81,7 +81,7 @@ elif [ -f "package.json" ] && command -v prettier >/dev/null 2>&1; then
                     break
                 fi
             done
-            
+
             if [ "$files_changed" = true ]; then
                 log_success "Staged files formatted with Prettier"
             fi
@@ -137,7 +137,7 @@ if [ "$files_changed" = true ]; then
         fi
     done
     existing_files=$(echo "$existing_files" | sed 's/^ //')  # trim leading space
-    
+
     if [ -n "$existing_files" ]; then
         stage_changes "$existing_files"
     fi

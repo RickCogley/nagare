@@ -1,8 +1,10 @@
 #!/bin/sh
 # Test hook - runs project tests
-# Disabled by default - enable with: chmod +x .githooks/hooks.d/30-run-tests
+# DISABLED BY DEFAULT due to common test stability issues
+# Only enable if your test suite is stable and fast
+# Enable with: aichaku githooks --enable 30-run-tests
 
-. .githooks/lib/common.sh
+. .aichaku-githooks/lib/common.sh
 
 echo "    🧪 Running tests..."
 
@@ -10,7 +12,7 @@ case "$(detect_project_type)" in
     "deno")
         if command -v deno >/dev/null 2>&1; then
             log_info "Running Deno tests..."
-            if deno test --unstable-raw-imports --allow-read --allow-write --allow-run --allow-env --no-check; then
+            if deno test --unstable-raw-imports --allow-read --allow-write --allow-run --allow-env; then
                 log_success "All tests passed"
             else
                 log_error "Tests failed"
