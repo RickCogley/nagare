@@ -59,7 +59,8 @@ export class I18n {
       // Try different loading strategies
       try {
         // Strategy 1: Try to load from JSR package using import.meta.resolve
-        const localeUrl = new URL(`../locales/${locale}.yaml`, import.meta.url);
+        // This constructs the proper URL relative to the i18n module location
+        const localeUrl = new URL(`../../locales/${locale}.yaml`, import.meta.url);
         const response = await fetch(localeUrl);
         if (response.ok) {
           content = await response.text();
