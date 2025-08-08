@@ -14,8 +14,8 @@ changelog generation, and releases in a multi-branch environment.
 The core challenge: **How do we handle versioning and releases when multiple developers work on multiple PRs
 simultaneously?**
 
-Our solution: **Defer versioning until merge to main**, then automatically release with correct version based on all
-accumulated changes. This avoids version conflicts and maintains a clean release history.
+Our solution: **Defer versioning until after merge to main**, then release with the correct version based on all
+accumulated changes. This avoids version conflicts while providing safety gates against accidental releases.
 
 ## Problem Statement
 
@@ -37,23 +37,50 @@ use pull requests with these challenges:
 
 ## Supported Release Strategies
 
-### Strategy 1: "Release on Merge" (Recommended)
+### Strategy 1: "Release After Merge" (Recommended)
 
 **How it works:**
 
 1. Developers create feature branches and PRs with conventional commits
 2. PRs are reviewed and merged to main (usually squashed)
-3. After merge, a GitHub Action triggers `nagare release`
-4. Nagare analyzes all commits since last release
-5. Version is bumped, changelog generated, tag created, package published
+3. After merge, Nagare can either:
+   - **Option A**: Create a draft GitHub release for review (safer)
+   - **Option B**: Auto-release if commit contains `[release]` tag
+   - **Option C**: Wait for manual trigger or scheduled release
 
 **Benefits:**
 
 - No version conflicts between PRs
 - Clean linear history on main
-- Automatic releases
+- Safety gates prevent accidental releases
+- Flexible release timing
 
-**Configuration:**
+**Configuration Options:**
+
+#### Option A: Draft Release for Review (Safest)
+
+```yaml
+# .github/workflows/prepare-release.yml
+on:
+  push:
+    branches: [main]
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v1
+      - name: Prepare Draft Release
+        run: |
+          # Create draft release without publishing
+          deno task nagare release --draft --skip-confirmation
+      - name: Comment on PR
+        run: |
+          echo "Draft release created. Review at GitHub Releases page."
+```
+
+#### Option B: Conditional Auto-Release
+
 ```yaml
 # .github/workflows/release.yml
 on:
@@ -65,7 +92,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v1
-      - run: deno task nagare --skip-confirmation
+      - name: Check for Release Intent
+        id: check
+        run: |
+          # Only auto-release if commit message contains [release]
+          if git log -1 --pretty=%B | grep -q "\[release\]"; then
+            echo "should_release=true" >> $GITHUB_OUTPUT
+          fi
+      - name: Release
+        if: steps.check.outputs.should_release == 'true'
+        run: deno task nagare release --skip-confirmation
+```
+
+#### Option C: Manual Trigger
+
+```yaml
+# .github/workflows/release.yml
+on:
+  workflow_dispatch:  # Manual trigger from GitHub UI
+  schedule:
+    - cron: '0 10 * * 1'  # Or weekly on Mondays
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v1
+      - run: deno task nagare release --skip-confirmation
 ```
 
 ### Strategy 2: "Release PR"
@@ -153,6 +206,47 @@ nagare pr release minor --target main
 - [ ] **Status Checks** - Create GitHub status checks
 - [ ] **Auto-merge Support** - Enable auto-merge when checks pass
 
+## Safety Considerations
+
+### Preventing Accidental Releases
+
+1. **Draft Releases First**
+   - Create draft GitHub releases that require manual publishing
+   - Allows review of version bump and changelog
+   - Can be converted to full release after verification
+
+2. **Release Gates**
+   - Require explicit `[release]` tag in merge commit
+   - Use branch protection rules
+   - Require specific GitHub team approval
+   - Check for passing tests and security scans
+
+3. **Rollback Safety**
+   - Keep previous version in a git stash before release
+   - Tag with `-pre-release` suffix for easy identification
+   - Maintain release state file for recovery
+
+4. **Monitoring & Alerts**
+   - Post to Slack/Discord when release is prepared
+   - Create GitHub issue for release approval
+   - Email notifications for release events
+
+### Recommended Safe Workflow
+
+```mermaid
+graph TD
+    A[PR Merged to Main] --> B{Check Conditions}
+    B -->|Has [no-release] tag| C[Skip Release]
+    B -->|Normal merge| D[Prepare Release]
+    D --> E[Create Draft Release]
+    E --> F[Run Validation Checks]
+    F -->|Tests Pass| G[Notify Team]
+    F -->|Tests Fail| H[Create Issue]
+    G --> I{Human Review}
+    I -->|Approved| J[Publish Release]
+    I -->|Rejected| K[Delete Draft]
+```
+
 ## Implementation Plan
 
 ### Phase 1: Branch & Environment Detection
@@ -226,26 +320,34 @@ interface ReleaseStrategy {
 
 ### Phase 3: PR-Aware Commands
 
-**Goal:** New commands for PR workflows
+**Goal:** New commands for PR workflows with safety features
 
 ```bash
-# Create a release PR
-nagare pr release [version]
+# Create a draft release (safe default)
+nagare release --draft
 
-# Preview what would be released
+# Preview what would be released without creating anything
 nagare release --preview
 
-# Release from current context (branch/PR aware)
-nagare release --auto-detect
+# Create a release PR for review
+nagare pr release [version]
+
+# Release only if conditions are met
+nagare release --if-changed --if-tests-pass
 
 # Create PR for current branch
 nagare pr create --title "feat: add new feature"
+
+# Check if a release is needed
+nagare release check
 ```
 
 **Implementation:**
 
 - [ ] Add `pr` subcommand to CLI
 - [ ] Create `src/pr/pr-manager.ts`
+- [ ] Add `--draft` flag for safe releases
+- [ ] Add conditional release flags
 - [ ] Integrate with GitHub CLI
 - [ ] Add preview/dry-run support
 
