@@ -67,10 +67,21 @@ export class I18n {
         } else {
           throw new Error(`HTTP ${response.status}`);
         }
-      } catch {
-        // Strategy 2: Fall back to file system access
-        const path = `${this.localesDir}/${locale}.yaml`;
-        content = await Deno.readTextFile(path);
+      } catch (firstError) {
+        // Strategy 2: Fall back to file system access only if localesDir looks valid
+        // If localesDir contains "jsr.io" or starts with "https:", skip file system attempt
+        if (this.localesDir.includes("jsr.io") || this.localesDir.startsWith("https:")) {
+          throw firstError; // Re-throw the URL fetch error
+        }
+
+        try {
+          const path = `${this.localesDir}/${locale}.yaml`;
+          content = await Deno.readTextFile(path);
+        } catch {
+          // If file system also fails, try one more time with a relative path from cwd
+          const relativePath = `./locales/${locale}.yaml`;
+          content = await Deno.readTextFile(relativePath);
+        }
       }
 
       const data = parseYAML(content) as Record<string, unknown>;
