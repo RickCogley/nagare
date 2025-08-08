@@ -11,7 +11,7 @@ application:
   description: >-
     Deno-native release management library that automates version bumping, changelog generation, and
     GitHub releases using conventional commits and semantic versioning
-  version: 2.17.1
+  version: 2.18.0
   stack:
     language: typescript
     runtime: deno
@@ -190,6 +190,25 @@ application:
       audit_log: false
       input_validation: true
       template_sandboxing: true
+  type_safety:
+    validation:
+      library: zod
+      strategy: boundary
+      schemas_location: /src/validators/
+    compiler_options:
+      strict: true
+      no_implicit_any: true
+      no_unchecked_indexed_access: false
+      exact_optional_property_types: false
+    patterns:
+      result_types: true
+      branded_types: true
+      discriminated_unions: true
+      type_guards: false
+    metrics:
+      any_types_allowed: 0
+      non_null_assertions_allowed: 0
+      type_coverage_target: 95%
   testing:
     frameworks:
       - deno-test
@@ -240,6 +259,10 @@ application:
       description: Security-first design with input validation and sandboxing
     - name: Smart Version Detection
       description: Analyzes conventional commits to auto-determine version bumps
+    - name: Runtime Validation with Zod
+      description: Type-safe runtime validation for all external inputs using Zod schemas
+    - name: TypeScript Safety Enforced
+      description: 'Zero ''any'' types, Result types for errors, branded types for domain safety'
 behavioral_directives:
   context_awareness:
     name: Context-First Development
@@ -507,7 +530,7 @@ principles:
         - text: Liskov Substitution Principle
     integration_url: "aichaku://principle/software-development/solid"
 aichaku:
-  version: 0.45.1
+  version: 0.46.0
   source: configuration-as-code
 included:
   core: true
