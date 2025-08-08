@@ -17,6 +17,22 @@ simultaneously?**
 Our solution: **Defer versioning until after merge to main**, then release with the correct version based on all
 accumulated changes. This avoids version conflicts while providing safety gates against accidental releases.
 
+## Definition of "Released"
+
+**A release is ONLY complete when the package is successfully published to the distribution platform (JSR, npm, etc.)**
+
+- ❌ **Not Released**: Git tag created
+- ❌ **Not Released**: GitHub Release created (even if not draft)
+- ❌ **Not Released**: Version bumped in files
+- ✅ **RELEASED**: Package available on JSR/npm and users can install it
+
+This means:
+
+1. GitHub Releases are preparation steps, not the release itself
+2. Rollback must handle both GitHub and the registry
+3. Release verification must confirm package availability
+4. "Draft" releases on GitHub are really "staged" releases
+
 ## Problem Statement
 
 Currently, Nagare assumes a linear workflow where releases happen directly from the main branch. In reality, most teams
@@ -57,7 +73,7 @@ use pull requests with these challenges:
 
 **Configuration Options:**
 
-#### Option A: Draft Release for Review (Safest)
+#### Option A: Stage Release for Review (Safest)
 
 ```yaml
 # .github/workflows/prepare-release.yml
@@ -70,13 +86,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v1
-      - name: Prepare Draft Release
+      - name: Stage Release
         run: |
-          # Create draft release without publishing
-          deno task nagare release --draft --skip-confirmation
-      - name: Comment on PR
+          # Stage release (GitHub draft) without publishing to JSR
+          deno task nagare release --stage --skip-confirmation
+      - name: Create Approval Issue
         run: |
-          echo "Draft release created. Review at GitHub Releases page."
+          gh issue create \
+            --title "Release $VERSION ready for approval" \
+            --body "Draft release staged. Approve to publish to JSR."
+      - name: Post Status
+        run: |
+          echo "📦 Release STAGED (not yet released to JSR)"
+          echo "Approve at: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases"
 ```
 
 #### Option B: Conditional Auto-Release
@@ -238,13 +260,45 @@ graph TD
     A[PR Merged to Main] --> B{Check Conditions}
     B -->|Has [no-release] tag| C[Skip Release]
     B -->|Normal merge| D[Prepare Release]
-    D --> E[Create Draft Release]
-    E --> F[Run Validation Checks]
-    F -->|Tests Pass| G[Notify Team]
-    F -->|Tests Fail| H[Create Issue]
-    G --> I{Human Review}
-    I -->|Approved| J[Publish Release]
-    I -->|Rejected| K[Delete Draft]
+    D --> E[Stage Release]
+    E --> F[Create GitHub Draft]
+    F --> G[Run Validation]
+    G -->|Pass| H[Notify Team]
+    G -->|Fail| I[Create Issue]
+    H --> J{Human Review}
+    J -->|Approved| K[Publish to JSR]
+    K -->|Success| L[✅ RELEASED]
+    K -->|Failure| M[Rollback GitHub]
+    J -->|Rejected| N[Delete Draft]
+    M --> O[Create Issue]
+```
+
+### Release Stages and Verification
+
+1. **Stage 1: Preparation** ⏳
+   - Version bumped locally
+   - Changelog generated
+   - Git tag created (local only)
+
+2. **Stage 2: Staging** 📦
+   - GitHub Draft Release created
+   - Tag pushed to GitHub
+   - Assets uploaded to release
+
+3. **Stage 3: Publishing** 🚀
+   - Publish to JSR (`deno publish`)
+   - Verify package availability
+   - Update GitHub Release to non-draft
+
+4. **Stage 4: Verification** ✅
+   - Confirm package installable from JSR
+   - Test basic functionality
+   - Mark as RELEASED in tracking
+
+```bash
+# Example verification
+deno run jsr:@rick/nagare@2.18.1 --version
+# If this works, the release is complete
 ```
 
 ## Implementation Plan
@@ -320,34 +374,60 @@ interface ReleaseStrategy {
 
 ### Phase 3: PR-Aware Commands
 
-**Goal:** New commands for PR workflows with safety features
+**Goal:** New commands for PR workflows with clear release states
 
 ```bash
-# Create a draft release (safe default)
-nagare release --draft
+# Stage a release (GitHub draft only, no JSR publish)
+nagare release --stage
 
-# Preview what would be released without creating anything
+# Complete a staged release (publish to JSR)
+nagare release --publish
+
+# Full release (stage + publish if approved)
+nagare release --auto
+
+# Preview what would be released
 nagare release --preview
+
+# Verify a release is complete (check JSR)
+nagare release verify [version]
 
 # Create a release PR for review
 nagare pr release [version]
 
-# Release only if conditions are met
-nagare release --if-changed --if-tests-pass
-
-# Create PR for current branch
-nagare pr create --title "feat: add new feature"
-
 # Check if a release is needed
 nagare release check
+
+# Show release status
+nagare release status
+```
+
+**Command Output Examples:**
+```bash
+$ nagare release status
+📦 Release Status for v2.18.1:
+  ✅ Version bumped in files
+  ✅ Changelog updated
+  ✅ Git tag created
+  ✅ GitHub Release created (draft)
+  ❌ Published to JSR
+  ❌ Package installable
+Status: STAGED (not released)
+
+$ nagare release verify 2.18.1
+✅ Package @rick/nagare@2.18.1 is available on JSR
+✅ Installation test passed
+Status: RELEASED
 ```
 
 **Implementation:**
 
 - [ ] Add `pr` subcommand to CLI
 - [ ] Create `src/pr/pr-manager.ts`
-- [ ] Add `--draft` flag for safe releases
-- [ ] Add conditional release flags
+- [ ] Add `--stage` flag for GitHub-only releases
+- [ ] Add `--publish` flag to complete staged releases
+- [ ] Add `verify` command to check JSR availability
+- [ ] Add `status` command to show release state
 - [ ] Integrate with GitHub CLI
 - [ ] Add preview/dry-run support
 
@@ -608,6 +688,12 @@ jobs:
    - No accidental version bumps
    - Preview before release
    - Rollback capabilities maintained
+
+5. **Clear Release State**
+   - Unambiguous definition of "released"
+   - Package availability is the final success criteria
+   - Failed JSR publish = failed release (even if GitHub Release exists)
+   - Verification step confirms users can actually install the package
 
 ## Implementation Priority
 
