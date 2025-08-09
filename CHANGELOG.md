@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.19.0] - 2025-08-09
+
+### Added
+
+- implement PR-aware changelog generation (b0b15fd)
+
+### Changed
+
+- clarify definition of 'released' in PR workflow (46d4f3d)
+- add safety gates to PR workflow plan (99e42b7)
+- comprehensive PR workflow enhancement plan (a3a01f7)
+- close out completed test fixes and quality gates project (10a1823)
+- upgrade to aichaku v0.46.1 and install aichaku githooks (e617f38)
+
+### Fixed
+
+- add missing repository field in test config (df0bf12)
+
 ## [2.18.1] - 2025-08-08
 
 ### Changed
