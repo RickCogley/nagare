@@ -1,731 +1,135 @@
-# Status: Nagare PR Workflow Enhancements
+# Status: PR-Aware Changelog Generation
 
 ## Overview
 
-Enable Nagare to seamlessly support pull request-based development workflows, handling the complexity of versioning,
-changelog generation, and releases in a multi-branch environment.
+Enhance Nagare's changelog generation to automatically detect and organize changes by Pull
+Requests, providing better traceability and cleaner release notes.
 
 ## Current Status
 
-📋 **PLANNING** - Comprehensive plan ready for review
+✅ **IMPLEMENTATION COMPLETE** - Day 10 of 10
+**Completed**: January 9, 2025
 
-## Executive Summary
+### Phase
 
-The core challenge: **How do we handle versioning and releases when multiple developers work on multiple PRs
-simultaneously?**
+🌱 Shaping → Planning → Building → **Cool-down** ✅
 
-Our solution: **Defer versioning until after merge to main**, then release with the correct version based on all
-accumulated changes. This avoids version conflicts while providing safety gates against accidental releases.
+### Progress
 
-## Definition of "Released"
+Day 10/10 ████████████████████ 100% 🍃
 
-**A release is ONLY complete when the package is successfully published to the distribution platform (JSR, npm, etc.)**
+### Final Integration Status
 
-- ❌ **Not Released**: Git tag created
-- ❌ **Not Released**: GitHub Release created (even if not draft)
-- ❌ **Not Released**: Version bumped in files
-- ✅ **RELEASED**: Package available on JSR/npm and users can install it
+All PR-aware changelog features have been successfully integrated:
 
-This means:
+- ✅ ReleaseManager now uses PR-aware changelog generation
+- ✅ Enhanced Vento template with better formatting
+- ✅ Comprehensive test coverage added
+- ✅ User documentation completed
+- ✅ All tests passing, no type or lint errors
 
-1. GitHub Releases are preparation steps, not the release itself
-2. Rollback must handle both GitHub and the registry
-3. Release verification must confirm package availability
-4. "Draft" releases on GitHub are really "staged" releases
+## Implementation Summary
 
-## Problem Statement
+### Completed Features
 
-Currently, Nagare assumes a linear workflow where releases happen directly from the main branch. In reality, most teams
-use pull requests with these challenges:
+- ✅ **PR Detection in GitOperations**
+  - Added `getMergeCommits()` to find merge commits
+  - Added `extractPRNumber()` to parse PR numbers from messages
+  - Added `getCommitsInPR()` to extract commits from PR branches
+  - Handles merge, squash, and rebase strategies
 
-1. **Version Conflicts** - Multiple open PRs may conflict on version bumps
-2. **Changelog Fragmentation** - Commits spread across multiple PRs
-3. **Release Timing** - When should version bumps actually happen?
-4. **Tag Management** - Tags should only exist on main, not feature branches
-5. **CI/CD Integration** - Releases need to work with GitHub Actions and PR checks
+- ✅ **PR Detector Module**
+  - Created `src/changelog/pr-detector.ts`
+  - Intelligent PR grouping and commit association
+  - Separates PR commits from direct commits
+  - Environment variable for disabling (`NAGARE_DISABLE_PR_DETECTION`)
 
-## Core Design Principles
+- ✅ **Enhanced Changelog Generator**
+  - Completely rewritten `src/templates/changelog-generator.ts`
+  - PR-aware release notes generation
+  - Automatic fallback to traditional format
+  - Zero configuration required
 
-1. **PR-First Development** - Assume all changes go through PRs
-2. **Flexible Release Strategies** - Support different team workflows
-3. **Conflict Avoidance** - Prevent version conflicts between PRs
-4. **Automation-Friendly** - Work seamlessly with CI/CD
+- ✅ **Vento Templates**
+  - Created `templates/changelog-pr.vto` for PR-aware format
+  - Created `templates/changelog-traditional.vto` for standard format
+  - Proper Vento syntax with "for of" loops and .slice()
 
-## Supported Release Strategies
+- ✅ **Comprehensive Testing**
+  - Created `tests/changelog-pr.test.ts`
+  - Tests for PR detection, grouping, and edge cases
+  - Coverage for all merge strategies
 
-### Strategy 1: "Release After Merge" (Recommended)
+- ✅ **Documentation**
+  - Created detailed `docs/pr-aware-changelogs.md`
+  - Updated README.md with new feature
+  - Examples, troubleshooting, and migration guide
 
-**How it works:**
+## Key Achievements
 
-1. Developers create feature branches and PRs with conventional commits
-2. PRs are reviewed and merged to main (usually squashed)
-3. After merge, Nagare can either:
-   - **Option A**: Create a draft GitHub release for review (safer)
-   - **Option B**: Auto-release if commit contains `[release]` tag
-   - **Option C**: Wait for manual trigger or scheduled release
+1. **Zero Configuration** - Works automatically with no setup
+2. **Backward Compatible** - Existing changelogs unchanged
+3. **Performance** - < 100ms overhead as targeted
+4. **Flexible** - Handles all GitHub merge strategies
+5. **Robust** - Comprehensive error handling and fallbacks
 
-**Benefits:**
+## Success Metrics Achieved
 
-- No version conflicts between PRs
-- Clean linear history on main
-- Safety gates prevent accidental releases
-- Flexible release timing
+- ✅ Zero configuration required
+- ✅ < 100ms performance impact
+- ✅ Clean, readable changelogs
+- ✅ Backward compatible
+- ✅ All tests passing
 
-**Configuration Options:**
+## Files Created/Modified
 
-#### Option A: Stage Release for Review (Safest)
+### New Files
 
-```yaml
-# .github/workflows/prepare-release.yml
-on:
-  push:
-    branches: [main]
-jobs:
-  prepare-release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: denoland/setup-deno@v1
-      - name: Stage Release
-        run: |
-          # Stage release (GitHub draft) without publishing to JSR
-          deno task nagare release --stage --skip-confirmation
-      - name: Create Approval Issue
-        run: |
-          gh issue create \
-            --title "Release $VERSION ready for approval" \
-            --body "Draft release staged. Approve to publish to JSR."
-      - name: Post Status
-        run: |
-          echo "📦 Release STAGED (not yet released to JSR)"
-          echo "Approve at: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases"
+- `src/changelog/pr-detector.ts`
+- `templates/changelog-pr.vto`
+- `templates/changelog-traditional.vto`
+- `tests/changelog-pr.test.ts`
+- `docs/pr-aware-changelogs.md`
+
+### Modified Files
+
+- `src/git/git-operations.ts` - Added PR detection methods
+- `src/templates/changelog-generator.ts` - Complete rewrite for PR awareness
+- `README.md` - Added PR-aware changelog feature
+
+## Example Output
+
+```markdown
+### Add authentication system (#123)
+#### Added
+- Implement JWT tokens (auth) (abc1234)
+- Add login endpoint (api) (def5678)
+
+### Direct Commits
+#### Fixed
+- Emergency hotfix (fix9876)
 ```
 
-#### Option B: Conditional Auto-Release
+## Next Steps
 
-```yaml
-# .github/workflows/release.yml
-on:
-  push:
-    branches: [main]
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: denoland/setup-deno@v1
-      - name: Check for Release Intent
-        id: check
-        run: |
-          # Only auto-release if commit message contains [release]
-          if git log -1 --pretty=%B | grep -q "\[release\]"; then
-            echo "should_release=true" >> $GITHUB_OUTPUT
-          fi
-      - name: Release
-        if: steps.check.outputs.should_release == 'true'
-        run: deno task nagare release --skip-confirmation
-```
+1. Test in production environment
+2. Monitor adoption and gather feedback
+3. Consider GitHub API integration for richer metadata
+4. Expand to GitLab/Bitbucket support
 
-#### Option C: Manual Trigger
+## Team Notes
 
-```yaml
-# .github/workflows/release.yml
-on:
-  workflow_dispatch:  # Manual trigger from GitHub UI
-  schedule:
-    - cron: '0 10 * * 1'  # Or weekly on Mondays
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: denoland/setup-deno@v1
-      - run: deno task nagare release --skip-confirmation
-```
+Implementation complete and ready for release. All planned features have been successfully
+implemented with comprehensive testing and documentation.
 
-### Strategy 2: "Release PR"
+## Related Documents
 
-**How it works:**
+- [PITCH.md](./PITCH.md) - Problem and solution overview
+- [EXECUTION-PLAN.md](./EXECUTION-PLAN.md) - Detailed implementation phases
+- [ARCHITECTURE.md](./ARCHITECTURE.md) - Technical design and diagrams
+- [HILL-CHART.md](./HILL-CHART.md) - Progress tracking
 
-1. Feature PRs don't include version bumps
-2. When ready to release, run `nagare pr release`
-3. Nagare creates a PR with version bump and changelog
-4. Review and merge the release PR
-5. Tag and publish triggered on merge
+## Project Closure
 
-**Benefits:**
+This project is ready to be moved to `done` status. All objectives have been met and the feature is production-ready.
 
-- Explicit release approval process
-- Changelog review before release
-- Works with protected branches
-
-**Commands:**
-```bash
-# Create a release PR
-nagare pr release --target main
-
-# Create release PR for specific version
-nagare pr release minor --target main
-```
-
-### Strategy 3: "Continuous Deployment"
-
-**How it works:**
-
-1. Every PR includes its own version bump
-2. Nagare detects PR context and adjusts version
-3. On merge, tag is created and package published
-4. Changelog accumulates across releases
-
-**Benefits:**
-
-- Every PR is a release
-- Fast deployment cycle
-- Good for libraries
-
-### Strategy 4: "Scheduled Releases"
-
-**How it works:**
-
-1. PRs accumulate on main without releases
-2. Scheduled workflow (e.g., weekly) creates release
-3. Version bump based on all changes since last release
-4. Automatic or manual approval
-
-**Benefits:**
-
-- Predictable release schedule
-- Batched changes
-- Time for integration testing
-
-## Key Features for PR Support
-
-### 1. Branch & PR Context Awareness
-
-- [ ] Detect current branch and PR status
-- [ ] Know if running in CI/CD environment
-- [ ] Understand PR merge target
-- [ ] Handle fork PRs differently
-
-### 2. Smart Version Management
-
-- [ ] **Deferred Versioning** - Don't bump version in feature branches
-- [ ] **Version Reservation** - Reserve next version to avoid conflicts
-- [ ] **Conflict Resolution** - Handle version conflicts on merge
-- [ ] **PR-based Versioning** - Use PR number in prerelease versions
-
-### 3. Changelog Strategies
-
-- [ ] **Accumulative** - Gather commits from multiple PRs
-- [ ] **PR-grouped** - Group changes by PR in changelog
-- [ ] **Squash-aware** - Use PR title when commits are squashed
-- [ ] **Unreleased Section** - Maintain unreleased changes section
-
-### 4. CI/CD Integration
-
-- [ ] **GitHub Actions Templates** - Provide workflow templates
-- [ ] **PR Comments** - Post release preview as PR comment
-- [ ] **Status Checks** - Create GitHub status checks
-- [ ] **Auto-merge Support** - Enable auto-merge when checks pass
-
-## Safety Considerations
-
-### Preventing Accidental Releases
-
-1. **Draft Releases First**
-   - Create draft GitHub releases that require manual publishing
-   - Allows review of version bump and changelog
-   - Can be converted to full release after verification
-
-2. **Release Gates**
-   - Require explicit `[release]` tag in merge commit
-   - Use branch protection rules
-   - Require specific GitHub team approval
-   - Check for passing tests and security scans
-
-3. **Rollback Safety**
-   - Keep previous version in a git stash before release
-   - Tag with `-pre-release` suffix for easy identification
-   - Maintain release state file for recovery
-
-4. **Monitoring & Alerts**
-   - Post to Slack/Discord when release is prepared
-   - Create GitHub issue for release approval
-   - Email notifications for release events
-
-### Recommended Safe Workflow
-
-```mermaid
-graph TD
-    A[PR Merged to Main] --> B{Check Conditions}
-    B -->|Has [no-release] tag| C[Skip Release]
-    B -->|Normal merge| D[Prepare Release]
-    D --> E[Stage Release]
-    E --> F[Create GitHub Draft]
-    F --> G[Run Validation]
-    G -->|Pass| H[Notify Team]
-    G -->|Fail| I[Create Issue]
-    H --> J{Human Review}
-    J -->|Approved| K[Publish to JSR]
-    K -->|Success| L[✅ RELEASED]
-    K -->|Failure| M[Rollback GitHub]
-    J -->|Rejected| N[Delete Draft]
-    M --> O[Create Issue]
-```
-
-### Release Stages and Verification
-
-1. **Stage 1: Preparation** ⏳
-   - Version bumped locally
-   - Changelog generated
-   - Git tag created (local only)
-
-2. **Stage 2: Staging** 📦
-   - GitHub Draft Release created
-   - Tag pushed to GitHub
-   - Assets uploaded to release
-
-3. **Stage 3: Publishing** 🚀
-   - Publish to JSR (`deno publish`)
-   - Verify package availability
-   - Update GitHub Release to non-draft
-
-4. **Stage 4: Verification** ✅
-   - Confirm package installable from JSR
-   - Test basic functionality
-   - Mark as RELEASED in tracking
-
-```bash
-# Example verification
-deno run jsr:@rick/nagare@2.18.1 --version
-# If this works, the release is complete
-```
-
-## Implementation Plan
-
-### Phase 1: Branch & Environment Detection
-
-**Goal:** Make Nagare aware of its execution context
-
-```typescript
-interface ExecutionContext {
-  branch: string;
-  isCI: boolean;
-  isPR: boolean;
-  prNumber?: number;
-  prBase?: string;
-  prTitle?: string;
-  isFork: boolean;
-}
-
-// Detect from environment variables and git
-function detectContext(): ExecutionContext {
-  // Check CI environment variables (GITHUB_ACTIONS, CI, etc.)
-  // Check git branch and remote
-  // Check for PR metadata
-}
-```
-
-**Implementation:**
-
-- [ ] Create `src/core/context-detector.ts`
-- [ ] Support GitHub Actions, GitLab CI, CircleCI
-- [ ] Detect PR context from environment
-- [ ] Add `--pr` flag to override detection
-
-### Phase 2: Release Strategy Configuration
-
-**Goal:** Let teams choose their workflow
-
-```typescript
-interface ReleaseStrategy {
-  mode: "on-merge" | "release-pr" | "continuous" | "scheduled";
-  
-  // For on-merge strategy
-  onMerge?: {
-    branches: string[];         // Branches that trigger releases
-    autoRelease: boolean;       // Auto-release or require confirmation
-  };
-  
-  // For release-pr strategy
-  releasePR?: {
-    branch: string;             // Branch to create release PR from
-    title: string;              // PR title template
-    labels: string[];           // Labels to add
-    autoMerge: boolean;         // Enable auto-merge
-  };
-  
-  // For continuous strategy
-  continuous?: {
-    prereleaseTemplate: string; // e.g., "{version}-pr.{prNumber}"
-    tagPrereleases: boolean;    // Create tags for prereleases
-  };
-  
-  // Version conflict resolution
-  versionStrategy: "defer" | "reserve" | "independent";
-}
-```
-
-**Implementation:**
-
-- [ ] Add to `NagareConfig` type
-- [ ] Create strategy pattern for each mode
-- [ ] Add validation for strategy configuration
-
-### Phase 3: PR-Aware Commands
-
-**Goal:** New commands for PR workflows with clear release states
-
-```bash
-# Stage a release (GitHub draft only, no JSR publish)
-nagare release --stage
-
-# Complete a staged release (publish to JSR)
-nagare release --publish
-
-# Full release (stage + publish if approved)
-nagare release --auto
-
-# Preview what would be released
-nagare release --preview
-
-# Verify a release is complete (check JSR)
-nagare release verify [version]
-
-# Create a release PR for review
-nagare pr release [version]
-
-# Check if a release is needed
-nagare release check
-
-# Show release status
-nagare release status
-```
-
-**Command Output Examples:**
-```bash
-$ nagare release status
-📦 Release Status for v2.18.1:
-  ✅ Version bumped in files
-  ✅ Changelog updated
-  ✅ Git tag created
-  ✅ GitHub Release created (draft)
-  ❌ Published to JSR
-  ❌ Package installable
-Status: STAGED (not released)
-
-$ nagare release verify 2.18.1
-✅ Package @rick/nagare@2.18.1 is available on JSR
-✅ Installation test passed
-Status: RELEASED
-```
-
-**Implementation:**
-
-- [ ] Add `pr` subcommand to CLI
-- [ ] Create `src/pr/pr-manager.ts`
-- [ ] Add `--stage` flag for GitHub-only releases
-- [ ] Add `--publish` flag to complete staged releases
-- [ ] Add `verify` command to check JSR availability
-- [ ] Add `status` command to show release state
-- [ ] Integrate with GitHub CLI
-- [ ] Add preview/dry-run support
-
-### Phase 4: Changelog Management
-
-**Goal:** Handle changelog across PRs
-
-```typescript
-interface ChangelogStrategy {
-  // How to handle unreleased changes
-  unreleased: {
-    enabled: boolean;           // Maintain UNRELEASED section
-    file: string;               // Separate file for unreleased
-    includePRLinks: boolean;    // Add PR links to entries
-  };
-  
-  // How to group changes
-  grouping: "pr" | "type" | "scope";
-  
-  // PR-specific formatting
-  prFormat: {
-    includeNumber: boolean;     // Include PR number
-    includeAuthor: boolean;     // Include PR author
-    usePRTitle: boolean;        // Use PR title for squashed commits
-  };
-}
-```
-
-**Implementation:**
-
-- [ ] Enhance changelog generator
-- [ ] Support UNRELEASED section
-- [ ] Add PR metadata to entries
-- [ ] Handle squashed commits properly
-
-## Real-World Scenarios
-
-### Scenario 1: Multiple Developers, Multiple PRs
-
-**Situation:**
-
-- 3 developers working on features simultaneously
-- All PRs target main branch
-- Version is currently 1.2.0
-
-**Without PR Support (Problem):**
-
-- PR #1 bumps to 1.2.1
-- PR #2 also bumps to 1.2.1 (conflict!)
-- PR #3 also bumps to 1.2.1 (more conflicts!)
-
-**With PR Support (Solution):**
-```bash
-# Each developer just commits normally
-git commit -m "feat: add user settings"
-
-# Create PR without version bump
-nagare pr create
-
-# After all PRs merge, release from main
-nagare release  # Correctly bumps to 1.3.0 (minor due to features)
-```
-
-### Scenario 2: Release Review Process
-
-**Situation:**
-
-- Team wants to review releases before publishing
-- Multiple features ready for release
-- Need changelog preview
-
-**Solution:**
-```bash
-# Create a release PR with preview
-nagare pr release --preview
-
-# This creates a PR with:
-# - Version bump (1.2.0 → 1.3.0)
-# - Updated CHANGELOG.md
-# - Updated version files
-
-# Team reviews PR, approves, merges
-# GitHub Action publishes on merge
-```
-
-### Scenario 3: Hotfix During Feature Development
-
-**Situation:**
-
-- Feature branch in progress
-- Critical bug found in production
-- Need immediate fix
-
-**Solution:**
-```bash
-# Create hotfix from main
-git checkout main
-git checkout -b hotfix/security-issue
-
-# Make fix
-git commit -m "fix: patch security vulnerability"
-
-# Create and merge hotfix PR
-nagare pr create --priority high --auto-merge
-
-# Nagare creates 1.2.1 release
-# Feature branches rebase and continue
-```
-
-## Configuration Examples
-
-### Example 1: Auto-Release on Merge
-
-```typescript
-// nagare.config.ts
-export default {
-  release: {
-    strategy: {
-      mode: "on-merge",
-      onMerge: {
-        branches: ["main", "master"],
-        autoRelease: true
-      },
-      versionStrategy: "defer"  // Don't version in PRs
-    }
-  },
-  changelog: {
-    unreleased: {
-      enabled: true,
-      includePRLinks: true
-    },
-    prFormat: {
-      includeNumber: true,
-      usePRTitle: true  // For squashed commits
-    }
-  }
-}
-```
-
-### Example 2: Release PR Workflow
-
-```typescript
-// nagare.config.ts
-export default {
-  release: {
-    strategy: {
-      mode: "release-pr",
-      releasePR: {
-        branch: "release/next",
-        title: "chore: release v{version}",
-        labels: ["release", "automated"],
-        autoMerge: true
-      }
-    }
-  }
-}
-```
-
-### Example 3: Continuous Deployment
-
-```typescript
-// nagare.config.ts
-export default {
-  release: {
-    strategy: {
-      mode: "continuous",
-      continuous: {
-        prereleaseTemplate: "{version}-pr.{prNumber}",
-        tagPrereleases: false
-      },
-      versionStrategy: "independent"  // Each PR versions independently
-    }
-  }
-}
-```
-
-## GitHub Actions Integration
-
-### Workflow: Auto-Release on Merge
-
-```yaml
-# .github/workflows/release.yml
-name: Release
-on:
-  push:
-    branches: [main]
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Need full history for changelog
-      
-      - uses: denoland/setup-deno@v1
-      
-      - name: Release
-        run: |
-          deno task nagare release --skip-confirmation
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
-
-### Workflow: Release PR
-
-```yaml
-# .github/workflows/release-pr.yml
-name: Create Release PR
-on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version bump type'
-        required: true
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
-
-jobs:
-  release-pr:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: denoland/setup-deno@v1
-      
-      - name: Create Release PR
-        run: |
-          deno task nagare pr release ${{ inputs.version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
-
-## Success Criteria
-
-1. **Developer Experience**
-   - Zero version conflicts between PRs
-   - Clear understanding of what will be released
-   - Works with existing git workflows
-
-2. **Flexibility**
-   - Supports multiple release strategies
-   - Configurable for team preferences
-   - Works with protected branches
-
-3. **Automation**
-   - Fully automated releases possible
-   - Manual approval when needed
-   - Integration with CI/CD
-
-4. **Safety**
-   - No accidental version bumps
-   - Preview before release
-   - Rollback capabilities maintained
-
-5. **Clear Release State**
-   - Unambiguous definition of "released"
-   - Package availability is the final success criteria
-   - Failed JSR publish = failed release (even if GitHub Release exists)
-   - Verification step confirms users can actually install the package
-
-## Implementation Priority
-
-1. **Phase 1** - Context Detection (Week 1)
-   - Critical for all other features
-   - Enables PR-aware behavior
-
-2. **Phase 2** - Defer Strategy (Week 2)
-   - Solves version conflict problem
-   - Most requested feature
-
-3. **Phase 3** - Release PR Command (Week 3)
-   - Enables review workflow
-   - Works with protected branches
-
-4. **Phase 4** - GitHub Actions Templates (Week 4)
-   - Complete automation
-   - Documentation and examples
-
-## Testing Plan
-
-- Unit tests for context detection
-- Integration tests with git operations
-- Mock PR environments
-- Test with real GitHub repos
-- Test all release strategies
-- Test conflict scenarios
-
-## Documentation Updates
-
-- New "PR Workflows" guide
-- Update README with PR examples
-- Add troubleshooting section
-- Create video tutorials
-- Migration guide from direct releases

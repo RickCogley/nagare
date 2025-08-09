@@ -1,0 +1,73 @@
+{{! Nagare PR-Aware Changelog Template }}
+{{! This template generates changelog entries when PRs are detected }}
+## [{{ version }}] - {{ metadata.date }}
+
+{{ if metadata.pullRequests && metadata.pullRequests.length > 0 }}
+### 🔀 Pull Requests
+
+{{ for pr of metadata.pullRequests }}
+#### {{ pr.title }} ([#{{ pr.number }}](../../pull/{{ pr.number }}))
+
+{{ if pr.features.length > 0 }}
+**✨ Added:**
+{{ for commit of pr.features }}
+- {{ commit.description }}{{ if commit.scope }} (`{{ commit.scope }}`){{ /if }} - [{{ commit.hash.slice(0, 7) }}](../../commit/{{ commit.hash }})
+{{ /for }}
+
+{{ /if }}
+{{ if pr.fixes.length > 0 }}
+**🐛 Fixed:**
+{{ for commit of pr.fixes }}
+- {{ commit.description }}{{ if commit.scope }} (`{{ commit.scope }}`){{ /if }} - [{{ commit.hash.slice(0, 7) }}](../../commit/{{ commit.hash }})
+{{ /for }}
+
+{{ /if }}
+{{ if pr.changes.length > 0 }}
+**🔄 Changed:**
+{{ for commit of pr.changes }}
+- {{ commit.description }}{{ if commit.scope }} (`{{ commit.scope }}`){{ /if }} - [{{ commit.hash.slice(0, 7) }}](../../commit/{{ commit.hash }})
+{{ /for }}
+
+{{ /if }}
+{{ if pr.other.length > 0 }}
+**📝 Other:**
+{{ for commit of pr.other }}
+- [{{ commit.type }}] {{ commit.description }}{{ if commit.scope }} (`{{ commit.scope }}`){{ /if }} - [{{ commit.hash.slice(0, 7) }}](../../commit/{{ commit.hash }})
+{{ /for }}
+
+{{ /if }}
+{{ /for }}
+{{ /if }}
+
+{{ if metadata.directCommits && (metadata.directCommits.features.length > 0 || metadata.directCommits.fixes.length > 0 || metadata.directCommits.changes.length > 0 || metadata.directCommits.other.length > 0) }}
+### 📝 Direct Commits
+
+{{ if metadata.directCommits.features.length > 0 }}
+**✨ Added:**
+{{ for commit of metadata.directCommits.features }}
+- {{ commit.description }}{{ if commit.scope }} (`{{ commit.scope }}`){{ /if }} - [{{ commit.hash.slice(0, 7) }}](../../commit/{{ commit.hash }})
+{{ /for }}
+
+{{ /if }}
+{{ if metadata.directCommits.fixes.length > 0 }}
+**🐛 Fixed:**
+{{ for commit of metadata.directCommits.fixes }}
+- {{ commit.description }}{{ if commit.scope }} (`{{ commit.scope }}`){{ /if }} - [{{ commit.hash.slice(0, 7) }}](../../commit/{{ commit.hash }})
+{{ /for }}
+
+{{ /if }}
+{{ if metadata.directCommits.changes.length > 0 }}
+**🔄 Changed:**
+{{ for commit of metadata.directCommits.changes }}
+- {{ commit.description }}{{ if commit.scope }} (`{{ commit.scope }}`){{ /if }} - [{{ commit.hash.slice(0, 7) }}](../../commit/{{ commit.hash }})
+{{ /for }}
+
+{{ /if }}
+{{ if metadata.directCommits.other.length > 0 }}
+**📝 Other:**
+{{ for commit of metadata.directCommits.other }}
+- [{{ commit.type }}] {{ commit.description }}{{ if commit.scope }} (`{{ commit.scope }}`){{ /if }} - [{{ commit.hash.slice(0, 7) }}](../../commit/{{ commit.hash }})
+{{ /for }}
+
+{{ /if }}
+{{ /if }}

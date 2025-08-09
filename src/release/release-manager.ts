@@ -26,7 +26,7 @@ import {
 } from "../../config.ts";
 import { GitOperations } from "../git/git-operations.ts";
 import { VersionUtils } from "./version-utils.ts";
-import { ChangelogGenerator } from "../templates/changelog-generator.ts";
+import { ChangelogGenerator, type PRReleaseNotes } from "../templates/changelog-generator.ts";
 import { GitHubIntegration } from "../git/github-integration.ts";
 import { TemplateProcessor } from "../templates/template-processor.ts";
 import { DocGenerator } from "../templates/doc-generator.ts";
@@ -559,8 +559,8 @@ export class ReleaseManager {
       this.logger.infoI18n("log.release.newVersion", { version: newVersion });
       progress?.completeStage("version");
 
-      // Generate release notes
-      const releaseNotes = this.generateReleaseNotes(newVersion, commits);
+      // Generate PR-aware release notes
+      const releaseNotes = await this.changelogGenerator.generatePRReleaseNotes(newVersion, commits);
 
       // Preview changes
       this.previewRelease(releaseNotes);
@@ -1146,35 +1146,78 @@ export class ReleaseManager {
    * Preview the release changes
    *
    * @private
-   * @param {ReleaseNotes} releaseNotes - Generated release notes to preview
+   * @param {ReleaseNotes | PRReleaseNotes} releaseNotes - Generated release notes to preview
    * @returns {void}
    *
    * @description
    * Displays a summary of the release notes showing counts for each category.
    * Helps users understand what changes are included before confirming release.
+   * Now supports PR-aware release notes with PR grouping information.
    */
-  private previewRelease(releaseNotes: ReleaseNotes): void {
+  private previewRelease(releaseNotes: ReleaseNotes | PRReleaseNotes): void {
     this.logger.infoI18n("log.release.releaseNotes");
     this.logger.info(`Version: ${releaseNotes.version}`);
     this.logger.info(`Date: ${releaseNotes.date}`);
 
-    if (releaseNotes.added.length > 0) {
-      this.logger.info(`✨ Added: ${releaseNotes.added.length} items`);
-    }
-    if (releaseNotes.changed.length > 0) {
-      this.logger.info(`🔄 Changed: ${releaseNotes.changed.length} items`);
-    }
-    if (releaseNotes.fixed.length > 0) {
-      this.logger.info(`🐛 Fixed: ${releaseNotes.fixed.length} items`);
-    }
-    if (releaseNotes.security.length > 0) {
-      this.logger.info(`🔒 Security: ${releaseNotes.security.length} items`);
-    }
-    if (releaseNotes.deprecated.length > 0) {
-      this.logger.info(`⚠️  Deprecated: ${releaseNotes.deprecated.length} items`);
-    }
-    if (releaseNotes.removed.length > 0) {
-      this.logger.info(`🗑️  Removed: ${releaseNotes.removed.length} items`);
+    // Check if we have PR-aware release notes
+    if ("hasPRs" in releaseNotes && releaseNotes.hasPRs) {
+      const prNotes = releaseNotes as PRReleaseNotes;
+
+      if (prNotes.pullRequests && prNotes.pullRequests.length > 0) {
+        this.logger.info(`🔀 Pull Requests: ${prNotes.pullRequests.length}`);
+
+        // Count total changes across all PRs
+        let totalFeatures = 0;
+        let totalFixes = 0;
+        let totalChanges = 0;
+
+        for (const pr of prNotes.pullRequests) {
+          totalFeatures += pr.features.length;
+          totalFixes += pr.fixes.length;
+          totalChanges += pr.changes.length;
+        }
+
+        if (totalFeatures > 0) {
+          this.logger.info(`  ✨ Features: ${totalFeatures} across PRs`);
+        }
+        if (totalFixes > 0) {
+          this.logger.info(`  🐛 Fixes: ${totalFixes} across PRs`);
+        }
+        if (totalChanges > 0) {
+          this.logger.info(`  🔄 Changes: ${totalChanges} across PRs`);
+        }
+      }
+
+      if (prNotes.directCommits) {
+        const directCount = prNotes.directCommits.features.length +
+          prNotes.directCommits.fixes.length +
+          prNotes.directCommits.changes.length +
+          prNotes.directCommits.other.length;
+
+        if (directCount > 0) {
+          this.logger.info(`📝 Direct Commits: ${directCount}`);
+        }
+      }
+    } else {
+      // Traditional release notes preview (backward compatible)
+      if (releaseNotes.added.length > 0) {
+        this.logger.info(`✨ Added: ${releaseNotes.added.length} items`);
+      }
+      if (releaseNotes.changed.length > 0) {
+        this.logger.info(`🔄 Changed: ${releaseNotes.changed.length} items`);
+      }
+      if (releaseNotes.fixed.length > 0) {
+        this.logger.info(`🐛 Fixed: ${releaseNotes.fixed.length} items`);
+      }
+      if (releaseNotes.security.length > 0) {
+        this.logger.info(`🔒 Security: ${releaseNotes.security.length} items`);
+      }
+      if (releaseNotes.deprecated.length > 0) {
+        this.logger.info(`⚠️  Deprecated: ${releaseNotes.deprecated.length} items`);
+      }
+      if (releaseNotes.removed.length > 0) {
+        this.logger.info(`🗑️  Removed: ${releaseNotes.removed.length} items`);
+      }
     }
   }
 
@@ -1183,7 +1226,7 @@ export class ReleaseManager {
    *
    * @private
    * @param {string} version - New version string
-   * @param {ReleaseNotes} releaseNotes - Generated release notes
+   * @param {ReleaseNotes | PRReleaseNotes} releaseNotes - Generated release notes
    * @returns {Promise<string[]>} Array of updated file paths
    *
    * @description
@@ -1194,7 +1237,7 @@ export class ReleaseManager {
    *
    * @since 1.1.0 - Enhanced with intelligent file handler support
    */
-  private async updateFiles(version: string, releaseNotes: ReleaseNotes): Promise<string[]> {
+  private async updateFiles(version: string, releaseNotes: ReleaseNotes | PRReleaseNotes): Promise<string[]> {
     const updatedFiles: string[] = [];
 
     // Prepare template data

@@ -71,6 +71,7 @@ version bump based on conventional commits - all while maintaining professional 
 - 🚀 **Automated releases** - Smart version bumping based on conventional commits
 - 🤖 **Intelligent file handlers** - Automatic updates for deno.json, package.json, README.md
 - 📝 **Professional changelogs** - Following Keep a Changelog format
+- 🔀 **PR-aware changelogs** - Automatically groups commits by Pull Request (new in v2.19.0!)
 - 🐙 **GitHub integration** - Automatic release creation with release notes
 - 🌊 **Visual progress indicators** - Reliable spinner animations using Deno standard library
 - 🛡️ **Security-first design** - OWASP-compliant with comprehensive input validation
@@ -213,6 +214,26 @@ updateFiles: [
   { path: "./README.md" },
 ];
 ```
+
+## 🔀 PR-Aware Changelogs (New in v2.19.0!)
+
+Nagare now automatically detects Pull Requests and organizes your changelog accordingly:
+
+**With PRs:**
+
+```markdown
+### Add authentication system (#123)
+
+#### Added
+
+- Implement JWT tokens (auth) (abc1234)
+- Add login endpoint (api) (def5678)
+```
+
+**Without PRs:** Falls back to traditional format automatically.
+
+**Zero configuration required!** Just works with your existing workflow. See
+[PR-Aware Changelogs Documentation](docs/pr-aware-changelogs.md) for details.
 
 ## 🛡️ Security & Reliability
 

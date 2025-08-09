@@ -1,0 +1,46 @@
+{{! Nagare Traditional Changelog Template }}
+{{! This template generates changelog entries without PR grouping }}
+## [{{ version }}] - {{ date }}
+
+{{ if added.length > 0 }}
+### Added
+{{ for item of added }}
+- {{ item }}
+{{ /for }}
+
+{{ /if }}
+{{ if changed.length > 0 }}
+### Changed
+{{ for item of changed }}
+- {{ item }}
+{{ /for }}
+
+{{ /if }}
+{{ if deprecated.length > 0 }}
+### Deprecated
+{{ for item of deprecated }}
+- {{ item }}
+{{ /for }}
+
+{{ /if }}
+{{ if removed.length > 0 }}
+### Removed
+{{ for item of removed }}
+- {{ item }}
+{{ /for }}
+
+{{ /if }}
+{{ if fixed.length > 0 }}
+### Fixed
+{{ for item of fixed }}
+- {{ item }}
+{{ /for }}
+
+{{ /if }}
+{{ if security.length > 0 }}
+### Security
+{{ for item of security }}
+- {{ item }}
+{{ /for }}
+
+{{ /if }}

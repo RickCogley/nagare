@@ -303,6 +303,137 @@ export class GitOperations {
   }
 
   /**
+   * Get merge commits since a specific tag or commit
+   * Used for PR detection in changelog generation
+   *
+   * @param since - Git ref to start from (tag, commit hash, etc.)
+   * @returns Array of merge commits with PR information
+   */
+  async getMergeCommits(since: string): Promise<
+    Array<{
+      sha: string;
+      message: string;
+      date: string;
+    }>
+  > {
+    const range = since ? `${since}..HEAD` : "HEAD";
+
+    try {
+      const result = await this.runCommand([
+        "git",
+        "log",
+        range,
+        "--merges",
+        "--pretty=format:%H|||%ci|||%s|||%b",
+      ]);
+
+      if (!result.trim()) {
+        this.logger.debug("No merge commits found since " + (since || "beginning"));
+        return [];
+      }
+
+      return result.split("\n")
+        .filter((line) => line.trim())
+        .map((line) => {
+          const [sha, date, subject, body = ""] = line.split("|||");
+          return {
+            sha: sha.trim(),
+            message: `${subject}\n${body}`.trim(),
+            date: date.trim(),
+          };
+        });
+    } catch (error) {
+      this.logger.error("Error getting merge commits:", error as Error);
+      return [];
+    }
+  }
+
+  /**
+   * Extract PR number from a merge commit message
+   * Supports various GitHub merge formats
+   *
+   * @param message - Merge commit message
+   * @returns PR number or null if not found
+   */
+  extractPRNumber(message: string): number | null {
+    const patterns = [
+      /Merge pull request #(\d+)/,
+      /Merge PR #(\d+)/,
+      /\(#(\d+)\)/,
+      /^Merge #(\d+)/,
+    ];
+
+    for (const pattern of patterns) {
+      const match = message.match(pattern);
+      if (match) {
+        return parseInt(match[1], 10);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Get commits that were part of a PR
+   * Returns commits between merge base and the second parent of merge commit
+   *
+   * @param mergeCommit - SHA of the merge commit
+   * @returns Array of commits in the PR
+   */
+  async getCommitsInPR(mergeCommit: string): Promise<ConventionalCommit[]> {
+    try {
+      // For a merge commit, ^1 is the first parent (main branch)
+      // and ^2 is the second parent (PR branch)
+      // We want commits that are in ^2 but not in ^1
+      const result = await this.runCommand([
+        "git",
+        "log",
+        `${mergeCommit}^1..${mergeCommit}^2`,
+        "--pretty=format:%H|||%ci|||%s|||%b",
+      ]);
+
+      if (!result.trim()) {
+        // Might be a squash merge, return the merge commit itself
+        const singleCommit = await this.runCommand([
+          "git",
+          "log",
+          "-1",
+          mergeCommit,
+          "--pretty=format:%H|||%ci|||%s|||%b",
+        ]);
+
+        if (!singleCommit.trim()) {
+          return [];
+        }
+
+        const parsed = this.parseConventionalCommit(singleCommit);
+        return parsed ? [parsed] : [];
+      }
+
+      return result.split("\n")
+        .filter((line) => line.trim())
+        .map((line) => this.parseConventionalCommit(line))
+        .filter((commit) => commit !== null) as ConventionalCommit[];
+    } catch (error) {
+      this.logger.debug(`Could not get commits for PR (might be squash merge): ${error}`);
+      // Try to get just the merge commit itself (squash merge case)
+      try {
+        const singleCommit = await this.runCommand([
+          "git",
+          "log",
+          "-1",
+          mergeCommit,
+          "--pretty=format:%H|||%ci|||%s|||%b",
+        ]);
+
+        const parsed = this.parseConventionalCommit(singleCommit);
+        return parsed ? [parsed] : [];
+      } catch {
+        return [];
+      }
+    }
+  }
+
+  /**
    * Parse a git log line into a conventional commit
    */
   private parseConventionalCommit(gitLogLine: string): ConventionalCommit | null {
@@ -318,7 +449,8 @@ export class GitOperations {
       return null;
     }
 
-    const [hash, date, subject, body = ""] = parts;
+    const [hash, date, subject, bodyParam] = parts;
+    const body = bodyParam || "";
 
     if (!hash || !date || !subject) {
       this.logger.warn("Missing required fields in git log line");
