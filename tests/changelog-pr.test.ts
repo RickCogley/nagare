@@ -15,6 +15,7 @@ const mockConfig: NagareConfig = {
   project: {
     name: "test-project",
     description: "Test project",
+    repository: "https://github.com/test/test-project",
   },
   versionFile: {
     path: "./version.ts",
