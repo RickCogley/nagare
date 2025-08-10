@@ -11,7 +11,7 @@ application:
   description: >-
     Deno-native release management library that automates version bumping, changelog generation, and
     GitHub releases using conventional commits and semantic versioning
-  version: 2.18.1
+  version: 2.19.0
   stack:
     language: typescript
     runtime: deno
@@ -530,7 +530,7 @@ principles:
         - text: Liskov Substitution Principle
     integration_url: "aichaku://principle/software-development/solid"
 aichaku:
-  version: 0.46.1
+  version: 0.47.0
   source: configuration-as-code
 included:
   core: true

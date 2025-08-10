@@ -324,7 +324,7 @@ export class GitOperations {
         "log",
         range,
         "--merges",
-        "--pretty=format:%H|||%ci|||%s|||%b",
+        "--pretty=format:%H|||%ci|||%s|||%b<<<END_OF_COMMIT>>>",
       ]);
 
       if (!result.trim()) {
@@ -332,10 +332,12 @@ export class GitOperations {
         return [];
       }
 
-      return result.split("\n")
-        .filter((line) => line.trim())
-        .map((line) => {
-          const [sha, date, subject, body = ""] = line.split("|||");
+      // Split by our custom delimiter to handle multi-line bodies
+      return result.split("<<<END_OF_COMMIT>>>")
+        .filter((commit) => commit.trim())
+        .map((commit) => {
+          const [sha, date, subject, ...bodyParts] = commit.trim().split("|||");
+          const body = bodyParts.join("|||"); // Rejoin in case body contains |||
           return {
             sha: sha.trim(),
             message: `${subject}\n${body}`.trim(),
@@ -388,7 +390,7 @@ export class GitOperations {
         "git",
         "log",
         `${mergeCommit}^1..${mergeCommit}^2`,
-        "--pretty=format:%H|||%ci|||%s|||%b",
+        "--pretty=format:%H|||%ci|||%s|||%b<<<END_OF_COMMIT>>>",
       ]);
 
       if (!result.trim()) {
@@ -409,9 +411,9 @@ export class GitOperations {
         return parsed ? [parsed] : [];
       }
 
-      return result.split("\n")
-        .filter((line) => line.trim())
-        .map((line) => this.parseConventionalCommit(line))
+      return result.split("<<<END_OF_COMMIT>>>")
+        .filter((commit) => commit.trim())
+        .map((commit) => this.parseConventionalCommit(commit.trim()))
         .filter((commit) => commit !== null) as ConventionalCommit[];
     } catch (error) {
       this.logger.debug(`Could not get commits for PR (might be squash merge): ${error}`);

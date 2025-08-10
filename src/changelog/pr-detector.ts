@@ -152,11 +152,17 @@ export class PRDetector {
   private extractPRTitle(message: string, prNumber: number): string {
     // Try to extract title from standard GitHub merge commit format
     // Format: "Merge pull request #123 from user/branch\n\nPR Title Here"
-    const lines = message.split("\n");
+    const lines = message.split("\n").filter((line) => line.trim());
 
-    // Check if there's a title after the merge line
-    if (lines.length > 2 && lines[2].trim()) {
-      return lines[2].trim();
+    // GitHub typically puts the PR title as the second non-empty line
+    // First line: "Merge pull request #123 from user/branch"
+    // Second line: "PR Title Here"
+    if (lines.length > 1 && lines[1].trim()) {
+      // Don't return lines that look like commit metadata
+      const secondLine = lines[1].trim();
+      if (!secondLine.startsWith("-") && !secondLine.includes("|||")) {
+        return secondLine;
+      }
     }
 
     // Try to extract from the first line if it contains more info
