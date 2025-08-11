@@ -2083,7 +2083,7 @@ export class ReleaseManager {
     if (this.config.release?.preflightChecks?.runTests !== false) {
       checks.push({
         name: "Test Suite",
-        command: ["deno", "test", "--unstable-raw-imports", "--allow-all"],
+        command: ["deno", "test", "--no-check", "--allow-all"],
         fixable: false,
         description: "Runs all unit and integration tests",
       });
