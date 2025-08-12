@@ -1,6 +1,7 @@
 # How to Use Lifecycle Hooks
 
-This guide shows you how to use Nagare's lifecycle hooks to customize the release process. Use hooks when you need to run custom code before or after releases.
+This guide shows you how to use Nagare's lifecycle hooks to customize the release process. Use hooks when you need to
+run custom code before or after releases.
 
 ## Before you begin
 
@@ -20,25 +21,25 @@ Use this approach to validate conditions before allowing a release.
    ```typescript
    export default {
      // ... other config ...
-     
+
      hooks: {
        preRelease: [
          async () => {
            console.log("🧪 Running tests...");
-           
+
            const testCmd = new Deno.Command("deno", {
              args: ["test", "--allow-all"],
              stdout: "piped",
              stderr: "piped",
            });
-           
+
            const result = await testCmd.output();
-           
+
            if (!result.success) {
              const error = new TextDecoder().decode(result.stderr);
              throw new Error(`Tests failed:\n${error}`);
            }
-           
+
            console.log("✅ All tests passed");
          },
        ],
@@ -54,21 +55,21 @@ Use this approach to validate conditions before allowing a release.
        const fmtCheck = await new Deno.Command("deno", {
          args: ["fmt", "--check"],
        }).output();
-       
+
        if (!fmtCheck.success) {
          throw new Error("Code is not formatted. Run 'deno fmt' first.");
        }
-       
+
        // Check linting
        const lintCheck = await new Deno.Command("deno", {
          args: ["lint"],
        }).output();
-       
+
        if (!lintCheck.success) {
          throw new Error("Linting errors found. Run 'deno lint' to see details.");
        }
      },
-   ]
+   ];
    ```
 
 ### Option 2: Post-Release Notifications
@@ -80,10 +81,10 @@ Use this approach to notify team members or trigger deployments after releases.
    postRelease: [
      async (config, result) => {
        if (!result.success) return;
-       
+
        const webhookUrl = Deno.env.get("SLACK_WEBHOOK_URL");
        if (!webhookUrl) return;
-       
+
        await fetch(webhookUrl, {
          method: "POST",
          headers: { "Content-Type": "application/json" },
@@ -114,7 +115,7 @@ Use this approach to notify team members or trigger deployments after releases.
          }),
        });
      },
-   ]
+   ];
    ```
 
 2. Trigger deployment pipeline:
@@ -122,9 +123,9 @@ Use this approach to notify team members or trigger deployments after releases.
    postRelease: [
      async (config, result) => {
        if (!result.success) return;
-       
+
        console.log("🚀 Triggering deployment...");
-       
+
        const deployCmd = new Deno.Command("gh", {
          args: [
            "workflow",
@@ -134,11 +135,11 @@ Use this approach to notify team members or trigger deployments after releases.
            `v${result.version}`,
          ],
        });
-       
+
        await deployCmd.output();
        console.log("✅ Deployment triggered");
      },
-   ]
+   ];
    ```
 
 ### Option 3: Pre-Version Validation
@@ -283,14 +284,12 @@ NAGARE_LOG_LEVEL=debug deno task nagare --dry-run
 
 ## Troubleshooting
 
-**Problem**: Hook throws "Permission denied"
-**Solution**: Ensure Deno has required permissions or run with `--allow-all`
+**Problem**: Hook throws "Permission denied" **Solution**: Ensure Deno has required permissions or run with
+`--allow-all`
 
-**Problem**: Hook doesn't execute
-**Solution**: Check hook is properly exported in config and function is async
+**Problem**: Hook doesn't execute **Solution**: Check hook is properly exported in config and function is async
 
-**Problem**: Hook causes release to fail
-**Solution**: Add try-catch blocks and proper error handling in hooks
+**Problem**: Hook causes release to fail **Solution**: Add try-catch blocks and proper error handling in hooks
 
 ## Related tasks
 

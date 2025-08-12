@@ -2,27 +2,25 @@
 
 ## Summary
 
-Add the ability to schedule recurring tasks and actions within Claude Code, enabling automated
-security checks, dependency reviews, and other periodic maintenance tasks.
+Add the ability to schedule recurring tasks and actions within Claude Code, enabling automated security checks,
+dependency reviews, and other periodic maintenance tasks.
 
 ## Problem Statement
 
-Currently, Claude Code operates in a reactive mode - it only performs actions when explicitly
-requested by the user. This means important maintenance tasks like security audits, dependency
-updates, and compliance checks must be manually initiated each time. For development teams following
-security best practices (OWASP, ISO 27001), this creates several challenges:
+Currently, Claude Code operates in a reactive mode - it only performs actions when explicitly requested by the user.
+This means important maintenance tasks like security audits, dependency updates, and compliance checks must be manually
+initiated each time. For development teams following security best practices (OWASP, ISO 27001), this creates several
+challenges:
 
-1. **Human Memory Dependency**: Critical security checks rely on developers remembering to request
-   them
-2. **Inconsistent Timing**: Reviews happen irregularly, potentially missing time-sensitive
-   vulnerabilities
+1. **Human Memory Dependency**: Critical security checks rely on developers remembering to request them
+2. **Inconsistent Timing**: Reviews happen irregularly, potentially missing time-sensitive vulnerabilities
 3. **Repetitive Requests**: Users must repeatedly type similar requests for routine checks
 4. **Compliance Gaps**: Regular audits required for compliance frameworks may be missed
 
 ## Proposed Solution
 
-Implement a scheduled actions feature that allows Claude Code to proactively perform configured
-tasks at specified intervals.
+Implement a scheduled actions feature that allows Claude Code to proactively perform configured tasks at specified
+intervals.
 
 ### Core Features
 
@@ -205,8 +203,8 @@ Scheduled Actions Panel:
 
 ## Request for Comments
 
-This feature would significantly enhance Claude Code's value proposition for security-conscious
-development teams. Key questions for the community:
+This feature would significantly enhance Claude Code's value proposition for security-conscious development teams. Key
+questions for the community:
 
 1. What scheduling intervals would be most useful for your workflows?
 2. Which automated actions would provide the most value?
@@ -222,6 +220,6 @@ development teams. Key questions for the community:
 
 ---
 
-**Note**: This feature request emphasizes security and compliance use cases as these represent
-high-value scenarios where automation provides significant benefits. However, the scheduling system
-should be flexible enough to support any recurring task that users need to automate.
+**Note**: This feature request emphasizes security and compliance use cases as these represent high-value scenarios
+where automation provides significant benefits. However, the scheduling system should be flexible enough to support any
+recurring task that users need to automate.

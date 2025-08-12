@@ -72,10 +72,9 @@
 
 ## The Complete Vision
 
-Nagare becomes a true "flow" tool that doesn't just start releases but ensures they complete
-successfully all the way to JSR. When obstacles appear (lint errors, security issues), it
-automatically clears them while keeping the user informed with beautiful progress indicators. The
-release process becomes a smooth, automated flow from code to published package.
+Nagare becomes a true "flow" tool that doesn't just start releases but ensures they complete successfully all the way to
+JSR. When obstacles appear (lint errors, security issues), it automatically clears them while keeping the user informed
+with beautiful progress indicators. The release process becomes a smooth, automated flow from code to published package.
 
 ## Appetite: 6 weeks
 

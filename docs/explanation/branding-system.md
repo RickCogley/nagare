@@ -2,7 +2,8 @@
 
 ## Overview
 
-Nagare uses a centralized branding system to ensure consistent messaging across all CLI interactions. The system emphasizes the "flow" concept with water/river metaphors, reflecting the Japanese meaning of "Nagare" (流れ) - flow.
+Nagare uses a centralized branding system to ensure consistent messaging across all CLI interactions. The system
+emphasizes the "flow" concept with water/river metaphors, reflecting the Japanese meaning of "Nagare" (流れ) - flow.
 
 ## Brand Identity
 
@@ -77,19 +78,19 @@ The system includes pre-built message templates for common scenarios:
 
 ```typescript
 // Initialization
-Brand.welcome("1.0.0");              // "🌊 Nagare: Setting up automated release flow (v1.0.0)..."
+Brand.welcome("1.0.0"); // "🌊 Nagare: Setting up automated release flow (v1.0.0)..."
 
 // Version operations
-Brand.analyzingCommits();            // "🌊 Nagare: Analyzing your commits since last release..."
-Brand.versionBump("1.0.0", "1.1.0", "minor");  // "🌊 Nagare: Flowing from v1.0.0 to v1.1.0 (minor)..."
+Brand.analyzingCommits(); // "🌊 Nagare: Analyzing your commits since last release..."
+Brand.versionBump("1.0.0", "1.1.0", "minor"); // "🌊 Nagare: Flowing from v1.0.0 to v1.1.0 (minor)..."
 
 // Release operations
-Brand.creatingRelease("1.1.0");     // "🌊 Nagare: Creating release v1.1.0..."
-Brand.publishingToGitHub("1.1.0");  // "🌊 Nagare: Publishing v1.1.0 to GitHub..."
-Brand.publishingToJSR("1.1.0");     // "🌊 Nagare: Publishing v1.1.0 to JSR..."
+Brand.creatingRelease("1.1.0"); // "🌊 Nagare: Creating release v1.1.0..."
+Brand.publishingToGitHub("1.1.0"); // "🌊 Nagare: Publishing v1.1.0 to GitHub..."
+Brand.publishingToJSR("1.1.0"); // "🌊 Nagare: Publishing v1.1.0 to JSR..."
 
 // Completion
-Brand.releaseComplete("1.1.0", 5);  // "🎉 Release v1.1.0 complete! (5 commits included)"
+Brand.releaseComplete("1.1.0", 5); // "🎉 Release v1.1.0 complete! (5 commits included)"
 ```
 
 ## Usage Guidelines

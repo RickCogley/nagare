@@ -4,8 +4,7 @@
 
 Your `CHANGELOG.md` file was being deleted when running tests. This happened because:
 
-1. The `tests/changelog-generator_test.ts` file was using the **actual project's CHANGELOG.md** for
-   testing
+1. The `tests/changelog-generator_test.ts` file was using the **actual project's CHANGELOG.md** for testing
 2. The test had a `cleanup()` function that would delete `./CHANGELOG.md` after each test
 3. If tests failed or were interrupted (like during your API error), the file would remain deleted
 
@@ -64,10 +63,9 @@ await t.step("test name", async () => {
 
 ## Immediate Action
 
-Your CHANGELOG.md has been restored from git. The test file has been fixed to prevent this from
-happening again.
+Your CHANGELOG.md has been restored from git. The test file has been fixed to prevent this from happening again.
 
 ## Testing the Fix
 
-The tests now run successfully without touching your project files. Some tests are failing due to
-duplicate detection logic, but that's a separate issue unrelated to the file deletion problem.
+The tests now run successfully without touching your project files. Some tests are failing due to duplicate detection
+logic, but that's a separate issue unrelated to the file deletion problem.

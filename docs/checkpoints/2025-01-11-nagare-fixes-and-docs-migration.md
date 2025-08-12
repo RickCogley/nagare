@@ -2,8 +2,8 @@
 
 ## Summary
 
-This session involved critical bug fixes for Nagare, documentation reorganization, and successful
-release of version 2.9.1.
+This session involved critical bug fixes for Nagare, documentation reorganization, and successful release of version
+2.9.1.
 
 ## Major Accomplishments
 
@@ -40,9 +40,7 @@ Reorganized 18 files from `/plans`:
 
 ```typescript
 // Old (broken for JSR):
-const localesDir = import.meta.url.startsWith("file://")
-  ? new URL("./locales", import.meta.url).pathname
-  : "./locales";
+const localesDir = import.meta.url.startsWith("file://") ? new URL("./locales", import.meta.url).pathname : "./locales";
 
 // New (works for JSR):
 const localesDir = new URL("./locales", import.meta.url).pathname;

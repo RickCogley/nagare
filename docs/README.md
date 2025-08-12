@@ -23,7 +23,9 @@ Before you start using Nagare:
 - **🤖 INTELLIGENT**: **Smart file handlers** - Automatic updates for common file types
 - **🌊 FLOW-FOCUSED**: **Release workflow visualization** - Clear understanding of the release process
 
-**The Documentation Revolution:** This release establishes enterprise-grade documentation with visual diagrams, structured learning paths, and comprehensive coverage of all Nagare features - from quick start to advanced security considerations.
+**The Documentation Revolution:** This release establishes enterprise-grade documentation with visual diagrams,
+structured learning paths, and comprehensive coverage of all Nagare features - from quick start to advanced security
+considerations.
 
 ## 📚 Documentation Types
 
@@ -39,7 +41,8 @@ Before you start using Nagare:
 
 **Task-oriented** - Practical guides for specific tasks
 
-- [**Configure File Updates**](how-to/configure-file-updates.md) - Set up automatic version updates across multiple files
+- [**Configure File Updates**](how-to/configure-file-updates.md) - Set up automatic version updates across multiple
+  files
 - [**Use Custom Templates**](how-to/use-custom-templates.md) - Create custom version file templates
 - [**Set Up CI/CD Integration**](how-to/setup-ci-cd.md) - Integrate with GitHub Actions, GitLab CI, and more
 - [**Use Hooks**](how-to/use-hooks.md) - Customize release workflows with lifecycle hooks
@@ -71,10 +74,14 @@ Before you start using Nagare:
 
 For the best experience viewing interactive Mermaid diagrams, visit these pages directly on GitHub:
 
-- [**🏗️ Architecture Overview**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/architecture.md) - Complete system architecture with component diagrams
-- [**🔄 Release Workflow**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/release-workflow.md) - Visual release process flow with decision trees
-- [**🔒 Security Model**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/security-model.md) - Security layers and threat analysis diagrams
-- [**📁 File Update System**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/file-update-system.md) - File handler architecture and flow diagrams
+- [**🏗️ Architecture Overview**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/architecture.md) -
+  Complete system architecture with component diagrams
+- [**🔄 Release Workflow**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/release-workflow.md) -
+  Visual release process flow with decision trees
+- [**🔒 Security Model**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/security-model.md) - Security
+  layers and threat analysis diagrams
+- [**📁 File Update System**](https://github.com/RickCogley/nagare/blob/main/docs/explanation/file-update-system.md) -
+  File handler architecture and flow diagrams
 
 ## 🚀 Where to Start?
 
@@ -178,7 +185,8 @@ graph TD
 
 ## 📝 Generating API Documentation
 
-**IMPORTANT**: Always use the predefined tasks to generate API documentation. This ensures docs are placed in the correct location (`docs/api/`).
+**IMPORTANT**: Always use the predefined tasks to generate API documentation. This ensures docs are placed in the
+correct location (`docs/api/`).
 
 ### Available Documentation Tasks
 
@@ -202,6 +210,7 @@ deno task docs:serve
 ### ⚠️ Never Run Directly
 
 **DO NOT** run `deno doc` without the `--output` flag as it will generate files in the wrong location:
+
 ```bash
 # ❌ WRONG - Will generate in current directory
 deno doc --html cli.ts

@@ -1,14 +1,14 @@
 # Project Status: Display Application Being Released
 
-**Project**: Show Which Application Nagare is Releasing  
-**Start Date**: 2025-01-05  
-**Appetite**: 2 weeks  
+**Project**: Show Which Application Nagare is Releasing\
+**Start Date**: 2025-01-05\
+**Appetite**: 2 weeks\
 **Status**: 🌿 Active - Building (Complete)
 
 ## Current Phase
 
-[Shaping] → [Betting] → [**Building**] → [Cool-down]  
-                         ▲
+[Shaping] → [Betting] → [**Building**] → [Cool-down]\
+▲
 
 ## Progress
 
@@ -44,4 +44,3 @@ None currently
 
 - Rick (Product Owner)
 - Claude Code (Implementation)
-

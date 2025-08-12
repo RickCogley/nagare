@@ -82,6 +82,7 @@ Moves to done/ when complete
 ```
 
 **What actually happened:**
+
 ```
 User: "orchestrate implementation"
 ↓
@@ -118,6 +119,7 @@ Claude: "Oh... let me create that retroactively"
 ### 1. Mandatory Project Creation
 
 Before ANY significant work:
+
 ```bash
 mkdir -p docs/projects/active/$(date +%Y-%m-%d)-${PROJECT_NAME}
 touch docs/projects/active/$(date +%Y-%m-%d)-${PROJECT_NAME}/STATUS.md
@@ -144,7 +146,7 @@ When work involves multiple agents:
 We have:
 
 - Comprehensive Shape Up templates
-- Aichaku methodology integration  
+- Aichaku methodology integration
 - Project structure defined
 - Clear processes documented
 

@@ -6,7 +6,9 @@ Nagare's release process has three critical reliability issues that are causing 
 
 ### 1. **Rollback Problem** (High Impact)
 
-When releases fail after file modifications but before successful commit, the working directory is left in an inconsistent state. Files like version numbers, CHANGELOG.md, and configured update files are modified, but there's no automatic cleanup mechanism.
+When releases fail after file modifications but before successful commit, the working directory is left in an
+inconsistent state. Files like version numbers, CHANGELOG.md, and configured update files are modified, but there's no
+automatic cleanup mechanism.
 
 **Real-world impact**:
 
@@ -16,7 +18,8 @@ When releases fail after file modifications but before successful commit, the wo
 
 ### 2. **JSR Verification False Failures** (High Impact)
 
-Successful JSR publishes are marked as failed due to race conditions between GitHub Actions completion and JSR package availability. This leads to timeouts and false error messages like "Workflow succeeded but package not found on JSR."
+Successful JSR publishes are marked as failed due to race conditions between GitHub Actions completion and JSR package
+availability. This leads to timeouts and false error messages like "Workflow succeeded but package not found on JSR."
 
 **Real-world impact**:
 
@@ -26,7 +29,8 @@ Successful JSR publishes are marked as failed due to race conditions between Git
 
 ### 3. **Visual Timeline Broken** (Medium Impact)
 
-The progress indicator displays incorrectly, showing malformed output instead of the intended visual timeline during releases.
+The progress indicator displays incorrectly, showing malformed output instead of the intended visual timeline during
+releases.
 
 **Real-world impact**:
 
@@ -36,7 +40,8 @@ The progress indicator displays incorrectly, showing malformed output instead of
 
 ## Appetite
 
-**6 weeks** - This is a full cycle worth of reliability improvements that will significantly improve the release experience.
+**6 weeks** - This is a full cycle worth of reliability improvements that will significantly improve the release
+experience.
 
 ### Why 6 weeks?
 
@@ -47,7 +52,8 @@ The progress indicator displays incorrectly, showing malformed output instead of
 
 ### Raw Ideas vs. Shaped Solution
 
-This is a **shaped solution** - we have clear problem statements, known root causes, and identified solution approaches from our codebase analysis.
+This is a **shaped solution** - we have clear problem statements, known root causes, and identified solution approaches
+from our codebase analysis.
 
 ## Solution
 
@@ -158,10 +164,11 @@ Transform nagare's release process from "fail-fast" to "fail-safe" with proper c
 
 ## Risk Assessment
 
-**Low risk** - We have clear problem statements, identified root causes, and existing infrastructure to build on. The main risk is scope creep, which we'll manage with the defined no-goes.
+**Low risk** - We have clear problem statements, identified root causes, and existing infrastructure to build on. The
+main risk is scope creep, which we'll manage with the defined no-goes.
 
 ---
 
-**Shaped by**: Rick & Claude  
-**Date**: 2025-07-18  
+**Shaped by**: Rick & Claude\
+**Date**: 2025-07-18\
 **Ready for betting**: ✅ **YES** - JSR API findings incorporated

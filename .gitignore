@@ -10,8 +10,18 @@ out/
 # Coverage reports
 coverage/
 .coverage/
+cov/
+cov_profile/
 lcov.info
 coverage.lcov
+*.lcov
+
+# Generated documentation coverage reports
+docs/coverage/html/
+docs/coverage/json/
+docs/coverage/reports/*.html
+docs/coverage/reports/*.json
+!docs/coverage/README.md
 
 # Test outputs
 .test_coverage/

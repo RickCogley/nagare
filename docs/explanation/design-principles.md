@@ -2,7 +2,9 @@
 
 ## Overview
 
-Nagare is built on a foundation of carefully considered design principles that prioritize security, reliability, and developer experience. Understanding these principles helps you make better decisions when configuring and using Nagare in your projects.
+Nagare is built on a foundation of carefully considered design principles that prioritize security, reliability, and
+developer experience. Understanding these principles helps you make better decisions when configuring and using Nagare
+in your projects.
 
 ## Core Design Principles
 
@@ -18,6 +20,7 @@ Nagare is built on a foundation of carefully considered design principles that p
 - **Command injection prevention**: Uses Deno's secure Command API with validated inputs
 
 **Example**:
+
 ```typescript
 // ✅ SECURE: Validated inputs
 const gitRef = validateGitRef(version, "tag");
@@ -27,7 +30,8 @@ new Deno.Command("git", { args: ["tag", gitRef] });
 new Deno.Command("git", { args: [`tag ${version}`] });
 ```
 
-**Why this matters**: Release tools handle sensitive operations like git commits, GitHub API calls, and file modifications. A security vulnerability could compromise entire repositories or CI/CD pipelines.
+**Why this matters**: Release tools handle sensitive operations like git commits, GitHub API calls, and file
+modifications. A security vulnerability could compromise entire repositories or CI/CD pipelines.
 
 ### 2. Fail-Fast with Clear Error Messages
 
@@ -40,6 +44,7 @@ new Deno.Command("git", { args: [`tag ${version}`] });
 - **Early detection**: Problems are caught during dry-run mode or pre-flight checks
 
 **Example**:
+
 ```typescript
 // Enhanced error with context and suggestions
 throw new NagareError(
@@ -49,19 +54,21 @@ throw new NagareError(
     file: "./package.json",
     pattern: "version.*[0-9]",
     suggestions: [
-      "Use line-anchored patterns: /^\"version\":\\s*\"([^\"]+)\"/m",
+      'Use line-anchored patterns: /^"version":\\s*"([^"]+)"/m',
       "Consider using built-in handlers for common file types",
     ],
     docsUrl: "https://docs.nagare.dev/patterns",
-  }
+  },
 );
 ```
 
-**Why this matters**: Developers should spend time building features, not debugging cryptic error messages. Clear errors reduce support burden and improve adoption.
+**Why this matters**: Developers should spend time building features, not debugging cryptic error messages. Clear errors
+reduce support burden and improve adoption.
 
 ### 3. Atomic Operations with Rollback
 
-**Principle**: Release operations should be atomic - either completely succeed or completely fail, with no partial state.
+**Principle**: Release operations should be atomic - either completely succeed or completely fail, with no partial
+state.
 
 **Implementation**:
 
@@ -70,6 +77,7 @@ throw new NagareError(
 - **UUID-based tracking**: Prevents backup collisions in concurrent environments
 
 **Example**:
+
 ```typescript
 // Atomic operation with automatic rollback
 const backupManager = new BackupManager();
@@ -84,7 +92,8 @@ try {
 }
 ```
 
-**Why this matters**: Partial failures leave repositories in inconsistent states, requiring manual cleanup and potentially causing confusion for team members.
+**Why this matters**: Partial failures leave repositories in inconsistent states, requiring manual cleanup and
+potentially causing confusion for team members.
 
 ### 4. Convention over Configuration
 
@@ -97,13 +106,14 @@ try {
 - **Progressive enhancement**: Start simple, add complexity only when needed
 
 **Example**:
+
 ```typescript
 // ✅ SIMPLE: Uses intelligent defaults
 export default {
   updateFiles: [
-    { path: "./deno.json" },      // Built-in handler
-    { path: "./package.json" },   // Built-in handler
-    { path: "./README.md" },      // Built-in handler
+    { path: "./deno.json" }, // Built-in handler
+    { path: "./package.json" }, // Built-in handler
+    { path: "./README.md" }, // Built-in handler
   ],
 } as NagareConfig;
 
@@ -118,7 +128,8 @@ export default {
 } as NagareConfig;
 ```
 
-**Why this matters**: Most projects follow similar patterns. Requiring extensive configuration for common use cases creates friction and reduces adoption.
+**Why this matters**: Most projects follow similar patterns. Requiring extensive configuration for common use cases
+creates friction and reduces adoption.
 
 ### 5. Deno-First Architecture
 
@@ -132,12 +143,14 @@ export default {
 - **Minimal dependencies**: Reduces attack surface and improves reliability
 
 **Example**:
+
 ```bash
 # Fine-grained permissions
 deno run --allow-read=. --allow-write=. --allow-run=git,gh nagare-launcher.ts
 ```
 
-**Why this matters**: Deno's security model and TypeScript support provide better developer experience and security guarantees compared to Node.js-based tools.
+**Why this matters**: Deno's security model and TypeScript support provide better developer experience and security
+guarantees compared to Node.js-based tools.
 
 ## Design Decisions
 
@@ -216,7 +229,7 @@ export class ErrorFactory {
           "Use relative paths from the project root",
         ],
         context: { operation: "file-read", timestamp: Date.now() },
-      }
+      },
     );
   }
 }
@@ -238,7 +251,7 @@ export class ReleaseManager {
     private config: NagareConfig,
     private git: GitOperations,
     private github: GitHubIntegration,
-    private logger: Logger
+    private logger: Logger,
   ) {}
 }
 ```
@@ -265,7 +278,7 @@ export class UpdateVersionFileCommand extends Command {
     await this.backup();
     await this.updateFile();
   }
-  
+
   async rollback(): Promise<void> {
     await this.restore();
   }
@@ -291,6 +304,7 @@ export class UpdateVersionFileCommand extends Command {
 - **User experience**: Faster releases improve developer productivity
 
 **Implementation**:
+
 ```typescript
 // Concurrent file updates
 await Promise.all([
@@ -311,6 +325,7 @@ await Promise.all([
 - **Modularity**: Clear separation between optional and core features
 
 **Implementation**:
+
 ```typescript
 // Lazy loading of AI auto-fix
 get autoFixer(): AutoFixer {
@@ -390,9 +405,12 @@ The recent reliability fixes demonstrate these principles in action:
 
 ## Conclusion
 
-Nagare's design principles create a foundation for secure, reliable, and maintainable release automation. By understanding these principles, you can better configure Nagare for your specific needs and contribute to its continued evolution.
+Nagare's design principles create a foundation for secure, reliable, and maintainable release automation. By
+understanding these principles, you can better configure Nagare for your specific needs and contribute to its continued
+evolution.
 
-The emphasis on security, reliability, and developer experience ensures that Nagare remains a trusted tool for critical release operations while being approachable for developers of all experience levels.
+The emphasis on security, reliability, and developer experience ensures that Nagare remains a trusted tool for critical
+release operations while being approachable for developers of all experience levels.
 
 ## Further Reading
 

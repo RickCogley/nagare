@@ -54,45 +54,58 @@ The appetite includes:
 ### Pull Requests
 
 #### Add dark mode support (#123)
+
 **Added:**
+
 - Create theme context (a3b4c5d)
 - Add toggle component (d6e7f8g)
 - Add theme switcher to settings (h9i0j1k)
 
 **Fixed:**
+
 - Theme persistence across sessions (l2m3n4o)
 - Flash of unstyled content (p5q6r7s)
 
 #### Implement user preferences (#124)
+
 **Added:**
+
 - Settings UI with tabs (t8u9v0w)
 - Preference storage system (x1y2z3a)
 - Import/export functionality (b4c5d6e)
 
 #### Fix memory leak in cache (#125)
+
 **Fixed:**
+
 - Identify and patch leak source (f7g8h9i)
 - Implement proper cleanup on unmount (j0k1l2m)
 
 ### Direct Commits
+
 **Added:**
+
 - Add keyboard shortcuts (n3o4p5q)
 
 **Fixed:**
+
 - Resolve type errors (r6s7t8u)
 - Update vulnerable dependencies (v9w0x1y)
 ```
 
 When no PRs exist, it falls back to the traditional format:
+
 ```markdown
 ## [2.18.1] - 2025-08-08
 
 ### Added
+
 - Create theme context (a3b4c5d)
 - Add toggle component (d6e7f8g)
 - Add keyboard shortcuts (n3o4p5q)
 
 ### Fixed
+
 - Resolve type errors (r6s7t8u)
 - Update vulnerable dependencies (v9w0x1y)
 ```
@@ -127,4 +140,3 @@ If we require API tokens and rate limits
 If the changelog becomes too nested or complex
 
 **Circuit breaker**: Maximum 2 levels of nesting (type → PR → commits)
-

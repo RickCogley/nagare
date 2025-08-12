@@ -9,10 +9,9 @@
 
 ## Problem Statement
 
-Nagare currently considers a release complete when it finds the GitHub release, but for projects
-published to JSR (like nagare itself and aichaku), the true success criteria is the package
-appearing on JSR. Additionally, when CI/CD failures occur (linting, security, type checks), Nagare
-just reports failure instead of maintaining the "flow" it's named for.
+Nagare currently considers a release complete when it finds the GitHub release, but for projects published to JSR (like
+nagare itself and aichaku), the true success criteria is the package appearing on JSR. Additionally, when CI/CD failures
+occur (linting, security, type checks), Nagare just reports failure instead of maintaining the "flow" it's named for.
 
 ## Current Activity
 
@@ -43,8 +42,7 @@ Add intelligent post-release automation that:
   - Gracefully fall back to manual instructions if unavailable
 - Only declares success when package is actually live on JSR
 
-This ensures Nagare maintains the complete "flow" from code to published package, with or without
-AI.
+This ensures Nagare maintains the complete "flow" from code to published package, with or without AI.
 
 ## Next Steps
 

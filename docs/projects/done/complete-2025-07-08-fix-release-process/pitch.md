@@ -9,8 +9,7 @@ Every single release with Nagare fails on the first (and often second and third)
 3. Recovery requires manual tag deletion and recreation
 4. The same files (deno.json, CHANGELOG.md) consistently have formatting issues
 
-**Pain Level: CRITICAL** - This turns a 2-minute release into a 30+ minute debugging session every
-time.
+**Pain Level: CRITICAL** - This turns a 2-minute release into a 30+ minute debugging session every time.
 
 ## Appetite
 
@@ -185,8 +184,7 @@ async validateEnvironment(): Promise<void> {
 
 ## Summary
 
-This isn't about adding features - it's about fixing a fundamental flaw in the release process. By
-validating BEFORE creating tags, we eliminate the painful recovery process and make releases
-actually "flow" like Nagare promises.
+This isn't about adding features - it's about fixing a fundamental flaw in the release process. By validating BEFORE
+creating tags, we eliminate the painful recovery process and make releases actually "flow" like Nagare promises.
 
 The key insight: **A tag should represent a known-good state, not a hopeful attempt.**

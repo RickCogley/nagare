@@ -2,7 +2,9 @@
 
 ## Overview
 
-The release workflow is the heart of Nagare - it orchestrates the entire process of creating a new version of your software. Understanding this workflow helps you customize Nagare for your specific needs, troubleshoot issues, and contribute to the project effectively.
+The release workflow is the heart of Nagare - it orchestrates the entire process of creating a new version of your
+software. Understanding this workflow helps you customize Nagare for your specific needs, troubleshoot issues, and
+contribute to the project effectively.
 
 ## Why Release Automation Matters
 
@@ -61,7 +63,8 @@ graph LR
     H -->|No| J[Warning]
 ```
 
-**Design Decision**: We require a clean git state to ensure releases are reproducible and don't accidentally include unintended changes.
+**Design Decision**: We require a clean git state to ensure releases are reproducible and don't accidentally include
+unintended changes.
 
 #### 2. Version Calculation
 
@@ -239,10 +242,10 @@ For non-standard files, use custom handlers:
       update: (content, { newVersion }) => {
         return content.replace(
           /VERSION = ["'][\d.]+["']/,
-          `VERSION = "${newVersion}"`
+          `VERSION = "${newVersion}"`,
         );
-      }
-    }]
+      },
+    }];
   }
 }
 ```
@@ -256,8 +259,8 @@ For complex files, use Vento templates:
   fileUpdates: {
     templateFiles: [{
       path: "src/build-info.ts",
-      templatePath: "./templates/build-info.vento"
-    }]
+      templatePath: "./templates/build-info.vento",
+    }];
   }
 }
 ```
@@ -320,12 +323,12 @@ stateDiagram-v2
 
 ## Comparison with Alternatives
 
-| Tool | Approach | Pros | Cons | Best For |
-|------|----------|------|------|----------|
-| Nagare | Conventional commits + config | Flexible, type-safe, multi-format | Requires commit discipline | Projects needing customization |
-| semantic-release | Fully automated | Zero config, plugin ecosystem | Less flexible, Node.js only | Standard Node.js projects |
-| release-it | Interactive/automated | Good defaults, extensible | Requires Node.js | JavaScript ecosystem |
-| goreleaser | Config-driven | Go-specific features | Go only | Go projects |
+| Tool             | Approach                      | Pros                              | Cons                        | Best For                       |
+| ---------------- | ----------------------------- | --------------------------------- | --------------------------- | ------------------------------ |
+| Nagare           | Conventional commits + config | Flexible, type-safe, multi-format | Requires commit discipline  | Projects needing customization |
+| semantic-release | Fully automated               | Zero config, plugin ecosystem     | Less flexible, Node.js only | Standard Node.js projects      |
+| release-it       | Interactive/automated         | Good defaults, extensible         | Requires Node.js            | JavaScript ecosystem           |
+| goreleaser       | Config-driven                 | Go-specific features              | Go only                     | Go projects                    |
 
 ## Security Considerations
 

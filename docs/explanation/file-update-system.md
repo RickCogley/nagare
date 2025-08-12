@@ -2,7 +2,9 @@
 
 ## Overview
 
-Nagare's file update system is one of its most powerful features, automatically updating version numbers across multiple files in your project. This system uses intelligent handlers to detect file types and apply appropriate update strategies, from simple regex replacements to complex template processing.
+Nagare's file update system is one of its most powerful features, automatically updating version numbers across multiple
+files in your project. This system uses intelligent handlers to detect file types and apply appropriate update
+strategies, from simple regex replacements to complex template processing.
 
 ## Why Intelligent File Updates Matter
 
@@ -216,6 +218,7 @@ sequenceDiagram
 ```
 
 **Example Custom Handler:**
+
 ```typescript
 {
   path: "./src/constants.py",

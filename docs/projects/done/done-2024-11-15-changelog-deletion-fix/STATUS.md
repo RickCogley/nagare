@@ -6,8 +6,8 @@
 
 ## Summary
 
-Fixed a critical bug where nagare was creating CHANGELOG.md entries with improper entries that
-caused subsequent release processes to delete them incorrectly.
+Fixed a critical bug where nagare was creating CHANGELOG.md entries with improper entries that caused subsequent release
+processes to delete them incorrectly.
 
 ## Problem Solved
 

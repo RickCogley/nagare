@@ -2,8 +2,8 @@
 
 ## Overview
 
-This document outlines the plan for implementing internationalization support in Nagare, starting
-with Japanese translations and designed to be extensible for community contributions.
+This document outlines the plan for implementing internationalization support in Nagare, starting with Japanese
+translations and designed to be extensible for community contributions.
 
 ## Goals
 

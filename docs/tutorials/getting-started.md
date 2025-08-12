@@ -1,6 +1,7 @@
 # Getting Started with Nagare
 
-In this tutorial, you'll learn how to use Nagare to automate your first software release. By the end, you'll have created a tagged release with an auto-generated changelog and updated version files.
+In this tutorial, you'll learn how to use Nagare to automate your first software release. By the end, you'll have
+created a tagged release with an auto-generated changelog and updated version files.
 
 ## Prerequisites
 
@@ -57,6 +58,7 @@ This command will:
 - Show you which tasks to add to your `deno.json`
 
 **Expected output:**
+
 ```
 🚀 Initializing Nagare in your project...
 ✅ Created nagare-launcher.ts
@@ -149,6 +151,7 @@ deno task nagare:dry
 ```
 
 **Expected output:**
+
 ```
 🚀 Nagare Release Manager - Dry Run Mode
 📋 Current version: 1.0.0
@@ -192,6 +195,7 @@ Follow the interactive prompts:
 ```
 
 **Expected output:**
+
 ```
 ✅ Updated version.ts
 ✅ Updated deno.json
@@ -218,6 +222,7 @@ cat version.ts
 ```
 
 **Expected output:**
+
 ```typescript
 export const VERSION = "1.1.0";
 export const BUILD_INFO = {
@@ -233,13 +238,14 @@ cat CHANGELOG.md
 ```
 
 **Expected output:**
+
 ```markdown
 # Changelog
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.1.0] - 2025-07-18
 
@@ -264,6 +270,7 @@ git log --oneline -n 3
 ```
 
 **Expected output:**
+
 ```
 abc1234 chore(release): bump version to 1.1.0
 def5678 feat: add new feature function
@@ -296,14 +303,15 @@ You now understand how Nagare:
 
 ## Troubleshooting
 
-**Problem**: "Command not found: deno"  
+**Problem**: "Command not found: deno"\
 **Solution**: Install Deno from [deno.land](https://deno.land/). Ensure it's in your PATH.
 
-**Problem**: "No commits found for version bump"  
-**Solution**: Use [conventional commits](https://www.conventionalcommits.org/). Start commit messages with `feat:`, `fix:`, or include `BREAKING CHANGE:`.
+**Problem**: "No commits found for version bump"\
+**Solution**: Use [conventional commits](https://www.conventionalcommits.org/). Start commit messages with `feat:`,
+`fix:`, or include `BREAKING CHANGE:`.
 
-**Problem**: "GitHub release creation failed"  
+**Problem**: "GitHub release creation failed"\
 **Solution**: Authenticate with GitHub CLI: `gh auth login`
 
-**Problem**: "File update pattern not matching"  
+**Problem**: "File update pattern not matching"\
 **Solution**: Use built-in file handlers or check regex patterns with line anchors.

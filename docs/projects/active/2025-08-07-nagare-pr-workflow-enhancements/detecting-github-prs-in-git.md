@@ -1,8 +1,8 @@
 # Detecting Pull Requests in Git History
 
 Pull requests are a GitHub platform feature, not part of Git itself, but they often leave **distinctive fingerprints**
-in the git history. Think of it like archaeologists identifying ancient trade routes - you can't see the merchants,
-but you can spot their characteristic pottery shards.
+in the git history. Think of it like archaeologists identifying ancient trade routes - you can't see the merchants, but
+you can spot their characteristic pottery shards.
 
 ## What You CAN Detect
 
@@ -70,43 +70,44 @@ class GitAnalyzer {
    */
   async detectPullRequestCommits(): Promise<Map<string, number>> {
     const prCommits = new Map<string, number>();
-    
+
     // Pattern 1: Explicit PR merge commits
     const mergePattern = /Merge pull request #(\d+)/;
-    
+
     // Pattern 2: Squash merge with PR reference
     const squashPattern = /\(#(\d+)\)$/;
-    
+
     // Pattern 3: Branch names that suggest PRs
     const branchPattern = /Merge branch '[\w-]+\/(feature|fix|chore)\/[\w-]+'/;
-    
+
     const log = await this.runCommand([
-      'git', 'log', 
-      '--pretty=format:%H|%s|%b|%cn',
-      '--since=last.release'
+      "git",
+      "log",
+      "--pretty=format:%H|%s|%b|%cn",
+      "--since=last.release",
     ]);
-    
-    for (const line of log.split('\n')) {
-      const [hash, subject, body, committer] = line.split('|');
-      
+
+    for (const line of log.split("\n")) {
+      const [hash, subject, body, committer] = line.split("|");
+
       // Check for PR markers
       let prNumber: number | null = null;
-      
+
       if (mergePattern.test(subject)) {
         prNumber = parseInt(subject.match(mergePattern)![1]);
       } else if (squashPattern.test(subject)) {
         prNumber = parseInt(subject.match(squashPattern)![1]);
-      } else if (committer === 'GitHub') {
+      } else if (committer === "GitHub") {
         // GitHub web UI merge
         const match = subject.match(/#(\d+)/);
         if (match) prNumber = parseInt(match[1]);
       }
-      
+
       if (prNumber) {
         prCommits.set(hash.substring(0, 7), prNumber);
       }
     }
-    
+
     return prCommits;
   }
 
@@ -116,16 +117,16 @@ class GitAnalyzer {
    */
   enrichChangelogWithPRs(
     commits: ConventionalCommit[],
-    prMap: Map<string, number>
+    prMap: Map<string, number>,
   ): ConventionalCommit[] {
-    return commits.map(commit => {
+    return commits.map((commit) => {
       const prNumber = prMap.get(commit.hash);
       if (prNumber) {
         return {
           ...commit,
           pr: prNumber,
           // Enhance description with PR link
-          description: `${commit.description} ([#${prNumber}](../../pull/${prNumber}))`
+          description: `${commit.description} ([#${prNumber}](../../pull/${prNumber}))`,
         };
       }
       return commit;
@@ -186,25 +187,25 @@ export default {
   git: {
     // Detect and enrich with PR information
     detectPullRequests: true,
-    
+
     // Custom patterns for your workflow
     prPatterns: {
       merge: /Merge pull request #(\d+)/,
       squash: /\(#(\d+)\)$/,
-      custom: /PR-(\d+)/  // Your team's convention
+      custom: /PR-(\d+)/, // Your team's convention
     },
-    
+
     // How to format PR links in changelog
-    prLinkTemplate: "[#{{number}}]({{repository}}/pull/{{number}})"
-  }
-}
+    prLinkTemplate: "[#{{number}}]({{repository}}/pull/{{number}})",
+  },
+};
 ```
 
 ## Summary
 
-While you can't get the **full PR story** from git alone, you can detect enough breadcrumbs to know PRs were used
-and even link back to them. It's like reading sheet music versus hearing the full orchestra - you get the structure
-but miss some of the richness.
+While you can't get the **full PR story** from git alone, you can detect enough breadcrumbs to know PRs were used and
+even link back to them. It's like reading sheet music versus hearing the full orchestra - you get the structure but miss
+some of the richness.
 
 ### Quick Reference Commands
 

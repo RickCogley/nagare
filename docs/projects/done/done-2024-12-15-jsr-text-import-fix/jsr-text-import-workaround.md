@@ -2,8 +2,8 @@
 
 ## Problem
 
-JSR doesn't support the new text import syntax (`with { type: "text" }`), but we want to use it for
-better developer experience and type safety.
+JSR doesn't support the new text import syntax (`with { type: "text" }`), but we want to use it for better developer
+experience and type safety.
 
 ## Solution: Build-Time Template Inlining
 
@@ -143,6 +143,5 @@ deno task publish:jsr
 
 ## Conclusion
 
-This workaround provides the best of both worlds: modern text imports during development and JSR
-compatibility for publishing. It's a temporary solution that can be easily removed once JSR adds
-support.
+This workaround provides the best of both worlds: modern text imports during development and JSR compatibility for
+publishing. It's a temporary solution that can be easily removed once JSR adds support.

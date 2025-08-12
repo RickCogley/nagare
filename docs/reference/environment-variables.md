@@ -4,14 +4,15 @@ This document describes all environment variables that Nagare recognizes and the
 
 ## Overview
 
-Nagare uses environment variables for configuration that should not be committed to version control, such as API tokens, or for runtime behavior modification.
+Nagare uses environment variables for configuration that should not be committed to version control, such as API tokens,
+or for runtime behavior modification.
 
 ## Authentication Variables
 
 ### `GITHUB_TOKEN` {#GitHub-token}
 
-**Type**: `string`  
-**Default**: None  
+**Type**: `string`\
+**Default**: None\
 **Required**: Yes (for GitHub releases)
 
 GitHub Personal Access Token or GitHub Actions token for API access.
@@ -22,11 +23,13 @@ GitHub Personal Access Token or GitHub Actions token for API access.
 - `metadata: read` (for repository access)
 
 **Example**:
+
 ```bash
 export GITHUB_TOKEN="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
 **GitHub Actions**:
+
 ```yaml
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -36,13 +39,14 @@ env:
 
 ### `NAGARE_SKIP_CONFIRMATION` {#nagare-skip-confirmation}
 
-**Type**: `boolean`  
-**Default**: `false`  
+**Type**: `boolean`\
+**Default**: `false`\
 **Environment variable**: `NAGARE_SKIP_CONFIRMATION`
 
 Skip interactive confirmation prompts. Useful for CI/CD environments.
 
 **Example**:
+
 ```bash
 export NAGARE_SKIP_CONFIRMATION=true
 deno task nagare  # No confirmation prompts
@@ -52,13 +56,14 @@ deno task nagare  # No confirmation prompts
 
 ### `NAGARE_LANG` {#nagare-lang}
 
-**Type**: `string`  
-**Default**: `en`  
+**Type**: `string`\
+**Default**: `en`\
 **Environment variable**: `NAGARE_LANG`
 
 Set the display language for Nagare messages and output.
 
 **Example**:
+
 ```bash
 export NAGARE_LANG=ja
 deno task nagare --help  # Shows help in Japanese
@@ -68,13 +73,14 @@ deno task nagare --help  # Shows help in Japanese
 
 ### `NAGARE_DEBUG` {#nagare-debug}
 
-**Type**: `boolean`  
-**Default**: `false`  
+**Type**: `boolean`\
+**Default**: `false`\
 **Environment variable**: `NAGARE_DEBUG`
 
 Enable debug mode for detailed logging and troubleshooting.
 
 **Example**:
+
 ```bash
 export NAGARE_DEBUG=true
 deno task nagare  # Shows detailed debug information
@@ -86,13 +92,14 @@ deno task nagare  # Shows detailed debug information
 
 ### `NO_COLOR` {#no-color}
 
-**Type**: `boolean`  
-**Default**: `false`  
+**Type**: `boolean`\
+**Default**: `false`\
 **Environment variable**: `NO_COLOR`
 
 Disable colored output. Follows the [NO_COLOR](https://no-color.org/) standard.
 
 **Example**:
+
 ```bash
 export NO_COLOR=1
 deno task nagare  # No colored output
@@ -102,13 +109,14 @@ deno task nagare  # No colored output
 
 ### `TERM` {#term}
 
-**Type**: `string`  
-**Default**: System default  
+**Type**: `string`\
+**Default**: System default\
 **Environment variable**: `TERM`
 
 Terminal type identifier. Affects ANSI escape sequence support detection.
 
 **Example**:
+
 ```bash
 export TERM=xterm-256color
 ```
@@ -117,13 +125,14 @@ export TERM=xterm-256color
 
 ### `CI` {#ci}
 
-**Type**: `boolean`  
-**Default**: `false`  
+**Type**: `boolean`\
+**Default**: `false`\
 **Environment variable**: `CI`
 
 Indicates running in a CI environment. Affects progress indicator display.
 
 **Example**:
+
 ```bash
 export CI=true
 deno task nagare  # Uses CI-friendly output
@@ -135,52 +144,56 @@ deno task nagare  # Uses CI-friendly output
 
 ### `GIT_AUTHOR_NAME` {#git-author-name}
 
-**Type**: `string`  
-**Default**: Git global config  
+**Type**: `string`\
+**Default**: Git global config\
 **Environment variable**: `GIT_AUTHOR_NAME`
 
 Override git author name for release commits.
 
 **Example**:
+
 ```bash
 export GIT_AUTHOR_NAME="Release Bot"
 ```
 
 ### `GIT_AUTHOR_EMAIL` {#git-author-email}
 
-**Type**: `string`  
-**Default**: Git global config  
+**Type**: `string`\
+**Default**: Git global config\
 **Environment variable**: `GIT_AUTHOR_EMAIL`
 
 Override git author email for release commits.
 
 **Example**:
+
 ```bash
 export GIT_AUTHOR_EMAIL="releases@example.com"
 ```
 
 ### `GIT_COMMITTER_NAME` {#git-committer-name}
 
-**Type**: `string`  
-**Default**: Git global config  
+**Type**: `string`\
+**Default**: Git global config\
 **Environment variable**: `GIT_COMMITTER_NAME`
 
 Override git committer name for release commits.
 
 **Example**:
+
 ```bash
 export GIT_COMMITTER_NAME="CI System"
 ```
 
 ### `GIT_COMMITTER_EMAIL` {#git-committer-email}
 
-**Type**: `string`  
-**Default**: Git global config  
+**Type**: `string`\
+**Default**: Git global config\
 **Environment variable**: `GIT_COMMITTER_EMAIL`
 
 Override git committer email for release commits.
 
 **Example**:
+
 ```bash
 export GIT_COMMITTER_EMAIL="ci@example.com"
 ```
@@ -189,13 +202,14 @@ export GIT_COMMITTER_EMAIL="ci@example.com"
 
 ### `NAGARE_TEMPLATE_SANDBOX` {#nagare-template-sandbox}
 
-**Type**: `string`  
-**Default**: `strict`  
+**Type**: `string`\
+**Default**: `strict`\
 **Environment variable**: `NAGARE_TEMPLATE_SANDBOX`
 
 Set template processing security level.
 
 **Example**:
+
 ```bash
 export NAGARE_TEMPLATE_SANDBOX=moderate
 ```
@@ -204,13 +218,14 @@ export NAGARE_TEMPLATE_SANDBOX=moderate
 
 ### `NAGARE_AUDIT_LOG` {#nagare-audit-log}
 
-**Type**: `boolean`  
-**Default**: `false`  
+**Type**: `boolean`\
+**Default**: `false`\
 **Environment variable**: `NAGARE_AUDIT_LOG`
 
 Enable security audit logging for file operations.
 
 **Example**:
+
 ```bash
 export NAGARE_AUDIT_LOG=true
 ```
@@ -221,26 +236,28 @@ export NAGARE_AUDIT_LOG=true
 
 ### `NAGARE_CONFIG_PATH` {#nagare-config-path}
 
-**Type**: `string`  
-**Default**: `./nagare.config.ts`  
+**Type**: `string`\
+**Default**: `./nagare.config.ts`\
 **Environment variable**: `NAGARE_CONFIG_PATH`
 
 Override default configuration file path.
 
 **Example**:
+
 ```bash
 export NAGARE_CONFIG_PATH="./configs/release.config.ts"
 ```
 
 ### `NAGARE_CACHE_DIR` {#nagare-cache-dir}
 
-**Type**: `string`  
-**Default**: OS-specific cache directory  
+**Type**: `string`\
+**Default**: OS-specific cache directory\
 **Environment variable**: `NAGARE_CACHE_DIR`
 
 Override cache directory for temporary files.
 
 **Example**:
+
 ```bash
 export NAGARE_CACHE_DIR="/tmp/nagare-cache"
 ```
@@ -249,13 +266,14 @@ export NAGARE_CACHE_DIR="/tmp/nagare-cache"
 
 ### `NAGARE_AI_PROVIDER` {#nagare-ai-provider}
 
-**Type**: `string`  
-**Default**: None  
+**Type**: `string`\
+**Default**: None\
 **Environment variable**: `NAGARE_AI_PROVIDER`
 
 Override AI provider for auto-fix functionality.
 
 **Example**:
+
 ```bash
 export NAGARE_AI_PROVIDER="claude-code"
 ```
@@ -264,13 +282,14 @@ export NAGARE_AI_PROVIDER="claude-code"
 
 ### `NAGARE_AI_THINKING_LEVEL` {#nagare-ai-thinking-level}
 
-**Type**: `string`  
-**Default**: `think`  
+**Type**: `string`\
+**Default**: `think`\
 **Environment variable**: `NAGARE_AI_THINKING_LEVEL`
 
 Set AI thinking level for auto-fix analysis.
 
 **Example**:
+
 ```bash
 export NAGARE_AI_THINKING_LEVEL="megathink"
 ```
@@ -281,13 +300,14 @@ export NAGARE_AI_THINKING_LEVEL="megathink"
 
 ### `GITHUB_ACTIONS` {#GitHub-actions}
 
-**Type**: `boolean`  
-**Default**: `false`  
+**Type**: `boolean`\
+**Default**: `false`\
 **Environment variable**: `GITHUB_ACTIONS`
 
 Automatically set by GitHub Actions. Affects output formatting.
 
 **Example**:
+
 ```bash
 # Automatically set in GitHub Actions
 echo "GITHUB_ACTIONS=true"
@@ -295,13 +315,14 @@ echo "GITHUB_ACTIONS=true"
 
 ### `GITLAB_CI` {#GitLab-ci}
 
-**Type**: `boolean`  
-**Default**: `false`  
+**Type**: `boolean`\
+**Default**: `false`\
 **Environment variable**: `GITLAB_CI`
 
 Automatically set by GitLab CI. Affects output formatting.
 
 **Example**:
+
 ```bash
 # Automatically set in GitLab CI
 echo "GITLAB_CI=true"
@@ -309,13 +330,14 @@ echo "GITLAB_CI=true"
 
 ### `JENKINS_URL` {#jenkins-url}
 
-**Type**: `string`  
-**Default**: None  
+**Type**: `string`\
+**Default**: None\
 **Environment variable**: `JENKINS_URL`
 
 Automatically set by Jenkins. Affects CI detection.
 
 **Example**:
+
 ```bash
 # Automatically set in Jenkins
 echo "JENKINS_URL=http://jenkins.example.com"
@@ -363,6 +385,7 @@ When the same configuration is available through multiple sources, Nagare uses t
 4. **Default values** (lowest priority)
 
 **Example**:
+
 ```bash
 # Config file: lang: "ja"
 # Environment: NAGARE_LANG="en"

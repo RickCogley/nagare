@@ -1,15 +1,15 @@
 # Salty Upgrade Guide: Migrating to Nagare 1.8.0
 
-This guide explains how to upgrade Salty to use nagare 1.8.0's new `additionalExports` feature,
-which solves the version.ts overwrite issue.
+This guide explains how to upgrade Salty to use nagare 1.8.0's new `additionalExports` feature, which solves the
+version.ts overwrite issue.
 
 ## Background
 
-**Problem**: When running releases, nagare regenerates version.ts which overwrites Salty's custom
-exports (TECH_SPECS, SECURITY_INFO, VersionUtils), causing deployment failures.
+**Problem**: When running releases, nagare regenerates version.ts which overwrites Salty's custom exports (TECH_SPECS,
+SECURITY_INFO, VersionUtils), causing deployment failures.
 
-**Solution**: Nagare 1.8.0 introduces `additionalExports` configuration that allows adding custom
-exports to the generated version file without writing a full custom template.
+**Solution**: Nagare 1.8.0 introduces `additionalExports` configuration that allows adding custom exports to the
+generated version file without writing a full custom template.
 
 ## Migration Steps
 
@@ -218,8 +218,7 @@ export class VersionUtils {
 If you encounter issues:
 
 1. **Ensure nagare 1.8.0 is installed**: Check with `deno info @rick/nagare`
-2. **Validate syntax**: The `content` field for classes/functions should not include the export
-   declaration
+2. **Validate syntax**: The `content` field for classes/functions should not include the export declaration
 3. **Check for conflicts**: Make sure export names don't conflict with nagare's built-in exports
 4. **Run tests**: After upgrade, run your test suite to ensure everything works
 

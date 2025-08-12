@@ -1,6 +1,7 @@
 # Research & Development Documentation
 
-This directory contains research documents, development notes, and exploratory work that informed Nagare's design and implementation.
+This directory contains research documents, development notes, and exploratory work that informed Nagare's design and
+implementation.
 
 ## Contents
 
@@ -11,7 +12,8 @@ This directory contains research documents, development notes, and exploratory w
 
 ### Commit Convention Research
 
-- **[alternative-commit-conventions.md](alternative-commit-conventions.md)** - Research on supporting alternative commit message conventions beyond Conventional Commits
+- **[alternative-commit-conventions.md](alternative-commit-conventions.md)** - Research on supporting alternative commit
+  message conventions beyond Conventional Commits
 
 ### Security & Infrastructure
 

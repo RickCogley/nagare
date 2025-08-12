@@ -1,6 +1,7 @@
 # How to Configure File Updates
 
-This guide shows you how to configure Nagare to update version strings in multiple files during releases. Use this approach when you need to keep version information synchronized across different file types.
+This guide shows you how to configure Nagare to update version strings in multiple files during releases. Use this
+approach when you need to keep version information synchronized across different file types.
 
 ## Before you begin
 
@@ -12,7 +13,8 @@ Ensure you have:
 
 ## Built-in file handlers
 
-Nagare includes intelligent file handlers that automatically detect and update common file types without custom configuration.
+Nagare includes intelligent file handlers that automatically detect and update common file types without custom
+configuration.
 
 ### Supported file types
 
@@ -86,15 +88,15 @@ export default {
         // Update version
         content = content.replace(
           /VERSION:\s*"[^"]+"/,
-          `VERSION: "${data.version}"`
+          `VERSION: "${data.version}"`,
         );
-        
+
         // Update build date
         content = content.replace(
           /BUILD_DATE:\s*"[^"]+"/,
-          `BUILD_DATE: "${data.buildDate}"`
+          `BUILD_DATE: "${data.buildDate}"`,
         );
-        
+
         return content;
       },
     },

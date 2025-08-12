@@ -2,7 +2,8 @@
 
 ## Overview
 
-Nagare uses the Vento template engine for generating version files and processing custom templates. Templates have access to comprehensive data about the release, project, and environment.
+Nagare uses the Vento template engine for generating version files and processing custom templates. Templates have
+access to comprehensive data about the release, project, and environment.
 
 ## Synopsis
 
@@ -16,18 +17,22 @@ export const BUILD_INFO = {
 
 ## Description
 
-Templates in Nagare use Vento syntax, which provides a secure and powerful templating system with auto-escaping, custom filters, and conditional logic. Templates can generate TypeScript, JSON, YAML, or any custom format needed for version tracking.
+Templates in Nagare use Vento syntax, which provides a secure and powerful templating system with auto-escaping, custom
+filters, and conditional logic. Templates can generate TypeScript, JSON, YAML, or any custom format needed for version
+tracking.
 
 ## Template Syntax
 
 ### Basic Interpolation {#interpolation}
 
-**Syntax**: `{{ variable }}`  
+**Syntax**: `{{ variable }}`\
 **Description**: Output a variable value with auto-escaping
 
-Variables are automatically escaped for security. In code generation contexts, use the `safe` filter to output raw values.
+Variables are automatically escaped for security. In code generation contexts, use the `safe` filter to output raw
+values.
 
 **Example**:
+
 ```vento
 // String values are output as-is
 export const VERSION = "{{ version }}";
@@ -38,7 +43,7 @@ export const MAJOR = {{ versionComponents.major |> safe }};
 
 ### Filters {#filters}
 
-**Syntax**: `{{ value |> filterName }}`  
+**Syntax**: `{{ value |> filterName }}`\
 **Description**: Transform values using filters
 
 **IMPORTANT**: Vento uses `|>` (F# pipeline syntax), NOT single pipe `|`.
@@ -53,6 +58,7 @@ export const MAJOR = {{ versionComponents.major |> safe }};
 - `safeString` - Escape quotes for JSON embedding
 
 **Examples**:
+
 ```vento
 // JSON stringify an object
 export const METADATA = {{ metadata |> jsonStringify |> safe }};
@@ -69,10 +75,11 @@ export const DATA = {{ releaseNotes |> jsonStringify(2) |> safe }};
 
 ### Conditionals {#conditionals}
 
-**Syntax**: `{{ if condition }} ... {{ /if }}`  
+**Syntax**: `{{ if condition }} ... {{ /if }}`\
 **Description**: Conditional rendering
 
 **Examples**:
+
 ```vento
 {{- if project.author }}
 author: "{{ project.author }}",
@@ -92,7 +99,7 @@ export const PRERELEASE = "{{ versionComponents.prerelease }}";
 
 ### Whitespace Control {#whitespace}
 
-**Syntax**: `{{-` and `-}}`  
+**Syntax**: `{{-` and `-}}`\
 **Description**: Remove whitespace before/after tags
 
 - `{{-` removes all whitespace before the tag (including newlines)
@@ -100,6 +107,7 @@ export const PRERELEASE = "{{ versionComponents.prerelease }}";
 - Use carefully to avoid unintended formatting issues
 
 **Example**:
+
 ```vento
 // Without whitespace control
 {{ if value }}
@@ -114,10 +122,11 @@ export const PRERELEASE = "{{ versionComponents.prerelease }}";
 
 ### Comments {#comments}
 
-**Syntax**: `{{# comment text #}}`  
+**Syntax**: `{{# comment text #}}`\
 **Description**: Template comments (not output)
 
 **Example**:
+
 ```vento
 {{# This comment won't appear in output #}}
 export const VERSION = "{{ version }}";
@@ -127,26 +136,27 @@ export const VERSION = "{{ version }}";
 
 ### Core Variables {#core-variables}
 
-| Variable | Type | Description | Example |
-|----------|------|-------------|---------|
-| `version` | string | Full version string | `"1.2.3"` |
-| `buildDate` | string | ISO timestamp | `"2024-01-15T10:30:00Z"` |
-| `gitCommit` | string | Full git commit hash | `"abc123def456..."` |
-| `environment` | string | Build environment | `"production"` |
+| Variable      | Type   | Description          | Example                  |
+| ------------- | ------ | -------------------- | ------------------------ |
+| `version`     | string | Full version string  | `"1.2.3"`                |
+| `buildDate`   | string | ISO timestamp        | `"2024-01-15T10:30:00Z"` |
+| `gitCommit`   | string | Full git commit hash | `"abc123def456..."`      |
+| `environment` | string | Build environment    | `"production"`           |
 
 ### Version Components {#version-components}
 
-**Object**: `versionComponents`  
+**Object**: `versionComponents`\
 **Description**: Parsed semantic version parts
 
-| Property | Type | Description | Example |
-|----------|------|-------------|---------|
-| `major` | number | Major version | `1` |
-| `minor` | number | Minor version | `2` |
-| `patch` | number | Patch version | `3` |
+| Property     | Type         | Description            | Example    |
+| ------------ | ------------ | ---------------------- | ---------- |
+| `major`      | number       | Major version          | `1`        |
+| `minor`      | number       | Minor version          | `2`        |
+| `patch`      | number       | Patch version          | `3`        |
 | `prerelease` | string\|null | Pre-release identifier | `"beta.1"` |
 
 **Example usage**:
+
 ```vento
 export const VERSION_INFO = {
   major: {{ versionComponents.major |> safe }},
@@ -158,19 +168,20 @@ export const VERSION_INFO = {
 
 ### Project Information {#project-info}
 
-**Object**: `project`  
+**Object**: `project`\
 **Description**: Project metadata from configuration
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `name` | string | Project name |
+| Property      | Type              | Description         |
+| ------------- | ----------------- | ------------------- |
+| `name`        | string            | Project name        |
 | `description` | string\|undefined | Project description |
-| `repository` | string | Repository URL |
-| `homepage` | string\|undefined | Project homepage |
-| `license` | string\|undefined | License identifier |
-| `author` | string\|undefined | Author information |
+| `repository`  | string            | Repository URL      |
+| `homepage`    | string\|undefined | Project homepage    |
+| `license`     | string\|undefined | License identifier  |
+| `author`      | string\|undefined | Author information  |
 
 **Example usage**:
+
 ```vento
 export const APP_INFO = {
   name: "{{ project.name }}",
@@ -183,21 +194,22 @@ export const APP_INFO = {
 
 ### Release Notes {#release-notes}
 
-**Object**: `releaseNotes`  
+**Object**: `releaseNotes`\
 **Description**: Changelog entries for current release
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `version` | string | Release version |
-| `date` | string | Release date |
-| `added` | string[] | New features |
-| `changed` | string[] | Changes/improvements |
-| `deprecated` | string[] | Deprecations |
-| `removed` | string[] | Removed features |
-| `fixed` | string[] | Bug fixes |
-| `security` | string[] | Security updates |
+| Property     | Type     | Description          |
+| ------------ | -------- | -------------------- |
+| `version`    | string   | Release version      |
+| `date`       | string   | Release date         |
+| `added`      | string[] | New features         |
+| `changed`    | string[] | Changes/improvements |
+| `deprecated` | string[] | Deprecations         |
+| `removed`    | string[] | Removed features     |
+| `fixed`      | string[] | Bug fixes            |
+| `security`   | string[] | Security updates     |
 
 **Example usage**:
+
 ```vento
 {{- if releaseNotes }}
 export const CHANGELOG = {
@@ -215,7 +227,7 @@ export const CHANGELOG = {
 
 ### Metadata {#metadata}
 
-**Object**: `metadata`  
+**Object**: `metadata`\
 **Description**: Custom metadata from configuration and data providers
 
 Metadata is merged from:
@@ -225,6 +237,7 @@ Metadata is merged from:
 3. Direct metadata properties
 
 **Example configuration**:
+
 ```typescript
 releaseNotes: {
   metadata: {
@@ -235,6 +248,7 @@ releaseNotes: {
 ```
 
 **Example usage**:
+
 ```vento
 {{# Metadata is available as an object #}}
 {{- if metadata }}
@@ -249,17 +263,17 @@ export const API_ENDPOINTS = {{ apiEndpoints |> jsonStringify |> safe }};
 
 ### Computed Helpers {#computed-helpers}
 
-| Variable | Type | Description | Example |
-|----------|------|-------------|---------|
-| `currentYear` | number | Current year | `2024` |
+| Variable             | Type   | Description    | Example        |
+| -------------------- | ------ | -------------- | -------------- |
+| `currentYear`        | number | Current year   | `2024`         |
 | `buildDateFormatted` | string | Formatted date | `"2024-01-15"` |
-| `shortCommit` | string | Short git hash | `"abc123d"` |
+| `shortCommit`        | string | Short git hash | `"abc123d"`    |
 
 ## Built-in Templates
 
 ### TypeScript Template {#TypeScript-template}
 
-**File**: `templates/typescript.vto`  
+**File**: `templates/typescript.vto`\
 **Usage**: `template: 'typescript'`
 
 Generates a TypeScript module with const exports:
@@ -274,15 +288,15 @@ export const BUILD_INFO = {
     major: 1,
     minor: 2,
     patch: 3,
-    prerelease: null
-  }
+    prerelease: null,
+  },
 } as const;
 // ... additional exports
 ```
 
 ### JSON Template {#json-template}
 
-**File**: `templates/json.vto`  
+**File**: `templates/json.vto`\
 **Usage**: `template: 'json'`
 
 Generates a JSON file:
@@ -301,7 +315,7 @@ Generates a JSON file:
 
 ### YAML Template {#yaml-template}
 
-**File**: `templates/yaml.vto`  
+**File**: `templates/yaml.vto`\
 **Usage**: `template: 'yaml'`
 
 Generates a YAML file:
@@ -394,12 +408,14 @@ Nagare implements template sandboxing with three levels:
 ### Safe Output Practices {#safe-output}
 
 **For code generation** (TypeScript, JavaScript, JSON):
+
 ```vento
 // Use |> safe for raw output
 export const DATA = {{ data |> jsonStringify |> safe }};
 ```
 
 **For HTML contexts** (if generating HTML):
+
 ```vento
 // Always escape for HTML attributes
 <div data-version="{{ version |> escape }}">
@@ -504,21 +520,22 @@ export const VERSION = "{{ version }}";
 
 ### Common Errors {#common-errors}
 
-**Error**: "Template processing failed"  
-**Cause**: Invalid Vento syntax  
+**Error**: "Template processing failed"\
+**Cause**: Invalid Vento syntax\
 **Solution**: Check for:
 
 - Using `|` instead of `|>` for filters
 - Unclosed tags (`{{ if }}` without `{{ /if }}`)
 - Undefined variables or properties
 
-**Error**: "Template security violation"  
-**Cause**: Template contains blocked patterns  
+**Error**: "Template security violation"\
+**Cause**: Template contains blocked patterns\
 **Solution**: Remove dangerous operations or set `templateSandbox: 'disabled'` (not recommended)
 
-**Error**: "Cannot read property of undefined"  
-**Cause**: Accessing nested property that doesn't exist  
+**Error**: "Cannot read property of undefined"\
+**Cause**: Accessing nested property that doesn't exist\
 **Solution**: Use conditional checks:
+
 ```vento
 {{- if metadata && metadata.features }}
   features: {{ metadata.features |> jsonStringify |> safe }}

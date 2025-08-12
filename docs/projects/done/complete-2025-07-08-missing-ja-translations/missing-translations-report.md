@@ -2,8 +2,8 @@
 
 ## Summary
 
-After comparing `locales/en.yaml` and `locales/ja.yaml`, I found several missing Japanese
-translations in the `ja.yaml` file.
+After comparing `locales/en.yaml` and `locales/ja.yaml`, I found several missing Japanese translations in the `ja.yaml`
+file.
 
 ## Missing Translations
 
@@ -174,17 +174,15 @@ The following suggestion keys are missing from the Japanese locale file:
 ## Notes
 
 1. The Japanese file appears to have incorrect keys for some security errors. For example:
-   - Lines 45-50 in ja.yaml show simplified security error messages without the proper parameter
-     placeholders
+   - Lines 45-50 in ja.yaml show simplified security error messages without the proper parameter placeholders
    - The English version uses more specific keys like
      `securityInvalidGitRef: "Invalid {type}: must be a non-empty string"`
    - The Japanese version has generic messages like `securityInvalidGitRef: "無効なGit参照: {ref}"`
 
-2. The security error keys in the Japanese file (lines 45-58) don't match the structure of the
-   English file and are missing several important keys.
+2. The security error keys in the Japanese file (lines 45-58) don't match the structure of the English file and are
+   missing several important keys.
 
-3. All the extended suggestion keys (lines 323-350 in en.yaml) are completely missing from the
-   Japanese file.
+3. All the extended suggestion keys (lines 323-350 in en.yaml) are completely missing from the Japanese file.
 
 ## Recommendation
 
@@ -192,5 +190,5 @@ The Japanese locale file needs to be updated with:
 
 1. The 3 missing security error keys with proper translations
 2. The 49 missing suggestion keys with proper translations
-3. Review and correction of the existing security error translations to match the English structure
-   and include proper parameter placeholders
+3. Review and correction of the existing security error translations to match the English structure and include proper
+   parameter placeholders

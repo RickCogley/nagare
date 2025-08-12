@@ -38,6 +38,8 @@
     "test": "deno test --unstable-raw-imports --allow-read --allow-write --allow-run --allow-env --no-check",
     "test:watch": "deno test --unstable-raw-imports --allow-read --allow-write --allow-run --allow-env --watch --no-check",
     "test:coverage": "deno test --unstable-raw-imports --allow-read --allow-write --allow-run --allow-env --coverage --no-check",
+    "coverage:generate": "deno run --allow-all scripts/generate-coverage.ts",
+    "coverage:view": "open docs/coverage/html/index.html",
     "test:strict": "deno test --unstable-raw-imports --allow-read --allow-write --allow-run --allow-env",
     "lint": "deno lint",
     "lint:prod": "deno lint",
@@ -122,7 +124,8 @@
       "exclude": ["no-inferrable-types"]
     },
     "exclude": [
-      "docs/",
+      "docs/api/",
+      "docs/coverage/",
       "coverage/",
       ".claude/",
       "scratch/",
@@ -143,7 +146,8 @@
     "singleBodyPosition": "maintain",
     "typeLiteral.separatorKind": "semiColon",
     "exclude": [
-      "docs/",
+      "docs/api/",
+      "docs/coverage/",
       "coverage/",
       ".claude/",
       "scratch/",
@@ -153,7 +157,7 @@
 
   "test": {
     "include": ["**/*_test.ts", "**/*.test.ts"],
-    "exclude": ["docs/", "coverage/"]
+    "exclude": ["docs/", "coverage/", "docs/coverage/"]
   },
 
   "publish": {
@@ -189,6 +193,7 @@
     "coverage/",
     ".githooks/",
     "docs/api/",
+    "docs/coverage/",
     ".nagare-backups/"
   ]
 }

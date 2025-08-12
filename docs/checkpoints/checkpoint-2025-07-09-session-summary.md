@@ -2,15 +2,15 @@
 
 ## Context
 
-Continuing from a previous session about nagare's JSR publication verification and critical release
-process improvements.
+Continuing from a previous session about nagare's JSR publication verification and critical release process
+improvements.
 
 ## Major Accomplishments
 
 ### 1. Fixed Critical Release Process Issue
 
-**Problem**: Every nagare release was failing because formatting/linting errors were discovered
-AFTER tags were created, requiring painful manual recovery.
+**Problem**: Every nagare release was failing because formatting/linting errors were discovered AFTER tags were created,
+requiring painful manual recovery.
 
 **Solution**: Implemented comprehensive pre-flight validation system that:
 
@@ -23,8 +23,8 @@ AFTER tags were created, requiring painful manual recovery.
 
 ### 2. Fixed Version Jump Bug
 
-**Problem**: Version numbers were jumping (e.g., v2.7.0 to v5.2.0) when releases failed because
-nagare read from the mutable version.ts file.
+**Problem**: Version numbers were jumping (e.g., v2.7.0 to v5.2.0) when releases failed because nagare read from the
+mutable version.ts file.
 
 **Solution**: Modified `getCurrentVersion()` to:
 

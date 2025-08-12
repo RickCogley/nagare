@@ -8,11 +8,10 @@
 
 ## Summary
 
-Evolve Nagare from regex-based file updates to a template-based file generation system using Vento
-templates (`.vto` files), similar to how Lume SSG processes templates with data merging.
+Evolve Nagare from regex-based file updates to a template-based file generation system using Vento templates (`.vto`
+files), similar to how Lume SSG processes templates with data merging.
 
-**Implementation Update**: As of v1.5.5, Vento is now used for version file generation. Key
-learnings:
+**Implementation Update**: As of v1.5.5, Vento is now used for version file generation. Key learnings:
 
 - Filter syntax must use `|>` not `|`
 - Auto-escaping requires explicit `|> safe` filter for JSON output
@@ -30,8 +29,8 @@ Current challenges with regex-based updates:
 
 ## Proposed Solution
 
-Implement a template-based system where files are generated from Vento templates (`.vto` files) with
-merged release data.
+Implement a template-based system where files are generated from Vento templates (`.vto` files) with merged release
+data.
 
 ## Design
 
@@ -471,9 +470,9 @@ templates: {
 
 ### Conclusion
 
-This template-based approach would make Nagare more powerful and reliable, following established
-patterns from successful tools like Lume. The use of `.vto` extension ensures good tooling support
-and clear separation between templates and generated files.
+This template-based approach would make Nagare more powerful and reliable, following established patterns from
+successful tools like Lume. The use of `.vto` extension ensures good tooling support and clear separation between
+templates and generated files.
 
 ## Next Steps
 

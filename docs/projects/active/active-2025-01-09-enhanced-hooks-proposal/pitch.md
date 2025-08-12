@@ -2,9 +2,9 @@
 
 ## Overview
 
-This proposal outlines additional lifecycle hooks that could be added to Nagare to provide more
-granular control over the release process. These hooks would enable users to integrate custom logic
-at specific points in the release workflow.
+This proposal outlines additional lifecycle hooks that could be added to Nagare to provide more granular control over
+the release process. These hooks would enable users to integrate custom logic at specific points in the release
+workflow.
 
 ## Current State
 
@@ -347,12 +347,11 @@ hooks: {
 
 ## Conclusion
 
-This enhanced hooks system would make Nagare significantly more powerful while maintaining its
-simplicity for basic use cases. The phased approach allows us to gather feedback and refine the
-implementation based on real-world usage.
+This enhanced hooks system would make Nagare significantly more powerful while maintaining its simplicity for basic use
+cases. The phased approach allows us to gather feedback and refine the implementation based on real-world usage.
 
-The key is to provide enough hooks to cover common use cases without overwhelming users or making
-the system too complex. Each hook should have a clear purpose and well-defined behavior.
+The key is to provide enough hooks to cover common use cases without overwhelming users or making the system too
+complex. Each hook should have a clear purpose and well-defined behavior.
 
 ## Next Steps
 

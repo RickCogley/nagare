@@ -1,10 +1,9 @@
 # Complete Release Flow Automation Pitch
 
-**Problem**: Nagare declares releases complete when it finds the GitHub release, but for
-JSR-published projects, the actual success criteria is the package appearing on JSR. When GitHub
-Actions fail due to linting, security checks, or publishing errors, Nagare just reports failure
-instead of maintaining the "flow" it's named for. This breaks the release flow and requires manual
-intervention.
+**Problem**: Nagare declares releases complete when it finds the GitHub release, but for JSR-published projects, the
+actual success criteria is the package appearing on JSR. When GitHub Actions fail due to linting, security checks, or
+publishing errors, Nagare just reports failure instead of maintaining the "flow" it's named for. This breaks the release
+flow and requires manual intervention.
 
 **Appetite**: 6 weeks
 
@@ -106,5 +105,5 @@ Breadboard sketch:
 - We won't attempt fixes that require external service changes (only code fixes)
 - We won't continue beyond maxFixAttempts to prevent infinite loops
 
-**Definition of Done**: See [definition-of-done.md](./definition-of-done.md) for detailed completion
-criteria at both workflow and project levels.
+**Definition of Done**: See [definition-of-done.md](./definition-of-done.md) for detailed completion criteria at both
+workflow and project levels.

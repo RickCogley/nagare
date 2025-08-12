@@ -121,9 +121,9 @@ const VERTICAL = "│";
 ### CI Detection
 
 ```typescript
-const isCI = Deno.env.get("CI") === "true" || 
-             Deno.env.get("GITHUB_ACTIONS") === "true" ||
-             !Deno.isatty(Deno.stdout.rid);
+const isCI = Deno.env.get("CI") === "true" ||
+  Deno.env.get("GITHUB_ACTIONS") === "true" ||
+  !Deno.isatty(Deno.stdout.rid);
 ```
 
 ### Configuration Loading
@@ -161,4 +161,3 @@ const showBranding = config.app?.showBranding ?? !isCI;
 - Users always know which project Nagare is releasing
 - Works automatically with existing `config.project.name`
 - Essential clarity for multi-project workflows
-

@@ -16,7 +16,8 @@ This was based on previous analysis that identified:
 ### Phase 1: Initial Confusion
 
 - Subagents proposed solutions but didn't create files on disk
-- User discovered the gap: "It seems the new files from the TypeScript quality improvements were not actually created on disk"
+- User discovered the gap: "It seems the new files from the TypeScript quality improvements were not actually created on
+  disk"
 
 ### Phase 2: Folder Structure Discussion
 
@@ -85,13 +86,13 @@ for (const move of moves) {
 // Before
 import { Logger } from "./logger.ts";
 
-// After  
+// After
 import { Logger } from "../core/logger.ts";
 ```
 
 ### JSDoc Addition Pattern
 
-```typescript
+````typescript
 // Before
 export class Logger {
   debug(message: string): void {
@@ -118,7 +119,7 @@ export class Logger {
    * ```
    */
   debug(message: string): void {
-```
+````
 
 ## What Went Wrong
 
@@ -131,7 +132,7 @@ export class Logger {
 ## What Went Right
 
 1. **Successful Migration**: All files moved correctly
-2. **Import Fixes**: All 84 imports updated successfully  
+2. **Import Fixes**: All 84 imports updated successfully
 3. **JSDoc Compliance**: Now follows Deno standards
 4. **Safeguards Created**: Multiple layers prevent future doc issues
 5. **Recovery**: Successfully recovered from documentation overwrite

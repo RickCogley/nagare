@@ -26,10 +26,10 @@ deno test --filter "!GitOperations"
 
 ## Resolution
 
-These are integration tests that require actual git repositories. They will be fixed in a future
-update when we have time to properly debug the git command interactions with the new i18n system.
+These are integration tests that require actual git repositories. They will be fixed in a future update when we have
+time to properly debug the git command interactions with the new i18n system.
 
 ## Technical Details
 
-The tests use actual git commands and temporary repositories, making them complex to debug. The core
-git operations work correctly in production - only the test expectations need updating.
+The tests use actual git commands and temporary repositories, making them complex to debug. The core git operations work
+correctly in production - only the test expectations need updating.

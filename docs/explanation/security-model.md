@@ -2,7 +2,9 @@
 
 ## Overview
 
-Nagare's security model is built on defense-in-depth principles, leveraging Deno's permission system and implementing comprehensive security measures at every layer. This document explains the security architecture and how it protects against common threats.
+Nagare's security model is built on defense-in-depth principles, leveraging Deno's permission system and implementing
+comprehensive security measures at every layer. This document explains the security architecture and how it protects
+against common threats.
 
 ## Security Architecture
 
@@ -167,6 +169,7 @@ graph TD
 ### Layer 1: Deno Runtime Security
 
 **Permission System**:
+
 ```bash
 # Minimal permissions for Nagare
 deno run --allow-read=. --allow-write=. --allow-run=git,gh nagare-launcher.ts
@@ -187,35 +190,37 @@ deno run --allow-read=. --allow-write=. --allow-run=git,gh nagare-launcher.ts
 ### Layer 2: Input Validation
 
 **File Path Validation**:
+
 ```typescript
 export function validateFilePath(path: string, basePath: string): string {
   // Resolve absolute path
   const resolvedPath = resolve(path);
   const resolvedBase = resolve(basePath);
-  
+
   // Check for directory traversal
   if (!resolvedPath.startsWith(resolvedBase)) {
     throw new NagareError(
       "Path traversal attempt detected",
       ErrorCodes.SECURITY_PATH_TRAVERSAL,
-      { path, basePath }
+      { path, basePath },
     );
   }
-  
+
   // Check for null bytes
-  if (path.includes('\0')) {
+  if (path.includes("\0")) {
     throw new NagareError(
       "Null byte injection attempt",
       ErrorCodes.SECURITY_NULL_BYTE_INJECTION,
-      { path }
+      { path },
     );
   }
-  
+
   return resolvedPath;
 }
 ```
 
 **Git Reference Validation**:
+
 ```typescript
 export function validateGitRef(ref: string, type: "tag" | "branch"): string {
   // Length validation
@@ -223,30 +228,30 @@ export function validateGitRef(ref: string, type: "tag" | "branch"): string {
     throw new NagareError(
       "Git reference too long",
       ErrorCodes.SECURITY_GIT_TAG_TOO_LONG,
-      { ref, maxLength: 255 }
+      { ref, maxLength: 255 },
     );
   }
-  
+
   // Character validation
   const invalidChars = /[<>:"|?*\x00-\x1f\x7f]/;
   if (invalidChars.test(ref)) {
     throw new NagareError(
       "Invalid characters in git reference",
       ErrorCodes.SECURITY_INVALID_GIT_REF_CHARS,
-      { ref, invalidChars: invalidChars.source }
+      { ref, invalidChars: invalidChars.source },
     );
   }
-  
+
   // Pattern validation
   const gitRefPattern = /^[a-zA-Z0-9][a-zA-Z0-9._/-]*[a-zA-Z0-9]$/;
   if (!gitRefPattern.test(ref)) {
     throw new NagareError(
       "Invalid git reference format",
       ErrorCodes.SECURITY_INVALID_GIT_REF_PATTERN,
-      { ref, requiredPattern: gitRefPattern.source }
+      { ref, requiredPattern: gitRefPattern.source },
     );
   }
-  
+
   return ref;
 }
 ```
@@ -254,61 +259,77 @@ export function validateGitRef(ref: string, type: "tag" | "branch"): string {
 ### Layer 3: Template Sandboxing
 
 **Vento Security Configuration**:
+
 ```typescript
 export class TemplateProcessor {
   private setupSecurityContext(): void {
     // Disable dangerous functions
     const restrictedGlobals = [
-      'eval', 'Function', 'setTimeout', 'setInterval',
-      'require', 'import', 'process', 'global',
-      'Deno', 'fetch', 'XMLHttpRequest'
+      "eval",
+      "Function",
+      "setTimeout",
+      "setInterval",
+      "require",
+      "import",
+      "process",
+      "global",
+      "Deno",
+      "fetch",
+      "XMLHttpRequest",
     ];
-    
+
     // Create secure context
     this.vento.options.environment = {
       // Only allow safe built-in functions
-      Math, JSON, Date, String, Number, Array, Object,
-      
+      Math,
+      JSON,
+      Date,
+      String,
+      Number,
+      Array,
+      Object,
+
       // Custom safe functions
       jsonStringify: (obj: any) => JSON.stringify(obj),
       safe: (str: string) => str.toString(),
-      
+
       // Block dangerous globals
       ...restrictedGlobals.reduce((acc, name) => {
         acc[name] = undefined;
         return acc;
-      }, {} as Record<string, undefined>)
+      }, {} as Record<string, undefined>),
     };
   }
 }
 ```
 
 **Template Validation**:
+
 ```typescript
 export function validateTemplate(template: string): void {
   // Check for dangerous patterns
   const dangerousPatterns = [
-    /import\s+/,           // ES6 imports
-    /require\s*\(/,        // CommonJS requires
-    /eval\s*\(/,           // eval function
-    /Function\s*\(/,       // Function constructor
-    /setTimeout\s*\(/,     // setTimeout
-    /setInterval\s*\(/,    // setInterval
-    /fetch\s*\(/,          // fetch API
-    /XMLHttpRequest/,      // XMLHttpRequest
-    /document\./,          // DOM access
-    /window\./,            // window object
-    /global\./,            // global object
-    /process\./,           // process object
-    /Deno\./,              // Deno API
+    /import\s+/, // ES6 imports
+    /require\s*\(/, // CommonJS requires
+    /eval\s*\(/, // eval function
+    /Function\s*\(/, // Function constructor
+    /setTimeout\s*\(/, // setTimeout
+    /setInterval\s*\(/, // setInterval
+    /fetch\s*\(/, // fetch API
+    /XMLHttpRequest/, // XMLHttpRequest
+    /document\./, // DOM access
+    /window\./, // window object
+    /global\./, // global object
+    /process\./, // process object
+    /Deno\./, // Deno API
   ];
-  
+
   for (const pattern of dangerousPatterns) {
     if (pattern.test(template)) {
       throw new NagareError(
         "Dangerous pattern detected in template",
         ErrorCodes.TEMPLATE_SECURITY_VIOLATION,
-        { pattern: pattern.source }
+        { pattern: pattern.source },
       );
     }
   }
@@ -318,46 +339,47 @@ export function validateTemplate(template: string): void {
 ### Layer 4: Command Injection Prevention
 
 **Secure Command Execution**:
+
 ```typescript
 export class GitOperations {
   private async runCommand(args: string[]): Promise<string> {
     // Validate each argument
     for (const arg of args) {
-      if (typeof arg !== 'string') {
+      if (typeof arg !== "string") {
         throw new NagareError(
           "Invalid command argument type",
           ErrorCodes.SECURITY_INVALID_CLI_ARG_TYPE,
-          { arg, type: typeof arg }
+          { arg, type: typeof arg },
         );
       }
-      
+
       // Check for shell injection attempts
-      if (arg.includes(';') || arg.includes('|') || arg.includes('&')) {
+      if (arg.includes(";") || arg.includes("|") || arg.includes("&")) {
         throw new NagareError(
           "Shell injection attempt detected",
           ErrorCodes.SECURITY_SHELL_INJECTION,
-          { arg }
+          { arg },
         );
       }
     }
-    
+
     // Use Deno's secure Command API
     const command = new Deno.Command("git", {
       args: args,
       stdout: "piped",
       stderr: "piped",
     });
-    
+
     const { code, stdout, stderr } = await command.output();
-    
+
     if (code !== 0) {
       throw new NagareError(
         "Git command failed",
         ErrorCodes.GIT_COMMAND_FAILED,
-        { args, stderr: new TextDecoder().decode(stderr) }
+        { args, stderr: new TextDecoder().decode(stderr) },
       );
     }
-    
+
     return new TextDecoder().decode(stdout);
   }
 }
@@ -366,36 +388,37 @@ export class GitOperations {
 ### Layer 5: File Update Security
 
 **Safe Pattern Matching**:
+
 ```typescript
 export function validateFileUpdatePattern(pattern: RegExp): void {
   const patternSource = pattern.source;
-  
+
   // Check for dangerous patterns
   const dangerousPatterns = [
-    /\.\*.*\.\*/,          // Greedy wildcards
-    /\.\+.*\.\+/,          // Greedy plus
-    /\(\?\!/,              // Negative lookahead
-    /\(\?\</,              // Negative lookbehind
-    /\(\?\:/,              // Non-capturing group with complex logic
+    /\.\*.*\.\*/, // Greedy wildcards
+    /\.\+.*\.\+/, // Greedy plus
+    /\(\?\!/, // Negative lookahead
+    /\(\?\</, // Negative lookbehind
+    /\(\?\:/, // Non-capturing group with complex logic
   ];
-  
+
   for (const dangerous of dangerousPatterns) {
     if (dangerous.test(patternSource)) {
       throw new NagareError(
         "Potentially dangerous regex pattern",
         ErrorCodes.FILE_PATTERN_DANGEROUS,
-        { 
+        {
           pattern: patternSource,
-          suggestion: "Use line-anchored patterns with specific matching"
-        }
+          suggestion: "Use line-anchored patterns with specific matching",
+        },
       );
     }
   }
-  
+
   // Require line anchoring for safety
-  if (!patternSource.startsWith('^') && !patternSource.includes('\\n')) {
+  if (!patternSource.startsWith("^") && !patternSource.includes("\\n")) {
     console.warn(
-      "⚠️  Pattern not line-anchored. Consider using ^ to match line start."
+      "⚠️  Pattern not line-anchored. Consider using ^ to match line start.",
     );
   }
 }
@@ -412,36 +435,38 @@ export function validateFileUpdatePattern(pattern: RegExp): void {
 - Automatically cleared from memory after use
 
 **Token Permissions**:
+
 ```typescript
 // Required GitHub token permissions
 const REQUIRED_PERMISSIONS = {
-  contents: 'write',    // Create releases and tags
-  metadata: 'read',     // Repository access
-  actions: 'read',      // Action status (optional)
+  contents: "write", // Create releases and tags
+  metadata: "read", // Repository access
+  actions: "read", // Action status (optional)
 } as const;
 ```
 
 **Token Validation**:
+
 ```typescript
 export async function validateGitHubToken(token: string): Promise<void> {
   // Check token format
-  if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
+  if (!token.startsWith("ghp_") && !token.startsWith("github_pat_")) {
     throw new NagareError(
       "Invalid GitHub token format",
-      ErrorCodes.GITHUB_TOKEN_INVALID_FORMAT
+      ErrorCodes.GITHUB_TOKEN_INVALID_FORMAT,
     );
   }
-  
+
   // Test token permissions
-  const response = await fetch('https://api.github.com/user', {
-    headers: { Authorization: `token ${token}` }
+  const response = await fetch("https://api.github.com/user", {
+    headers: { Authorization: `token ${token}` },
   });
-  
+
   if (!response.ok) {
     throw new NagareError(
       "GitHub token authentication failed",
       ErrorCodes.GITHUB_AUTH_FAILED,
-      { status: response.status }
+      { status: response.status },
     );
   }
 }
@@ -466,11 +491,12 @@ export async function validateGitHubToken(token: string): Promise<void> {
 ### Security Event Logging
 
 **Audit Log Format**:
+
 ```typescript
 export interface SecurityAuditEvent {
   timestamp: string;
   event: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
   details: Record<string, any>;
   context: {
     operation: string;
@@ -489,6 +515,7 @@ export interface SecurityAuditEvent {
 - Permission escalations or denials
 
 **Example Log Entry**:
+
 ```json
 {
   "timestamp": "2025-07-18T20:30:00.000Z",
@@ -528,6 +555,7 @@ export interface SecurityAuditEvent {
 ### Development
 
 **1. Secure Configuration**:
+
 ```typescript
 // ✅ SECURE: Explicit, validated patterns
 export default {
@@ -539,9 +567,9 @@ export default {
       },
     },
   ],
-  
+
   security: {
-    templateSandbox: 'strict',
+    templateSandbox: "strict",
     validateFilePaths: true,
     auditLog: true,
   },
@@ -549,6 +577,7 @@ export default {
 ```
 
 **2. Template Security**:
+
 ```typescript
 // ✅ SECURE: Safe template with validation
 const template = `
@@ -566,6 +595,7 @@ export const VERSION = "{{ version }}";
 ### Production
 
 **1. CI/CD Security**:
+
 ```yaml
 # GitHub Actions security
 - name: Create release
@@ -577,6 +607,7 @@ export const VERSION = "{{ version }}";
 ```
 
 **2. Environment Security**:
+
 ```bash
 # Secure environment variables
 export GITHUB_TOKEN="$SECRET_TOKEN"
@@ -637,29 +668,31 @@ export NAGARE_AUDIT_LOG="true"
 ### Automated Security Tests
 
 **Template Injection Tests**:
+
 ```typescript
 Deno.test("Template injection prevention", async () => {
   const maliciousTemplate = `
     {{ eval("require('fs').readFileSync('/etc/passwd')") }}
   `;
-  
+
   await assertRejects(
     () => processTemplate(maliciousTemplate, {}),
     NagareError,
-    "Dangerous pattern detected"
+    "Dangerous pattern detected",
   );
 });
 ```
 
 **Path Traversal Tests**:
+
 ```typescript
 Deno.test("Path traversal prevention", async () => {
   const maliciousPath = "../../../etc/passwd";
-  
+
   await assertRejects(
     () => validateFilePath(maliciousPath, "/project"),
     NagareError,
-    "Path traversal attempt"
+    "Path traversal attempt",
   );
 });
 ```
@@ -702,9 +735,11 @@ Deno.test("Path traversal prevention", async () => {
 
 ## Conclusion
 
-Nagare's security model provides comprehensive protection against common threats while maintaining usability and performance. The layered approach ensures that even if one security measure fails, others provide backup protection.
+Nagare's security model provides comprehensive protection against common threats while maintaining usability and
+performance. The layered approach ensures that even if one security measure fails, others provide backup protection.
 
-Regular security assessments, automated testing, and community feedback help maintain and improve the security posture over time.
+Regular security assessments, automated testing, and community feedback help maintain and improve the security posture
+over time.
 
 ## Further Reading
 

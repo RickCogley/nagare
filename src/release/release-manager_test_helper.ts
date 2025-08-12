@@ -273,9 +273,10 @@ Version: 1.0.0`,
       throw new Error(`File not found: ${pathStr}`);
     };
 
-    // deno-lint-ignore require-await
-    Deno.writeTextFile = async (path: string | URL, content: string) => {
+    // deno-lint-ignore require-await no-explicit-any
+    Deno.writeTextFile = async (path: string | URL, data: any) => {
       const pathStr = path.toString();
+      const content = typeof data === "string" ? data : data.toString();
       fileSystem.set(pathStr, content);
     };
 

@@ -1,27 +1,24 @@
 # Vento Template Engine Feedback
 
-This document contains feedback based on extensive use of Vento in the Nagare release management
-tool, particularly while debugging template processing issues.
+This document contains feedback based on extensive use of Vento in the Nagare release management tool, particularly
+while debugging template processing issues.
 
 ## Context
 
-Nagare uses Vento for generating version files in various formats (TypeScript, JSON, YAML). During
-the development of releases 1.5.1-1.5.5, we encountered several template-related issues that
-provided deep insights into Vento's behavior.
+Nagare uses Vento for generating version files in various formats (TypeScript, JSON, YAML). During the development of
+releases 1.5.1-1.5.5, we encountered several template-related issues that provided deep insights into Vento's behavior.
 
 ## Update: Security Clarification from Vento Developer
 
 The Vento developer provided important clarification about JSON escaping:
 
-> "the autoEscape with json is not a good idea because the json can be exported as an html
-> attribute, so it must be escaped (example:
-> `<div data='{{ object |> JSON.stringify |> escape }}'>`."
+> "the autoEscape with json is not a good idea because the json can be exported as an html attribute, so it must be
+> escaped (example: `<div data='{{ object |> JSON.stringify |> escape }}'>`."
 
 This is a critical security point. In our documentation, we now emphasize:
 
 - **In HTML contexts**: Always escape JSON to prevent XSS: `{{ data |> jsonStringify |> escape }}`
-- **In code generation**: Use `|> safe` when generating TypeScript/JSON:
-  `{{ data |> jsonStringify |> safe }}`
+- **In code generation**: Use `|> safe` when generating TypeScript/JSON: `{{ data |> jsonStringify |> safe }}`
 
 The context determines whether `|> safe` is appropriate or a security risk.
 
@@ -29,13 +26,12 @@ The context determines whether `|> safe` is appropriate or a security risk.
 
 ### 1. Clean, Minimal Syntax
 
-The template syntax is elegant and doesn't clutter the content. The use of `{{ }}` for expressions
-and `{{- -}}` for whitespace control is intuitive.
+The template syntax is elegant and doesn't clutter the content. The use of `{{ }}` for expressions and `{{- -}}` for
+whitespace control is intuitive.
 
 ### 2. Good Error Messages
 
-When templates fail, the error messages generally point to the right location in the template,
-making debugging easier.
+When templates fail, the error messages generally point to the right location in the template, making debugging easier.
 
 ### 3. Flexible Filter System
 
@@ -50,20 +46,19 @@ vento.filters.jsonStringify = (value, indent = 2) => {
 
 ### 4. Smart Variable Transformation
 
-The automatic transformation of undefined variables to use the data object (e.g., `name` →
-`it.name`) is clever and reduces boilerplate.
+The automatic transformation of undefined variables to use the data object (e.g., `name` → `it.name`) is clever and
+reduces boilerplate.
 
 ### 5. Performance
 
-Vento is fast and lightweight, with no noticeable performance impact even when processing multiple
-templates.
+Vento is fast and lightweight, with no noticeable performance impact even when processing multiple templates.
 
 ## Areas for Improvement 🤔
 
 ### 1. Filter Syntax Documentation
 
-The `|>` pipe syntax (F# pipeline operator) is not immediately obvious to newcomers. Many template
-engines use single `|`, which led to confusion:
+The `|>` pipe syntax (F# pipeline operator) is not immediately obvious to newcomers. Many template engines use single
+`|`, which led to confusion:
 
 **What we tried (incorrect):**
 
@@ -77,8 +72,8 @@ engines use single `|`, which led to confusion:
 {{ metadata |> jsonStringify }}
 ```
 
-This distinction should be more prominently documented, perhaps with a migration guide for users
-coming from other template engines.
+This distinction should be more prominently documented, perhaps with a migration guide for users coming from other
+template engines.
 
 ### 2. Autoescape Interaction with Filters
 
@@ -92,8 +87,7 @@ When `autoescape: true`, the interaction between filters and escaping can be sur
 {{ releaseNotes |> jsonStringify |> safe }}
 ```
 
-Perhaps JSON output could be automatically considered safe? Or have a `jsonSafe` filter that
-combines both operations?
+Perhaps JSON output could be automatically considered safe? Or have a `jsonSafe` filter that combines both operations?
 
 ### 3. Whitespace Control Edge Cases
 
@@ -119,13 +113,13 @@ filters: Record<string, Function>;
 filters: Map<string, Filter>; // Where Filter has specific structure
 ```
 
-**Update**: The Vento developer clarified that the filters type is not a simple
-`Record<string, Function>`. The actual implementation uses a more sophisticated type system.
+**Update**: The Vento developer clarified that the filters type is not a simple `Record<string, Function>`. The actual
+implementation uses a more sophisticated type system.
 
 ### 5. Debugging Tools
 
-It would be helpful to have a way to see the generated JavaScript code more easily for debugging
-template issues. Currently, we had to write custom test scripts to inspect the compiled output.
+It would be helpful to have a way to see the generated JavaScript code more easily for debugging template issues.
+Currently, we had to write custom test scripts to inspect the compiled output.
 
 ## Feature Suggestions 💡
 
@@ -139,8 +133,8 @@ Consider adding more built-in filters:
 - `escape` / `unescape` - HTML entity handling (already exists)
 - `date` - Common date formatting
 
-Note: A `json` filter should NOT automatically apply `|> safe` as this would be a security risk in
-HTML contexts. JSON must be escaped when used in HTML attributes to prevent XSS.
+Note: A `json` filter should NOT automatically apply `|> safe` as this would be a security risk in HTML contexts. JSON
+must be escaped when used in HTML attributes to prevent XSS.
 
 ### 2. Template Validation Mode
 
@@ -155,8 +149,7 @@ if (!result.valid) {
 
 ### 3. Source Maps
 
-For complex templates, source maps connecting the generated JavaScript back to the template source
-would aid debugging.
+For complex templates, source maps connecting the generated JavaScript back to the template source would aid debugging.
 
 ### 4. Better Conditional Property Access
 
@@ -180,13 +173,12 @@ More advanced template composition features:
 
 ### Issue 1: Filter Syntax Confusion
 
-We spent considerable time debugging why filters weren't working, only to discover we were using `|`
-instead of `|>`.
+We spent considerable time debugging why filters weren't working, only to discover we were using `|` instead of `|>`.
 
 ### Issue 2: Escaped JSON Output
 
-Our generated TypeScript files had `&quot;` instead of `"` because we didn't know about the `safe`
-filter requirement when using `autoescape: true`.
+Our generated TypeScript files had `&quot;` instead of `"` because we didn't know about the `safe` filter requirement
+when using `autoescape: true`.
 
 ### Issue 3: Conditional Complexity
 
@@ -198,13 +190,12 @@ Complex conditionals for handling null values required verbose syntax:
 
 ## Conclusion
 
-Vento is a solid template engine that fits well with Deno's philosophy of simplicity and standards.
-The issues we encountered were more about documentation and expected behaviors than fundamental
-flaws. With some documentation improvements and minor feature additions, Vento could be even more
-developer-friendly.
+Vento is a solid template engine that fits well with Deno's philosophy of simplicity and standards. The issues we
+encountered were more about documentation and expected behaviors than fundamental flaws. With some documentation
+improvements and minor feature additions, Vento could be even more developer-friendly.
 
-The engine's performance, clean syntax, and flexibility make it a good choice for Deno projects. We
-appreciate the work that has gone into making it standards-compliant and lightweight.
+The engine's performance, clean syntax, and flexibility make it a good choice for Deno projects. We appreciate the work
+that has gone into making it standards-compliant and lightweight.
 
 ## Recommendations for Nagare Users
 

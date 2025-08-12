@@ -2,9 +2,8 @@
 
 ## Problem
 
-Currently, Nagare automatically uses the system locale to determine the display language. This
-forces Japanese on users with Japanese system locales, even if they prefer English. There's no way
-to override this behavior.
+Currently, Nagare automatically uses the system locale to determine the display language. This forces Japanese on users
+with Japanese system locales, even if they prefer English. There's no way to override this behavior.
 
 ## Appetite
 

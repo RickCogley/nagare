@@ -10,8 +10,8 @@ Are people committing CLAUDE.md files to their repositories?
 
 ### 1. It's a Growing Practice
 
-Many developers are committing CLAUDE.md files to provide persistent context for Claude Code when
-working on their projects.
+Many developers are committing CLAUDE.md files to provide persistent context for Claude Code when working on their
+projects.
 
 ### 2. Common Use Cases
 
@@ -82,10 +82,10 @@ The Claude Code team is actively working on:
 
 ## Conclusion
 
-CLAUDE.md files represent a growing practice in AI-assisted development, serving as a bridge between
-human developers and AI coding assistants by providing persistent, project-specific context and
-configuration. The practice makes sense because it provides consistent context across sessions and
-team members, similar to how `.editorconfig` or `.cursorrules` files work for other tools.
+CLAUDE.md files represent a growing practice in AI-assisted development, serving as a bridge between human developers
+and AI coding assistants by providing persistent, project-specific context and configuration. The practice makes sense
+because it provides consistent context across sessions and team members, similar to how `.editorconfig` or
+`.cursorrules` files work for other tools.
 
 ## Related Resources
 

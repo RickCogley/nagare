@@ -7,8 +7,8 @@
 
 ## Overview
 
-This project enhanced Nagare's file handling capabilities to support more complex version update
-scenarios while maintaining backward compatibility.
+This project enhanced Nagare's file handling capabilities to support more complex version update scenarios while
+maintaining backward compatibility.
 
 ## Completed Items
 

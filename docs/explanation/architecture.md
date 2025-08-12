@@ -2,7 +2,9 @@
 
 ## Overview
 
-Nagare's architecture follows a manager-based design pattern where specialized components handle specific aspects of the release process. This modular approach enables flexibility, testability, and clear separation of concerns. Understanding this architecture helps you extend Nagare, contribute to the project, or build similar tools.
+Nagare's architecture follows a manager-based design pattern where specialized components handle specific aspects of the
+release process. This modular approach enables flexibility, testability, and clear separation of concerns. Understanding
+this architecture helps you extend Nagare, contribute to the project, or build similar tools.
 
 ## Why this architecture?
 
@@ -14,7 +16,8 @@ Software release management involves multiple complex operations:
 - Template processing.
 - External service integration.
 
-Without clear architectural boundaries, these concerns become entangled, making the system difficult to understand, test, and extend. Nagare's architecture provides structure while maintaining flexibility.
+Without clear architectural boundaries, these concerns become entangled, making the system difficult to understand,
+test, and extend. Nagare's architecture provides structure while maintaining flexibility.
 
 ## High-level architecture
 
@@ -112,7 +115,8 @@ classDiagram
     }
 ```
 
-**Design Decision**: The manager pattern provides clear ownership of workflows while keeping individual operations simple and testable.
+**Design Decision**: The manager pattern provides clear ownership of workflows while keeping individual operations
+simple and testable.
 
 ### Operations Layer
 
@@ -491,12 +495,12 @@ graph TD
 
 ## Comparison with Alternative Architectures
 
-| Architecture | Approach | Pros | Cons | Best For |
-|--------------|----------|------|------|----------|
-| Manager-Based (Nagare) | Orchestration classes | Clear workflows, testable | More code structure | Complex workflows |
-| Functional Pipeline | Pure functions | Simple, composable | Harder state management | Simple transforms |
-| Plugin Architecture | Dynamic loading | Extremely flexible | Complex, slower | Large ecosystems |
-| Monolithic Script | Single file | Simple to understand | Hard to test/extend | Small tools |
+| Architecture           | Approach              | Pros                      | Cons                    | Best For          |
+| ---------------------- | --------------------- | ------------------------- | ----------------------- | ----------------- |
+| Manager-Based (Nagare) | Orchestration classes | Clear workflows, testable | More code structure     | Complex workflows |
+| Functional Pipeline    | Pure functions        | Simple, composable        | Harder state management | Simple transforms |
+| Plugin Architecture    | Dynamic loading       | Extremely flexible        | Complex, slower         | Large ecosystems  |
+| Monolithic Script      | Single file           | Simple to understand      | Hard to test/extend     | Small tools       |
 
 ## Future Architecture Considerations
 

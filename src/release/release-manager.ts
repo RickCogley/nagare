@@ -45,6 +45,7 @@ import { AutoFixer } from "../monitoring/auto-fixer.ts";
 import { StdProgressIndicator } from "../utils/std-progress-indicator.ts";
 import { BackupManager } from "./backup-manager.ts";
 import { OperationType, ReleaseStateTracker } from "./release-state-tracker.ts";
+import { ReleaseManagerDeps, ReleaseManagerDepsFactory } from "./release-manager-deps.ts";
 
 /**
  * Main ReleaseManager class - coordinates the entire release process
@@ -174,18 +175,29 @@ export class ReleaseManager {
    * });
    * ```
    */
-  constructor(config: NagareConfig) {
+  /**
+   * Constructor with optional dependency injection
+   *
+   * @param config - Nagare configuration
+   * @param deps - Optional dependencies for testing/customization
+   */
+  constructor(config: NagareConfig, deps?: ReleaseManagerDeps) {
     this.config = this.mergeWithDefaults(config);
-    this.git = new GitOperations(this.config);
-    this.versionUtils = new VersionUtils(this.config, this.git);
-    this.changelogGenerator = new ChangelogGenerator(this.config);
-    this.github = new GitHubIntegration(this.config);
-    this.templateProcessor = new TemplateProcessor(this.config);
-    this.docGenerator = new DocGenerator(this.config);
-    this.logger = new Logger(this.config.options?.logLevel || LogLevel.INFO);
-    this.fileHandlerManager = new FileHandlerManager();
-    this.backupManager = new BackupManager(this.logger);
-    this.stateTracker = new ReleaseStateTracker(this.logger);
+
+    // Use factory to create dependencies with defaults if not provided
+    const resolvedDeps = ReleaseManagerDepsFactory.createDeps(this.config, deps);
+
+    // Assign all dependencies
+    this.git = resolvedDeps.git;
+    this.versionUtils = resolvedDeps.versionUtils;
+    this.changelogGenerator = resolvedDeps.changelogGenerator;
+    this.github = resolvedDeps.github;
+    this.templateProcessor = resolvedDeps.templateProcessor;
+    this.docGenerator = resolvedDeps.docGenerator;
+    this.logger = resolvedDeps.logger;
+    this.fileHandlerManager = resolvedDeps.fileHandlerManager;
+    this.backupManager = resolvedDeps.backupManager;
+    this.stateTracker = resolvedDeps.stateTracker;
   }
 
   /**

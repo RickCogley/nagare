@@ -2,8 +2,8 @@
 
 ## Overview
 
-Successfully migrated the documentation structure to use `/docs` for both reference materials and
-auto-generated API documentation, organizing them clearly and updating all configuration files.
+Successfully migrated the documentation structure to use `/docs` for both reference materials and auto-generated API
+documentation, organizing them clearly and updating all configuration files.
 
 ## Changes Made
 

@@ -2,8 +2,8 @@
 
 ## Overview
 
-This document outlines the plan to migrate Nagare's built-in templates from inline string constants
-to separate `.vto` files using Deno 2.4's new text import feature.
+This document outlines the plan to migrate Nagare's built-in templates from inline string constants to separate `.vto`
+files using Deno 2.4's new text import feature.
 
 ## Current State
 

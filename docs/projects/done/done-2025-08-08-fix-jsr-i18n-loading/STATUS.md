@@ -2,21 +2,21 @@
 
 ## Status: ✅ DONE
 
-**Started:** 2025-08-08  
-**Completed:** 2025-08-08  
+**Started:** 2025-08-08\
+**Completed:** 2025-08-08\
 **Phase:** 🍃 Complete
 
 ## Problem Statement
 
-When Nagare is pulled down from JSR as a dependency (e.g., in the aichaku project), the i18n localization strings
-fail to load properly, causing error messages to show raw keys like `errors.gitNotClean` instead of the actual
-translated messages.
+When Nagare is pulled down from JSR as a dependency (e.g., in the aichaku project), the i18n localization strings fail
+to load properly, causing error messages to show raw keys like `errors.gitNotClean` instead of the actual translated
+messages.
 
 ## Root Cause
 
-The i18n module was using an incorrect relative path (`../locales/`) to load locale files, which failed when the
-module was served from JSR's CDN. Additionally, the fallback to file system access was attempting to read from
-invalid paths when running from JSR.
+The i18n module was using an incorrect relative path (`../locales/`) to load locale files, which failed when the module
+was served from JSR's CDN. Additionally, the fallback to file system access was attempting to read from invalid paths
+when running from JSR.
 
 ## Solution Implemented
 
@@ -64,5 +64,5 @@ This fix ensures that Nagare's i18n system works correctly in all execution cont
 
 ## Security Considerations
 
-InfoSec: No security impact - only affects resource loading paths. No user input is processed differently, and no
-new attack vectors are introduced.
+InfoSec: No security impact - only affects resource loading paths. No user input is processed differently, and no new
+attack vectors are introduced.

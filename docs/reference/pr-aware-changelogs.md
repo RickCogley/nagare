@@ -1,7 +1,7 @@
 # PR-Aware Changelogs
 
-Starting with Nagare v2.19.0, your changelogs automatically detect and organize changes by Pull Requests.
-This feature requires zero configuration and provides a cleaner, more organized view of your release history.
+Starting with Nagare v2.19.0, your changelogs automatically detect and organize changes by Pull Requests. This feature
+requires zero configuration and provides a cleaner, more organized view of your release history.
 
 ## How It Works
 
@@ -31,21 +31,25 @@ When PRs are detected, your changelog looks like this:
 #### Add awesome new feature ([#123](../../pull/123))
 
 **✨ Added:**
+
 - New API endpoint for user management (`api`) - [abc1234](../../commit/abc1234)
 - Add validation for user input (`validation`) - [def5678](../../commit/def5678)
 
 **🐛 Fixed:**
+
 - Fix memory leak in cache handler (`cache`) - [ghi9012](../../commit/ghi9012)
 
 #### Refactor authentication system ([#124](../../pull/124))
 
 **🔄 Changed:**
+
 - Migrate to JWT tokens (`auth`) - [jkl3456](../../commit/jkl3456)
 - Update session handling (`session`) - [mno7890](../../commit/mno7890)
 
 ### 📝 Direct Commits
 
 **🐛 Fixed:**
+
 - Quick hotfix for production issue - [pqr1234](../../commit/pqr1234)
 ```
 
@@ -57,14 +61,17 @@ In repositories without PRs, or when PR detection is disabled, you get the class
 ## [2.19.0] - 2024-01-15
 
 ### Added
+
 - New API endpoint for user management (api) (abc1234)
 - Add validation for user input (validation) (def5678)
 
 ### Fixed
+
 - Fix memory leak in cache handler (cache) (ghi9012)
 - Quick hotfix for production issue (pqr1234)
 
 ### Changed
+
 - Migrate to JWT tokens (auth) (jkl3456)
 - Update session handling (session) (mno7890)
 ```
@@ -94,7 +101,8 @@ export NAGARE_DISABLE_PR_DETECTION=true
 
 ## Custom Templates
 
-Nagare uses Vento templates for changelog generation. You can customize the PR-aware template by editing `templates/changelog-pr.vto`:
+Nagare uses Vento templates for changelog generation. You can customize the PR-aware template by editing
+`templates/changelog-pr.vto`:
 
 ```vto
 {{! Custom PR-aware changelog template }}
@@ -130,8 +138,8 @@ Nagare uses Vento templates for changelog generation. You can customize the PR-a
 
 ### Squash Merges
 
-Squash merges combine all PR commits into one. Nagare detects these by looking for PR references in commit
-messages like `(#123)`.
+Squash merges combine all PR commits into one. Nagare detects these by looking for PR references in commit messages like
+`(#123)`.
 
 ### Rebase Merges
 
@@ -235,8 +243,8 @@ If you need to rollback:
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
+| Variable                      | Description          | Default |
+| ----------------------------- | -------------------- | ------- |
 | `NAGARE_DISABLE_PR_DETECTION` | Disable PR detection | `false` |
 
 ### Template Variables
@@ -267,6 +275,5 @@ interface TemplateMetadata {
 
 ## Feedback
 
-We'd love to hear your experience with PR-aware changelogs!
-Please [open an issue](https://github.com/your-repo/nagare/issues) with feedback or suggestions.
-
+We'd love to hear your experience with PR-aware changelogs! Please
+[open an issue](https://github.com/your-repo/nagare/issues) with feedback or suggestions.

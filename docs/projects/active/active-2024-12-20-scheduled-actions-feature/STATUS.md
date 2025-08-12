@@ -2,8 +2,8 @@
 
 ## Overview
 
-Feature request to add scheduled command execution capabilities to nagare, allowing CI/CD pipelines
-to run commands at specific times (e.g., nightly releases).
+Feature request to add scheduled command execution capabilities to nagare, allowing CI/CD pipelines to run commands at
+specific times (e.g., nightly releases).
 
 ## Current Status
 

@@ -2,8 +2,8 @@
 
 ## Overview
 
-Nagare now includes intelligent file handlers that automatically detect and update common project
-files without requiring custom `updateFn` functions or complex regex patterns.
+Nagare now includes intelligent file handlers that automatically detect and update common project files without
+requiring custom `updateFn` functions or complex regex patterns.
 
 ## Before vs After
 
@@ -308,6 +308,5 @@ manager.registerHandler(myCustomHandler);
 
 ## Summary
 
-The new file handler system makes Nagare truly "just work" for common cases while maintaining
-flexibility for complex scenarios. Most users can now simply list their files without writing any
-patterns or functions.
+The new file handler system makes Nagare truly "just work" for common cases while maintaining flexibility for complex
+scenarios. Most users can now simply list their files without writing any patterns or functions.

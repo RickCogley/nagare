@@ -43,8 +43,7 @@ The `--` separator is being passed as a literal argument, causing parsing confus
 ## Root Causes
 
 1. **Missing Locale Files**: Nagare expects `./locales/en.yaml` but it's not found
-2. **CLI Argument Parsing**: The `--skip-confirmation` flag isn't being parsed correctly due to `--`
-   separator
+2. **CLI Argument Parsing**: The `--skip-confirmation` flag isn't being parsed correctly due to `--` separator
 
 ## Objectives
 
@@ -64,8 +63,7 @@ The `--` separator is being passed as a literal argument, causing parsing confus
 ### 🔍 Test Results
 
 - `deno run --allow-all cli.ts --help` ✅ Works - i18n properly initialized
-- `deno run --allow-all cli.ts release minor "--" "--skip-confirmation"` ✅ Works - arguments parsed
-  correctly
+- `deno run --allow-all cli.ts release minor "--" "--skip-confirmation"` ✅ Works - arguments parsed correctly
 - Only failure was due to uncommitted changes (expected behavior)
 
 ## Release Completed ✅

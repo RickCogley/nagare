@@ -2,9 +2,8 @@
 
 ## Overview
 
-This document outlines the plan for adding support for alternative commit message conventions beyond
-Conventional Commits. This would allow teams using different commit styles to benefit from Nagare's
-automated release management.
+This document outlines the plan for adding support for alternative commit message conventions beyond Conventional
+Commits. This would allow teams using different commit styles to benefit from Nagare's automated release management.
 
 ## Goals
 

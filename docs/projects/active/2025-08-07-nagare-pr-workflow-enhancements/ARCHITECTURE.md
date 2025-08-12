@@ -2,8 +2,8 @@
 
 ## Overview
 
-This document outlines the architectural design for enhancing Nagare's changelog generation to be
-PR-aware, automatically detecting and organizing changes by Pull Requests when available.
+This document outlines the architectural design for enhancing Nagare's changelog generation to be PR-aware,
+automatically detecting and organizing changes by Pull Requests when available.
 
 ## Key Architectural Decisions
 
@@ -249,7 +249,7 @@ interface GitOperations {
 async function detectPRs(since: string): Promise<Map<number, PRInfo>> {
   const mergeCommits = await git.getMergeCommits(since);
   const prMap = new Map<number, PRInfo>();
-  
+
   for (const merge of mergeCommits) {
     const prNumber = extractPRNumber(merge.message);
     if (prNumber) {
@@ -258,11 +258,11 @@ async function detectPRs(since: string): Promise<Map<number, PRInfo>> {
         number: prNumber,
         title: extractPRTitle(merge.message),
         commits,
-        types: new Set(commits.map(c => c.type))
+        types: new Set(commits.map((c) => c.type)),
       });
     }
   }
-  
+
   return prMap;
 }
 
@@ -271,14 +271,14 @@ function extractPRNumber(message: string): number | null {
   const patterns = [
     /Merge pull request #(\d+)/,
     /Merge PR #(\d+)/,
-    /\(#(\d+)\)/
+    /\(#(\d+)\)/,
   ];
-  
+
   for (const pattern of patterns) {
     const match = message.match(pattern);
     if (match) return parseInt(match[1]);
   }
-  
+
   return null;
 }
 ```
@@ -289,16 +289,16 @@ function extractPRNumber(message: string): number | null {
 function groupCommits(allCommits: Commit[], prs: Map<number, PRInfo>) {
   const prCommitShas = new Set(
     Array.from(prs.values())
-      .flatMap(pr => pr.commits.map(c => c.sha))
+      .flatMap((pr) => pr.commits.map((c) => c.sha)),
   );
-  
+
   const directCommits = allCommits.filter(
-    c => !prCommitShas.has(c.sha)
+    (c) => !prCommitShas.has(c.sha),
   );
-  
+
   return {
     fromPRs: Array.from(prs.values()),
-    direct: directCommits
+    direct: directCommits,
   };
 }
 ```
@@ -320,14 +320,14 @@ function groupCommits(allCommits: Commit[], prs: Map<number, PRInfo>) {
 ## Testing Strategy
 
 ```typescript
-describe('PR-Aware Changelog', () => {
-  test('detects merged PRs correctly');
-  test('groups commits by PR');
-  test('handles direct commits alongside PRs');
+describe("PR-Aware Changelog", () => {
+  test("detects merged PRs correctly");
+  test("groups commits by PR");
+  test("handles direct commits alongside PRs");
   test('omits "From PRs" section when no PRs exist');
-  test('maintains backward compatibility');
-  test('handles squash-merge PRs');
-  test('handles rebase-merge PRs');
+  test("maintains backward compatibility");
+  test("handles squash-merge PRs");
+  test("handles rebase-merge PRs");
 });
 ```
 
@@ -347,5 +347,5 @@ describe('PR-Aware Changelog', () => {
   NAGARE_DISABLE_PR_DETECTION=true nagare release
   ```
 
-This architecture ensures PR-aware changelogs "just work" without configuration while maintaining simplicity and performance.
-
+This architecture ensures PR-aware changelogs "just work" without configuration while maintaining simplicity and
+performance.

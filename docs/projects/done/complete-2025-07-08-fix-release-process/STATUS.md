@@ -2,8 +2,7 @@
 
 ## Overview
 
-Fixing the critical issue where every release fails due to formatting/linting issues discovered
-AFTER tags are created.
+Fixing the critical issue where every release fails due to formatting/linting issues discovered AFTER tags are created.
 
 ## Current Status: COMPLETED ✅
 

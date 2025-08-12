@@ -7,8 +7,8 @@
 
 ## Overview
 
-This project implemented template-based file generation capabilities for Nagare, allowing users to
-maintain custom templates in their projects and generate files from them during the release process.
+This project implemented template-based file generation capabilities for Nagare, allowing users to maintain custom
+templates in their projects and generate files from them during the release process.
 
 ## Completed Tasks
 
@@ -47,5 +47,5 @@ maintain custom templates in their projects and generate files from them during 
 
 ## Outcome
 
-Successfully implemented and tested template-based file generation feature, enhancing Nagare's
-flexibility for managing version-dependent files during releases.
+Successfully implemented and tested template-based file generation feature, enhancing Nagare's flexibility for managing
+version-dependent files during releases.

@@ -2,8 +2,8 @@
 
 ## Overview
 
-Reorganized repository documentation structure to better align with Aichaku methodology and provide
-clearer separation between permanent references and project-specific documentation.
+Reorganized repository documentation structure to better align with Aichaku methodology and provide clearer separation
+between permanent references and project-specific documentation.
 
 ## Changes Made
 

@@ -36,8 +36,8 @@ NAGARE_LANG=ja deno task nagare --help
 
 ## Result
 
-Users now have full control over the display language, with English as the sensible default instead
-of forcing system locale.
+Users now have full control over the display language, with English as the sensible default instead of forcing system
+locale.
 
 ## Next Steps
 

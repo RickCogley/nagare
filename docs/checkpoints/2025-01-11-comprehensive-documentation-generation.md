@@ -2,8 +2,8 @@
 
 ## Summary
 
-Generated a complete documentation suite for Nagare following the Diátaxis framework and Google
-Developer Documentation Style Guide, then fixed all linting issues.
+Generated a complete documentation suite for Nagare following the Diátaxis framework and Google Developer Documentation
+Style Guide, then fixed all linting issues.
 
 ## Major accomplishments
 
@@ -99,5 +99,5 @@ Developer Documentation Style Guide, then fixed all linting issues.
 
 ## Session context
 
-This documentation generation completes the Nagare project documentation, providing users with
-comprehensive guides for all skill levels and use cases.
+This documentation generation completes the Nagare project documentation, providing users with comprehensive guides for
+all skill levels and use cases.

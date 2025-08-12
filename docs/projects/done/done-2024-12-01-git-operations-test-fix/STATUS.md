@@ -6,8 +6,8 @@
 
 ## Summary
 
-Resolved git operations test failures that were preventing CI from passing. Tests were failing due
-to assumptions about git state and environment differences between local and CI environments.
+Resolved git operations test failures that were preventing CI from passing. Tests were failing due to assumptions about
+git state and environment differences between local and CI environments.
 
 ## Problem Solved
 

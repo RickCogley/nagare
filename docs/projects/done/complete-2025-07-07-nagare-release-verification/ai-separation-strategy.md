@@ -2,8 +2,8 @@
 
 ## Problem
 
-We're assuming Claude Code availability for auto-fixing, but Nagare should remain AI-agnostic with
-AI features as optional enhancements.
+We're assuming Claude Code availability for auto-fixing, but Nagare should remain AI-agnostic with AI features as
+optional enhancements.
 
 ## Solution: Layered Architecture
 

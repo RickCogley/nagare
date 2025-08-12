@@ -11,18 +11,18 @@ Successfully fixed two critical bugs in Nagare's release process:
 
 ### Problem 1: Release Failures After Tag Creation
 
-**Issue**: Every release failed because formatting/linting issues were discovered AFTER tags were
-created, requiring painful manual recovery.
+**Issue**: Every release failed because formatting/linting issues were discovered AFTER tags were created, requiring
+painful manual recovery.
 
 **Solution**: Implemented pre-flight validation that runs all checks BEFORE creating tags.
 
 ### Problem 2: Version Number Jumps
 
-**Issue**: Failed releases caused version numbers to jump (e.g., v2.7.0 → v5.2.0) because Nagare
-read the current version from version.ts file, which was updated on each attempt.
+**Issue**: Failed releases caused version numbers to jump (e.g., v2.7.0 → v5.2.0) because Nagare read the current
+version from version.ts file, which was updated on each attempt.
 
-**Solution**: Modified version detection to read from immutable git tags first, falling back to
-version file only for initial releases.
+**Solution**: Modified version detection to read from immutable git tags first, falling back to version file only for
+initial releases.
 
 ## Implementation Details
 

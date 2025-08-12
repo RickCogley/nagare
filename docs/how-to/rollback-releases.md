@@ -1,6 +1,7 @@
 # How to Rollback Releases
 
-This guide shows you how to rollback releases when something goes wrong. Use rollback when you need to revert to a previous version after a problematic release.
+This guide shows you how to rollback releases when something goes wrong. Use rollback when you need to revert to a
+previous version after a problematic release.
 
 ## Before you begin
 
@@ -24,12 +25,12 @@ Use this approach to quickly revert the most recent release.
 2. Nagare will detect the latest release and show preview:
    ```
    🔄 Rolling back release v1.2.3
-   
+
    Changes to revert:
    - version.ts: 1.2.3 → 1.2.2
    - deno.json: 1.2.3 → 1.2.2
    - CHANGELOG.md: Remove v1.2.3 entry
-   
+
    Continue with rollback? (y/n)
    ```
 
@@ -40,7 +41,7 @@ Use this approach to quickly revert the most recent release.
    ✅ Removed remote tag v1.2.3
    ✅ Deleted GitHub release v1.2.3
    ✅ Created rollback commit
-   
+
    🔄 Rollback completed successfully
    ```
 
@@ -56,12 +57,12 @@ Use this approach when you need to rollback to a specific version.
 2. For versions further back, Nagare shows cumulative changes:
    ```
    🔄 Rolling back to v1.2.0
-   
+
    This will revert 3 releases:
    - v1.2.3 → v1.2.2
    - v1.2.2 → v1.2.1
    - v1.2.1 → v1.2.0
-   
+
    Continue? (y/n)
    ```
 
@@ -73,7 +74,7 @@ Use this when you want to revert code but keep the GitHub release for documentat
    ```typescript
    export default {
      // ... other config ...
-     
+
      rollback: {
        keepGitHubRelease: true,
        commitMessage: "revert: rollback to v{{version}} (keeping GitHub release)",
@@ -95,17 +96,17 @@ Use this to provide context for the rollback.
    // scripts/rollback-with-reason.ts
    import { RollbackManager } from "jsr:@rick/nagare";
    import config from "../nagare.config.ts";
-   
+
    const reason = Deno.args[0] || "unspecified reason";
    const version = Deno.args[1];
-   
+
    const rollbackConfig = {
      ...config,
      rollback: {
        commitMessage: `revert: rollback to v{{version}} - ${reason}`,
      },
    };
-   
+
    const manager = new RollbackManager(rollbackConfig);
    await manager.rollback(version);
    ```
@@ -122,7 +123,7 @@ Use hooks to validate before rollback.
 ```typescript
 export default {
   // ... other config ...
-  
+
   hooks: {
     preRollback: [
       async (targetVersion) => {
@@ -131,23 +132,23 @@ export default {
         if (deploymentStatus.active) {
           throw new Error("Cannot rollback while deployment is active");
         }
-        
+
         // Verify target version exists
         const tags = await getGitTags();
         if (!tags.includes(`v${targetVersion}`)) {
           throw new Error(`Version ${targetVersion} not found in git history`);
         }
-        
+
         // Check if rollback would lose data
         const commits = await getCommitsSince(`v${targetVersion}`);
-        if (commits.some(c => c.type === "feat")) {
+        if (commits.some((c) => c.type === "feat")) {
           console.warn("⚠️  Rollback will remove features:");
-          commits.filter(c => c.type === "feat")
-            .forEach(c => console.warn(`  - ${c.description}`));
+          commits.filter((c) => c.type === "feat")
+            .forEach((c) => console.warn(`  - ${c.description}`));
         }
       },
     ],
-    
+
     postRollback: [
       async (version) => {
         // Notify team
@@ -155,7 +156,7 @@ export default {
           text: `⚠️ Rolled back to v${version}`,
           color: "warning",
         });
-        
+
         // Trigger re-deployment
         await triggerDeployment(version);
       },
@@ -196,17 +197,16 @@ gh release list --limit 5
 
 ## Troubleshooting
 
-**Problem**: "Cannot rollback: uncommitted changes"
-**Solution**: Commit or stash changes first: `git stash` or `git commit -am "WIP"`
+**Problem**: "Cannot rollback: uncommitted changes" **Solution**: Commit or stash changes first: `git stash` or
+`git commit -am "WIP"`
 
-**Problem**: "Tag not found"
-**Solution**: Ensure the version was released with Nagare and tag exists: `git tag -l`
+**Problem**: "Tag not found" **Solution**: Ensure the version was released with Nagare and tag exists: `git tag -l`
 
-**Problem**: "GitHub release deletion failed"
-**Solution**: Check GitHub CLI auth: `gh auth status`, or manually delete from GitHub
+**Problem**: "GitHub release deletion failed" **Solution**: Check GitHub CLI auth: `gh auth status`, or manually delete
+from GitHub
 
-**Problem**: "Files cannot be reverted"
-**Solution**: Check if files were manually modified after release, may need manual intervention
+**Problem**: "Files cannot be reverted" **Solution**: Check if files were manually modified after release, may need
+manual intervention
 
 ## Recovery from failed rollback
 
@@ -222,7 +222,7 @@ If a rollback fails midway:
    ```bash
    # Reset to previous commit if needed
    git reset --hard HEAD~1
-   
+
    # Remove tags manually
    git tag -d v1.2.3
    git push origin :refs/tags/v1.2.3

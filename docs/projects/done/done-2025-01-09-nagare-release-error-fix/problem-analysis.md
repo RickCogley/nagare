@@ -8,8 +8,8 @@
 ❌ Failed to initialize i18n: Failed to load fallback locale en: NotFound: No such file or directory (os error 2): readfile './locales/en.yaml'
 ```
 
-**Impact**: Complete failure to start release process **Location**: i18n system initialization
-**Root Cause**: Missing locale files
+**Impact**: Complete failure to start release process **Location**: i18n system initialization **Root Cause**: Missing
+locale files
 
 ### Secondary Error: CLI Argument Parsing
 
@@ -17,8 +17,8 @@
 Task nagare deno run -A nagare-launcher.ts "minor" "--" "--skip-confirmation"
 ```
 
-**Impact**: `--skip-confirmation` not being recognized **Location**: CLI argument processing **Root
-Cause**: `--` separator causing confusion in argument parsing
+**Impact**: `--skip-confirmation` not being recognized **Location**: CLI argument processing **Root Cause**: `--`
+separator causing confusion in argument parsing
 
 ## Investigation Points
 

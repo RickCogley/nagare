@@ -2,8 +2,8 @@
 
 ## Problem
 
-GitHub workflows in Nagare can only be triggered by their configured events (push, pull_request,
-schedule). This limits developers who want to:
+GitHub workflows in Nagare can only be triggered by their configured events (push, pull_request, schedule). This limits
+developers who want to:
 
 - Run security scans on demand
 - Test workflow changes without pushing code

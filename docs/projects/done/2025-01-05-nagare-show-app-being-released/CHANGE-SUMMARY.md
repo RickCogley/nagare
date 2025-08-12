@@ -2,14 +2,15 @@
 
 ## Overview
 
-Enhance Nagare's release flow to prominently display **which application is being released**, making it clear
-that "Nagare is preparing a release for [Application Name]".
+Enhance Nagare's release flow to prominently display **which application is being released**, making it clear that
+"Nagare is preparing a release for [Application Name]".
 
 ## Key Changes
 
 ### 1. Visual Identity
 
 **Before:**
+
 ```
 🌊 Nagare: Starting release current...
 [INFO] log.release.starting
@@ -17,6 +18,7 @@ that "Nagare is preparing a release for [Application Name]".
 ```
 
 **After:**
+
 ```
 🌊 Nagare: Starting release current for Aichaku...
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -32,6 +34,7 @@ Version: 0.43.2 → 0.44.0 (minor)
 ### 2. Configuration Enhancement
 
 New optional configuration in `nagare.config.ts`:
+
 ```typescript
 app: {
   displayName: "Nagare Release Manager",
@@ -61,8 +64,7 @@ app: {
 
 ## Success Criteria
 
-✅ Users immediately see which application is being released  
-✅ Application name appears consistently throughout the flow  
-✅ Clear "Nagare is releasing [App]" messaging  
+✅ Users immediately see which application is being released\
+✅ Application name appears consistently throughout the flow\
+✅ Clear "Nagare is releasing [App]" messaging\
 ✅ Works automatically by detecting project name from config/package
-

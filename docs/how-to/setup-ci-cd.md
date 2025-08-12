@@ -1,6 +1,7 @@
 # How to Set Up CI/CD Integration
 
-This guide shows you how to integrate Nagare with continuous integration and deployment pipelines. Use this approach when you want to automate releases from your CI/CD system.
+This guide shows you how to integrate Nagare with continuous integration and deployment pipelines. Use this approach
+when you want to automate releases from your CI/CD system.
 
 ## Before you begin
 
@@ -31,20 +32,20 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-      
+
       - uses: denoland/setup-deno@v1
         with:
           deno-version: v2.4.x
-      
+
       - name: Run tests
         run: deno test
-      
+
       - name: Check for release needed
         id: check
         run: |
@@ -53,7 +54,7 @@ jobs:
           else
             echo "release_needed=true" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Create release
         if: steps.check.outputs.release_needed == 'true'
         env:
@@ -79,19 +80,19 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         deno-version: [v2.4.x, v2.5.x]
-    
+
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v1
         with:
           deno-version: ${{ matrix.deno-version }}
-      
+
       - name: Run tests
         run: deno test
-      
+
       - name: Check formatting
         run: deno fmt --check
-      
+
       - name: Run linter
         run: deno lint
 
@@ -101,17 +102,17 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-      
+
       - uses: denoland/setup-deno@v1
         with:
           deno-version: v2.4.x
-      
+
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -121,7 +122,7 @@ jobs:
             echo "No release needed"
             exit 0
           fi
-          
+
           # Create the release
           deno task nagare --skip-confirmation
 ```
@@ -161,10 +162,10 @@ release:
     - git config --global user.name "CI Bot"
   script:
     - |
-      if deno task nagare --dry-run --skip-confirmation | grep -q "No version bump needed"; then
-        echo "No release needed"
-        exit 0
-      fi
+        if deno task nagare --dry-run --skip-confirmation | grep -q "No version bump needed"; then
+          echo "No release needed"
+          exit 0
+        fi
     - deno task nagare --skip-confirmation
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
@@ -183,54 +184,54 @@ trigger:
       - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
 
 stages:
-- stage: Test
-  jobs:
-  - job: TestJob
-    steps:
-    - task: UseDeno@0
-      inputs:
-        version: '2.4.x'
-    
-    - script: |
-        deno fmt --check
-        deno lint
-        deno test
-      displayName: 'Run tests'
+  - stage: Test
+    jobs:
+      - job: TestJob
+        steps:
+          - task: UseDeno@0
+            inputs:
+              version: "2.4.x"
 
-- stage: Release
-  dependsOn: Test
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-  jobs:
-  - job: ReleaseJob
-    steps:
-    - task: UseDeno@0
-      inputs:
-        version: '2.4.x'
-    
-    - script: |
-        # Install GitHub CLI
-        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-        sudo apt update && sudo apt install gh
-      displayName: 'Install GitHub CLI'
-    
-    - script: |
-        git config --global user.email "azure-pipelines@example.com"
-        git config --global user.name "Azure Pipelines"
-      displayName: 'Configure Git'
-    
-    - script: |
-        if deno task nagare --dry-run --skip-confirmation | grep -q "No version bump needed"; then
-          echo "No release needed"
-          exit 0
-        fi
-        deno task nagare --skip-confirmation
-      displayName: 'Create release'
-      env:
-        GITHUB_TOKEN: $(GITHUB_TOKEN)
+          - script: |
+              deno fmt --check
+              deno lint
+              deno test
+            displayName: "Run tests"
+
+  - stage: Release
+    dependsOn: Test
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - job: ReleaseJob
+        steps:
+          - task: UseDeno@0
+            inputs:
+              version: "2.4.x"
+
+          - script: |
+              # Install GitHub CLI
+              curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+              echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+              sudo apt update && sudo apt install gh
+            displayName: "Install GitHub CLI"
+
+          - script: |
+              git config --global user.email "azure-pipelines@example.com"
+              git config --global user.name "Azure Pipelines"
+            displayName: "Configure Git"
+
+          - script: |
+              if deno task nagare --dry-run --skip-confirmation | grep -q "No version bump needed"; then
+                echo "No release needed"
+                exit 0
+              fi
+              deno task nagare --skip-confirmation
+            displayName: "Create release"
+            env:
+              GITHUB_TOKEN: $(GITHUB_TOKEN)
 ```
 
 ## Docker-based CI
@@ -287,6 +288,7 @@ NAGARE_SKIP_CONFIRMATION=true
 ### Secrets management
 
 **GitHub Actions:**
+
 ```yaml
 - name: Create release
   env:
@@ -295,6 +297,7 @@ NAGARE_SKIP_CONFIRMATION=true
 ```
 
 **GitLab CI:**
+
 ```yaml
 release:
   script:
@@ -377,16 +380,16 @@ export default {
 
 ## Troubleshooting
 
-**Problem**: "Permission denied" when creating releases  
+**Problem**: "Permission denied" when creating releases\
 **Solution**: Ensure your CI token has `contents: write` permissions
 
-**Problem**: "GitHub CLI not authenticated"  
+**Problem**: "GitHub CLI not authenticated"\
 **Solution**: Set `GITHUB_TOKEN` environment variable in your CI
 
-**Problem**: "Git user not configured"  
+**Problem**: "Git user not configured"\
 **Solution**: Set git user name and email in your CI script
 
-**Problem**: "No commits found for version bump"  
+**Problem**: "No commits found for version bump"\
 **Solution**: Ensure you're using conventional commits and fetching full git history
 
 ## Best practices

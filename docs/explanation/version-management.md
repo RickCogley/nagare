@@ -2,7 +2,9 @@
 
 ## Overview
 
-Version management is fundamental to software development - it communicates changes, maintains compatibility, and enables dependency management. Nagare combines semantic versioning with conventional commits to create an automated, consistent versioning system that scales from simple scripts to complex multi-package projects.
+Version management is fundamental to software development - it communicates changes, maintains compatibility, and
+enables dependency management. Nagare combines semantic versioning with conventional commits to create an automated,
+consistent versioning system that scales from simple scripts to complex multi-package projects.
 
 ## Why Semantic Versioning Matters
 
@@ -134,7 +136,8 @@ graph TD
     style F fill:#FFD700
 ```
 
-**Design Rationale**: This ensures version numbers always reflect the most significant change, preventing accidental breaking releases with minor version bumps.
+**Design Rationale**: This ensures version numbers always reflect the most significant change, preventing accidental
+breaking releases with minor version bumps.
 
 ### Pre-release Version Handling
 
@@ -249,8 +252,8 @@ Embedding version in source code:
       path: "src/version.ts",
       template: `export const VERSION = "&#123;&#123; version &#125;&#125;";
 export const BUILD_DATE = "&#123;&#123; now |> date &#125;&#125;";
-export const COMMIT = "&#123;&#123; gitCommit &#125;&#125;";`
-    }]
+export const COMMIT = "&#123;&#123; gitCommit &#125;&#125;";`,
+    }];
   }
 }
 ```
@@ -268,16 +271,16 @@ Keeping README badges current:
         // Update version badge
         content = content.replace(
           /shields\.io\/badge\/version-[\d.]+/g,
-          `shields.io/badge/version-${newVersion}`
+          `shields.io/badge/version-${newVersion}`,
         );
         // Update installation instructions
         content = content.replace(
           /@[\d.]+/g,
-          `@${newVersion}`
+          `@${newVersion}`,
         );
         return content;
-      }
-    }]
+      },
+    }];
   }
 }
 ```
@@ -352,12 +355,12 @@ graph TD
 
 ## Comparison with Version Management Approaches
 
-| Approach | Version Source | Pros | Cons | Best For |
-|----------|---------------|------|------|----------|
-| Nagare (Conventional) | Git commit messages | Automatic, consistent | Requires discipline | Teams following conventions |
-| Manual Updates | Developer decision | Full control | Error-prone, inconsistent | Small projects |
-| Calendar Versioning | Date-based | Simple, predictable | No compatibility info | Regular releases |
-| Git Hash Versioning | Commit SHA | Unique, traceable | Not semantic | Continuous deployment |
+| Approach              | Version Source      | Pros                  | Cons                      | Best For                    |
+| --------------------- | ------------------- | --------------------- | ------------------------- | --------------------------- |
+| Nagare (Conventional) | Git commit messages | Automatic, consistent | Requires discipline       | Teams following conventions |
+| Manual Updates        | Developer decision  | Full control          | Error-prone, inconsistent | Small projects              |
+| Calendar Versioning   | Date-based          | Simple, predictable   | No compatibility info     | Regular releases            |
+| Git Hash Versioning   | Commit SHA          | Unique, traceable     | Not semantic              | Continuous deployment       |
 
 ## Advanced Version Strategies
 

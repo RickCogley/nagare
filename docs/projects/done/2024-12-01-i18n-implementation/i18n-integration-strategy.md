@@ -2,8 +2,8 @@
 
 ## Overview
 
-This document outlines a careful, phased approach to integrating the i18n system into Nagare's error
-handling and CLI, ensuring backward compatibility and minimal disruption.
+This document outlines a careful, phased approach to integrating the i18n system into Nagare's error handling and CLI,
+ensuring backward compatibility and minimal disruption.
 
 ## Principles
 

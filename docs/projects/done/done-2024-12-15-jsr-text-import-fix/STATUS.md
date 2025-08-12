@@ -6,13 +6,12 @@
 
 ## Summary
 
-Implemented a workaround for JSR's lack of support for text imports, enabling nagare to continue
-using embedded templates while remaining compatible with JSR publishing.
+Implemented a workaround for JSR's lack of support for text imports, enabling nagare to continue using embedded
+templates while remaining compatible with JSR publishing.
 
 ## Problem Solved
 
-- JSR doesn't support importing text files (e.g.,
-  `import template from "./template.vento" with { type: "text" }`)
+- JSR doesn't support importing text files (e.g., `import template from "./template.vento" with { type: "text" }`)
 - This prevented nagare from being published to JSR
 - Embedded Vento templates were essential for the template processor functionality
 

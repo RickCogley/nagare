@@ -4,13 +4,13 @@ This guide explains when authentication is required for JSR.io REST API operatio
 
 ## Quick Reference
 
-| Operation | Authentication Required | API Type |
-|-----------|------------------------|----------|
-| Check package versions | ❌ No | Registry API |
-| Get package metadata | ❌ No | Registry API |
-| Download packages | ❌ No | Registry API |
-| Publish packages | ✅ Yes | Management API |
-| User account operations | ✅ Yes | Management API |
+| Operation               | Authentication Required | API Type       |
+| ----------------------- | ----------------------- | -------------- |
+| Check package versions  | ❌ No                   | Registry API   |
+| Get package metadata    | ❌ No                   | Registry API   |
+| Download packages       | ❌ No                   | Registry API   |
+| Publish packages        | ✅ Yes                  | Management API |
+| User account operations | ✅ Yes                  | Management API |
 
 ## No Authentication Required
 
@@ -30,6 +30,7 @@ curl "https://jsr.io/api/scopes/std/packages/path/1.0.2"
 ```
 
 **JavaScript example:**
+
 ```javascript
 // No authentication required for reading package data
 async function getPackageInfo(scope, packageName) {
@@ -37,7 +38,7 @@ async function getPackageInfo(scope, packageName) {
   return await response.json();
 }
 
-const packageInfo = await getPackageInfo('std', 'path');
+const packageInfo = await getPackageInfo("std", "path");
 console.log(`Latest version: ${packageInfo.latest}`);
 ```
 
@@ -70,22 +71,23 @@ curl -X POST "https://api.jsr.io/packages" \
 JSR supports three token types:
 
 1. **Short-lived device access tokens** - For user authentication
-2. **Bearer tokens** - Standard API tokens  
+2. **Bearer tokens** - Standard API tokens
 3. **GitHub OIDC tokens** - For CI/CD integration
 
 **Example with Bearer token:**
+
 ```javascript
 async function publishPackage(token, packageData) {
-  const response = await fetch('https://api.jsr.io/packages', {
-    method: 'POST',
+  const response = await fetch("https://api.jsr.io/packages", {
+    method: "POST",
     headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      'User-Agent': 'MyTool/1.0.0'
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "User-Agent": "MyTool/1.0.0",
     },
-    body: JSON.stringify(packageData)
+    body: JSON.stringify(packageData),
   });
-  
+
   return await response.json();
 }
 ```
@@ -121,6 +123,7 @@ Use the authenticated Management API for:
 ### Security Considerations
 
 **Token Storage:**
+
 ```javascript
 // Good: Environment variables
 const token = process.env.JSR_TOKEN;
@@ -130,26 +133,27 @@ const token = "jsr_abc123..."; // Never do this
 ```
 
 **Error Handling:**
+
 ```javascript
 async function authenticatedRequest(endpoint, token) {
   try {
     const response = await fetch(endpoint, {
       headers: {
-        'Authorization': `Bearer ${token}`
-      }
+        "Authorization": `Bearer ${token}`,
+      },
     });
-    
+
     if (response.status === 401) {
-      throw new Error('Invalid or expired token');
+      throw new Error("Invalid or expired token");
     }
-    
+
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`);
     }
-    
+
     return await response.json();
   } catch (error) {
-    console.error('Authentication failed:', error.message);
+    console.error("Authentication failed:", error.message);
     throw error;
   }
 }
@@ -161,8 +165,8 @@ Management API requests should identify the calling tool:
 
 ```javascript
 const headers = {
-  'User-Agent': 'MyTool/1.2.0 (https://example.com/contact)',
-  'Authorization': `Bearer ${token}`
+  "User-Agent": "MyTool/1.2.0 (https://example.com/contact)",
+  "Authorization": `Bearer ${token}`,
 };
 ```
 
@@ -171,17 +175,19 @@ const headers = {
 If you're currently using authenticated requests for read operations:
 
 **Before (unnecessary auth):**
+
 ```javascript
 // Wasteful - auth not needed for reading
-const response = await fetch('https://api.jsr.io/scopes/std/packages/path', {
-  headers: { 'Authorization': `Bearer ${token}` }
+const response = await fetch("https://api.jsr.io/scopes/std/packages/path", {
+  headers: { "Authorization": `Bearer ${token}` },
 });
 ```
 
 **After (optimized):**
+
 ```javascript
 // Better - no auth needed for Registry API
-const response = await fetch('https://jsr.io/api/scopes/std/packages/path');
+const response = await fetch("https://jsr.io/api/scopes/std/packages/path");
 ```
 
 ## Reference

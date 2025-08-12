@@ -4,7 +4,9 @@
 
 **Raw Idea**: "nagare branding could be improved"
 
-**Current State**: Users run nagare commands and see inconsistent, generic-looking output that doesn't reflect the tool's distinctive "flow" concept. The console shows a mix of branded and unbranded messages, making nagare feel like any other CLI tool rather than the smooth, automated release flow it represents.
+**Current State**: Users run nagare commands and see inconsistent, generic-looking output that doesn't reflect the
+tool's distinctive "flow" concept. The console shows a mix of branded and unbranded messages, making nagare feel like
+any other CLI tool rather than the smooth, automated release flow it represents.
 
 **Evidence of the Problem**:
 
@@ -16,13 +18,15 @@
 
 ## Appetite
 
-**6 days** - This is a visual/UX improvement that shouldn't require architectural changes. We can enhance the existing branding system and systematically apply it without touching release logic.
+**6 days** - This is a visual/UX improvement that shouldn't require architectural changes. We can enhance the existing
+branding system and systematically apply it without touching release logic.
 
 ## Solution
 
 ### Core Concept: "Flowing Brand Experience"
 
-Transform nagare into a distinctively ocean-themed CLI where every interaction reinforces the "flow" metaphor through consistent visual language.
+Transform nagare into a distinctively ocean-themed CLI where every interaction reinforces the "flow" metaphor through
+consistent visual language.
 
 ### Key Elements
 
@@ -31,12 +35,13 @@ Transform nagare into a distinctively ocean-themed CLI where every interaction r
 ```
 🌊 nAgare -> naGare -> nagAre -> nagaRe -> nagarE
 ```
+
 Animated sequence showing the wave "flowing" through the name on CLI startup, establishing immediate brand recognition.
 
 #### 2. Marine Color Palette (CI/CD Safe)
 
 - **Deep Blue**: Primary brand messages and headers
-- **Cyan**: Progress states and active operations  
+- **Cyan**: Progress states and active operations
 - **Teal**: Success states and completions
 - **Navy**: Important warnings and structured info
 
@@ -45,7 +50,7 @@ Animated sequence showing the wave "flowing" through the name on CLI startup, es
 Replace generic tech terminology with flow metaphors:
 
 - "Flowing from v1.0 to v1.1" instead of "bumping version"
-- "Navigating release channels" instead of "checking repositories"  
+- "Navigating release channels" instead of "checking repositories"
 - "Current flowing smoothly" for progress states
 - "Upstream/downstream" for git operations
 
@@ -89,7 +94,7 @@ The solution has **three main areas**:
    - Enhanced Brand class with flow metaphors
 
 2. **Systematic Brand Application** (3 days)
-   - Replace 50+ console statements in `cli.ts`  
+   - Replace 50+ console statements in `cli.ts`
    - Consolidate `cli-utils.ts` vs `branded-messages.ts` duplication
    - Fix error handling gaps in core components
 
@@ -106,7 +111,7 @@ The solution has **three main areas**:
 - ✅ Consistent branding across error handling
 - ✅ Enhanced progress indicators with marine theming
 
-#### Elements to Exclude  
+#### Elements to Exclude
 
 - ❌ Configurable branding (adds complexity)
 - ❌ Major architectural changes to logging infrastructure
@@ -126,7 +131,7 @@ The solution has **three main areas**:
 ## No-Gos
 
 - **Performance Impact**: Animation/colors shouldn't slow down commands
-- **Accessibility**: Must work in screen readers and low-vision setups  
+- **Accessibility**: Must work in screen readers and low-vision setups
 - **Corporate Environments**: Some terminals disable colors - graceful degradation required
 - **Backwards Compatibility**: Existing scripts/integrations shouldn't break
 
@@ -145,6 +150,7 @@ This is purely enhancing existing code - no new libraries or major architectural
 ## Target User Experience
 
 **Before**:
+
 ```
 Loading configuration...
 ✅ Configuration validated successfully  
@@ -153,6 +159,7 @@ Starting rollback process...
 ```
 
 **After**:
+
 ```
 🌊 nAgare -> naGare -> nagAre -> nagarE
 🌊 Nagare: Navigating configuration channels...
@@ -162,12 +169,13 @@ Starting rollback process...
 💡 Try: Current will resume automatically in 15 minutes
 ```
 
-Users should immediately recognize nagare output, feel the flow metaphor throughout their experience, and enjoy the subtle animation that makes releases feel more natural and less mechanical.
+Users should immediately recognize nagare output, feel the flow metaphor throughout their experience, and enjoy the
+subtle animation that makes releases feel more natural and less mechanical.
 
 ## Success Criteria
 
 - Users can instantly identify nagare output in mixed CI logs
-- Every user-facing message uses consistent ocean/flow theming  
+- Every user-facing message uses consistent ocean/flow theming
 - Wave animation delights users without slowing down operations
 - CI/CD environments maintain full compatibility
 - Error messages feel helpful and stay on-brand
@@ -175,14 +183,14 @@ Users should immediately recognize nagare output, feel the flow metaphor through
 
 ## Risk Mitigation
 
-**Risk**: Animation could slow down CLI startup  
+**Risk**: Animation could slow down CLI startup\
 **Mitigation**: Simple text sequence, no complex timing or external dependencies
 
-**Risk**: Colors break in some terminal environments  
+**Risk**: Colors break in some terminal environments\
 **Mitigation**: Leverage existing terminal detection from progress-indicator.ts
 
-**Risk**: Flow metaphors confuse technical users  
+**Risk**: Flow metaphors confuse technical users\
 **Mitigation**: Keep technical accuracy, enhance with metaphors rather than replace
 
-**Risk**: Large codebase changes introduce bugs  
+**Risk**: Large codebase changes introduce bugs\
 **Mitigation**: Focus on presentation layer only, extensive testing, gradual rollout

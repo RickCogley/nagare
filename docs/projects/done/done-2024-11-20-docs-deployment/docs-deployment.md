@@ -1,20 +1,18 @@
 # Documentation Deployment Guide
 
-This guide explains how to deploy Nagare's documentation and handle the URL compatibility issues
-with Deno Deploy.
+This guide explains how to deploy Nagare's documentation and handle the URL compatibility issues with Deno Deploy.
 
 ## The Problem
 
 `deno doc` generates documentation with a `~` character in URLs for exported symbols (e.g.,
-`/src/file-handlers.ts/~/BUILT_IN_HANDLERS.html`). While these URLs work locally, Deno Deploy may
-have issues serving files with `~` in the path.
+`/src/file-handlers.ts/~/BUILT_IN_HANDLERS.html`). While these URLs work locally, Deno Deploy may have issues serving
+files with `~` in the path.
 
 ## Solutions Implemented
 
 ### 1. URL Rewriting in docs-server.ts
 
-The documentation server (`docs-server.ts`) now includes URL rewriting logic to handle `~`
-characters:
+The documentation server (`docs-server.ts`) now includes URL rewriting logic to handle `~` characters:
 
 - Decodes URL-encoded tildes (`%7E` → `~`)
 - Attempts alternative encodings if the initial request fails
@@ -73,8 +71,7 @@ This runs:
 If the URL rewriting doesn't fully resolve the issue, consider:
 
 1. **Custom HTML Generation**: Use `deno doc --json` and generate custom HTML without `~` characters
-2. **Static Hosting**: Use a traditional static hosting service that handles special characters
-   differently
+2. **Static Hosting**: Use a traditional static hosting service that handles special characters differently
 3. **Path Remapping**: Configure a CDN or proxy to rewrite URLs before they reach Deno Deploy
 
 ## Security Considerations
@@ -85,5 +82,4 @@ All URL handling includes security measures:
 - Secure redirect handling in `docs-server.ts`
 - Content Security Policy headers for documentation pages
 
-InfoSec: URL rewriting prevents directory traversal attacks by validating all paths remain within
-the docs directory.
+InfoSec: URL rewriting prevents directory traversal attacks by validating all paths remain within the docs directory.

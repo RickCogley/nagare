@@ -42,15 +42,15 @@ export const config: NagareConfig = {
   project: {
     name: "My Awesome Project",
     displayName: "My Awesome Project", // New field
-    repository: "github.com/user/project"
+    repository: "github.com/user/project",
   },
   // Optionally override Nagare branding
   app: {
     name: "Nagare",
     displayName: "Nagare Release Manager",
-    showBranding: true
-  }
-}
+    showBranding: true,
+  },
+};
 ```
 
 ### 3. **Context-Rich Status Updates**
@@ -111,4 +111,3 @@ If time permits:
 - Configurable output verbosity levels
 - Export release summary to file
 - Integration with terminal notification systems
-
