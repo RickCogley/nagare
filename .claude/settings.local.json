@@ -58,7 +58,9 @@
       "Bash(done)",
       "Bash(git clean:*)",
       "Bash(do echo \"=== $file ===\")",
-      "Bash(gh release delete:*)"
+      "Bash(gh release delete:*)",
+      "Bash(./scripts/run-tests.sh:*)",
+      "Bash(./.aichaku-githooks/hooks.d/05-type-check:*)"
     ],
     "deny": []
   }
