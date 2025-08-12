@@ -9,7 +9,25 @@ import { GitOperations } from "../src/git/git-operations.ts";
 import { TemplateProcessor } from "../src/templates/template-processor.ts";
 import { validateFilePath } from "../src/validation/security-utils.ts";
 import { TemplateFormat } from "../types.ts";
-import type { TemplateData } from "../types.ts";
+import type { NagareConfig, TemplateData } from "../types.ts";
+
+/**
+ * Create a mock config for benchmarking
+ */
+const createMockConfig = (): NagareConfig => ({
+  project: {
+    name: "Benchmark Test",
+    description: "Performance benchmarking",
+    repository: "https://github.com/test/benchmark",
+  },
+  versionFile: {
+    path: "./version.ts",
+    template: TemplateFormat.TYPESCRIPT,
+  },
+  options: {
+    dryRun: true,
+  },
+});
 
 /**
  * Performance thresholds in milliseconds
@@ -128,17 +146,24 @@ async function runBenchmarks(): Promise<void> {
     await benchmark(
       "File Handler Process",
       async () => {
-        const registry = new FileHandlerManager();
-        const handler = registry.getHandler("deno.json");
-        if (handler) {
-          const testContent = '{"name": "test", "version": "1.0.0"}';
-          await handler.updateFn(testContent, {
-            version: "1.1.0",
-            previousVersion: "1.0.0",
-            changelog: "",
-            date: new Date().toISOString(),
-            commits: [],
-          });
+        const manager = new FileHandlerManager();
+        // Test with a mock file update operation
+        const testFilePath = "test-deno.json";
+        const testContent = '{"name": "test", "version": "1.0.0"}';
+
+        // Create a temporary test file
+        await Deno.writeTextFile(testFilePath, testContent);
+
+        try {
+          // Use the proper updateFile method
+          await manager.updateFile(testFilePath, "version", "1.1.0");
+        } finally {
+          // Clean up test file
+          try {
+            await Deno.remove(testFilePath);
+          } catch {
+            // Ignore cleanup errors
+          }
         }
       },
       THRESHOLDS.fileHandlerProcess,
@@ -174,7 +199,7 @@ async function runBenchmarks(): Promise<void> {
     await benchmark(
       "Template Processing",
       async () => {
-        const processor = new TemplateProcessor();
+        const processor = new TemplateProcessor(createMockConfig());
         await processor.processTemplate(
           "# Changelog\n\n## Version {{ version }}\n\nReleased on {{ buildDate }}",
           {
@@ -230,14 +255,28 @@ async function runBenchmarks(): Promise<void> {
   // Simulate multiple operations
   for (let i = 0; i < 10; i++) {
     new FileHandlerManager();
-    new GitOperations({ dryRun: true });
-    await new TemplateProcessor().processTemplate("Test {{ version }}", {
+    new GitOperations(createMockConfig());
+    await new TemplateProcessor(createMockConfig()).processTemplate("Test {{ version }}", {
       version: `1.0.${i}`,
-      previousVersion: "1.0.0",
-      changelog: "",
-      date: new Date().toISOString(),
-      commits: [],
-    });
+      buildDate: new Date().toISOString(),
+      gitCommit: "abc123",
+      environment: "test",
+      releaseNotes: {
+        version: `1.0.${i}`,
+        date: new Date().toISOString(),
+        added: [],
+        changed: [],
+        deprecated: [],
+        removed: [],
+        fixed: [],
+        security: [],
+      },
+      metadata: {},
+      project: {
+        name: "Test",
+        repository: "https://github.com/test/test",
+      },
+    } as TemplateData);
   }
 
   // Force garbage collection if available

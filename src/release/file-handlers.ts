@@ -1015,8 +1015,9 @@ export class PatternBuilder {
     // Return new RegExp instances to avoid global flag state issues in tests
     if (badgeService === "shields.io") {
       // codeql[js/regex/missing-regexp-anchor]
+      // Match shields.io but NOT img.shields.io - use negative lookbehind
       return new RegExp(
-        "(?:https?://)?shields\\.io/badge/version-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)",
+        "(?:https?://)?(?<!img\\.)shields\\.io/badge/version-([^-]+)-(?:blue|green|red|yellow|orange|brightgreen|lightgrey)",
         "g",
       );
     }
