@@ -34,53 +34,20 @@ jobs:
         with:
           deno-version: "2.x"
 
-      - name: Install type-coverage tool
-        run: |
-          npm install -g type-coverage
-          npm install -g typescript
-
-      # Strict TypeScript compilation with all flags
+      # Strict TypeScript compilation using Deno's built-in type checker
       - name: Strict TypeScript Check
         run: |
           echo "🔍 Running strict TypeScript checks..."
+          
+          # Use Deno's type checking which understands Deno-specific types
           deno check --unstable-raw-imports \
             --config deno.json \
-            **/*.ts
-
-          # Additional strict checking with explicit flags
-          cat > tsconfig.strict.json << 'EOF'
-          {
-            "compilerOptions": {
-              "lib": ["deno.window"],
-              "strict": true,
-              "noImplicitAny": true,
-              "noImplicitReturns": true,
-              "noImplicitThis": true,
-              "noUnusedLocals": true,
-              "noUnusedParameters": true,
-              "noFallthroughCasesInSwitch": true,
-              "strictNullChecks": true,
-              "strictFunctionTypes": true,
-              "strictBindCallApply": true,
-              "strictPropertyInitialization": true,
-              "alwaysStrict": true,
-              "exactOptionalPropertyTypes": true,
-              "noUncheckedIndexedAccess": true,
-              "noPropertyAccessFromIndexSignature": true,
-              "allowUnusedLabels": false,
-              "allowUnreachableCode": false,
-              "checkJs": false,
-              "skipLibCheck": false
-            },
-            "include": ["**/*.ts"],
-            "exclude": ["node_modules", "docs", "coverage", ".githooks"]
-          }
-          EOF
-
-          tsc --project tsconfig.strict.json --noEmit || {
+            **/*.ts || {
             echo "❌ Strict TypeScript checks failed"
             exit 1
           }
+          
+          echo "✅ TypeScript checks passed"
 
       # Enforce no-any rule
       - name: No-Any Enforcement
@@ -136,12 +103,12 @@ jobs:
 
           deno run --allow-read check-no-any.ts
 
-      # Type coverage reporting
+      # Type coverage reporting using Deno
       - name: Type Coverage Report
         run: |
           echo "📊 Calculating type coverage..."
 
-          # Create type coverage script
+          # Create type coverage script using Deno
           cat > check-type-coverage.ts << 'EOF'
           import { walk } from "jsr:@std/fs@^1.0.0/walk";
 

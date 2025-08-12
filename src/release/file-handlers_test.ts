@@ -4,7 +4,7 @@
  * @description Comprehensive test suite for intelligent file handlers
  */
 
-import { assertEquals, assertExists, assertNotEquals } from "https://deno.land/std@0.208.0/assert/mod.ts";
+import { assert, assertEquals, assertExists, assertNotEquals } from "https://deno.land/std@0.208.0/assert/mod.ts";
 import { assertSpyCall, assertSpyCalls, spy } from "https://deno.land/std@0.208.0/testing/mock.ts";
 
 import { BUILT_IN_HANDLERS, FileHandler, FileHandlerManager, PatternBuilder } from "./file-handlers.ts";
@@ -612,12 +612,10 @@ Deno.test("FileHandlerManager - handles malformed content", async () => {
 
     const result = await manager.updateFile("./deno.json", "version", "2.0.0");
 
-    // Should still update the content, validation happens separately
-    assertEquals(result.success, true);
-    if (result.content && BUILT_IN_HANDLERS["deno.json"].validate) {
-      const validation = BUILT_IN_HANDLERS["deno.json"].validate(result.content);
-      assertEquals(validation.valid, false);
-    }
+    // With malformed JSON, the update should fail but handle gracefully
+    assertEquals(result.success, false);
+    assert(result.error?.includes("JSON") || result.error?.includes("parse"));
+    // The handler should report the error rather than throwing
   } finally {
     Deno.readTextFile = originalReadTextFile;
   }

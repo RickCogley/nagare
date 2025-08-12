@@ -1,0 +1,58 @@
+{
+  "timestamp": "2025-08-12T06:14:50.976Z",
+  "results": [
+    {
+      "name": "File Handler Init",
+      "duration": 0.03270899999999699,
+      "threshold": 50,
+      "passed": true,
+      "memory": {
+        "before": 7.725715637207031,
+        "after": 7.7323150634765625,
+        "delta": 0.00659942626953125
+      }
+    },
+    {
+      "name": "File Handler Process",
+      "duration": 10.194083000000006,
+      "threshold": 100,
+      "passed": true
+    },
+    {
+      "name": "Git Operations Init",
+      "duration": 0.047040999999993005,
+      "threshold": 100,
+      "passed": true,
+      "memory": {
+        "before": 7.790046691894531,
+        "after": 7.7931365966796875,
+        "delta": 0.00308990478515625
+      }
+    },
+    {
+      "name": "Template Processing",
+      "duration": 2.5292500000000047,
+      "threshold": 300,
+      "passed": true
+    },
+    {
+      "name": "Security Validation",
+      "duration": 0.15749999999999886,
+      "threshold": 20,
+      "passed": true
+    },
+    {
+      "name": "Memory Usage",
+      "duration": 8.972694396972656,
+      "threshold": 256,
+      "passed": true
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "totalDuration": 12.960583,
+    "successRate": 100,
+    "grade": "A"
+  }
+}
