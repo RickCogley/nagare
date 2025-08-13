@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.19.5] - 2025-08-13
+
+### Changed
+
+- improve coverage from 32% to 50% with dependency injection refactoring (bd3a2ed)
+- add comprehensive mock infrastructure for ReleaseManager tests (5bbb9f4)
+- update aichaku configuration to v0.48.2 (ec7af85)
+
+### Fixed
+
+- lower type coverage threshold temporarily to allow CI to pass (457d62f)
+- final CI workflow fixes for all quality checks (b12a3df)
+- resolve all CI workflow failures for quality assurance (d2496ba)
+- resolve CI workflow failures in performance benchmarks (a04a916)
+
 ## [2.19.4] - 2025-08-12
 
 ### Changed
