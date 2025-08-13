@@ -9,6 +9,7 @@ import { PRDetector } from "../src/changelog/pr-detector.ts";
 import { GitOperations } from "../src/git/git-operations.ts";
 import { ChangelogGenerator } from "../src/templates/changelog-generator.ts";
 import type { NagareConfig } from "../types.ts";
+import { LogLevel, TemplateFormat } from "../types.ts";
 
 // Mock configuration
 const mockConfig: NagareConfig = {
@@ -19,10 +20,10 @@ const mockConfig: NagareConfig = {
   },
   versionFile: {
     path: "./version.ts",
-    template: "typescript" as any,
+    template: TemplateFormat.TYPESCRIPT,
   },
   options: {
-    logLevel: "ERROR" as any,
+    logLevel: LogLevel.ERROR,
   },
 };
 

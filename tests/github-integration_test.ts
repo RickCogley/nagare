@@ -6,6 +6,7 @@
 import { assertEquals, assertExists, assertStringIncludes } from "https://deno.land/std@0.208.0/assert/mod.ts";
 import { GitHubIntegration } from "../src/git/github-integration.ts";
 import type { NagareConfig, ReleaseNotes } from "../types.ts";
+import { TemplateFormat } from "../types.ts";
 
 function createTestConfig(overrides?: Partial<NagareConfig>): NagareConfig {
   return {
@@ -15,9 +16,11 @@ function createTestConfig(overrides?: Partial<NagareConfig>): NagareConfig {
     },
     versionFile: {
       path: "./version.ts",
-      template: "typescript",
+      template: TemplateFormat.TYPESCRIPT,
     },
     github: {
+      owner: "test",
+      repo: "project",
       createRelease: true,
       ...overrides?.github,
     },
@@ -39,7 +42,6 @@ function createTestReleaseNotes(overrides?: Partial<ReleaseNotes>): ReleaseNotes
     removed: [],
     fixed: [],
     security: [],
-    hasPRs: false,
     ...overrides,
   };
 }
@@ -62,6 +64,8 @@ Deno.test("GitHubIntegration - constructor initializes properly", () => {
 Deno.test("GitHubIntegration - skips release when not configured", async () => {
   const config = createTestConfig({
     github: {
+      owner: "test",
+      repo: "project",
       createRelease: false,
     },
   });
@@ -112,8 +116,8 @@ Deno.test("GitHubIntegration - createRelease with all note types", async () => {
 
   let writtenContent = "";
   Deno.makeTempFile = async () => "/tmp/test-release.md";
-  Deno.writeTextFile = async (_path: string, content: string) => {
-    writtenContent = content;
+  Deno.writeTextFile = async (path: string | URL, data: string | ReadableStream<string>) => {
+    writtenContent = typeof data === "string" ? data : "";
   };
   Deno.remove = async () => {};
 
@@ -392,8 +396,8 @@ Deno.test("GitHubIntegration - formats empty release notes", async () => {
   };
 
   Deno.makeTempFile = async () => "/tmp/test.md";
-  Deno.writeTextFile = async (_path: string, content: string) => {
-    writtenContent = content;
+  Deno.writeTextFile = async (path: string | URL, data: string | ReadableStream<string>) => {
+    writtenContent = typeof data === "string" ? data : "";
   };
   Deno.remove = async () => {};
 

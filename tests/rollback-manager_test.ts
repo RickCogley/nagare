@@ -7,6 +7,7 @@ import { assertEquals, assertExists } from "https://deno.land/std@0.208.0/assert
 import { spy, stub } from "https://deno.land/std@0.208.0/testing/mock.ts";
 import { RollbackManager } from "../src/release/rollback-manager.ts";
 import type { NagareConfig } from "../types.ts";
+import { LogLevel, TemplateFormat } from "../types.ts";
 import { initI18n } from "../src/core/i18n.ts";
 
 // Initialize i18n for tests
@@ -20,11 +21,11 @@ function createTestConfig(overrides?: Partial<NagareConfig>): NagareConfig {
     },
     versionFile: {
       path: "./version.ts",
-      template: "typescript",
+      template: TemplateFormat.TYPESCRIPT,
     },
     options: {
       skipConfirmation: true, // Skip prompts in tests
-      logLevel: "ERROR", // Reduce noise in tests
+      logLevel: LogLevel.ERROR, // Reduce noise in tests
       ...overrides?.options,
     },
     ...overrides,

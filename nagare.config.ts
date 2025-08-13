@@ -257,7 +257,6 @@ const config: NagareConfig = {
     // Pre-flight checks configuration
     preflightChecks: {
       runTests: false, // Disable tests in pre-flight checks
-      runTypeCheck: false, // Temporarily disable type check due to test file issues
     },
 
     // Quality gates configuration
