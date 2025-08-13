@@ -283,11 +283,116 @@ deno test --watch
 deno test --allow-read --allow-write --allow-env --allow-run
 ```
 
+## Phase 4: TypeScript Enum Type Fixes (2025-08-13)
+
+After the initial release (v2.19.5), the CI workflow continued to fail due to TypeScript type errors in test files that
+weren't caught during local development.
+
+### Issues Identified
+
+1. **String Literals vs Enums**: Test files were using string literals instead of proper enum values
+   - Used `"typescript"` instead of `TemplateFormat.TYPESCRIPT`
+   - Used `"ERROR"` instead of `LogLevel.ERROR`
+
+2. **Incomplete Type Definitions**: Test configurations missing required fields
+   - `GitHubConfig` requires `owner` and `repo` fields
+   - Test helpers weren't providing these required fields
+
+3. **Invalid Configuration Properties**:
+   - `nagare.config.ts` had invalid `runTypeCheck` property in `preflightChecks`
+   - Test data included non-existent `hasPRs` property in `ReleaseNotes`
+
+4. **Mock Type Signatures**: Deno API mocks had incorrect type signatures
+   - `Deno.writeTextFile` mock didn't match actual API signature
+
+### Files Fixed
+
+#### tests/rollback-manager_test.ts
+
+```typescript
+// Before:
+template: "typescript",
+logLevel: "ERROR",
+
+// After:
+import { LogLevel, TemplateFormat } from "../types.ts";
+template: TemplateFormat.TYPESCRIPT,
+logLevel: LogLevel.ERROR,
+```
+
+#### tests/changelog-pr.test.ts
+
+```typescript
+// Before:
+template: "typescript" as any,
+logLevel: "ERROR" as any,
+
+// After:
+import { LogLevel, TemplateFormat } from "../types.ts";
+template: TemplateFormat.TYPESCRIPT,
+logLevel: LogLevel.ERROR,
+```
+
+#### tests/GitHub-integration_test.ts
+
+```typescript
+// Before:
+github: {
+  createRelease: true,
+},
+
+// After:
+github: {
+  owner: "test",
+  repo: "project",
+  createRelease: true,
+},
+
+// Mock signature fix:
+Deno.writeTextFile = async (path: string | URL, data: string | ReadableStream<string>) => {
+  writtenContent = typeof data === "string" ? data : "";
+};
+```
+
+#### nagare.config.ts
+
+```typescript
+// Removed invalid property:
+preflightChecks: {
+  runTests: false,
+  // runTypeCheck: false, // REMOVED - not a valid property
+},
+```
+
+### Root Cause Analysis
+
+The issues arose from:
+
+1. **Type Drift**: Test files weren't kept in sync with type definition changes
+2. **Loose Type Checking**: Using `as any` to bypass type errors instead of fixing them properly
+3. **Incomplete Test Helpers**: Factory functions not providing all required fields
+4. **CI vs Local Differences**: Stricter type checking in CI pipeline caught errors that local development missed
+
+### Prevention Measures
+
+1. **Always use enum imports** instead of string literals for type safety
+2. **Avoid `as any` casts** - fix the actual type issues instead
+3. **Keep test helpers updated** when types change
+4. **Run full CI checks locally** before pushing: `deno check --unstable-raw-imports --config deno.json **/*.ts`
+
 ## Conclusion
 
 This project successfully improved Nagare's test coverage from 32.2% to 50.2% through systematic refactoring and
 comprehensive test additions. The implementation of dependency injection has made the codebase significantly more
-testable and maintainable. The updated CI/CD thresholds ensure this improved quality level is maintained going forward.
+testable and maintainable.
 
-The foundation is now in place for continuing to improve coverage toward the industry-standard 80% target while
-maintaining code quality and security standards.
+The subsequent TypeScript enum fixes resolved all CI workflow failures, ensuring that:
+
+- All tests now use proper enum values for type safety
+- Test configurations provide all required fields
+- Mock implementations match actual API signatures
+- The CI/CD pipeline passes all quality gates
+
+The updated CI/CD thresholds ensure this improved quality level is maintained going forward. The foundation is now in
+place for continuing to improve coverage toward the industry-standard 80% target while maintaining code quality and
+security standards.
