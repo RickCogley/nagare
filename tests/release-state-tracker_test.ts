@@ -243,44 +243,109 @@ Deno.test("ReleaseStateTracker - performRollback reverses operations in LIFO ord
 
   const rollbackOrder: string[] = [];
 
-  const op1 = tracker.trackOperation(
-    OperationType.FILE_UPDATE,
-    "First",
-    {},
-    async () => {
-      rollbackOrder.push("First");
-    },
-  );
+  // Mock git commands for verification
+  const originalCommand = (Deno as any).Command;
+  (Deno as any).Command = class MockCommand {
+    constructor(public cmd: string, public options?: any) {}
 
-  const op2 = tracker.trackOperation(
-    OperationType.GIT_COMMIT,
-    "Second",
-    {},
-    async () => {
-      rollbackOrder.push("Second");
-    },
-  );
+    output = async () => {
+      const args = this.options?.args || [];
 
-  const op3 = tracker.trackOperation(
-    OperationType.GIT_TAG,
-    "Third",
-    {},
-    async () => {
-      rollbackOrder.push("Third");
-    },
-  );
+      // Mock git tag verification (check if tag exists)
+      if (this.cmd === "git" && args[0] === "tag" && args[1] === "-l") {
+        // Return empty to indicate tag doesn't exist (rollback successful)
+        return {
+          success: true,
+          code: 0,
+          stdout: new Uint8Array(), // Empty means tag doesn't exist
+          stderr: new Uint8Array(),
+        };
+      }
 
-  // Mark all as completed
-  tracker.markCompleted(op1);
-  tracker.markCompleted(op2);
-  tracker.markCompleted(op3);
+      // Mock git rev-parse for commit verification
+      if (this.cmd === "git" && args[0] === "rev-parse" && args[1] === "HEAD") {
+        // Return the expected commit after rollback
+        return {
+          success: true,
+          code: 0,
+          stdout: new TextEncoder().encode("abc123\n"),
+          stderr: new Uint8Array(),
+        };
+      }
 
-  const result = await tracker.performRollback();
+      // Mock git reset for commit rollback
+      if (this.cmd === "git" && args[0] === "reset") {
+        return {
+          success: true,
+          code: 0,
+          stdout: new Uint8Array(),
+          stderr: new Uint8Array(),
+        };
+      }
 
-  assertEquals(result.success, true);
-  assertEquals(result.rolledBackOperations.length, 3);
-  // Should rollback in reverse order (LIFO)
-  assertEquals(rollbackOrder, ["Third", "Second", "First"]);
+      // Mock git tag delete
+      if (this.cmd === "git" && args[0] === "tag" && args[1] === "-d") {
+        return {
+          success: true,
+          code: 0,
+          stdout: new Uint8Array(),
+          stderr: new Uint8Array(),
+        };
+      }
+
+      // Default response
+      return {
+        success: true,
+        code: 0,
+        stdout: new Uint8Array(),
+        stderr: new Uint8Array(),
+      };
+    };
+  };
+
+  try {
+    const op1 = tracker.trackOperation(
+      OperationType.FILE_UPDATE,
+      "First",
+      {},
+      async () => {
+        rollbackOrder.push("First");
+      },
+    );
+
+    const op2 = tracker.trackOperation(
+      OperationType.GIT_COMMIT,
+      "Second",
+      { previousCommit: "abc123" },
+      async () => {
+        rollbackOrder.push("Second");
+      },
+    );
+
+    const op3 = tracker.trackOperation(
+      OperationType.GIT_TAG,
+      "Third",
+      { tagName: "v1.0.0" },
+      async () => {
+        rollbackOrder.push("Third");
+      },
+    );
+
+    // Mark all as completed
+    tracker.markCompleted(op1);
+    tracker.markCompleted(op2);
+    tracker.markCompleted(op3);
+
+    const result = await tracker.performRollback();
+
+    assertEquals(result.success, true);
+    assertEquals(result.rolledBackOperations.length, 3);
+    // Should rollback in reverse order (LIFO)
+    assertEquals(rollbackOrder, ["Third", "Second", "First"]);
+  } finally {
+    // Restore original Command
+    (Deno as any).Command = originalCommand;
+  }
 });
 
 Deno.test("ReleaseStateTracker - performRollback only rolls back completed operations", async () => {
