@@ -58,12 +58,21 @@ patterns for testability, and establishing sustainable quality gates in the CI/C
 
 ## Post-Release Fixes (2025-08-13)
 
-After initial release, fixed TypeScript enum type errors:
+After initial release, fixed multiple CI workflow failures:
 
-- Updated test files to use proper enum imports
-- Fixed GitHubConfig compliance in tests
-- Removed invalid configuration properties
-- Corrected Deno API mock signatures
+### Phase 1: TypeScript Enum Type Errors
+
+- Updated test files to use proper enum imports (TemplateFormat, LogLevel)
+- Fixed GitHubConfig compliance in tests (added required owner/repo fields)
+- Removed invalid configuration properties (runTypeCheck from nagare.config.ts)
+- Corrected Deno API mock signatures (Deno.writeTextFile)
+
+### Phase 2: Release State Tracker Test
+
+- Added required metadata for GIT_TAG and GIT_COMMIT operations
+- Mocked git verification commands (tag -l, rev-parse HEAD, reset, tag -d)
+- Fixed rollback verification in unit tests
+- Ensured tests work without git permissions in CI
 
 ## Completion Criteria Met
 

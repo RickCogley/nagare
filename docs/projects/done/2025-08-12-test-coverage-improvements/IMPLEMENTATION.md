@@ -380,6 +380,92 @@ The issues arose from:
 3. **Keep test helpers updated** when types change
 4. **Run full CI checks locally** before pushing: `deno check --unstable-raw-imports --config deno.json **/*.ts`
 
+## Phase 5: Release State Tracker Test Fix (2025-08-13)
+
+After fixing the TypeScript enum issues, one test continued to fail in CI: the release-state-tracker rollback test.
+
+### Issue Identified
+
+The `performRollback reverses operations in LIFO order` test was failing because:
+
+1. **Missing Operation Metadata**:
+   - GIT_TAG operations require `tagName` in metadata
+   - GIT_COMMIT operations require `previousCommit` in metadata
+   - Without these, the rollback verification would fail
+
+2. **Unmocked Git Commands**:
+   - The ReleaseStateTracker performs actual verification after rollback
+   - It runs git commands to verify tags were deleted and commits were reverted
+   - These commands weren't mocked, causing permission errors in CI
+
+### Fix Applied
+
+#### tests/release-state-tracker_test.ts
+
+```typescript
+// Added required metadata:
+const op2 = tracker.trackOperation(
+  OperationType.GIT_COMMIT,
+  "Second",
+  { previousCommit: "abc123" }, // Added
+  async () => {
+    rollbackOrder.push("Second");
+  },
+);
+
+const op3 = tracker.trackOperation(
+  OperationType.GIT_TAG,
+  "Third",
+  { tagName: "v1.0.0" }, // Added
+  async () => {
+    rollbackOrder.push("Third");
+  },
+);
+
+// Added git command mocks:
+(Deno as any).Command = class MockCommand {
+  output = async () => {
+    const args = this.options?.args || [];
+
+    // Mock git tag -l (check if tag exists)
+    if (this.cmd === "git" && args[0] === "tag" && args[1] === "-l") {
+      return {
+        success: true,
+        stdout: new Uint8Array(), // Empty = tag doesn't exist
+      };
+    }
+
+    // Mock git rev-parse HEAD (verify commit)
+    if (this.cmd === "git" && args[0] === "rev-parse" && args[1] === "HEAD") {
+      return {
+        success: true,
+        stdout: new TextEncoder().encode("abc123\n"), // Expected commit
+      };
+    }
+
+    // Mock other git operations...
+  };
+};
+```
+
+### Root Cause
+
+The ReleaseStateTracker's `performRollback()` method:
+
+1. Executes rollback functions (custom or built-in)
+2. Calls `verifyRollback()` to confirm the rollback worked
+3. For GIT_TAG: checks if the tag still exists locally/remotely
+4. For GIT_COMMIT: checks if HEAD is at the expected commit
+
+Without mocking these verification commands, the test would fail in CI environments where git operations aren't allowed.
+
+### Testing Best Practices
+
+1. **Mock External Commands**: Always mock `Deno.Command` for git operations in unit tests
+2. **Provide Required Metadata**: Check what metadata each operation type needs
+3. **Restore Original Functions**: Use try/finally to restore mocked functions
+4. **Test in CI Context**: Consider CI permission restrictions when writing tests
+
 ## Conclusion
 
 This project successfully improved Nagare's test coverage from 32.2% to 50.2% through systematic refactoring and
