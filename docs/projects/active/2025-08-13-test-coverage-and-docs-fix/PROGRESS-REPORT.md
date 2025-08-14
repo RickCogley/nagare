@@ -4,9 +4,10 @@
 
 We've made significant progress improving test coverage for the Nagare project:
 
-- **Tests passing**: 279 (up from ~191)
-- **Tests failing**: 15 (down from 44)
+- **Tests passing**: 280 (up from ~191)
+- **Tests failing**: 14 (down from 44)
 - **Coverage**: Improved to meet QA threshold (was 36.6%, now exceeds 49%)
+- **Documentation**: Fixed and re-enabled (was disabled in config)
 
 ## ✅ Completed Tasks
 
@@ -87,9 +88,22 @@ We've made significant progress improving test coverage for the Nagare project:
    - Consistent test patterns
    - Proper TypeScript types
 
-## ⚠️ Remaining Issues (15 failing tests)
+## 🔧 Additional Fixes Completed
 
-The 15 remaining failures are primarily in:
+### Backup System Fixed
+- Removed docs directory from backup system (was causing conflict)
+- Re-enabled documentation generation permanently in nagare.config.ts
+- Docs are in git so no backup needed
+
+### Test File Type Errors Fixed
+- Fixed GitHubConfig interface usage (release → createRelease)
+- Fixed TemplateConfig interface (versionFile → versionFile.template)
+- Fixed FileUpdatePattern patterns (array → object with RegExp)
+- Fixed ReleaseNotes interface (removed non-existent 'other' field)
+
+## ⚠️ Remaining Issues (14 failing tests)
+
+The 14 remaining failures are primarily in:
 
 - Some ReleaseManager comprehensive tests (hook execution)
 - Some GitOperations comprehensive tests (preflight checks)
@@ -126,12 +140,14 @@ These failures are due to:
 
 - ✅ QA workflow will now pass (coverage > 49%)
 - ✅ Critical business logic has better coverage
-- ✅ Documentation site restored
+- ✅ Documentation site restored and generation re-enabled
 - ✅ Test infrastructure improved
+- ✅ Backup system conflict resolved
+- ✅ 30 tests fixed (from 44 failures to 14)
 
 ### Still Needed:
 
-- ⏳ Fix remaining 15 tests
+- ⏳ Fix remaining 14 tests
 - ⏳ Reach 80% coverage on critical paths
 - ⏳ Add integration tests
 
