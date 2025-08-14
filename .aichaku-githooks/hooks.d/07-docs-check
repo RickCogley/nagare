@@ -2,7 +2,8 @@
 # Prevent accidental documentation generation in wrong location
 
 # Check if any generated doc files are being committed from the wrong location
-if git diff --cached --name-only | grep -E '^docs/(index\.html|all_symbols\.html|.*\.(css|js))$'; then
+# Only check for files directly in docs/, not in subdirectories like docs/api/
+if git diff --cached --name-only | grep -E '^docs/[^/]+(\.html|\.css|\.js)$'; then
     echo "❌ Error: Documentation files detected in docs/ root directory!"
     echo ""
     echo "API documentation should only be generated in docs/api/"
