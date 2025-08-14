@@ -1,0 +1,77 @@
+{
+  "scriptId": "334",
+  "url": "file:///Users/rcogley/dev/nagare/src/utils/utils.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 4260, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "runCommand",
+      "ranges": [
+        { "startOffset": 764, "endOffset": 2069, "count": 11 },
+        { "startOffset": 1012, "endOffset": 1070, "count": 0 },
+        { "startOffset": 1105, "endOffset": 1114, "count": 7 },
+        { "startOffset": 1115, "endOffset": 1123, "count": 4 },
+        { "startOffset": 1146, "endOffset": 1155, "count": 7 },
+        { "startOffset": 1156, "endOffset": 1164, "count": 4 },
+        { "startOffset": 1211, "endOffset": 1279, "count": 9 },
+        { "startOffset": 1279, "endOffset": 1320, "count": 6 },
+        { "startOffset": 1321, "endOffset": 1325, "count": 3 },
+        { "startOffset": 1348, "endOffset": 1389, "count": 6 },
+        { "startOffset": 1390, "endOffset": 1394, "count": 3 },
+        { "startOffset": 1460, "endOffset": 1475, "count": 4 },
+        { "startOffset": 1477, "endOffset": 1689, "count": 2 },
+        { "startOffset": 1689, "endOffset": 1713, "count": 7 },
+        { "startOffset": 1713, "endOffset": 2067, "count": 4 },
+        { "startOffset": 1767, "endOffset": 2039, "count": 2 },
+        { "startOffset": 2040, "endOffset": 2055, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "runCommandSimple",
+      "ranges": [
+        { "startOffset": 2562, "endOffset": 2751, "count": 2 },
+        { "startOffset": 2725, "endOffset": 2750, "count": 1 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "isCommandAvailable",
+      "ranges": [
+        { "startOffset": 3041, "endOffset": 3343, "count": 4 },
+        { "startOffset": 3158, "endOffset": 3167, "count": 0 },
+        { "startOffset": 3279, "endOffset": 3311, "count": 3 },
+        { "startOffset": 3311, "endOffset": 3341, "count": 1 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "sanitizeForShell",
+      "ranges": [{ "startOffset": 3657, "endOffset": 3784, "count": 12 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "formatCommandOutput",
+      "ranges": [{ "startOffset": 3955, "endOffset": 4259, "count": 11 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 4026, "endOffset": 4048, "count": 37 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [
+        { "startOffset": 4057, "endOffset": 4237, "count": 37 },
+        { "startOffset": 4169, "endOffset": 4232, "count": 17 },
+        { "startOffset": 4182, "endOffset": 4207, "count": 14 },
+        { "startOffset": 4208, "endOffset": 4232, "count": 10 }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "scriptId": "522",
+  "url": "file:///Users/rcogley/dev/nagare/src/release/version-utils.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 6172, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 317, "endOffset": 330, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "VersionUtils",
+      "ranges": [{ "startOffset": 334, "endOffset": 409, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getCurrentVersion",
+      "ranges": [{ "startOffset": 499, "endOffset": 2488, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "calculateNewVersion",
+      "ranges": [{ "startOffset": 2559, "endOffset": 5844, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "parseVersion",
+      "ranges": [{ "startOffset": 5901, "endOffset": 6169, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

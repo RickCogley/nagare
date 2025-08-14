@@ -1,0 +1,146 @@
+{
+  "scriptId": "508",
+  "url": "file:///Users/rcogley/dev/nagare/src/release/release-manager.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 76741, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 4849, "endOffset": 5012, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "ReleaseManager",
+      "ranges": [{ "startOffset": 5584, "endOffset": 6353, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "mergeWithDefaults",
+      "ranges": [{ "startOffset": 6541, "endOffset": 7098, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "validateFileUpdatePatterns",
+      "ranges": [{ "startOffset": 7687, "endOffset": 9640, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildSafeReplacement",
+      "ranges": [{ "startOffset": 10067, "endOffset": 11008, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "previewFileUpdates",
+      "ranges": [{ "startOffset": 11436, "endOffset": 15553, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "release",
+      "ranges": [{ "startOffset": 16720, "endOffset": 35054, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "validateEnvironment",
+      "ranges": [{ "startOffset": 35546, "endOffset": 37538, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "generateReleaseNotes",
+      "ranges": [{ "startOffset": 38038, "endOffset": 39072, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "previewRelease",
+      "ranges": [{ "startOffset": 39506, "endOffset": 41866, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "updateFiles",
+      "ranges": [{ "startOffset": 42448, "endOffset": 43916, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "updateVersionFile",
+      "ranges": [{ "startOffset": 44720, "endOffset": 46361, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "updateCustomFile",
+      "ranges": [{ "startOffset": 47324, "endOffset": 52610, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getTemplateValue",
+      "ranges": [{ "startOffset": 53332, "endOffset": 53674, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "validateFileUpdatePatternsEnhanced",
+      "ranges": [{ "startOffset": 54378, "endOffset": 56683, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getFilesToBackup",
+      "ranges": [{ "startOffset": 57099, "endOffset": 57794, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getConfig",
+      "ranges": [{ "startOffset": 57918, "endOffset": 57959, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "shouldVerifyJsrPublish",
+      "ranges": [{ "startOffset": 58108, "endOffset": 58311, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "createProgressIndicator",
+      "ranges": [{ "startOffset": 58463, "endOffset": 58847, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "verifyJsrPublication",
+      "ranges": [{ "startOffset": 59118, "endOffset": 62973, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "directJsrVerification",
+      "ranges": [{ "startOffset": 63059, "endOffset": 63555, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "attemptAutoFix",
+      "ranges": [{ "startOffset": 63625, "endOffset": 67377, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getPreflightChecks",
+      "ranges": [{ "startOffset": 67700, "endOffset": 69093, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "performPreflightChecks",
+      "ranges": [{ "startOffset": 69419, "endOffset": 72018, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "formatChangedFiles",
+      "ranges": [{ "startOffset": 72324, "endOffset": 73043, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "attemptPreflightAutoFix",
+      "ranges": [{ "startOffset": 73450, "endOffset": 75112, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "validateConfig",
+      "ranges": [{ "startOffset": 75804, "endOffset": 76738, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

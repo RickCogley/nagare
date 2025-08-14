@@ -1,0 +1,204 @@
+{
+  "scriptId": "332",
+  "url": "file:///Users/rcogley/dev/nagare/tests/git-operations_test.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 21038, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createTestConfig",
+      "ranges": [
+        { "startOffset": 1461, "endOffset": 1814, "count": 16 },
+        { "startOffset": 1645, "endOffset": 1654, "count": 2 },
+        { "startOffset": 1770, "endOffset": 1783, "count": 2 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createTempGitRepo",
+      "ranges": [{ "startOffset": 1872, "endOffset": 2573, "count": 13 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createCommit",
+      "ranges": [{ "startOffset": 2618, "endOffset": 3072, "count": 22 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createTag",
+      "ranges": [{ "startOffset": 3101, "endOffset": 3268, "count": 6 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 3392, "endOffset": 4492, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 4599, "endOffset": 6464, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 4671, "endOffset": 5165, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 5224, "endOffset": 5813, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 5873, "endOffset": 6460, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 6608, "endOffset": 8588, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 6673, "endOffset": 8584, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7524, "endOffset": 7562, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7758, "endOffset": 7809, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7957, "endOffset": 8001, "count": 3 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 8142, "endOffset": 8184, "count": 4 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 8321, "endOffset": 8361, "count": 5 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 8741, "endOffset": 11188, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 8818, "endOffset": 9346, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 9400, "endOffset": 10376, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 10429, "endOffset": 11184, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 11350, "endOffset": 13478, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 11431, "endOffset": 12221, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 12284, "endOffset": 13474, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 13117, "endOffset": 13153, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 13193, "endOffset": 13225, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 13634, "endOffset": 14860, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 13696, "endOffset": 14322, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 14383, "endOffset": 14856, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 15008, "endOffset": 17741, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 15068, "endOffset": 16774, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 16838, "endOffset": 17737, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 17451, "endOffset": 17492, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 17887, "endOffset": 20310, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 17943, "endOffset": 18395, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [
+        { "startOffset": 18473, "endOffset": 20306, "count": 1 },
+        { "startOffset": 19238, "endOffset": 19287, "count": 0 },
+        { "startOffset": 19561, "endOffset": 19610, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 20485, "endOffset": 21035, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 20566, "endOffset": 21031, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

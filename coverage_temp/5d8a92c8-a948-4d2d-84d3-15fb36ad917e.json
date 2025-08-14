@@ -1,0 +1,290 @@
+{
+  "scriptId": "335",
+  "url": "file:///Users/rcogley/dev/nagare/src/release/release-manager.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 76741, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 4849, "endOffset": 5012, "count": 20 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "ReleaseManager",
+      "ranges": [{ "startOffset": 5584, "endOffset": 6353, "count": 20 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "mergeWithDefaults",
+      "ranges": [{ "startOffset": 6541, "endOffset": 7098, "count": 20 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "validateFileUpdatePatterns",
+      "ranges": [{ "startOffset": 7687, "endOffset": 9640, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildSafeReplacement",
+      "ranges": [{ "startOffset": 10067, "endOffset": 11008, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "previewFileUpdates",
+      "ranges": [
+        { "startOffset": 11436, "endOffset": 15553, "count": 12 },
+        { "startOffset": 11510, "endOffset": 11549, "count": 1 },
+        { "startOffset": 11551, "endOffset": 11623, "count": 11 },
+        { "startOffset": 11623, "endOffset": 11737, "count": 1 },
+        { "startOffset": 11737, "endOffset": 15549, "count": 4 },
+        { "startOffset": 11817, "endOffset": 12094, "count": 2 },
+        { "startOffset": 12095, "endOffset": 12119, "count": 2 },
+        { "startOffset": 12121, "endOffset": 14127, "count": 2 },
+        { "startOffset": 12510, "endOffset": 12551, "count": 1 },
+        { "startOffset": 12553, "endOffset": 13482, "count": 1 },
+        { "startOffset": 12838, "endOffset": 13342, "count": 3 },
+        { "startOffset": 13072, "endOffset": 13312, "count": 0 },
+        { "startOffset": 13482, "endOffset": 13708, "count": 1 },
+        { "startOffset": 13708, "endOffset": 13793, "count": 0 },
+        { "startOffset": 13793, "endOffset": 14097, "count": 1 },
+        { "startOffset": 13833, "endOffset": 13912, "count": 0 },
+        { "startOffset": 14097, "endOffset": 14127, "count": 1 },
+        { "startOffset": 14127, "endOffset": 14406, "count": 0 },
+        { "startOffset": 14408, "endOffset": 15378, "count": 0 },
+        { "startOffset": 15380, "endOffset": 15448, "count": 0 },
+        { "startOffset": 15457, "endOffset": 15543, "count": 2 },
+        { "startOffset": 15549, "endOffset": 15552, "count": 1 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 15187, "endOffset": 15287, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "release",
+      "ranges": [
+        { "startOffset": 16720, "endOffset": 35054, "count": 19 },
+        { "startOffset": 17322, "endOffset": 17334, "count": 3 },
+        { "startOffset": 17336, "endOffset": 17437, "count": 2 },
+        { "startOffset": 17419, "endOffset": 17437, "count": 1 },
+        { "startOffset": 17437, "endOffset": 17518, "count": 18 },
+        { "startOffset": 17573, "endOffset": 17613, "count": 18 },
+        { "startOffset": 17613, "endOffset": 17643, "count": 17 },
+        { "startOffset": 17698, "endOffset": 17713, "count": 17 },
+        { "startOffset": 17850, "endOffset": 17918, "count": 16 },
+        { "startOffset": 17957, "endOffset": 18257, "count": 16 },
+        { "startOffset": 18257, "endOffset": 18269, "count": 1 },
+        { "startOffset": 18271, "endOffset": 18425, "count": 1 },
+        { "startOffset": 18425, "endOffset": 18893, "count": 15 },
+        { "startOffset": 18893, "endOffset": 18908, "count": 13 },
+        { "startOffset": 19063, "endOffset": 19400, "count": 13 },
+        { "startOffset": 19466, "endOffset": 19476, "count": 13 },
+        { "startOffset": 19477, "endOffset": 19482, "count": 13 },
+        { "startOffset": 19597, "endOffset": 19605, "count": 13 },
+        { "startOffset": 19607, "endOffset": 19725, "count": 12 },
+        { "startOffset": 19725, "endOffset": 19816, "count": 13 },
+        { "startOffset": 19817, "endOffset": 19848, "count": 1 },
+        { "startOffset": 19850, "endOffset": 20112, "count": 1 },
+        { "startOffset": 20112, "endOffset": 20150, "count": 12 },
+        { "startOffset": 20152, "endOffset": 20406, "count": 12 },
+        { "startOffset": 20406, "endOffset": 21204, "count": 0 },
+        { "startOffset": 21265, "endOffset": 21469, "count": 0 },
+        { "startOffset": 21770, "endOffset": 21777, "count": 0 },
+        { "startOffset": 21821, "endOffset": 21846, "count": 0 },
+        { "startOffset": 21934, "endOffset": 21941, "count": 0 },
+        { "startOffset": 22013, "endOffset": 22038, "count": 0 },
+        { "startOffset": 22080, "endOffset": 23852, "count": 0 },
+        { "startOffset": 23854, "endOffset": 24150, "count": 0 },
+        { "startOffset": 24151, "endOffset": 24157, "count": 0 },
+        { "startOffset": 24228, "endOffset": 24240, "count": 0 },
+        { "startOffset": 24287, "endOffset": 24559, "count": 0 },
+        { "startOffset": 24562, "endOffset": 24642, "count": 0 },
+        { "startOffset": 24645, "endOffset": 25038, "count": 0 },
+        { "startOffset": 25039, "endOffset": 25050, "count": 0 },
+        { "startOffset": 25227, "endOffset": 25351, "count": 0 },
+        { "startOffset": 25352, "endOffset": 25363, "count": 0 },
+        { "startOffset": 25406, "endOffset": 25417, "count": 0 },
+        { "startOffset": 25418, "endOffset": 25429, "count": 0 },
+        { "startOffset": 25637, "endOffset": 25644, "count": 0 },
+        { "startOffset": 25688, "endOffset": 25715, "count": 0 },
+        { "startOffset": 25928, "endOffset": 25939, "count": 0 },
+        { "startOffset": 25940, "endOffset": 25951, "count": 0 },
+        { "startOffset": 26120, "endOffset": 26275, "count": 0 },
+        { "startOffset": 26417, "endOffset": 26432, "count": 0 },
+        { "startOffset": 26467, "endOffset": 26570, "count": 0 },
+        { "startOffset": 26581, "endOffset": 26907, "count": 0 },
+        { "startOffset": 26908, "endOffset": 26914, "count": 0 },
+        { "startOffset": 26968, "endOffset": 26979, "count": 0 },
+        { "startOffset": 26980, "endOffset": 26991, "count": 0 },
+        { "startOffset": 27061, "endOffset": 27073, "count": 0 },
+        { "startOffset": 27111, "endOffset": 27245, "count": 0 },
+        { "startOffset": 27247, "endOffset": 27740, "count": 0 },
+        { "startOffset": 27934, "endOffset": 29072, "count": 0 },
+        { "startOffset": 29074, "endOffset": 29256, "count": 0 },
+        { "startOffset": 30088, "endOffset": 34763, "count": 0 },
+        { "startOffset": 34770, "endOffset": 35050, "count": 5 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "validateEnvironment",
+      "ranges": [
+        { "startOffset": 35546, "endOffset": 37538, "count": 18 },
+        { "startOffset": 35661, "endOffset": 35714, "count": 0 },
+        { "startOffset": 35800, "endOffset": 35854, "count": 0 },
+        { "startOffset": 35960, "endOffset": 36136, "count": 0 },
+        { "startOffset": 36258, "endOffset": 36441, "count": 0 },
+        { "startOffset": 36647, "endOffset": 36818, "count": 1 },
+        { "startOffset": 36765, "endOffset": 36812, "count": 4 },
+        { "startOffset": 36818, "endOffset": 36866, "count": 17 },
+        { "startOffset": 36866, "endOffset": 37036, "count": 0 },
+        { "startOffset": 37036, "endOffset": 37071, "count": 17 },
+        { "startOffset": 37071, "endOffset": 37466, "count": 0 },
+        { "startOffset": 37466, "endOffset": 37537, "count": 17 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "generateReleaseNotes",
+      "ranges": [{ "startOffset": 38038, "endOffset": 39072, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "previewRelease",
+      "ranges": [
+        { "startOffset": 39506, "endOffset": 41866, "count": 13 },
+        { "startOffset": 39805, "endOffset": 40996, "count": 0 },
+        { "startOffset": 41110, "endOffset": 41192, "count": 7 },
+        { "startOffset": 41236, "endOffset": 41323, "count": 0 },
+        { "startOffset": 41365, "endOffset": 41448, "count": 6 },
+        { "startOffset": 41493, "endOffset": 41582, "count": 0 },
+        { "startOffset": 41629, "endOffset": 41723, "count": 0 },
+        { "startOffset": 41767, "endOffset": 41856, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "updateFiles",
+      "ranges": [{ "startOffset": 42448, "endOffset": 43916, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "updateVersionFile",
+      "ranges": [{ "startOffset": 44720, "endOffset": 46361, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "updateCustomFile",
+      "ranges": [{ "startOffset": 47324, "endOffset": 52610, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getTemplateValue",
+      "ranges": [{ "startOffset": 53332, "endOffset": 53674, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "validateFileUpdatePatternsEnhanced",
+      "ranges": [
+        { "startOffset": 54378, "endOffset": 56683, "count": 18 },
+        { "startOffset": 54526, "endOffset": 54565, "count": 2 },
+        { "startOffset": 54567, "endOffset": 54673, "count": 16 },
+        { "startOffset": 54673, "endOffset": 54728, "count": 2 },
+        { "startOffset": 54728, "endOffset": 56091, "count": 5 },
+        { "startOffset": 54830, "endOffset": 54854, "count": 4 },
+        { "startOffset": 54855, "endOffset": 54879, "count": 4 },
+        { "startOffset": 54881, "endOffset": 55116, "count": 4 },
+        { "startOffset": 55116, "endOffset": 55629, "count": 1 },
+        { "startOffset": 55137, "endOffset": 55160, "count": 0 },
+        { "startOffset": 55162, "endOffset": 55382, "count": 0 },
+        { "startOffset": 55429, "endOffset": 55453, "count": 0 },
+        { "startOffset": 55455, "endOffset": 55629, "count": 0 },
+        { "startOffset": 55717, "endOffset": 56085, "count": 1 },
+        { "startOffset": 55856, "endOffset": 56067, "count": 0 },
+        { "startOffset": 56077, "endOffset": 56085, "count": 0 },
+        { "startOffset": 56091, "endOffset": 56319, "count": 1 },
+        { "startOffset": 56319, "endOffset": 56356, "count": 0 },
+        { "startOffset": 56358, "endOffset": 56577, "count": 0 },
+        { "startOffset": 56577, "endOffset": 56682, "count": 1 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 56216, "endOffset": 56293, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getFilesToBackup",
+      "ranges": [{ "startOffset": 57099, "endOffset": 57794, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getConfig",
+      "ranges": [{ "startOffset": 57918, "endOffset": 57959, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "shouldVerifyJsrPublish",
+      "ranges": [{ "startOffset": 58108, "endOffset": 58311, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "createProgressIndicator",
+      "ranges": [
+        { "startOffset": 58463, "endOffset": 58847, "count": 19 },
+        { "startOffset": 58537, "endOffset": 58547, "count": 2 },
+        { "startOffset": 58571, "endOffset": 58580, "count": 0 },
+        { "startOffset": 58592, "endOffset": 58618, "count": 0 },
+        { "startOffset": 58750, "endOffset": 58757, "count": 0 },
+        { "startOffset": 58810, "endOffset": 58827, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "verifyJsrPublication",
+      "ranges": [{ "startOffset": 59118, "endOffset": 62973, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "directJsrVerification",
+      "ranges": [{ "startOffset": 63059, "endOffset": 63555, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "attemptAutoFix",
+      "ranges": [{ "startOffset": 63625, "endOffset": 67377, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getPreflightChecks",
+      "ranges": [{ "startOffset": 67700, "endOffset": 69093, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "performPreflightChecks",
+      "ranges": [{ "startOffset": 69419, "endOffset": 72018, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "formatChangedFiles",
+      "ranges": [{ "startOffset": 72324, "endOffset": 73043, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "attemptPreflightAutoFix",
+      "ranges": [{ "startOffset": 73450, "endOffset": 75112, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "validateConfig",
+      "ranges": [{ "startOffset": 75804, "endOffset": 76738, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "scriptId": "453",
+  "url": "file:///Users/rcogley/Library/Caches/deno/npm/registry.npmjs.org/estree-walker/3.0.3/src/sync.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 3418, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "SyncWalker",
+      "ranges": [{ "startOffset": 493, "endOffset": 1021, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "visit",
+      "ranges": [{ "startOffset": 1214, "endOffset": 3189, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "isNode",
+      "ranges": [{ "startOffset": 3278, "endOffset": 3417, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

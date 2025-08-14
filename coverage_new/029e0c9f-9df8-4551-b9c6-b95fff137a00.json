@@ -1,0 +1,104 @@
+{
+  "scriptId": "334",
+  "url": "file:///Users/rcogley/dev/nagare/src/core/enhanced-error.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 19754, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "hasI18n",
+      "ranges": [{ "startOffset": 291, "endOffset": 388, "count": 7 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 1188, "endOffset": 1229, "count": 9 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "NagareError",
+      "ranges": [
+        { "startOffset": 1233, "endOffset": 2294, "count": 9 },
+        { "startOffset": 1448, "endOffset": 1487, "count": 8 },
+        { "startOffset": 1562, "endOffset": 1574, "count": 0 },
+        { "startOffset": 1575, "endOffset": 1621, "count": 0 },
+        { "startOffset": 1773, "endOffset": 1785, "count": 0 },
+        { "startOffset": 1787, "endOffset": 2003, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 1906, "endOffset": 1919, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "toString",
+      "ranges": [{ "startOffset": 2437, "endOffset": 3610, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "toJSON",
+      "ranges": [{ "startOffset": 3723, "endOffset": 3951, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "gitNotInitialized",
+      "ranges": [
+        { "startOffset": 10950, "endOffset": 11546, "count": 1 },
+        { "startOffset": 10991, "endOffset": 11241, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "uncommittedChanges",
+      "ranges": [
+        { "startOffset": 11841, "endOffset": 12555, "count": 1 },
+        { "startOffset": 11883, "endOffset": 12175, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "configNotFound",
+      "ranges": [
+        { "startOffset": 12922, "endOffset": 14287, "count": 1 },
+        { "startOffset": 12973, "endOffset": 13628, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "versionNotFound",
+      "ranges": [
+        { "startOffset": 14710, "endOffset": 15926, "count": 1 },
+        { "startOffset": 14775, "endOffset": 15353, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "fileHandlerNotFound",
+      "ranges": [
+        { "startOffset": 16265, "endOffset": 17417, "count": 1 },
+        { "startOffset": 16316, "endOffset": 16880, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "invalidJson",
+      "ranges": [
+        { "startOffset": 17838, "endOffset": 18743, "count": 1 },
+        { "startOffset": 17893, "endOffset": 18319, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "githubCliNotFound",
+      "ranges": [
+        { "startOffset": 19028, "endOffset": 19751, "count": 1 },
+        { "startOffset": 19069, "endOffset": 19393, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}

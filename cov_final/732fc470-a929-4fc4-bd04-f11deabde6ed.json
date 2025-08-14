@@ -1,0 +1,99 @@
+{
+  "scriptId": "381",
+  "url": "file:///Users/rcogley/dev/nagare/src/core/i18n.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 6448, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 288, "endOffset": 361, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "I18n",
+      "ranges": [{ "startOffset": 365, "endOffset": 680, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "detectLocale",
+      "ranges": [{ "startOffset": 739, "endOffset": 1085, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "loadLocale",
+      "ranges": [{ "startOffset": 1136, "endOffset": 2996, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "flattenObject",
+      "ranges": [{ "startOffset": 3059, "endOffset": 3439, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "init",
+      "ranges": [{ "startOffset": 3513, "endOffset": 3735, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "setLocale",
+      "ranges": [{ "startOffset": 3772, "endOffset": 3919, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getLocale",
+      "ranges": [{ "startOffset": 3956, "endOffset": 4004, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "t",
+      "ranges": [{ "startOffset": 4063, "endOffset": 4835, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "has",
+      "ranges": [{ "startOffset": 4883, "endOffset": 5021, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getAvailableLocales",
+      "ranges": [{ "startOffset": 5065, "endOffset": 5141, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getKeys",
+      "ranges": [{ "startOffset": 5203, "endOffset": 5502, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "initI18n",
+      "ranges": [{ "startOffset": 5679, "endOffset": 5918, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getI18n",
+      "ranges": [
+        { "startOffset": 5962, "endOffset": 6099, "count": 2 },
+        { "startOffset": 6076, "endOffset": 6098, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "t",
+      "ranges": [{ "startOffset": 6147, "endOffset": 6209, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "setLocale",
+      "ranges": [{ "startOffset": 6259, "endOffset": 6332, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getLocale",
+      "ranges": [{ "startOffset": 6391, "endOffset": 6447, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

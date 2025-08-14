@@ -1,0 +1,216 @@
+{
+  "scriptId": "332",
+  "url": "file:///Users/rcogley/dev/nagare/tests/release-state-tracker_test.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 17384, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createTestLogger",
+      "ranges": [{ "startOffset": 380, "endOffset": 475, "count": 17 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 748, "endOffset": 1059, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 1131, "endOffset": 1372, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 1637, "endOffset": 2331, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 2407, "endOffset": 2879, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "rollbackFn",
+      "ranges": [{ "startOffset": 2558, "endOffset": 2600, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 3134, "endOffset": 3517, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 3596, "endOffset": 4058, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 4132, "endOffset": 4608, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 4872, "endOffset": 5716, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 5114, "endOffset": 5147, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 5234, "endOffset": 5267, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 5355, "endOffset": 5388, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 5793, "endOffset": 6788, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7040, "endOffset": 8163, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7233, "endOffset": 7266, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7362, "endOffset": 7395, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7490, "endOffset": 7523, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 8431, "endOffset": 11322, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 8680, "endOffset": 10349, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "MockCommand",
+      "ranges": [{ "startOffset": 8702, "endOffset": 10338, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "MockCommand.output",
+      "ranges": [
+        { "startOffset": 8801, "endOffset": 10331, "count": 2 },
+        { "startOffset": 8853, "endOffset": 8858, "count": 0 },
+        { "startOffset": 8971, "endOffset": 8990, "count": 1 },
+        { "startOffset": 8992, "endOffset": 9348, "count": 1 },
+        { "startOffset": 9349, "endOffset": 9370, "count": 1 },
+        { "startOffset": 9372, "endOffset": 9613, "count": 1 },
+        { "startOffset": 9613, "endOffset": 9713, "count": 0 },
+        { "startOffset": 9715, "endOffset": 9964, "count": 0 },
+        { "startOffset": 9965, "endOffset": 9984, "count": 0 },
+        { "startOffset": 9986, "endOffset": 10330, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 10443, "endOffset": 10495, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 10613, "endOffset": 10666, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 10773, "endOffset": 10825, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 11413, "endOffset": 12297, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "rollbackFn",
+      "ranges": [{ "startOffset": 11559, "endOffset": 11595, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 12377, "endOffset": 13160, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "successfulRollback",
+      "ranges": [{ "startOffset": 12506, "endOffset": 12518, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "failingRollback",
+      "ranges": [{ "startOffset": 12546, "endOffset": 12601, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 13435, "endOffset": 13874, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 13954, "endOffset": 15633, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 14278, "endOffset": 15220, "count": 4 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "MockCommand",
+      "ranges": [{ "startOffset": 14300, "endOffset": 15209, "count": 4 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "MockCommand.output",
+      "ranges": [
+        { "startOffset": 14399, "endOffset": 15202, "count": 4 },
+        { "startOffset": 14451, "endOffset": 14456, "count": 0 },
+        { "startOffset": 14510, "endOffset": 14529, "count": 2 },
+        { "startOffset": 14531, "endOffset": 14731, "count": 1 },
+        { "startOffset": 14731, "endOffset": 14784, "count": 3 },
+        { "startOffset": 14785, "endOffset": 14820, "count": 0 },
+        { "startOffset": 14822, "endOffset": 15023, "count": 0 },
+        { "startOffset": 15023, "endOffset": 15201, "count": 3 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 15879, "endOffset": 16410, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 16493, "endOffset": 17381, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

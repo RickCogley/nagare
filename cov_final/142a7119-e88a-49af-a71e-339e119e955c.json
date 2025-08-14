@@ -1,0 +1,51 @@
+{
+  "scriptId": "369",
+  "url": "file:///Users/rcogley/dev/nagare/src/validation/security-utils.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 13928, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "validateGitRef",
+      "ranges": [{ "startOffset": 765, "endOffset": 3992, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "validateFilePath",
+      "ranges": [{ "startOffset": 4392, "endOffset": 6563, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "normalizePath",
+      "ranges": [{ "startOffset": 6708, "endOffset": 7609, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "sanitizeCommitMessage",
+      "ranges": [{ "startOffset": 7894, "endOffset": 8337, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "validateVersion",
+      "ranges": [{ "startOffset": 8607, "endOffset": 9700, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "sanitizeErrorMessage",
+      "ranges": [{ "startOffset": 10110, "endOffset": 11193, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "validateCliArgs",
+      "ranges": [{ "startOffset": 11502, "endOffset": 13283, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "createSecurityLog",
+      "ranges": [{ "startOffset": 13620, "endOffset": 13927, "count": 5 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

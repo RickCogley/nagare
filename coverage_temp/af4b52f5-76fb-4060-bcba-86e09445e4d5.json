@@ -1,0 +1,31 @@
+{
+  "scriptId": "384",
+  "url": "file:///Users/rcogley/dev/nagare/src/templates/doc-generator.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 3295, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 298, "endOffset": 304, "count": 22 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "DocGenerator",
+      "ranges": [{ "startOffset": 308, "endOffset": 358, "count": 22 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "generateDocs",
+      "ranges": [{ "startOffset": 414, "endOffset": 2546, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "runCommand",
+      "ranges": [{ "startOffset": 2583, "endOffset": 3292, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

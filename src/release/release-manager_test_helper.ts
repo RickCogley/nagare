@@ -369,4 +369,25 @@ export const TEST_COMMITS = {
     date: "2024-01-03",
     breakingChange: true,
   },
+  docs: {
+    type: "docs",
+    description: "update documentation",
+    hash: "jkl012",
+    date: "2024-01-04",
+    breakingChange: false,
+  },
+  style: {
+    type: "style",
+    description: "format code",
+    hash: "mno345",
+    date: "2024-01-05",
+    breakingChange: false,
+  },
+  chore: {
+    type: "chore",
+    description: "update dependencies",
+    hash: "pqr678",
+    date: "2024-01-06",
+    breakingChange: false,
+  },
 } as const satisfies Record<string, ConventionalCommit>;

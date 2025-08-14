@@ -1,0 +1,66 @@
+{
+  "scriptId": "381",
+  "url": "file:///Users/rcogley/dev/nagare/src/templates/changelog-generator.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 12407, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 1210, "endOffset": 1268, "count": 22 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "ChangelogGenerator",
+      "ranges": [{ "startOffset": 1272, "endOffset": 1536, "count": 22 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "generatePRReleaseNotes",
+      "ranges": [{ "startOffset": 1595, "endOffset": 2415, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "generateTraditionalReleaseNotes",
+      "ranges": [{ "startOffset": 2493, "endOffset": 3559, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "generatePRGroupedReleaseNotes",
+      "ranges": [{ "startOffset": 3611, "endOffset": 5502, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "updateChangelog",
+      "ranges": [{ "startOffset": 5563, "endOffset": 6576, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "createChangelogHeader",
+      "ranges": [{ "startOffset": 6618, "endOffset": 6915, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "generateTraditionalChangelogEntry",
+      "ranges": [{ "startOffset": 6992, "endOffset": 8002, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "generatePRChangelogEntry",
+      "ranges": [{ "startOffset": 8075, "endOffset": 9252, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getBuiltInPRTemplate",
+      "ranges": [{ "startOffset": 9305, "endOffset": 11027, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "insertNewEntry",
+      "ranges": [{ "startOffset": 11086, "endOffset": 12404, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

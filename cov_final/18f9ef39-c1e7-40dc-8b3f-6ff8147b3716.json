@@ -1,0 +1,85 @@
+{
+  "scriptId": "387",
+  "url": "file:///Users/rcogley/dev/nagare/src/release/backup-manager.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 6853, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "generateBackupId",
+      "ranges": [{ "startOffset": 116, "endOffset": 241, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 609, "endOffset": 658, "count": 22 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "BackupManager",
+      "ranges": [{ "startOffset": 662, "endOffset": 778, "count": 22 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createBackup",
+      "ranges": [
+        { "startOffset": 967, "endOffset": 2303, "count": 1 },
+        { "startOffset": 1902, "endOffset": 2299, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 1554, "endOffset": 1602, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "restoreBackup",
+      "ranges": [{ "startOffset": 2442, "endOffset": 3196, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "cleanupBackup",
+      "ranges": [
+        { "startOffset": 3335, "endOffset": 3977, "count": 1 },
+        { "startOffset": 3445, "endOffset": 3535, "count": 0 },
+        { "startOffset": 3804, "endOffset": 3973, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getActiveBackups",
+      "ranges": [{ "startOffset": 4020, "endOffset": 4096, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "validateFiles",
+      "ranges": [
+        { "startOffset": 4170, "endOffset": 4620, "count": 1 },
+        { "startOffset": 4263, "endOffset": 4589, "count": 2 },
+        { "startOffset": 4489, "endOffset": 4583, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "backupFile",
+      "ranges": [
+        { "startOffset": 4685, "endOffset": 5389, "count": 2 },
+        { "startOffset": 5208, "endOffset": 5385, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "restoreFile",
+      "ranges": [{ "startOffset": 5456, "endOffset": 6249, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "cleanupAllBackups",
+      "ranges": [{ "startOffset": 6325, "endOffset": 6850, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

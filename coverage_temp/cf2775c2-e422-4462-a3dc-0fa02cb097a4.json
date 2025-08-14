@@ -1,0 +1,91 @@
+{
+  "scriptId": "376",
+  "url": "file:///Users/rcogley/dev/nagare/src/monitoring/auto-fixer.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 11617, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 194, "endOffset": 214, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "AutoFixer",
+      "ranges": [{ "startOffset": 218, "endOffset": 296, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "initialize",
+      "ranges": [{ "startOffset": 359, "endOffset": 497, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "detectAIProvider",
+      "ranges": [{ "startOffset": 541, "endOffset": 1363, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "commandExists",
+      "ranges": [{ "startOffset": 1407, "endOffset": 1571, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "fixErrors",
+      "ranges": [{ "startOffset": 1625, "endOffset": 2716, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "tryBasicFix",
+      "ranges": [{ "startOffset": 2764, "endOffset": 3255, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "fixFormatErrors",
+      "ranges": [{ "startOffset": 3295, "endOffset": 3729, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "fixLintErrors",
+      "ranges": [{ "startOffset": 3779, "endOffset": 4844, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "fixSingleLintError",
+      "ranges": [{ "startOffset": 4886, "endOffset": 6368, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "fixVersionConflict",
+      "ranges": [{ "startOffset": 6426, "endOffset": 7643, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "fixSecurityScan",
+      "ranges": [{ "startOffset": 7686, "endOffset": 8170, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "tryAIFix",
+      "ranges": [{ "startOffset": 8209, "endOffset": 9415, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildAIPrompt",
+      "ranges": [{ "startOffset": 9464, "endOffset": 10881, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "groupErrorsByType",
+      "ranges": [{ "startOffset": 10920, "endOffset": 11151, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "commitFixes",
+      "ranges": [{ "startOffset": 11207, "endOffset": 11614, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

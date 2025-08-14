@@ -1704,11 +1704,7 @@ export class ReleaseManager {
       }
     }
 
-    // Documentation files if enabled
-    if (this.config.docs?.enabled) {
-      const docsDir = this.config.docs.outputDir || "./docs";
-      filesToBackup.push(docsDir);
-    }
+    // Skip documentation backup - docs are in git and can be regenerated
 
     // Remove duplicates
     return [...new Set(filesToBackup)];

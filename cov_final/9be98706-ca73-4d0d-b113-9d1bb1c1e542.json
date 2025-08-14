@@ -1,0 +1,40 @@
+{
+  "scriptId": "372",
+  "url": "file:///Users/rcogley/dev/nagare/src/ui/release-header.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 6495, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "showReleaseHeader",
+      "ranges": [{ "startOffset": 1816, "endOffset": 2368, "count": 13 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "showCompactReleaseHeader",
+      "ranges": [{ "startOffset": 3047, "endOffset": 3231, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "showAppProgress",
+      "ranges": [
+        { "startOffset": 4046, "endOffset": 4503, "count": 16 },
+        { "startOffset": 4279, "endOffset": 4325, "count": 0 },
+        { "startOffset": 4404, "endOffset": 4501, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "showAppCompletion",
+      "ranges": [{ "startOffset": 5259, "endOffset": 5447, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "showReleaseSummary",
+      "ranges": [{ "startOffset": 6198, "endOffset": 6494, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

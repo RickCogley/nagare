@@ -1,0 +1,105 @@
+{
+  "scriptId": "377",
+  "url": "file:///Users/rcogley/dev/nagare/src/utils/std-progress-indicator.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 8740, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 340, "endOffset": 413, "count": 19 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "StdProgressIndicator",
+      "ranges": [{ "startOffset": 417, "endOffset": 816, "count": 19 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "initializeStages",
+      "ranges": [{ "startOffset": 819, "endOffset": 2161, "count": 19 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "startStage",
+      "ranges": [
+        { "startOffset": 2214, "endOffset": 3006, "count": 53 },
+        { "startOffset": 2324, "endOffset": 2346, "count": 34 },
+        { "startOffset": 2348, "endOffset": 2406, "count": 0 },
+        { "startOffset": 2730, "endOffset": 2763, "count": 0 },
+        { "startOffset": 2765, "endOffset": 2996, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "completeStage",
+      "ranges": [
+        { "startOffset": 3055, "endOffset": 3808, "count": 47 },
+        { "startOffset": 3128, "endOffset": 3148, "count": 0 },
+        { "startOffset": 3331, "endOffset": 3353, "count": 30 },
+        { "startOffset": 3355, "endOffset": 3790, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "errorStage",
+      "ranges": [{ "startOffset": 3850, "endOffset": 4239, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "fixingStage",
+      "ranges": [{ "startOffset": 4284, "endOffset": 4974, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "pause",
+      "ranges": [{ "startOffset": 5023, "endOffset": 5107, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "resume",
+      "ranges": [{ "startOffset": 5159, "endOffset": 5715, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "renderProgress",
+      "ranges": [
+        { "startOffset": 5758, "endOffset": 6241, "count": 53 },
+        { "startOffset": 5853, "endOffset": 6240, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 5915, "endOffset": 5953, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "formatStageStatus",
+      "ranges": [{ "startOffset": 6289, "endOffset": 6614, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "formatElapsedTime",
+      "ranges": [{ "startOffset": 6652, "endOffset": 6940, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "setSubsteps",
+      "ranges": [{ "startOffset": 7034, "endOffset": 7724, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "updateSubstep",
+      "ranges": [{ "startOffset": 7810, "endOffset": 8576, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "clear",
+      "ranges": [{ "startOffset": 8619, "endOffset": 8737, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

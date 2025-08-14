@@ -1,0 +1,121 @@
+{
+  "scriptId": "334",
+  "url": "file:///Users/rcogley/dev/nagare/src/templates/changelog-generator.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 12407, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 1210, "endOffset": 1268, "count": 11 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "ChangelogGenerator",
+      "ranges": [
+        { "startOffset": 1272, "endOffset": 1536, "count": 11 },
+        { "startOffset": 1520, "endOffset": 1530, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "generatePRReleaseNotes",
+      "ranges": [{ "startOffset": 1595, "endOffset": 2415, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "generateTraditionalReleaseNotes",
+      "ranges": [{ "startOffset": 2493, "endOffset": 3559, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "generatePRGroupedReleaseNotes",
+      "ranges": [{ "startOffset": 3611, "endOffset": 5502, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "updateChangelog",
+      "ranges": [
+        { "startOffset": 5563, "endOffset": 6576, "count": 14 },
+        { "startOffset": 5764, "endOffset": 5773, "count": 4 },
+        { "startOffset": 5773, "endOffset": 5890, "count": 10 },
+        { "startOffset": 6007, "endOffset": 6029, "count": 0 },
+        { "startOffset": 6031, "endOffset": 6110, "count": 0 },
+        { "startOffset": 6421, "endOffset": 6572, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createChangelogHeader",
+      "ranges": [{ "startOffset": 6618, "endOffset": 6915, "count": 10 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "generateTraditionalChangelogEntry",
+      "ranges": [
+        { "startOffset": 6992, "endOffset": 8002, "count": 14 },
+        { "startOffset": 7156, "endOffset": 7254, "count": 13 },
+        { "startOffset": 7296, "endOffset": 7398, "count": 1 },
+        { "startOffset": 7443, "endOffset": 7551, "count": 1 },
+        { "startOffset": 7593, "endOffset": 7695, "count": 1 },
+        { "startOffset": 7735, "endOffset": 7833, "count": 3 },
+        { "startOffset": 7876, "endOffset": 7980, "count": 1 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7210, "endOffset": 7229, "count": 17 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7354, "endOffset": 7373, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7507, "endOffset": 7526, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7651, "endOffset": 7670, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7789, "endOffset": 7808, "count": 4 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7936, "endOffset": 7955, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "generatePRChangelogEntry",
+      "ranges": [{ "startOffset": 8075, "endOffset": 9252, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getBuiltInPRTemplate",
+      "ranges": [{ "startOffset": 9305, "endOffset": 11027, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "insertNewEntry",
+      "ranges": [
+        { "startOffset": 11086, "endOffset": 12404, "count": 14 },
+        { "startOffset": 11488, "endOffset": 12041, "count": 2 },
+        { "startOffset": 11850, "endOffset": 12033, "count": 0 },
+        { "startOffset": 12047, "endOffset": 12176, "count": 12 },
+        { "startOffset": 12176, "endOffset": 12254, "count": 10 },
+        { "startOffset": 12254, "endOffset": 12400, "count": 2 }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}

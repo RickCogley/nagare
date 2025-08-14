@@ -1,0 +1,133 @@
+{
+  "scriptId": "334",
+  "url": "file:///Users/rcogley/dev/nagare/src/core/enhanced-error.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 19754, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "hasI18n",
+      "ranges": [
+        { "startOffset": 291, "endOffset": 388, "count": 30 },
+        { "startOffset": 356, "endOffset": 386, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 1188, "endOffset": 1229, "count": 10 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "NagareError",
+      "ranges": [
+        { "startOffset": 1233, "endOffset": 2294, "count": 10 },
+        { "startOffset": 1622, "endOffset": 1636, "count": 0 },
+        { "startOffset": 2003, "endOffset": 2144, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 1906, "endOffset": 1919, "count": 34 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "toString",
+      "ranges": [
+        { "startOffset": 2437, "endOffset": 3610, "count": 25 },
+        { "startOffset": 2826, "endOffset": 2865, "count": 13 },
+        { "startOffset": 2867, "endOffset": 3368, "count": 13 },
+        { "startOffset": 3434, "endOffset": 3495, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 2681, "endOffset": 2764, "count": 86 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [
+        { "startOffset": 2947, "endOffset": 3360, "count": 28 },
+        { "startOffset": 3138, "endOffset": 3282, "count": 12 },
+        { "startOffset": 3282, "endOffset": 3352, "count": 16 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 3039, "endOffset": 3063, "count": 28 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 3208, "endOffset": 3270, "count": 28 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "toJSON",
+      "ranges": [{ "startOffset": 3723, "endOffset": 3951, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "gitNotInitialized",
+      "ranges": [
+        { "startOffset": 10950, "endOffset": 11546, "count": 2 },
+        { "startOffset": 11241, "endOffset": 11545, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "uncommittedChanges",
+      "ranges": [
+        { "startOffset": 11841, "endOffset": 12555, "count": 2 },
+        { "startOffset": 12175, "endOffset": 12554, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "configNotFound",
+      "ranges": [
+        { "startOffset": 12922, "endOffset": 14287, "count": 2 },
+        { "startOffset": 13628, "endOffset": 14286, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "versionNotFound",
+      "ranges": [
+        { "startOffset": 14710, "endOffset": 15926, "count": 1 },
+        { "startOffset": 15353, "endOffset": 15925, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "fileHandlerNotFound",
+      "ranges": [
+        { "startOffset": 16265, "endOffset": 17417, "count": 1 },
+        { "startOffset": 16880, "endOffset": 17416, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "invalidJson",
+      "ranges": [
+        { "startOffset": 17838, "endOffset": 18743, "count": 1 },
+        { "startOffset": 18319, "endOffset": 18742, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "githubCliNotFound",
+      "ranges": [
+        { "startOffset": 19028, "endOffset": 19751, "count": 1 },
+        { "startOffset": 19393, "endOffset": 19750, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}

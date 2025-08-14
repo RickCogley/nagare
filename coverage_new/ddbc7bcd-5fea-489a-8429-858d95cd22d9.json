@@ -1,0 +1,61 @@
+{
+  "scriptId": "332",
+  "url": "file:///Users/rcogley/dev/nagare/tests/additional-exports_test.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 8445, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 384, "endOffset": 8442, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 1264, "endOffset": 2207, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 2253, "endOffset": 3198, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 3247, "endOffset": 4210, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 4272, "endOffset": 4836, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 4895, "endOffset": 6090, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [
+        { "startOffset": 6140, "endOffset": 7020, "count": 1 },
+        { "startOffset": 6528, "endOffset": 6610, "count": 0 },
+        { "startOffset": 6816, "endOffset": 6863, "count": 0 },
+        { "startOffset": 6864, "endOffset": 6902, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7087, "endOffset": 7836, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7893, "endOffset": 8438, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

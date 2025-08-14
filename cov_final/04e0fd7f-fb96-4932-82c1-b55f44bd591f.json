@@ -1,0 +1,69 @@
+{
+  "scriptId": "332",
+  "url": "file:///Users/rcogley/dev/nagare/tests/cli-utils-i18n_test.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 4096, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 307, "endOffset": 4093, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "setupCapture",
+      "ranges": [{ "startOffset": 540, "endOffset": 820, "count": 5 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "console.log",
+      "ranges": [{ "startOffset": 589, "endOffset": 650, "count": 13 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "console.warn",
+      "ranges": [{ "startOffset": 671, "endOffset": 732, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "console.error",
+      "ranges": [{ "startOffset": 754, "endOffset": 815, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "restoreConsole",
+      "ranges": [{ "startOffset": 888, "endOffset": 1017, "count": 5 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 1074, "endOffset": 2006, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 2062, "endOffset": 2811, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 2872, "endOffset": 3307, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [
+        { "startOffset": 3366, "endOffset": 3891, "count": 1 },
+        { "startOffset": 3769, "endOffset": 3820, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 3938, "endOffset": 4089, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

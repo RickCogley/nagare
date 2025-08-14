@@ -1,0 +1,73 @@
+{
+  "scriptId": "366",
+  "url": "file:///Users/rcogley/dev/nagare/src/validation/security-utils.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 13928, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "validateGitRef",
+      "ranges": [
+        { "startOffset": 765, "endOffset": 3992, "count": 2 },
+        { "startOffset": 841, "endOffset": 1218, "count": 0 },
+        { "startOffset": 1353, "endOffset": 1661, "count": 0 },
+        { "startOffset": 1953, "endOffset": 2377, "count": 0 },
+        { "startOffset": 2415, "endOffset": 2911, "count": 0 },
+        { "startOffset": 3004, "endOffset": 3457, "count": 0 },
+        { "startOffset": 3482, "endOffset": 3521, "count": 0 },
+        { "startOffset": 3523, "endOffset": 3972, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "validateFilePath",
+      "ranges": [{ "startOffset": 4392, "endOffset": 6563, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "normalizePath",
+      "ranges": [{ "startOffset": 6708, "endOffset": 7609, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "sanitizeCommitMessage",
+      "ranges": [
+        { "startOffset": 7894, "endOffset": 8337, "count": 2 },
+        { "startOffset": 7983, "endOffset": 8003, "count": 0 },
+        { "startOffset": 8142, "endOffset": 8214, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "validateVersion",
+      "ranges": [
+        { "startOffset": 8607, "endOffset": 9700, "count": 2 },
+        { "startOffset": 8690, "endOffset": 9018, "count": 0 },
+        { "startOffset": 9210, "endOffset": 9680, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "sanitizeErrorMessage",
+      "ranges": [
+        { "startOffset": 10110, "endOffset": 11193, "count": 1 },
+        { "startOffset": 10826, "endOffset": 10840, "count": 0 },
+        { "startOffset": 10842, "endOffset": 11086, "count": 0 },
+        { "startOffset": 11110, "endOffset": 11192, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "validateCliArgs",
+      "ranges": [{ "startOffset": 11502, "endOffset": 13283, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "createSecurityLog",
+      "ranges": [{ "startOffset": 13620, "endOffset": 13927, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

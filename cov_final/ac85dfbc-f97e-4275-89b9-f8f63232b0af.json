@@ -1,0 +1,56 @@
+{
+  "scriptId": "448",
+  "url": "file:///Users/rcogley/Library/Caches/deno/npm/registry.npmjs.org/estree-walker/3.0.3/src/sync.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 3418, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "SyncWalker",
+      "ranges": [{ "startOffset": 493, "endOffset": 1021, "count": 3 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "skip",
+      "ranges": [{ "startOffset": 759, "endOffset": 790, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "remove",
+      "ranges": [{ "startOffset": 803, "endOffset": 836, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "replace",
+      "ranges": [{ "startOffset": 850, "endOffset": 885, "count": 3 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "visit",
+      "ranges": [
+        { "startOffset": 1214, "endOffset": 3189, "count": 21 },
+        { "startOffset": 1598, "endOffset": 1681, "count": 0 },
+        { "startOffset": 1711, "endOffset": 1757, "count": 0 },
+        { "startOffset": 1971, "endOffset": 1983, "count": 0 },
+        { "startOffset": 2001, "endOffset": 2013, "count": 0 },
+        { "startOffset": 2083, "endOffset": 2587, "count": 57 },
+        { "startOffset": 2156, "endOffset": 2184, "count": 54 },
+        { "startOffset": 2186, "endOffset": 2582, "count": 18 },
+        { "startOffset": 2219, "endOffset": 2501, "count": 3 },
+        { "startOffset": 2432, "endOffset": 2477, "count": 0 },
+        { "startOffset": 2501, "endOffset": 2576, "count": 15 },
+        { "startOffset": 2851, "endOffset": 2934, "count": 3 },
+        { "startOffset": 2964, "endOffset": 3010, "count": 0 },
+        { "startOffset": 3149, "endOffset": 3161, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "isNode",
+      "ranges": [{ "startOffset": 3278, "endOffset": 3417, "count": 18 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

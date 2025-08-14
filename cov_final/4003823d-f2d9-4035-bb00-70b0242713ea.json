@@ -1,0 +1,44 @@
+{
+  "scriptId": "335",
+  "url": "file:///Users/rcogley/dev/nagare/src/ui/app-context.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 4219, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getAppDisplayName",
+      "ranges": [
+        { "startOffset": 1261, "endOffset": 1350, "count": 38 },
+        { "startOffset": 1327, "endOffset": 1347, "count": 4 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getAppContext",
+      "ranges": [{ "startOffset": 2034, "endOffset": 2104, "count": 4 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "hasAppName",
+      "ranges": [
+        { "startOffset": 2858, "endOffset": 2969, "count": 15 },
+        { "startOffset": 2925, "endOffset": 2965, "count": 13 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getAppNameWithRepo",
+      "ranges": [
+        { "startOffset": 3804, "endOffset": 4218, "count": 17 },
+        { "startOffset": 3927, "endOffset": 3956, "count": 15 },
+        { "startOffset": 3958, "endOffset": 3983, "count": 4 },
+        { "startOffset": 3983, "endOffset": 4119, "count": 13 },
+        { "startOffset": 4119, "endOffset": 4198, "count": 11 },
+        { "startOffset": 4198, "endOffset": 4217, "count": 2 }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}

@@ -1,0 +1,287 @@
+{
+  "scriptId": "332",
+  "url": "file:///Users/rcogley/dev/nagare/tests/github-integration_test.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 13609, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createTestConfig",
+      "ranges": [
+        { "startOffset": 321, "endOffset": 783, "count": 9 },
+        { "startOffset": 672, "endOffset": 680, "count": 2 },
+        { "startOffset": 743, "endOffset": 752, "count": 2 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createTestReleaseNotes",
+      "ranges": [{ "startOffset": 784, "endOffset": 1011, "count": 8 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 1261, "endOffset": 1387, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 1645, "endOffset": 1978, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 2048, "endOffset": 5084, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "MockCommand",
+      "ranges": [
+        { "startOffset": 2363, "endOffset": 2820, "count": 2 },
+        { "startOffset": 2452, "endOffset": 2457, "count": 0 },
+        { "startOffset": 2630, "endOffset": 2814, "count": 1 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 2825, "endOffset": 2990, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "output",
+      "ranges": [{ "startOffset": 2834, "endOffset": 2990, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.makeTempFile",
+      "ranges": [{ "startOffset": 3212, "endOffset": 3244, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.writeTextFile",
+      "ranges": [
+        { "startOffset": 3269, "endOffset": 3353, "count": 1 },
+        { "startOffset": 3344, "endOffset": 3348, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.remove",
+      "ranges": [{ "startOffset": 3371, "endOffset": 3383, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 5145, "endOffset": 5921, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "MockCommand",
+      "ranges": [{ "startOffset": 5409, "endOffset": 5438, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 5443, "endOffset": 5616, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "output",
+      "ranges": [{ "startOffset": 5452, "endOffset": 5616, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 5980, "endOffset": 7525, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "MockCommand",
+      "ranges": [
+        { "startOffset": 6297, "endOffset": 6671, "count": 2 },
+        { "startOffset": 6385, "endOffset": 6665, "count": 1 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 6676, "endOffset": 6841, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "output",
+      "ranges": [{ "startOffset": 6685, "endOffset": 6841, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.makeTempFile",
+      "ranges": [{ "startOffset": 7036, "endOffset": 7060, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.writeTextFile",
+      "ranges": [{ "startOffset": 7085, "endOffset": 7097, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.remove",
+      "ranges": [{ "startOffset": 7115, "endOffset": 7127, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7594, "endOffset": 9162, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "MockCommand",
+      "ranges": [{ "startOffset": 7877, "endOffset": 7906, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 7911, "endOffset": 8462, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "output",
+      "ranges": [
+        { "startOffset": 7920, "endOffset": 8462, "count": 2 },
+        { "startOffset": 7984, "endOffset": 8456, "count": 1 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.makeTempFile",
+      "ranges": [{ "startOffset": 8657, "endOffset": 8681, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.writeTextFile",
+      "ranges": [{ "startOffset": 8706, "endOffset": 8718, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.remove",
+      "ranges": [{ "startOffset": 8736, "endOffset": 8748, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 9232, "endOffset": 10670, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "MockCommand",
+      "ranges": [{ "startOffset": 9495, "endOffset": 9524, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 9529, "endOffset": 9846, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "output",
+      "ranges": [
+        { "startOffset": 9538, "endOffset": 9846, "count": 2 },
+        { "startOffset": 9602, "endOffset": 9840, "count": 1 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.makeTempFile",
+      "ranges": [{ "startOffset": 10111, "endOffset": 10129, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.writeTextFile",
+      "ranges": [{ "startOffset": 10154, "endOffset": 10166, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.remove",
+      "ranges": [{ "startOffset": 10184, "endOffset": 10263, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 10929, "endOffset": 12155, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "MockCommand",
+      "ranges": [{ "startOffset": 11338, "endOffset": 11367, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 11372, "endOffset": 11537, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "output",
+      "ranges": [{ "startOffset": 11381, "endOffset": 11537, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.makeTempFile",
+      "ranges": [{ "startOffset": 11566, "endOffset": 11590, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.writeTextFile",
+      "ranges": [
+        { "startOffset": 11615, "endOffset": 11699, "count": 1 },
+        { "startOffset": 11690, "endOffset": 11694, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.remove",
+      "ranges": [{ "startOffset": 11717, "endOffset": 11729, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 12223, "endOffset": 13606, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "MockCommand",
+      "ranges": [
+        { "startOffset": 12488, "endOffset": 12750, "count": 2 },
+        { "startOffset": 12576, "endOffset": 12744, "count": 1 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 12755, "endOffset": 12920, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "output",
+      "ranges": [{ "startOffset": 12764, "endOffset": 12920, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.makeTempFile",
+      "ranges": [{ "startOffset": 13115, "endOffset": 13139, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.writeTextFile",
+      "ranges": [{ "startOffset": 13164, "endOffset": 13176, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Deno.remove",
+      "ranges": [{ "startOffset": 13194, "endOffset": 13206, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}
