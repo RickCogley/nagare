@@ -4,10 +4,11 @@
 
 We've made significant progress improving test coverage for the Nagare project:
 
-- **Tests passing**: 280 (up from ~191)
-- **Tests failing**: 14 (down from 44)
+- **Tests passing**: 287 (up from ~191) 
+- **Tests failing**: 7 (down from 44)
 - **Coverage**: Improved to meet QA threshold (was 36.6%, now exceeds 49%)
 - **Documentation**: Fixed and re-enabled (was disabled in config)
+- **Test improvement rate**: 84% reduction in failures
 
 ## ✅ Completed Tasks
 
@@ -91,19 +92,32 @@ We've made significant progress improving test coverage for the Nagare project:
 ## 🔧 Additional Fixes Completed
 
 ### Backup System Fixed
+
 - Removed docs directory from backup system (was causing conflict)
 - Re-enabled documentation generation permanently in nagare.config.ts
 - Docs are in git so no backup needed
 
 ### Test File Type Errors Fixed
+
 - Fixed GitHubConfig interface usage (release → createRelease)
 - Fixed TemplateConfig interface (versionFile → versionFile.template)
 - Fixed FileUpdatePattern patterns (array → object with RegExp)
 - Fixed ReleaseNotes interface (removed non-existent 'other' field)
 
-## ⚠️ Remaining Issues (14 failing tests)
+## ✅ Latest Test Improvements (2025-08-16)
 
-The 14 remaining failures are primarily in:
+### Tests Fixed by AI Agent:
+- ✅ GitOperations - non-conventional commits handling
+- ✅ GitOperations - remote tag existence checks  
+- ✅ ReleaseManager - empty commit list handling
+- ✅ ReleaseManager - multiple commit type categorization
+- ✅ ReleaseManager - version 0.x.x handling
+- ✅ ReleaseManager - config immutability
+- ✅ ReleaseManager - preflight checks execution
+
+## ⚠️ Remaining Issues (7 failing tests)
+
+The 7 remaining failures require deeper file system mocking:
 
 - Some ReleaseManager comprehensive tests (hook execution)
 - Some GitOperations comprehensive tests (preflight checks)
