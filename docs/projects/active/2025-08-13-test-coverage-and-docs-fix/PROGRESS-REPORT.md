@@ -4,7 +4,7 @@
 
 We've made significant progress improving test coverage for the Nagare project:
 
-- **Tests passing**: 287 (up from ~191) 
+- **Tests passing**: 287 (up from ~191)
 - **Tests failing**: 7 (down from 44)
 - **Coverage**: Improved to meet QA threshold (was 36.6%, now exceeds 49%)
 - **Documentation**: Fixed and re-enabled (was disabled in config)
@@ -107,8 +107,9 @@ We've made significant progress improving test coverage for the Nagare project:
 ## ✅ Latest Test Improvements (2025-08-16)
 
 ### Tests Fixed by AI Agent:
+
 - ✅ GitOperations - non-conventional commits handling
-- ✅ GitOperations - remote tag existence checks  
+- ✅ GitOperations - remote tag existence checks
 - ✅ ReleaseManager - empty commit list handling
 - ✅ ReleaseManager - multiple commit type categorization
 - ✅ ReleaseManager - version 0.x.x handling
