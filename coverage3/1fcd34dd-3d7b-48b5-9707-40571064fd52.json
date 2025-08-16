@@ -1,0 +1,103 @@
+{
+  "scriptId": "369",
+  "url": "file:///Users/rcogley/dev/nagare/src/core/enhanced-error.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 19754, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "hasI18n",
+      "ranges": [{ "startOffset": 291, "endOffset": 388, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 1188, "endOffset": 1229, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "NagareError",
+      "ranges": [
+        { "startOffset": 1233, "endOffset": 2294, "count": 2 },
+        { "startOffset": 1562, "endOffset": 1574, "count": 0 },
+        { "startOffset": 1575, "endOffset": 1621, "count": 0 },
+        { "startOffset": 1773, "endOffset": 1785, "count": 0 },
+        { "startOffset": 1787, "endOffset": 2003, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 1906, "endOffset": 1919, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "toString",
+      "ranges": [
+        { "startOffset": 2437, "endOffset": 3610, "count": 2 },
+        { "startOffset": 2826, "endOffset": 2865, "count": 0 },
+        { "startOffset": 2867, "endOffset": 3368, "count": 0 },
+        { "startOffset": 3434, "endOffset": 3495, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 2681, "endOffset": 2764, "count": 7 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 2947, "endOffset": 3360, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "toJSON",
+      "ranges": [{ "startOffset": 3723, "endOffset": 3951, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "gitNotInitialized",
+      "ranges": [
+        { "startOffset": 10950, "endOffset": 11546, "count": 1 },
+        { "startOffset": 10991, "endOffset": 11241, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "uncommittedChanges",
+      "ranges": [
+        { "startOffset": 11841, "endOffset": 12555, "count": 1 },
+        { "startOffset": 11883, "endOffset": 12175, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "configNotFound",
+      "ranges": [{ "startOffset": 12922, "endOffset": 14287, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "versionNotFound",
+      "ranges": [{ "startOffset": 14710, "endOffset": 15926, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "fileHandlerNotFound",
+      "ranges": [{ "startOffset": 16265, "endOffset": 17417, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "invalidJson",
+      "ranges": [{ "startOffset": 17838, "endOffset": 18743, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "githubCliNotFound",
+      "ranges": [{ "startOffset": 19028, "endOffset": 19751, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

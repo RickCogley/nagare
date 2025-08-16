@@ -1,0 +1,188 @@
+{
+  "scriptId": "332",
+  "url": "file:///Users/rcogley/dev/nagare/src/release/release-manager-comprehensive_test.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 19738, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 982, "endOffset": 1743, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [
+        { "startOffset": 1809, "endOffset": 3779, "count": 1 },
+        { "startOffset": 3651, "endOffset": 3656, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 2017, "endOffset": 2827, "count": 5 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "MockCommand",
+      "ranges": [{ "startOffset": 2079, "endOffset": 2816, "count": 5 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "MockCommand.output",
+      "ranges": [
+        { "startOffset": 2218, "endOffset": 2779, "count": 5 },
+        { "startOffset": 2304, "endOffset": 2309, "count": 0 },
+        { "startOffset": 2372, "endOffset": 2390, "count": 1 },
+        { "startOffset": 2392, "endOffset": 2582, "count": 1 },
+        { "startOffset": 2582, "endOffset": 2778, "count": 4 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 4026, "endOffset": 4586, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createTestConfig.hooks.preRelease",
+      "ranges": [{ "startOffset": 4140, "endOffset": 4187, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 4647, "endOffset": 5432, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createTestConfig.hooks.postRelease",
+      "ranges": [{ "startOffset": 4762, "endOffset": 4810, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "",
+      "ranges": [
+        { "startOffset": 5487, "endOffset": 6008, "count": 1 },
+        { "startOffset": 5984, "endOffset": 5989, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createTestConfig.hooks.preRelease",
+      "ranges": [{ "startOffset": 5576, "endOffset": 5639, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 6258, "endOffset": 6970, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "mockDeps.versionUtils.getCurrentVersion",
+      "ranges": [{ "startOffset": 6548, "endOffset": 6733, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7029, "endOffset": 7407, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7653, "endOffset": 8179, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 8246, "endOffset": 9491, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 9753, "endOffset": 10734, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "mockDeps.github.createRelease",
+      "ranges": [{ "startOffset": 10272, "endOffset": 10443, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 10809, "endOffset": 11483, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "mockDeps.github.createRelease",
+      "ranges": [{ "startOffset": 11196, "endOffset": 11256, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 11734, "endOffset": 12312, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 12570, "endOffset": 13696, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "mockDeps.fileHandlerManager.updateFile",
+      "ranges": [{ "startOffset": 13202, "endOffset": 13430, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 13955, "endOffset": 14734, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 14989, "endOffset": 15925, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "mockDeps.backupManager.createBackup",
+      "ranges": [{ "startOffset": 15427, "endOffset": 15530, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 15885, "endOffset": 15914, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 16180, "endOffset": 16997, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "logger.debug",
+      "ranges": [{ "startOffset": 16683, "endOffset": 16777, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 17257, "endOffset": 17750, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 17811, "endOffset": 18224, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 18283, "endOffset": 18806, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 19061, "endOffset": 19735, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

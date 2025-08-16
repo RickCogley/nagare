@@ -44,9 +44,14 @@ async function getCoveragePercentage(): Promise<number | null> {
     console.warn(yellow("⚠️  Tests failed, but continuing to generate coverage..."));
   }
 
-  // Generate coverage report
+  // Generate coverage report excluding test files
   const coverageCommand = new Deno.Command("deno", {
-    args: ["coverage", COVERAGE_DIR],
+    args: [
+      "coverage",
+      COVERAGE_DIR,
+      "--exclude=.*test.*", // Exclude any file with 'test' in the name
+      "--exclude=version\\.ts$", // Exclude generated version files
+    ],
     stdout: "piped",
     stderr: "piped",
   });

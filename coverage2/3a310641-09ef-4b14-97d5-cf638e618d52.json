@@ -1,0 +1,93 @@
+{
+  "scriptId": "382",
+  "url": "file:///Users/rcogley/dev/nagare/src/release/version-utils.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 6172, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 317, "endOffset": 330, "count": 20 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "VersionUtils",
+      "ranges": [{ "startOffset": 334, "endOffset": 409, "count": 20 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getCurrentVersion",
+      "ranges": [{ "startOffset": 499, "endOffset": 2488, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "calculateNewVersion",
+      "ranges": [
+        { "startOffset": 2559, "endOffset": 5844, "count": 17 },
+        { "startOffset": 2946, "endOffset": 2993, "count": 1 },
+        { "startOffset": 2993, "endOffset": 3116, "count": 15 },
+        { "startOffset": 3016, "endOffset": 3063, "count": 7 },
+        { "startOffset": 3063, "endOffset": 3116, "count": 8 },
+        { "startOffset": 3116, "endOffset": 3135, "count": 16 },
+        { "startOffset": 3135, "endOffset": 5391, "count": 1 },
+        { "startOffset": 3486, "endOffset": 4616, "count": 0 },
+        { "startOffset": 4722, "endOffset": 4786, "count": 0 },
+        { "startOffset": 4795, "endOffset": 4873, "count": 0 },
+        { "startOffset": 4983, "endOffset": 5377, "count": 0 },
+        { "startOffset": 5391, "endOffset": 5489, "count": 15 },
+        { "startOffset": 5489, "endOffset": 5536, "count": 1 },
+        { "startOffset": 5536, "endOffset": 5840, "count": 14 },
+        { "startOffset": 5559, "endOffset": 5840, "count": 7 },
+        { "startOffset": 5715, "endOffset": 5840, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 2756, "endOffset": 2777, "count": 21 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 2817, "endOffset": 2839, "count": 15 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 2876, "endOffset": 2897, "count": 16 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 3598, "endOffset": 3619, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 3729, "endOffset": 3781, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 3961, "endOffset": 3983, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 4083, "endOffset": 4130, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 4564, "endOffset": 4583, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "parseVersion",
+      "ranges": [{ "startOffset": 5901, "endOffset": 6169, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

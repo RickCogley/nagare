@@ -41,7 +41,7 @@
     "test:all": "deno task test:unit && deno task test:integration",
     "test:watch": "deno test --unstable-raw-imports --allow-read --allow-write --allow-run --allow-env --watch --no-check",
     "test:coverage": "deno test --unstable-raw-imports --allow-read --allow-write --allow-run --allow-env --coverage --no-check",
-    "coverage:update": "deno run --allow-read --allow-write --allow-run scripts/update-coverage-badge.ts",
+    "coverage:update": "deno run --allow-read --allow-write --allow-run --allow-env scripts/update-coverage-badge.ts",
     "coverage:generate": "deno run --allow-all scripts/generate-coverage.ts",
     "coverage:view": "open docs/coverage/html/index.html",
     "test:strict": "deno test --unstable-raw-imports --allow-read --allow-write --allow-run --allow-env",

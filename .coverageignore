@@ -1,0 +1,27 @@
+# Test files should not be included in coverage
+**/*_test.ts
+**/*_test_*.ts
+**/test_*.ts
+**/*.test.ts
+**/tests/**
+**/testing/**
+**/mocks/**
+**/fixtures/**
+**/examples/**
+**/scripts/**
+**/benchmarks/**
+
+# Test helpers and mocks
+src/release/release-manager_test_helper.ts
+src/release/release-manager_test_mocks.ts
+
+# Generated files
+version.ts
+**/version.ts
+
+# Type definition files
+**/*.d.ts
+
+# Config files
+*.config.ts
+deno.json

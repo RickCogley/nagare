@@ -1,0 +1,28 @@
+{
+  "scriptId": "380",
+  "url": "file:///Users/rcogley/dev/nagare/src/release/release-manager-deps.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 2096, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createDeps",
+      "ranges": [
+        { "startOffset": 1087, "endOffset": 2093, "count": 20 },
+        { "startOffset": 1200, "endOffset": 1256, "count": 0 },
+        { "startOffset": 1313, "endOffset": 1341, "count": 0 },
+        { "startOffset": 1435, "endOffset": 1467, "count": 0 },
+        { "startOffset": 1597, "endOffset": 1630, "count": 0 },
+        { "startOffset": 1659, "endOffset": 1691, "count": 0 },
+        { "startOffset": 1742, "endOffset": 1774, "count": 0 },
+        { "startOffset": 1815, "endOffset": 1842, "count": 0 },
+        { "startOffset": 1909, "endOffset": 1936, "count": 0 },
+        { "startOffset": 1979, "endOffset": 2007, "count": 0 },
+        { "startOffset": 2048, "endOffset": 2082, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "scriptId": "337",
+  "url": "file:///Users/rcogley/dev/nagare/src/release/release-manager_test_helper.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 10044, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 279, "endOffset": 627, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "MockEnvironment",
+      "ranges": [{ "startOffset": 631, "endOffset": 953, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "setupDefaultFiles",
+      "ranges": [{ "startOffset": 956, "endOffset": 1548, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "configureGit",
+      "ranges": [{ "startOffset": 1598, "endOffset": 1664, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "setFile",
+      "ranges": [{ "startOffset": 1727, "endOffset": 1795, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getFile",
+      "ranges": [{ "startOffset": 1850, "endOffset": 1907, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "addCommits",
+      "ranges": [{ "startOffset": 1961, "endOffset": 2033, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "install",
+      "ranges": [{ "startOffset": 2069, "endOffset": 8178, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "restore",
+      "ranges": [{ "startOffset": 8227, "endOffset": 8539, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "cleanup",
+      "ranges": [{ "startOffset": 8578, "endOffset": 8613, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "createTestConfig",
+      "ranges": [
+        { "startOffset": 8670, "endOffset": 9135, "count": 23 },
+        { "startOffset": 8834, "endOffset": 8843, "count": 16 },
+        { "startOffset": 8959, "endOffset": 8972, "count": 16 },
+        { "startOffset": 9095, "endOffset": 9104, "count": 16 }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}

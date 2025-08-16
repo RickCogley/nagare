@@ -1,0 +1,78 @@
+{
+  "scriptId": "371",
+  "url": "file:///Users/rcogley/dev/nagare/src/validation/security-utils.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 13928, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "validateGitRef",
+      "ranges": [{ "startOffset": 765, "endOffset": 3992, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "validateFilePath",
+      "ranges": [
+        { "startOffset": 4392, "endOffset": 6563, "count": 14 },
+        { "startOffset": 4477, "endOffset": 4823, "count": 0 },
+        { "startOffset": 5058, "endOffset": 5499, "count": 0 },
+        { "startOffset": 5622, "endOffset": 5638, "count": 0 },
+        { "startOffset": 6079, "endOffset": 6538, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "normalizePath",
+      "ranges": [
+        { "startOffset": 6708, "endOffset": 7609, "count": 42 },
+        { "startOffset": 6910, "endOffset": 6943, "count": 14 },
+        { "startOffset": 7169, "endOffset": 7393, "count": 184 },
+        { "startOffset": 7192, "endOffset": 7206, "count": 170 },
+        { "startOffset": 7208, "endOffset": 7231, "count": 42 },
+        { "startOffset": 7231, "endOffset": 7254, "count": 142 },
+        { "startOffset": 7254, "endOffset": 7276, "count": 0 },
+        { "startOffset": 7277, "endOffset": 7318, "count": 0 },
+        { "startOffset": 7320, "endOffset": 7349, "count": 0 },
+        { "startOffset": 7349, "endOffset": 7389, "count": 142 },
+        { "startOffset": 7494, "endOffset": 7520, "count": 28 },
+        { "startOffset": 7521, "endOffset": 7551, "count": 28 },
+        { "startOffset": 7553, "endOffset": 7583, "count": 28 },
+        { "startOffset": 7583, "endOffset": 7600, "count": 14 },
+        { "startOffset": 7600, "endOffset": 7606, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "sanitizeCommitMessage",
+      "ranges": [{ "startOffset": 7894, "endOffset": 8337, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "validateVersion",
+      "ranges": [{ "startOffset": 8607, "endOffset": 9700, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "sanitizeErrorMessage",
+      "ranges": [
+        { "startOffset": 10110, "endOffset": 11193, "count": 15 },
+        { "startOffset": 10826, "endOffset": 10840, "count": 0 },
+        { "startOffset": 10842, "endOffset": 11086, "count": 0 },
+        { "startOffset": 11110, "endOffset": 11192, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "validateCliArgs",
+      "ranges": [{ "startOffset": 11502, "endOffset": 13283, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "createSecurityLog",
+      "ranges": [{ "startOffset": 13620, "endOffset": 13927, "count": 46 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

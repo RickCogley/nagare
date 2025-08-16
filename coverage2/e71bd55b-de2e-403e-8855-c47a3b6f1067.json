@@ -1,0 +1,193 @@
+{
+  "scriptId": "335",
+  "url": "file:///Users/rcogley/dev/nagare/src/git/git-operations.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 22750, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 3031, "endOffset": 3047, "count": 18 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "GitOperations",
+      "ranges": [{ "startOffset": 3051, "endOffset": 3157, "count": 18 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "isGitRepository",
+      "ranges": [
+        { "startOffset": 3512, "endOffset": 3683, "count": 3 },
+        { "startOffset": 3619, "endOffset": 3645, "count": 1 },
+        { "startOffset": 3645, "endOffset": 3679, "count": 2 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "hasUncommittedChanges",
+      "ranges": [
+        { "startOffset": 4056, "endOffset": 4338, "count": 2 },
+        { "startOffset": 4253, "endOffset": 4334, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getGitUser",
+      "ranges": [
+        { "startOffset": 4644, "endOffset": 5052, "count": 1 },
+        { "startOffset": 4974, "endOffset": 5048, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getCurrentCommitHash",
+      "ranges": [{ "startOffset": 5361, "endOffset": 5600, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getCurrentBranch",
+      "ranges": [
+        { "startOffset": 5961, "endOffset": 6306, "count": 1 },
+        { "startOffset": 6167, "endOffset": 6176, "count": 0 },
+        { "startOffset": 6230, "endOffset": 6302, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getLastReleaseTag",
+      "ranges": [
+        { "startOffset": 6660, "endOffset": 7415, "count": 8 },
+        { "startOffset": 6753, "endOffset": 6759, "count": 0 },
+        { "startOffset": 7071, "endOffset": 7258, "count": 4 },
+        { "startOffset": 7258, "endOffset": 7411, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getCommitsSinceLastRelease",
+      "ranges": [
+        { "startOffset": 7464, "endOffset": 8197, "count": 6 },
+        { "startOffset": 7579, "endOffset": 7599, "count": 3 },
+        { "startOffset": 7600, "endOffset": 7608, "count": 3 },
+        { "startOffset": 7854, "endOffset": 7947, "count": 1 },
+        { "startOffset": 7947, "endOffset": 8097, "count": 5 },
+        { "startOffset": 8097, "endOffset": 8193, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 7987, "endOffset": 8006, "count": 12 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 8012, "endOffset": 8054, "count": 12 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 8063, "endOffset": 8088, "count": 12 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getMergeCommits",
+      "ranges": [{ "startOffset": 8444, "endOffset": 9439, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "extractPRNumber",
+      "ranges": [{ "startOffset": 9639, "endOffset": 9971, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getCommitsInPR",
+      "ranges": [{ "startOffset": 10198, "endOffset": 11822, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "parseConventionalCommit",
+      "ranges": [
+        { "startOffset": 11888, "endOffset": 13943, "count": 12 },
+        { "startOffset": 11981, "endOffset": 12068, "count": 0 },
+        { "startOffset": 12176, "endOffset": 12292, "count": 0 },
+        { "startOffset": 12415, "endOffset": 12508, "count": 0 },
+        { "startOffset": 12768, "endOffset": 12813, "count": 0 },
+        { "startOffset": 13083, "endOffset": 13481, "count": 2 },
+        { "startOffset": 13481, "endOffset": 13564, "count": 10 },
+        { "startOffset": 13564, "endOffset": 13589, "count": 1 },
+        { "startOffset": 13590, "endOffset": 13601, "count": 9 },
+        { "startOffset": 13658, "endOffset": 13693, "count": 8 },
+        { "startOffset": 13807, "endOffset": 13819, "count": 10 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "commitAndTag",
+      "ranges": [
+        { "startOffset": 13995, "endOffset": 16248, "count": 2 },
+        { "startOffset": 14163, "endOffset": 14169, "count": 0 },
+        { "startOffset": 14539, "endOffset": 14618, "count": 0 },
+        { "startOffset": 14696, "endOffset": 14770, "count": 0 },
+        { "startOffset": 15681, "endOffset": 16244, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 14596, "endOffset": 14607, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "pushToRemote",
+      "ranges": [{ "startOffset": 16298, "endOffset": 17529, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getLocalTags",
+      "ranges": [{ "startOffset": 17570, "endOffset": 17808, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "deleteLocalTag",
+      "ranges": [{ "startOffset": 17845, "endOffset": 18648, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "deleteRemoteTag",
+      "ranges": [{ "startOffset": 18686, "endOffset": 19632, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "resetToCommit",
+      "ranges": [{ "startOffset": 19692, "endOffset": 21125, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getLastCommitMessage",
+      "ranges": [{ "startOffset": 21171, "endOffset": 21409, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "remoteTagExists",
+      "ranges": [
+        { "startOffset": 21456, "endOffset": 21866, "count": 2 },
+        { "startOffset": 21611, "endOffset": 21622, "count": 0 },
+        { "startOffset": 21802, "endOffset": 21862, "count": 1 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "runCommand",
+      "ranges": [
+        { "startOffset": 21924, "endOffset": 22747, "count": 30 },
+        { "startOffset": 22194, "endOffset": 22691, "count": 3 },
+        { "startOffset": 22691, "endOffset": 22746, "count": 27 }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}
