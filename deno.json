@@ -36,6 +36,9 @@
   "tasks": {
     "dev": "deno run --unstable-raw-imports --allow-read --allow-write --allow-run --watch examples/test.ts",
     "test": "deno test --unstable-raw-imports --allow-read --allow-write --allow-run --allow-env --no-check",
+    "test:unit": "deno test --unstable-raw-imports --allow-read --allow-write --allow-run --allow-env --no-check src/",
+    "test:integration": "deno test --unstable-raw-imports --allow-all --no-check tests/",
+    "test:all": "deno task test:unit && deno task test:integration",
     "test:watch": "deno test --unstable-raw-imports --allow-read --allow-write --allow-run --allow-env --watch --no-check",
     "test:coverage": "deno test --unstable-raw-imports --allow-read --allow-write --allow-run --allow-env --coverage --no-check",
     "coverage:generate": "deno run --allow-all scripts/generate-coverage.ts",

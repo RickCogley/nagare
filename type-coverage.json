@@ -1,0 +1,446 @@
+{
+  "totalLines": 10027,
+  "typedLines": 2176,
+  "coverage": 21.70140620325122,
+  "files": [
+    {
+      "path": "locales/schema.ts",
+      "totalLines": 682,
+      "typedLines": 3,
+      "coverage": 0.43988269794721413,
+      "untypedLines": []
+    },
+    {
+      "path": "nagare.config.ts",
+      "totalLines": 188,
+      "typedLines": 11,
+      "coverage": 5.851063829787234,
+      "untypedLines": []
+    },
+    {
+      "path": "scripts/publish-to-jsr.ts",
+      "totalLines": 60,
+      "typedLines": 4,
+      "coverage": 6.666666666666667,
+      "untypedLines": [
+        10
+      ]
+    },
+    {
+      "path": "src/events/index.ts",
+      "totalLines": 34,
+      "typedLines": 3,
+      "coverage": 8.823529411764707,
+      "untypedLines": []
+    },
+    {
+      "path": "scripts/check-patterns.ts",
+      "totalLines": 113,
+      "typedLines": 15,
+      "coverage": 13.274336283185843,
+      "untypedLines": [
+        109
+      ]
+    },
+    {
+      "path": "src/templates/changelog-generator.ts",
+      "totalLines": 283,
+      "typedLines": 40,
+      "coverage": 14.13427561837456,
+      "untypedLines": []
+    },
+    {
+      "path": "examples/salty-config-example.ts",
+      "totalLines": 99,
+      "typedLines": 14,
+      "coverage": 14.14141414141414,
+      "untypedLines": []
+    },
+    {
+      "path": "src/monitoring/auto-fixer.ts",
+      "totalLines": 263,
+      "typedLines": 39,
+      "coverage": 14.82889733840304,
+      "untypedLines": []
+    },
+    {
+      "path": "config.ts",
+      "totalLines": 154,
+      "typedLines": 23,
+      "coverage": 14.935064935064934,
+      "untypedLines": []
+    },
+    {
+      "path": "scripts/inline-templates.ts",
+      "totalLines": 107,
+      "typedLines": 16,
+      "coverage": 14.953271028037381,
+      "untypedLines": [
+        57,
+        97,
+        108
+      ]
+    },
+    {
+      "path": "src/release/release-manager.ts",
+      "totalLines": 1139,
+      "typedLines": 186,
+      "coverage": 16.330114135206323,
+      "untypedLines": [
+        1664
+      ]
+    },
+    {
+      "path": "mod.ts",
+      "totalLines": 24,
+      "typedLines": 4,
+      "coverage": 16.666666666666664,
+      "untypedLines": []
+    },
+    {
+      "path": ".nagare-backups/backup-mdxv99a2-m9soplyi0/mod.ts",
+      "totalLines": 24,
+      "typedLines": 4,
+      "coverage": 16.666666666666664,
+      "untypedLines": []
+    },
+    {
+      "path": ".nagare-backups/backup-mdxwjacu-emaqq4jy8/mod.ts",
+      "totalLines": 24,
+      "typedLines": 4,
+      "coverage": 16.666666666666664,
+      "untypedLines": []
+    },
+    {
+      "path": ".nagare-backups/backup-me1td1tg-wqxwz02bk/mod.ts",
+      "totalLines": 24,
+      "typedLines": 4,
+      "coverage": 16.666666666666664,
+      "untypedLines": []
+    },
+    {
+      "path": "src/templates/template-processor.ts",
+      "totalLines": 333,
+      "typedLines": 56,
+      "coverage": 16.816816816816818,
+      "untypedLines": []
+    },
+    {
+      "path": "benchmarks/performance.ts",
+      "totalLines": 267,
+      "typedLines": 45,
+      "coverage": 16.853932584269664,
+      "untypedLines": []
+    },
+    {
+      "path": "src/git/github-actions-monitor.ts",
+      "totalLines": 198,
+      "typedLines": 35,
+      "coverage": 17.67676767676768,
+      "untypedLines": [
+        186
+      ]
+    },
+    {
+      "path": "cli.ts",
+      "totalLines": 694,
+      "typedLines": 135,
+      "coverage": 19.45244956772334,
+      "untypedLines": []
+    },
+    {
+      "path": "scripts/fix-test-imports.ts",
+      "totalLines": 106,
+      "typedLines": 21,
+      "coverage": 19.81132075471698,
+      "untypedLines": [
+        111
+      ]
+    },
+    {
+      "path": "scripts/check-owasp.ts",
+      "totalLines": 332,
+      "typedLines": 66,
+      "coverage": 19.879518072289155,
+      "untypedLines": [
+        340
+      ]
+    },
+    {
+      "path": "src/validation/permission-manager.ts",
+      "totalLines": 154,
+      "typedLines": 31,
+      "coverage": 20.12987012987013,
+      "untypedLines": []
+    },
+    {
+      "path": "src/templates/doc-generator.ts",
+      "totalLines": 59,
+      "typedLines": 12,
+      "coverage": 20.33898305084746,
+      "untypedLines": []
+    },
+    {
+      "path": "src/utils/std-progress-indicator.ts",
+      "totalLines": 181,
+      "typedLines": 37,
+      "coverage": 20.441988950276244,
+      "untypedLines": [
+        178,
+        187,
+        306
+      ]
+    },
+    {
+      "path": "src/git/github-integration.ts",
+      "totalLines": 92,
+      "typedLines": 20,
+      "coverage": 21.73913043478261,
+      "untypedLines": []
+    },
+    {
+      "path": "src/git/git-operations.ts",
+      "totalLines": 395,
+      "typedLines": 86,
+      "coverage": 21.772151898734176,
+      "untypedLines": []
+    },
+    {
+      "path": "src/release/backup-manager.ts",
+      "totalLines": 117,
+      "typedLines": 26,
+      "coverage": 22.22222222222222,
+      "untypedLines": []
+    },
+    {
+      "path": "src/monitoring/jsr-verifier.ts",
+      "totalLines": 159,
+      "typedLines": 36,
+      "coverage": 22.641509433962266,
+      "untypedLines": []
+    },
+    {
+      "path": "src/validation/validators.ts",
+      "totalLines": 117,
+      "typedLines": 28,
+      "coverage": 23.931623931623932,
+      "untypedLines": []
+    },
+    {
+      "path": "src/monitoring/log-parser.ts",
+      "totalLines": 201,
+      "typedLines": 49,
+      "coverage": 24.378109452736318,
+      "untypedLines": []
+    },
+    {
+      "path": "src/release/file-handlers.ts",
+      "totalLines": 423,
+      "typedLines": 104,
+      "coverage": 24.58628841607565,
+      "untypedLines": [
+        554
+      ]
+    },
+    {
+      "path": "src/utils/utils.ts",
+      "totalLines": 85,
+      "typedLines": 21,
+      "coverage": 24.705882352941178,
+      "untypedLines": [
+        68
+      ]
+    },
+    {
+      "path": "nagare-launcher.ts",
+      "totalLines": 12,
+      "typedLines": 3,
+      "coverage": 25,
+      "untypedLines": []
+    },
+    {
+      "path": "src/core/logger.ts",
+      "totalLines": 71,
+      "typedLines": 18,
+      "coverage": 25.352112676056336,
+      "untypedLines": []
+    },
+    {
+      "path": "src/release/version-utils.ts",
+      "totalLines": 137,
+      "typedLines": 35,
+      "coverage": 25.547445255474454,
+      "untypedLines": []
+    },
+    {
+      "path": "src/release/release-state-tracker.ts",
+      "totalLines": 439,
+      "typedLines": 117,
+      "coverage": 26.65148063781321,
+      "untypedLines": []
+    },
+    {
+      "path": "src/ui/app-context.ts",
+      "totalLines": 15,
+      "typedLines": 4,
+      "coverage": 26.666666666666668,
+      "untypedLines": []
+    },
+    {
+      "path": "src/changelog/pr-detector.ts",
+      "totalLines": 75,
+      "typedLines": 20,
+      "coverage": 26.666666666666668,
+      "untypedLines": []
+    },
+    {
+      "path": "src/release/rollback-manager.ts",
+      "totalLines": 94,
+      "typedLines": 27,
+      "coverage": 28.723404255319153,
+      "untypedLines": []
+    },
+    {
+      "path": "src/core/enhanced-error.ts",
+      "totalLines": 334,
+      "typedLines": 96,
+      "coverage": 28.74251497005988,
+      "untypedLines": []
+    },
+    {
+      "path": "src/validation/security-utils.ts",
+      "totalLines": 281,
+      "typedLines": 82,
+      "coverage": 29.181494661921707,
+      "untypedLines": []
+    },
+    {
+      "path": "scripts/migrate-to-folders.ts",
+      "totalLines": 126,
+      "typedLines": 40,
+      "coverage": 31.746031746031743,
+      "untypedLines": [
+        125
+      ]
+    },
+    {
+      "path": ".nagare-backups/backup-mdxv99a2-m9soplyi0/version.ts",
+      "totalLines": 36,
+      "typedLines": 12,
+      "coverage": 33.33333333333333,
+      "untypedLines": []
+    },
+    {
+      "path": ".nagare-backups/backup-mdxwjacu-emaqq4jy8/version.ts",
+      "totalLines": 36,
+      "typedLines": 12,
+      "coverage": 33.33333333333333,
+      "untypedLines": []
+    },
+    {
+      "path": "src/core/i18n.ts",
+      "totalLines": 110,
+      "typedLines": 37,
+      "coverage": 33.63636363636363,
+      "untypedLines": []
+    },
+    {
+      "path": "scripts/generate-i18n-types.ts",
+      "totalLines": 60,
+      "typedLines": 21,
+      "coverage": 35,
+      "untypedLines": [
+        48
+      ]
+    },
+    {
+      "path": ".nagare-backups/backup-me1td1tg-wqxwz02bk/version.ts",
+      "totalLines": 36,
+      "typedLines": 13,
+      "coverage": 36.11111111111111,
+      "untypedLines": []
+    },
+    {
+      "path": "scripts/find-nagare-errors.ts",
+      "totalLines": 30,
+      "typedLines": 11,
+      "coverage": 36.666666666666664,
+      "untypedLines": [
+        10
+      ]
+    },
+    {
+      "path": "src/ui/release-header.ts",
+      "totalLines": 34,
+      "typedLines": 13,
+      "coverage": 38.23529411764706,
+      "untypedLines": []
+    },
+    {
+      "path": "src/core/branded-messages.ts",
+      "totalLines": 234,
+      "typedLines": 92,
+      "coverage": 39.31623931623932,
+      "untypedLines": []
+    },
+    {
+      "path": "scripts/fix-imports.ts",
+      "totalLines": 167,
+      "typedLines": 67,
+      "coverage": 40.119760479041915,
+      "untypedLines": [
+        193
+      ]
+    },
+    {
+      "path": "src/release/release-manager-deps.ts",
+      "totalLines": 27,
+      "typedLines": 11,
+      "coverage": 40.74074074074074,
+      "untypedLines": []
+    },
+    {
+      "path": "src/events/event-bus.ts",
+      "totalLines": 215,
+      "typedLines": 89,
+      "coverage": 41.3953488372093,
+      "untypedLines": []
+    },
+    {
+      "path": "version.ts",
+      "totalLines": 31,
+      "typedLines": 13,
+      "coverage": 41.935483870967744,
+      "untypedLines": []
+    },
+    {
+      "path": "src/utils/cli-utils.ts",
+      "totalLines": 46,
+      "typedLines": 25,
+      "coverage": 54.347826086956516,
+      "untypedLines": []
+    },
+    {
+      "path": "types.ts",
+      "totalLines": 249,
+      "typedLines": 139,
+      "coverage": 55.82329317269076,
+      "untypedLines": []
+    },
+    {
+      "path": "src/core/runtime-compat.ts",
+      "totalLines": 0,
+      "typedLines": 0,
+      "coverage": 100,
+      "untypedLines": []
+    },
+    {
+      "path": "src/monitoring/error-reference.ts",
+      "totalLines": 1,
+      "typedLines": 1,
+      "coverage": 100,
+      "untypedLines": []
+    }
+  ],
+  "timestamp": "2025-08-16T02:48:49.549Z"
+}

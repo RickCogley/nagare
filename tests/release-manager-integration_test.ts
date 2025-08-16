@@ -1,7 +1,7 @@
 /**
  * @fileoverview Integration tests for ReleaseManager that require actual file operations
  * @module release-manager-integration_test
- * 
+ *
  * These tests set dryRun: false to test behaviors that only occur during real releases:
  * - Actual file backups
  * - State tracking file writes
@@ -79,7 +79,7 @@ Deno.test({
   fn: async () => {
     const hookSpy = spy();
     const testVersionFile = join(TEST_DIR, "version.ts");
-    
+
     // Create test version file
     await Deno.writeTextFile(testVersionFile, 'export const VERSION = "1.0.0";');
 
@@ -173,7 +173,7 @@ Deno.test({
       versionFile: {
         path: join(TEST_DIR, "version.ts"),
       },
-      updateFiles: testFiles.map(path => ({ path })),
+      updateFiles: testFiles.map((path) => ({ path })),
       options: {
         dryRun: false,
         skipConfirmation: true,
@@ -190,7 +190,7 @@ Deno.test({
     const result = await manager.release();
 
     assertEquals(result.success, true);
-    
+
     // Verify files were updated
     for (const file of testFiles) {
       const content = await Deno.readTextFile(file);

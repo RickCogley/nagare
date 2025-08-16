@@ -6,6 +6,8 @@
 [![JSR Score](https://jsr.io/badges/@rick/nagare/score)](https://jsr.io/@rick/nagare)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![API Documentation](https://img.shields.io/badge/API_docs-deno.net-blue)](https://nagare.esolia.deno.net/)
+[![Test Coverage](https://img.shields.io/badge/coverage-49%25-yellow)](./docs/coverage/)
+[![Tests](https://img.shields.io/badge/tests-287_passing-brightgreen)](./tests/)
 
 A comprehensive, [Deno](https://deno.com/)-native release management library that automates version bumping, changelog
 generation, and GitHub releases using [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) and
