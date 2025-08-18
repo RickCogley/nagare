@@ -1,0 +1,24 @@
+# Gitleaks configuration
+title = "Nagare Gitleaks Configuration"
+
+[extend]
+# Use the default gitleaks configuration as base
+useDefault = true
+
+[allowlist]
+# Allow documentation examples with placeholder tokens
+paths = [
+    '''.*\.md$''',              # All markdown files
+    '''docs/.*''',              # Everything in docs
+    '''\.claude/.*''',          # Everything in .claude
+    '''README\.md'''            # README file
+]
+
+# Additional patterns to allow
+regexTarget = "line"
+regexes = [
+    '''YOUR_[A-Z_]+_TOKEN''',   # Allow YOUR_*_TOKEN placeholders
+    '''<your-.*-here>''',       # Allow <your-*-here> placeholders
+    '''example\.com''',         # Example domains
+    '''Bearer\s+<.*>'''         # Bearer token placeholders
+]

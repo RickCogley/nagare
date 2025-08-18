@@ -25,6 +25,7 @@ export const APP_INFO = {
   name: "test-project",
   description: "",
   repository: "https://github.com/test/project",
+  license: "MIT",
 } as const;
 export const APP_METADATA = {} as const;
 export const RELEASE_NOTES = {

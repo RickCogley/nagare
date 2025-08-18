@@ -61,7 +61,7 @@ Publishing and user management operations require authentication:
 ```bash
 # Publishing requires authentication
 curl -X POST "https://api.jsr.io/packages" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Authorization: Bearer <your-jsr-token-here>" \
   -H "Content-Type: application/json" \
   -d '{"scope": "myorg", "package": "mypackage"}'
 ```
