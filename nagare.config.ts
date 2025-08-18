@@ -8,6 +8,60 @@ import type { NagareConfig, TemplateData } from "./types.ts";
 import { LogLevel, TemplateFormat } from "./types.ts";
 
 /**
+ * Update coverage badges after release
+ *
+ * @description
+ * Runs coverage tests and updates README badges with actual coverage percentage
+ *
+ * @returns {Promise<void>}
+ */
+async function updateCoverageBadges(): Promise<void> {
+  try {
+    console.log("📊 Updating coverage badges...");
+
+    const coverageCmd = new Deno.Command("deno", {
+      args: ["task", "coverage:update"],
+      stdout: "piped",
+      stderr: "piped",
+    });
+
+    const result = await coverageCmd.output();
+
+    if (result.success) {
+      console.log("✅ Coverage badges updated successfully");
+
+      // Check if there are changes to commit
+      const statusCmd = new Deno.Command("git", {
+        args: ["status", "--porcelain", "README.md"],
+        stdout: "piped",
+      });
+
+      const statusResult = await statusCmd.output();
+      const statusOutput = new TextDecoder().decode(statusResult.stdout).trim();
+
+      if (statusOutput) {
+        console.log("📝 Committing coverage badge updates...");
+
+        await new Deno.Command("git", { args: ["add", "README.md", "coverage-badge.json"] }).output();
+        await new Deno.Command("git", {
+          args: ["commit", "-m", "docs: update coverage badges after release"],
+        }).output();
+        await new Deno.Command("git", {
+          args: ["push", "origin", "main"],
+        }).output();
+
+        console.log("✅ Coverage badge updates committed and pushed");
+      }
+    } else {
+      const error = new TextDecoder().decode(result.stderr);
+      console.warn("⚠️  Coverage update failed:", error);
+    }
+  } catch (error) {
+    console.warn("⚠️  Coverage badge update failed:", error);
+  }
+}
+
+/**
  * Post-release formatting check (simplified)
  *
  * @description
@@ -200,11 +254,11 @@ const config: NagareConfig = {
    * Post-release hooks
    *
    * @description
-   * Only runs if Vento didn't generate properly formatted code.
-   * This is a safety net that shouldn't normally be needed.
+   * 1. Update coverage badges with actual test coverage
+   * 2. Format any generated files if needed (safety net)
    */
   hooks: {
-    postRelease: [postReleaseFormattingCheck],
+    postRelease: [updateCoverageBadges, postReleaseFormattingCheck],
   },
 
   /**

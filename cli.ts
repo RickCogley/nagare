@@ -1242,7 +1242,8 @@ export const BUILD_INFO = {
 export const APP_INFO = {
   name: "{{ project.name }}",
   description: "{{ project.description }}",
-  author: "{{ project.author }}"
+  author: "{{ project.author }}",
+  license: "{{ project.license }}"
 } as const;
 
 {{- if metadata.cryptoFeatures }}

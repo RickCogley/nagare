@@ -59,6 +59,31 @@ deno coverage cov_profile --lcov > coverage.lcov
 deno coverage cov_profile
 ```
 
+#### Nagare's Simple Test Approach
+
+For this project, we use a simple testing strategy that focuses on pure functions:
+
+```bash
+# Run simple tests with coverage
+deno task test:simple
+
+# Generate coverage report and update badges
+deno task coverage:update
+
+# View HTML coverage report
+deno task coverage:view
+
+# Clean up coverage directories
+deno task coverage:clean
+```
+
+**Key Principles:**
+
+- Test pure functions directly without complex mocking
+- Focus on branch coverage (83.6% achieved)
+- Keep tests fast (< 300ms total)
+- Use minimal mocks only when necessary
+
 ### Node.js with Jest
 
 Configure Jest in `package.json` or `jest.config.js`:
@@ -319,6 +344,70 @@ Fail builds when coverage drops below thresholds:
   with:
     fail_ci_if_error: true
     minimum_coverage: 80
+```
+
+## Simple Testing Strategy
+
+### The Problem with Subprocess Coverage
+
+When testing CLI applications through subprocess execution, Deno's coverage only tracks the main test process, not the
+spawned subprocesses. This can lead to misleading low coverage numbers (e.g., 7.8%) even with comprehensive tests.
+
+### The Solution: Direct Function Testing
+
+Instead of testing through the CLI interface, test the underlying functions directly:
+
+```typescript
+// ❌ Poor: Testing through subprocess (coverage not tracked)
+test("CLI adds files", async () => {
+  const process = new Deno.Command("deno", {
+    args: ["run", "cli.ts", "add", "file.txt"],
+  });
+  const result = await process.output();
+  // Coverage won't track code executed in subprocess
+});
+
+// ✅ Good: Testing function directly
+test("addFile adds file to staging", () => {
+  const result = addFile("file.txt");
+  assertEquals(result.success, true);
+  // Coverage tracks this execution
+});
+```
+
+### Prioritizing Testable Code
+
+Focus on functions that:
+
+1. **Are pure** - Same input always produces same output
+2. **Have clear boundaries** - Well-defined inputs and outputs
+3. **Handle business logic** - Core functionality without I/O
+4. **Validate data** - Security and input validation
+
+Example test files using this approach:
+
+- `utils-simple_test.ts` - Utility functions
+- `validators-simple_test.ts` - Result type utilities
+- `security-utils-simple_test.ts` - Security validation
+- `logger-simple_test.ts` - Log level filtering
+
+### Minimal Mocking Strategy
+
+Use empty mocks only when necessary to satisfy TypeScript:
+
+```typescript
+// Minimal mock - just enough to satisfy types
+const mockConfig = {} as any;
+const mockGit = {} as any;
+
+test("parseVersion parses semantic version", () => {
+  const utils = new VersionUtils(mockConfig, mockGit);
+  const result = utils.parseVersion("1.2.3");
+
+  assertEquals(result.major, 1);
+  assertEquals(result.minor, 2);
+  assertEquals(result.patch, 3);
+});
 ```
 
 ## Conclusion

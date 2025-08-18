@@ -62,7 +62,8 @@
       "Bash(./scripts/run-tests.sh:*)",
       "Bash(./.aichaku-githooks/hooks.d/05-type-check:*)",
       "mcp__aichaku-reviewer__get_statistics",
-      "Bash(DEBUG_COVERAGE=1 deno task coverage:update)"
+      "Bash(DEBUG_COVERAGE=1 deno task coverage:update)",
+      "Bash(DEBUG_COVERAGE=1 deno run -A scripts/update-coverage-badge.ts)"
     ],
     "deny": []
   }

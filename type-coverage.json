@@ -1,20 +1,13 @@
 {
-  "totalLines": 10027,
-  "typedLines": 2176,
-  "coverage": 21.70140620325122,
+  "totalLines": 10058,
+  "typedLines": 2180,
+  "coverage": 21.6742891230861,
   "files": [
     {
       "path": "locales/schema.ts",
       "totalLines": 682,
       "typedLines": 3,
       "coverage": 0.43988269794721413,
-      "untypedLines": []
-    },
-    {
-      "path": "nagare.config.ts",
-      "totalLines": 188,
-      "typedLines": 11,
-      "coverage": 5.851063829787234,
       "untypedLines": []
     },
     {
@@ -25,6 +18,13 @@
       "untypedLines": [
         10
       ]
+    },
+    {
+      "path": "nagare.config.ts",
+      "totalLines": 218,
+      "typedLines": 15,
+      "coverage": 6.8807339449541285,
+      "untypedLines": []
     },
     {
       "path": "src/events/index.ts",
@@ -143,9 +143,9 @@
     },
     {
       "path": "cli.ts",
-      "totalLines": 694,
+      "totalLines": 695,
       "typedLines": 135,
-      "coverage": 19.45244956772334,
+      "coverage": 19.424460431654676,
       "untypedLines": []
     },
     {
@@ -442,5 +442,5 @@
       "untypedLines": []
     }
   ],
-  "timestamp": "2025-08-16T02:48:49.549Z"
+  "timestamp": "2025-08-18T20:08:56.205Z"
 }
