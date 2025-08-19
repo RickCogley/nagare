@@ -5,6 +5,7 @@
 
 import { assertEquals, assertStringIncludes } from "@std/assert";
 import { join } from "@std/path";
+import { TemplateFormat } from "../types.ts";
 
 const CLI_PATH = join(Deno.cwd(), "cli.ts");
 
@@ -48,10 +49,9 @@ Deno.test("CLI - dry run works", async () => {
 
   await Deno.writeTextFile(
     join(tempDir, "nagare.config.ts"),
-    `import { TemplateFormat } from "../types.ts";
-    export default {
+    `export default {
       project: { name: "test", version: "1.0.0", repository: "https://github.com/test/test" },
-      versionFile: { path: "./version.ts", template: TemplateFormat.TYPESCRIPT }
+      versionFile: { path: "./version.ts", template: "typescript" }
     };`,
   );
 
@@ -81,7 +81,6 @@ Deno.test("Config loading - loads and validates config", async () => {
   await Deno.writeTextFile(
     configPath,
     `
-    import { TemplateFormat } from "../types.ts";
     export default {
       project: {
         name: "test-project",
@@ -90,7 +89,7 @@ Deno.test("Config loading - loads and validates config", async () => {
       },
       versionFile: {
         path: "./version.ts",
-        template: TemplateFormat.TYPESCRIPT
+        template: "typescript"
       }
     };
   `,
@@ -117,7 +116,8 @@ Deno.test("ReleaseManager - actually creates files in dry-run", async () => {
     },
     versionFile: {
       path: join(tempDir, "version.ts"),
-      template: "export const VERSION = '{{version}}';",
+      template: TemplateFormat.CUSTOM,
+      customTemplate: "export const VERSION = '{{version}}';",
     },
     options: {
       dryRun: true,

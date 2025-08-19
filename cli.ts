@@ -473,7 +473,9 @@ function showDetailedVersion(): void {
   console.log(`${Brand.EMOJI} ${Brand.NAME} (${Brand.MEANING}) v${VERSION}`);
   console.log(`📝 ${tryT("cli.version.description")}: ${APP_INFO.description}`);
   console.log(`📦 ${tryT("cli.version.repository")}: ${APP_INFO.repository}`);
-  console.log(`📄 ${tryT("cli.version.license")}: ${APP_INFO.license}`);
+  if ("license" in APP_INFO && APP_INFO.license) {
+    console.log(`📄 ${tryT("cli.version.license")}: ${APP_INFO.license}`);
+  }
   console.log();
   console.log(`📋 ${tryT("cli.version.buildInfo")}:`);
   console.log(`   📅 ${tryT("cli.version.buildDate")}: ${BUILD_INFO.buildDate}`);
@@ -552,7 +554,7 @@ function showVersionJson(): void {
       name: APP_INFO.name,
       description: APP_INFO.description,
       repository: APP_INFO.repository,
-      license: APP_INFO.license,
+      ...("license" in APP_INFO && APP_INFO.license ? { license: APP_INFO.license } : {}),
     },
     build: {
       buildDate: BUILD_INFO.buildDate,
