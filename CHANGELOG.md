@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.20.0] - 2025-08-19
+
+### Added
+
+- implement simple testing strategy with 83.6% branch coverage (3c00b1d)
+- automate coverage badge updates (1067f39)
+- add quick wins - test scripts and coverage badges (c0ee0ff)
+
+### Changed
+
+- debug: add verbose output to gitleaks hook for troubleshooting (6b44c5c)
+- remove test file and verify hook works (42d6a43)
+- verify hook uses gitleaks config (aecadee)
+- update local claude settings (3143764)
+- explain real coverage situation - 50.3% not 37.3% (cb55caf)
+- properly organize unit vs integration tests (449389b)
+- fix 7 more failing tests using proper mocking (5473ac0)
+- fix TypeScript errors in comprehensive test suites (cfc848d)
+
+### Fixed
+
+- improve git hook to skip docs files and fix doc generation error (4dccff8)
+- use absolute path for gitleaks config to fix path resolution (9839f3d)
+- ensure gitleaks verbose output also uses config file (b19014b)
+- resolve release blockers and configure security scanning (06a6ff1)
+- remove docs from backup system and re-enable doc generation (30370de)
+- correct docs-check hook regex to only match files directly in docs/ (cccd5f3)
+
 ## [2.19.7] - 2025-08-13
 
 ### Fixed
