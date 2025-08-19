@@ -449,21 +449,21 @@ jobs:
         run: |
           # Generate coverage report (shows actual coverage of tested files)
           deno coverage coverage --lcov > coverage.lcov
-          
+
           # Use deno's built-in coverage calculation which properly filters tested files
           # This matches what developers see locally
           coverage_output=$(deno coverage coverage 2>&1)
-          
+
           # Extract the "All files" line coverage percentage
           # The output has ANSI codes and format: | All files | XX.X | XX.X |
           # We want the first percentage (line coverage)
           coverage=$(echo "$coverage_output" | grep "All files" | sed 's/\x1b\[[0-9;]*m//g' | awk -F'|' '{print $3}' | tr -d ' ')
-          
+
           echo "📊 Test Coverage: ${coverage}%"
-          
+
           # Convert to integer for comparison (bash doesn't do floating point)
           coverage_int=${coverage%.*}
-          
+
           if [ "$coverage_int" -lt 70 ]; then
             echo "❌ Coverage ${coverage}% is below 70% threshold"
             exit 1
