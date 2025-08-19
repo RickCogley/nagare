@@ -154,7 +154,14 @@ run_direct_scanners() {
     if command -v gitleaks >/dev/null 2>&1; then
         log_info "Running Gitleaks for secret detection..."
         
-        if gitleaks detect --no-git --quiet 2>/dev/null; then
+        # Check for config file and use it if available
+        local gitleaks_args="--no-git --quiet"
+        if [ -f ".gitleaks.toml" ]; then
+            gitleaks_args="$gitleaks_args --config .gitleaks.toml"
+            log_info "Using .gitleaks.toml configuration"
+        fi
+        
+        if gitleaks detect $gitleaks_args 2>/dev/null; then
             log_success "Gitleaks: No secrets found"
         else
             log_error "Gitleaks detected potential secrets!"
