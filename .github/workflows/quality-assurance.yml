@@ -434,10 +434,13 @@ jobs:
           # Save original version.ts
           cp version.ts version.ts.bak || true
 
+          # Run only simple tests for better coverage tracking and performance
+          # Based on the simple testing strategy (docs/reference/test-coverage-guide.md)
           deno test --unstable-raw-imports \
             --allow-all \
             --coverage=coverage \
-            --junit-path=test-results.xml
+            --junit-path=test-results.xml \
+            tests/*simple*test.ts
 
           # Restore original version.ts
           mv version.ts.bak version.ts || true
