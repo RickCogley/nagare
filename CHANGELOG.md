@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.20.1] - 2025-08-19
+
+### Changed
+
+- ignore nagare backup directories (4fabd21)
+- ignore test coverage directories and files (668ca7a)
+- format generated files after release (ae79cc4)
+
+### Fixed
+
+- correct gitignore pattern for coverage_local directory (9aa1c20)
+- correct CI test coverage calculation to match local results (a65b17c)
+- doc generation to only process mod.ts avoiding CLAUDE.md parse errors (55d761e)
+- update CI to use simple testing strategy (6924bc6)
+- correct preflight error message in test expectation (d6e8e23)
+- resolve TypeScript errors for CI compatibility (89772f1)
+- resolve remaining TypeScript errors in tests (92aa4fa)
+- resolve TypeScript errors in GitHub workflows (e68d36e)
+- improve doc generation error message formatting (45cc4ce)
+
 ## [2.20.0] - 2025-08-19
 
 ### Added
