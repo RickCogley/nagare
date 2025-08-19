@@ -165,7 +165,12 @@ run_direct_scanners() {
             log_success "Gitleaks: No secrets found"
         else
             log_error "Gitleaks detected potential secrets!"
-            gitleaks detect --no-git --verbose 2>&1 | grep -A2 "Secret:" | head -10
+            # Use same config for verbose output if available
+            local verbose_args="--no-git --verbose"
+            if [ -f ".gitleaks.toml" ]; then
+                verbose_args="$verbose_args --config .gitleaks.toml"
+            fi
+            gitleaks detect $verbose_args 2>&1 | grep -A2 "Secret:" | head -10
             has_issues=1
         fi
     fi
