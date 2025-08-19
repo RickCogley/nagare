@@ -34,7 +34,7 @@ async function cleanCoverage() {
         console.log(yellow(`  Removed ${dir}`));
         cleaned++;
       } catch (error) {
-        console.error(red(`  Failed to remove ${dir}: ${error.message}`));
+        console.error(red(`  Failed to remove ${dir}: ${error instanceof Error ? error.message : String(error)}`));
       }
     }
   }

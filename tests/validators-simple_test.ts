@@ -10,13 +10,17 @@ import { combineResults, err, isError, isSuccess, ok, validateReleaseType } from
 Deno.test("ok - creates success result", () => {
   const result = ok("test value");
   assertEquals(result.success, true);
-  assertEquals(result.data, "test value");
+  if (result.success) {
+    assertEquals(result.data, "test value");
+  }
 });
 
 Deno.test("err - creates error result", () => {
   const result = err("error message");
   assertEquals(result.success, false);
-  assertEquals(result.error, "error message");
+  if (!result.success) {
+    assertEquals(result.error, "error message");
+  }
 });
 
 Deno.test("isSuccess - identifies success results", () => {

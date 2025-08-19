@@ -216,18 +216,19 @@ Deno.test({
       currentVersion: "1.0.0",
     });
 
-    const stateSpy = spy();
-    const originalSaveState = mockDeps.stateTracker.saveState;
-    mockDeps.stateTracker.saveState = async () => {
-      stateSpy();
-      return originalSaveState.call(mockDeps.stateTracker);
+    // Create a spy to track operations
+    const trackSpy = spy();
+    const originalTrackOp = mockDeps.stateTracker.trackOperation;
+    mockDeps.stateTracker.trackOperation = function (...args: Parameters<typeof originalTrackOp>) {
+      trackSpy(...args);
+      return originalTrackOp.apply(this, args);
     };
 
     const manager = new ReleaseManager(config, mockDeps);
     const result = await manager.release();
 
     assertEquals(result.success, true);
-    // Should save state multiple times during process
-    assertEquals(stateSpy.calls.length > 0, true);
+    // Should track operations during the process
+    assertEquals(trackSpy.calls.length > 0, true);
   },
 });
