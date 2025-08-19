@@ -154,10 +154,25 @@ run_direct_scanners() {
     if command -v gitleaks >/dev/null 2>&1; then
         log_info "Running Gitleaks for secret detection..."
         
+        # Create temp directory for staged files if not already created by semgrep
+        if [ -z "$scan_dir" ]; then
+            local scan_dir=$(mktemp -d)
+            trap "rm -rf $scan_dir" EXIT
+            
+            # Copy staged files
+            for file in $files; do
+                if [ -f "$file" ]; then
+                    mkdir -p "$scan_dir/$(dirname "$file")"
+                    git show ":$file" > "$scan_dir/$file" 2>/dev/null || cp "$file" "$scan_dir/$file"
+                fi
+            done
+        fi
+        
         # Check for config file and use it if available
-        local gitleaks_args="--no-git --quiet"
+        local gitleaks_args="--no-git --quiet --source $scan_dir"
         if [ -f ".gitleaks.toml" ]; then
-            gitleaks_args="$gitleaks_args --config .gitleaks.toml"
+            # Use absolute path to original config file
+            gitleaks_args="$gitleaks_args --config $(pwd)/.gitleaks.toml"
             log_info "Using .gitleaks.toml configuration"
         fi
         
@@ -166,9 +181,9 @@ run_direct_scanners() {
         else
             log_error "Gitleaks detected potential secrets!"
             # Use same config for verbose output if available
-            local verbose_args="--no-git --verbose"
+            local verbose_args="--no-git --verbose --source $scan_dir"
             if [ -f ".gitleaks.toml" ]; then
-                verbose_args="$verbose_args --config .gitleaks.toml"
+                verbose_args="$verbose_args --config $(pwd)/.gitleaks.toml"
             fi
             gitleaks detect $verbose_args 2>&1 | grep -A2 "Secret:" | head -10
             has_issues=1
