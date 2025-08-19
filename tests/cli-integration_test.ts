@@ -48,9 +48,10 @@ Deno.test("CLI - dry run works", async () => {
 
   await Deno.writeTextFile(
     join(tempDir, "nagare.config.ts"),
-    `export default {
+    `import { TemplateFormat } from "../types.ts";
+    export default {
       project: { name: "test", version: "1.0.0", repository: "https://github.com/test/test" },
-      versionFile: { path: "./version.ts", template: "typescript" }
+      versionFile: { path: "./version.ts", template: TemplateFormat.TYPESCRIPT }
     };`,
   );
 
@@ -80,13 +81,16 @@ Deno.test("Config loading - loads and validates config", async () => {
   await Deno.writeTextFile(
     configPath,
     `
+    import { TemplateFormat } from "../types.ts";
     export default {
       project: {
         name: "test-project",
-        version: "1.0.0"
+        version: "1.0.0",
+        repository: "https://github.com/test/test"
       },
       versionFile: {
-        path: "./version.ts"
+        path: "./version.ts",
+        template: TemplateFormat.TYPESCRIPT
       }
     };
   `,

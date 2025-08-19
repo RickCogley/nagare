@@ -15,7 +15,7 @@ import { ensureDir } from "@std/fs";
 import { join } from "@std/path";
 
 import { ReleaseManager } from "../src/release/release-manager.ts";
-import { LogLevel } from "../types.ts";
+import { LogLevel, TemplateFormat } from "../types.ts";
 import { createTestConfig, TEST_COMMITS } from "../src/release/release-manager_test_helper.ts";
 import { createMockDeps } from "../src/release/release-manager_test_mocks.ts";
 import { initI18n } from "../src/core/i18n.ts";
@@ -86,6 +86,7 @@ Deno.test({
     const config = createTestConfig({
       versionFile: {
         path: testVersionFile,
+        template: TemplateFormat.TYPESCRIPT,
       },
       hooks: {
         postRelease: [
@@ -124,6 +125,7 @@ Deno.test({
     const config = createTestConfig({
       versionFile: {
         path: testVersionFile,
+        template: TemplateFormat.TYPESCRIPT,
       },
       options: {
         dryRun: false,
@@ -172,6 +174,7 @@ Deno.test({
     const config = createTestConfig({
       versionFile: {
         path: join(TEST_DIR, "version.ts"),
+        template: TemplateFormat.TYPESCRIPT,
       },
       updateFiles: testFiles.map((path) => ({ path })),
       options: {
@@ -218,11 +221,13 @@ Deno.test({
 
     // Create a spy to track operations
     const trackSpy = spy();
-    const originalTrackOp = mockDeps.stateTracker.trackOperation;
-    mockDeps.stateTracker.trackOperation = function (...args: Parameters<typeof originalTrackOp>) {
-      trackSpy(...args);
-      return originalTrackOp.apply(this, args);
-    };
+    if (mockDeps.stateTracker) {
+      const originalTrackOp = mockDeps.stateTracker.trackOperation;
+      mockDeps.stateTracker.trackOperation = function (...args: Parameters<typeof originalTrackOp>) {
+        trackSpy(...args);
+        return originalTrackOp.apply(this, args);
+      };
+    }
 
     const manager = new ReleaseManager(config, mockDeps);
     const result = await manager.release();
