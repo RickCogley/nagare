@@ -101,6 +101,7 @@ export class DocGenerator {
         ErrorCodes.DEPENDENCY_NOT_FOUND,
         {
           context: {
+            name: "deno doc",
             command: cmd.join(" "),
             stderr: error,
             hint: "Run 'deno doc --help' to verify deno doc is available",

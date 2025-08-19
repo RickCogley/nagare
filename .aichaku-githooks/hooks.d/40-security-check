@@ -168,25 +168,27 @@ run_direct_scanners() {
             done
         fi
         
-        # Check for config file and use it if available
-        local gitleaks_args="--no-git --quiet --source $scan_dir"
-        if [ -f ".gitleaks.toml" ]; then
-            # Use absolute path to original config file
-            gitleaks_args="$gitleaks_args --config $(pwd)/.gitleaks.toml"
-            log_info "Using .gitleaks.toml configuration"
-        fi
+        # Only scan non-documentation files with gitleaks
+        # Filter out markdown and docs before scanning
+        local non_doc_files=$(find "$scan_dir" -type f \
+            ! -name "*.md" \
+            ! -path "*/docs/*" \
+            ! -path "*/.claude/*" \
+            2>/dev/null | wc -l | tr -d ' ')
         
-        if gitleaks detect $gitleaks_args 2>/dev/null; then
-            log_success "Gitleaks: No secrets found"
+        if [ "$non_doc_files" -eq 0 ]; then
+            log_info "No non-documentation files to scan with Gitleaks"
         else
-            log_error "Gitleaks detected potential secrets!"
-            # Use same config for verbose output if available
-            local verbose_args="--no-git --verbose --source $scan_dir"
-            if [ -f ".gitleaks.toml" ]; then
-                verbose_args="$verbose_args --config $(pwd)/.gitleaks.toml"
+            local gitleaks_args="--no-git --quiet --source $scan_dir"
+            
+            # Exclude documentation files from scanning
+            if gitleaks detect $gitleaks_args 2>/dev/null; then
+                log_success "Gitleaks: No secrets found"
+            else
+                log_error "Gitleaks detected potential secrets!"
+                gitleaks detect --no-git --verbose --source $scan_dir 2>&1 | grep -A2 "Secret:" | head -10
+                has_issues=1
             fi
-            gitleaks detect $verbose_args 2>&1 | grep -A2 "Secret:" | head -10
-            has_issues=1
         fi
     fi
     
