@@ -118,7 +118,7 @@ Deno.test("ReleaseManager - preflight check failure handling", async () => {
     const result = await manager.release();
 
     assertEquals(result.success, false);
-    assertStringIncludes(result.error || "", "Preflight check failed");
+    assertStringIncludes(result.error || "", "Pre-flight check failed");
   } finally {
     // deno-lint-ignore no-explicit-any
     (Deno as any).Command = originalCommand;
