@@ -114,3 +114,4 @@ scratch/*
 .nagare-backups/coverage_local/
 test-docs*/
 test.lcov
+.nagare-backups/
