@@ -51,8 +51,9 @@ export class DocGenerator {
 
       cmd.push("--html", "--name=" + docTitle, "--output=" + outputDir);
 
-      // Add all TypeScript files in current directory
-      cmd.push("./mod.ts", "./src/");
+      // Add only TypeScript files - deno doc doesn't support glob patterns,
+      // so we just specify mod.ts which exports everything needed
+      cmd.push("./mod.ts");
 
       await this.runCommand(cmd);
       Brand.success(`Generated documentation in ${outputDir}`);
