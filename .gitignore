@@ -111,7 +111,7 @@ scratch/
 scratch/*
 
 # Nagare backup files
-.nagare-backups/coverage_local/
+coverage_local/
 test-docs*/
 test.lcov
 .nagare-backups/
