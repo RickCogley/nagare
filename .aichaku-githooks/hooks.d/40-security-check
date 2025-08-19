@@ -179,14 +179,23 @@ run_direct_scanners() {
         if [ "$non_doc_files" -eq 0 ]; then
             log_info "No non-documentation files to scan with Gitleaks"
         else
-            local gitleaks_args="--no-git --quiet --source $scan_dir"
+            log_info "Scanning $non_doc_files non-documentation files in $scan_dir"
             
-            # Exclude documentation files from scanning
-            if gitleaks detect $gitleaks_args 2>/dev/null; then
+            # First run with verbose to see what's happening
+            log_info "Running gitleaks with verbose output for debugging..."
+            local gitleaks_output=$(gitleaks detect --no-git --verbose --source $scan_dir 2>&1)
+            local gitleaks_exit_code=$?
+            
+            if [ $gitleaks_exit_code -eq 0 ]; then
                 log_success "Gitleaks: No secrets found"
             else
-                log_error "Gitleaks detected potential secrets!"
-                gitleaks detect --no-git --verbose --source $scan_dir 2>&1 | grep -A2 "Secret:" | head -10
+                log_error "Gitleaks detected potential secrets (exit code: $gitleaks_exit_code)!"
+                log_error "Full gitleaks output:"
+                echo "$gitleaks_output" | head -30
+                log_error "Files in scan directory:"
+                ls -la "$scan_dir" 2>&1 | head -20
+                log_error "Detected secrets summary:"
+                echo "$gitleaks_output" | grep -E "(Secret:|File:|Line:)" | head -20
                 has_issues=1
             fi
         fi
