@@ -75,9 +75,22 @@ export class DocGenerator {
         }
       }
     } catch (error) {
-      console.warn(
-        `⚠️  Failed to generate documentation: ${error instanceof Error ? error.message : String(error)}`,
-      );
+      // Format error message with context if available
+      let errorMessage = String(error);
+      if (error instanceof Error) {
+        errorMessage = error.message;
+        // If it's a NagareError with context, include the context info
+        if ("context" in error && error.context && typeof error.context === "object") {
+          const ctx = error.context as Record<string, unknown>;
+          if (ctx.name) {
+            errorMessage = errorMessage.replace("{name}", String(ctx.name));
+          }
+          if (ctx.stderr) {
+            errorMessage += ` - ${String(ctx.stderr).split("\n")[0]}`;
+          }
+        }
+      }
+      console.warn(`⚠️  Failed to generate documentation: ${errorMessage}`);
       // Don't throw - docs generation is optional
     }
   }
