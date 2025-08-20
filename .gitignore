@@ -48,6 +48,7 @@ logs/
 *.swp
 *.swo
 *~
+!docs/api/~/  # Don't ignore the deno doc API symbols directory
 .DS_Store
 Thumbs.db
 

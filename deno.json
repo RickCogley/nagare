@@ -73,8 +73,6 @@
     "nagare:rollback": "deno task nagare rollback",
 
     "docs": "deno doc --html --name=\"Nagare (流れ) - Deno Release Management Library\" --output=./docs/api ./mod.ts",
-    "docs:api": "deno run --allow-run --allow-read scripts/generate-docs.ts api",
-    "docs:api:direct": "deno doc --html --name=\"Nagare API\" --output=./docs/api ./cli.ts",
     "docs:json": "deno doc --json --output=./docs/api/nagare.json ./mod.ts",
     "docs:check": "deno doc --lint ./mod.ts ./cli.ts",
     "docs:enhance": "deno run --allow-read --allow-write scripts/enhance-docs.ts",
