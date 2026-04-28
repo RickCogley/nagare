@@ -1,0 +1,41 @@
+---
+title: Nagare
+description: 流れ — Deno-native release management. Conventional commits, semver bumps, JSR publishing, GitHub releases.
+template: splash
+hero:
+  tagline: Deno-native release management. Conventional commits, semver bumps, JSR publishing, GitHub releases.
+  actions:
+    - text: Get started
+      link: /tutorials/getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: View on JSR
+      link: https://jsr.io/@rick/nagare
+      icon: external
+    - text: GitHub
+      link: https://github.com/RickCogley/nagare
+      icon: github
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+
+<CardGrid>
+  <Card title="Tutorials" icon="open-book">
+    Step-by-step lessons for first-time users. Start with [Getting Started](/tutorials/getting-started/).
+  </Card>
+  <Card title="How-to guides" icon="setting">
+    Task-oriented recipes — [hooks](/how-to/use-hooks/), [rollback](/how-to/rollback-releases/), [CI/CD](/how-to/setup-ci-cd/).
+  </Card>
+  <Card title="Reference" icon="document">
+    Complete reference for the [CLI](/reference/cli/), [configuration](/reference/configuration/), and [environment variables](/reference/environment-variables/).
+  </Card>
+  <Card title="Explanation" icon="information">
+    Understand the [architecture](/explanation/architecture/), [security model](/explanation/security-model/), and [release workflow](/explanation/release-workflow/).
+  </Card>
+  <Card title="API Reference" icon="jsr">
+    Complete API generated from JSDoc by `deno doc`. <a href="/api/" target="_blank" rel="noopener">Open the API reference →</a>
+  </Card>
+  <Card title="JSR package" icon="external">
+    Install with `deno add jsr:@rick/nagare` or import directly from JSR. <a href="https://jsr.io/@rick/nagare" target="_blank" rel="noopener">View on JSR →</a>
+  </Card>
+</CardGrid>
