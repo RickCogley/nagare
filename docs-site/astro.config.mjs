@@ -2,12 +2,12 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 
 export default defineConfig({
-  site: "https://nagare-docs.workers.dev",
+  site: "https://nagare-docs.esolia.workers.dev",
   integrations: [
     starlight({
-      title: "Nagare",
+      title: "Nagare (流れ)",
       description:
-        "流れ — Deno-native release management library. Conventional commits, semver bumps, JSR publishing, GitHub releases.",
+        "Deno-native release management library. Conventional commits, semver bumps, JSR publishing, GitHub releases.",
       social: [
         { icon: "github", label: "GitHub", href: "https://github.com/RickCogley/nagare" },
         { icon: "jsr", label: "JSR", href: "https://jsr.io/@rick/nagare" },

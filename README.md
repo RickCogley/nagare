@@ -5,7 +5,7 @@
 [![JSR](https://jsr.io/badges/@rick/nagare)](https://jsr.io/@rick/nagare)
 [![JSR Score](https://jsr.io/badges/@rick/nagare/score)](https://jsr.io/@rick/nagare)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Documentation](https://img.shields.io/badge/docs-cloudflare-orange)](https://nagare-docs.workers.dev/)
+[![Documentation](https://img.shields.io/badge/docs-cloudflare-orange)](https://nagare-docs.esolia.workers.dev/)
 [![Test Coverage](https://img.shields.io/badge/coverage-83.6%25-brightgreen)](./docs/coverage/)
 [![Tests](https://img.shields.io/badge/tests-75_passing-brightgreen)](./tests/)
 
@@ -35,7 +35,7 @@ deno task nagare
 ```
 
 That's it! Nagare will analyze your conventional commits and create a release automatically. Read on for details, or
-jump to the [full documentation site](https://nagare-docs.workers.dev/).
+jump to the [full documentation site](https://nagare-docs.esolia.workers.dev/).
 
 ## What is Nagare?
 
@@ -47,21 +47,22 @@ version bump based on conventional commits - all while maintaining professional 
 
 ### 🎯 Interactive Release Workflows (with Visual Diagrams)
 
-- [**Release Workflow Guide**](https://nagare-docs.workers.dev/explanation/release-workflow/) - Complete release process
-  with visual flow diagrams
-- [**File Update System**](https://nagare-docs.workers.dev/explanation/file-update-system/) - How intelligent file
-  handlers work
-- [**Security Model**](https://nagare-docs.workers.dev/explanation/security-model/) - Security architecture with threat
-  analysis
+- [**Release Workflow Guide**](https://nagare-docs.esolia.workers.dev/explanation/release-workflow/) - Complete release
+  process with visual flow diagrams
+- [**File Update System**](https://nagare-docs.esolia.workers.dev/explanation/file-update-system/) - How intelligent
+  file handlers work
+- [**Security Model**](https://nagare-docs.esolia.workers.dev/explanation/security-model/) - Security architecture with
+  threat analysis
 
 ### 📖 Complete Documentation
 
-- [**Documentation site**](https://nagare-docs.workers.dev/) - Tutorials, how-to guides, reference, explanation, API
-  reference
-- [**API Reference**](https://nagare-docs.workers.dev/api/) - Complete TypeScript API generated from JSDoc by `deno doc`
-- [**How-to Guides**](https://nagare-docs.workers.dev/how-to/) - Task-specific instructions and workflows
-- [**Reference Materials**](https://nagare-docs.workers.dev/reference/) - Technical specifications and configuration
-  options
+- [**Documentation site**](https://nagare-docs.esolia.workers.dev/) - Tutorials, how-to guides, reference, explanation,
+  API reference
+- [**API Reference**](https://nagare-docs.esolia.workers.dev/api/) - Complete TypeScript API generated from JSDoc by
+  `deno doc`
+- [**How-to Guides**](https://nagare-docs.esolia.workers.dev/how-to/) - Task-specific instructions and workflows
+- [**Reference Materials**](https://nagare-docs.esolia.workers.dev/reference/) - Technical specifications and
+  configuration options
 
 ### 🔗 Quick Links
 
@@ -283,8 +284,8 @@ Nagare uses a modular architecture with specialized components:
 - **GitHub Integration** - Creates releases and manages GitHub interactions
 
 For detailed architecture diagrams and visual workflows, see the
-[Architecture Overview](https://nagare-docs.workers.dev/explanation/architecture/) and
-[Release Workflow Guide](https://nagare-docs.workers.dev/explanation/release-workflow/).
+[Architecture Overview](https://nagare-docs.esolia.workers.dev/explanation/architecture/) and
+[Release Workflow Guide](https://nagare-docs.esolia.workers.dev/explanation/release-workflow/).
 
 ### Template System
 
@@ -325,8 +326,8 @@ export const CHANGELOG = {{releaseNotes}};
 
 ### Project Documentation
 
-- **[Documentation site](https://nagare-docs.workers.dev/)** - Tutorials, guides, and API reference
-- **[API Reference](https://nagare-docs.workers.dev/api/)** - Auto-generated from JSDoc by `deno doc`
+- **[Documentation site](https://nagare-docs.esolia.workers.dev/)** - Tutorials, guides, and API reference
+- **[API Reference](https://nagare-docs.esolia.workers.dev/api/)** - Auto-generated from JSDoc by `deno doc`
 - **[Project Management](docs/projects/)** - Development methodology documentation
 
 ### External Resources
