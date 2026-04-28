@@ -76,8 +76,7 @@
     "docs:json": "deno doc --json --output=./docs/api/nagare.json ./mod.ts",
     "docs:check": "deno doc --lint ./mod.ts ./cli.ts",
     "docs:enhance": "deno run --allow-read --allow-write scripts/enhance-docs.ts",
-    "docs:fix-urls": "deno run --allow-read --allow-write scripts/fix-docs-urls.ts",
-    "docs:build": "deno task docs && deno task docs:enhance && deno task docs:fix-urls",
+    "docs:build": "deno task docs && deno task docs:enhance",
     "docs:clean": "git clean -fdx docs/api/",
 
     "security:check-sarif": "deno run --allow-read scripts/check-sarif.ts",
