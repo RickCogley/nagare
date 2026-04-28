@@ -54,7 +54,12 @@ jobs:
           cache-dependency-path: docs-site/package-lock.json
 
       - name: Generate API reference (deno doc)
-        run: deno task docs:build
+        # Skip docs:fix-urls (renames ~ → __SYMBOLS__ for Deno Deploy URL
+        # compatibility) — Cloudflare Workers Assets handles ~ paths natively,
+        # and the script has a walk()+rename race that crashes in CI. See #11.
+        run: |
+          deno task docs
+          deno task docs:enhance
 
       - name: Install docs-site dependencies
         working-directory: docs-site
