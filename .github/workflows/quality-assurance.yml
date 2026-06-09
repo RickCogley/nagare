@@ -167,7 +167,7 @@ jobs:
           deno run --allow-read --allow-write check-type-coverage.ts
 
       - name: Upload Type Coverage Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: type-coverage
           path: type-coverage.json
@@ -283,7 +283,7 @@ jobs:
           echo '```' >> performance-summary.md
 
       - name: Upload Performance Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: performance-results
           path: |
@@ -475,7 +475,7 @@ jobs:
 
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results-${{ matrix.deno-version }}
           path: |
